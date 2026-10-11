@@ -78,14 +78,61 @@ public enum PodcastLinks {
         return comps?.url
     }
 
-    public static func spotifySearch(episodeTitle: String) -> URL? {
-        var comps = URLComponents(string: "https://open.spotify.com/search")
-        // Spotify web search path-encodes the query.
-        let q = "Movie Roulette Tuesday \(episodeTitle)"
-            .addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
-        comps?.path = "/search/" + q
-        return comps?.url ?? URL(string: "https://open.spotify.com/search/\(q)")
+    /// Spotify web search for one episode: `https://open.spotify.com/search/<query>`.
+    /// The query is the cleaned episode title plus the show name, percent-encoded once
+    /// (spaces as `%20`; `+`, `&`, `?`, `#`, `/` never reach Spotify unescaped).
+    public static func spotifySearch(episodeTitle: String, show: ShowInfo = .mrt) -> URL? {
+        let query = spotifySearchQuery(episodeTitle: episodeTitle)
+        guard let encoded = query.addingPercentEncoding(withAllowedCharacters: spotifyQueryAllowed),
+              !encoded.isEmpty else { return show.spotifyURL }
+        return URL(string: "https://open.spotify.com/search/" + encoded)
     }
+
+    public static let spotifyShowName = "Movie Roulette Tuesday"
+
+    /// "S4 · E34 – Romeo + Juliet 🎬" → "Romeo Juliet Movie Roulette Tuesday".
+    /// Strips episode-number prefixes, emoji and punctuation that hurt Spotify's matcher,
+    /// keeps letters/digits/apostrophes/in-word hyphens, and adds the show name once.
+    public static func spotifySearchQuery(episodeTitle: String) -> String {
+        let title = cleanEpisodeTitle(episodeTitle)
+        if title.range(of: spotifyShowName, options: [.caseInsensitive, .diacriticInsensitive]) != nil {
+            return title
+        }
+        return title.isEmpty ? spotifyShowName : "\(title) \(spotifyShowName)"
+    }
+
+    static func cleanEpisodeTitle(_ raw: String) -> String {
+        var t = raw
+            .replacingOccurrences(of: "\u{2019}", with: "'")
+            .replacingOccurrences(of: "\u{2018}", with: "'")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        // Raw feed GUIDs and sample ids are not titles.
+        if t.range(of: #"^Buzzsprout-\d+$"#, options: .regularExpression) != nil { return "" }
+        // Leading "S4 · E34 –", "S4E34:", "Ep. 34 -", "Episode 34:", "#34 |" (repeatable).
+        let prefix = #"^(?i)\s*(?:s(?:eason)?\s*\d+\s*[·•.:,|\-–—]?\s*)?(?:e(?:p(?:isode)?)?\.?\s*#?\s*\d+|#\s*\d+)\b\s*[·•.:|)\-–—]*\s*"#
+        while let r = t.range(of: prefix, options: .regularExpression), !r.isEmpty {
+            t.removeSubrange(r)
+        }
+        // Keep letters, digits, apostrophes inside words and hyphens between letters/digits.
+        var out = ""
+        let chars = Array(t)
+        for (i, c) in chars.enumerated() {
+            let prev = i > 0 ? chars[i - 1] : " "
+            let next = i + 1 < chars.count ? chars[i + 1] : " "
+            if c.isLetter || c.isNumber {
+                out.append(c)
+            } else if (c == "'" || c == "-") && (prev.isLetter || prev.isNumber) && (next.isLetter || next.isNumber) {
+                out.append(c)
+            } else {
+                out.append(" ")
+            }
+        }
+        return out.split(whereSeparator: { $0 == " " }).joined(separator: " ")
+    }
+
+    /// RFC 3986 unreserved only, so everything else is %-escaped exactly once.
+    private static let spotifyQueryAllowed = CharacterSet(
+        charactersIn: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~")
 
     /// Buzzsprout episode page when the guid is `Buzzsprout-<numericId>`.
     public static func buzzsproutEpisode(guid: String, show: ShowInfo = .mrt) -> URL? {

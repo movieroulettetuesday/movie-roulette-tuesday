@@ -40,8 +40,8 @@ final class ShowLinksTests: XCTestCase {
         XCTAssertEqual(PodcastLinks.buzzsproutShow()?.absoluteString, "https://www.buzzsprout.com/2117292")
         XCTAssertEqual(PodcastLinks.buzzsproutEpisode(guid: "Buzzsprout-19913482")?.absoluteString,
                        "https://www.buzzsprout.com/2117292/episodes/19913482")
-        let spotify = PodcastLinks.spotifySearch(episodeTitle: "The Outsiders")?.absoluteString ?? ""
-        XCTAssertTrue(spotify.hasPrefix("https://open.spotify.com/search/"), spotify)
+        XCTAssertEqual(PodcastLinks.spotifySearch(episodeTitle: "The Outsiders")?.absoluteString,
+                       "https://open.spotify.com/search/The%20Outsiders%20Movie%20Roulette%20Tuesday")
         let follow = FollowTheShow.links()
         XCTAssertEqual(follow.count, 8)
         XCTAssertEqual(follow.map(\.url.host), ["podcasts.apple.com", "open.spotify.com", "overcast.fm", "www.buzzsprout.com",
@@ -83,5 +83,68 @@ final class ShowLinksTests: XCTestCase {
         XCTAssertEqual(NewEpisodeDiff.notificationText(for: [ep("d", 4)])?.body, "d")
         XCTAssertEqual(NewEpisodeDiff.notificationText(for: [ep("e", 5), ep("d", 4)])?.title, "2 new episodes of Movie Roulette Tuesday")
         XCTAssertNil(NewEpisodeDiff.notificationText(for: []))
+    }
+
+    // MARK: Spotify episode search (real titles from rss.buzzsprout.com/2117292.rss)
+
+    func testSpotifyQueryRealTitles() {
+        let cases: [(String, String)] = [
+            ("The Outsiders", "The Outsiders Movie Roulette Tuesday"),
+            ("Palmer Rockey's SCARLET WARNING 666", "Palmer Rockey's SCARLET WARNING 666 Movie Roulette Tuesday"),
+            ("Romeo + Juliet", "Romeo Juliet Movie Roulette Tuesday"),
+            ("Rock & Rule", "Rock Rule Movie Roulette Tuesday"),
+            ("Mad Max: Fury Road", "Mad Max Fury Road Movie Roulette Tuesday"),
+            ("O Brother, Where Art Thou?", "O Brother Where Art Thou Movie Roulette Tuesday"),
+            ("Three Billboards Outside Ebbing, Missouri", "Three Billboards Outside Ebbing Missouri Movie Roulette Tuesday"),
+            ("Kon-Tiki", "Kon-Tiki Movie Roulette Tuesday"),
+            ("Cry-Baby", "Cry-Baby Movie Roulette Tuesday"),
+            ("π", "π Movie Roulette Tuesday"),
+            ("Season 3: Year In Review", "Season 3 Year In Review Movie Roulette Tuesday"),
+            ("Return of the Living Dead 3", "Return of the Living Dead 3 Movie Roulette Tuesday"),
+            // Show name already in the title: not duplicated.
+            ("What is Movie Roulette Tuesday?", "What is Movie Roulette Tuesday"),
+        ]
+        for (title, expected) in cases {
+            XCTAssertEqual(PodcastLinks.spotifySearchQuery(episodeTitle: title), expected, title)
+        }
+    }
+
+    func testSpotifyQueryStripsPrefixesAndEmoji() {
+        let cases: [(String, String)] = [
+            ("S4 · E34 – The Outsiders", "The Outsiders Movie Roulette Tuesday"),
+            ("S4E34: The Outsiders 🎬", "The Outsiders Movie Roulette Tuesday"),
+            ("Ep. 11 - Romeo + Juliet", "Romeo Juliet Movie Roulette Tuesday"),
+            ("Episode 34: The Outsiders", "The Outsiders Movie Roulette Tuesday"),
+            ("#29 | Crash", "Crash Movie Roulette Tuesday"),
+            ("  Palmer Rockey\u{2019}s SCARLET WARNING 666 🔥 ", "Palmer Rockey's SCARLET WARNING 666 Movie Roulette Tuesday"),
+            // Titles that merely start with numbers or E. are left alone.
+            ("12 Angry Men", "12 Angry Men Movie Roulette Tuesday"),
+            ("2001: A Space Odyssey", "2001 A Space Odyssey Movie Roulette Tuesday"),
+            ("E.T. the Extra-Terrestrial", "E T the Extra-Terrestrial Movie Roulette Tuesday"),
+            // Fallback labels that are not real titles fall back to the show.
+            ("Episode 12", "Movie Roulette Tuesday"),
+            ("Buzzsprout-19913482", "Movie Roulette Tuesday"),
+            ("", "Movie Roulette Tuesday"),
+        ]
+        for (title, expected) in cases {
+            XCTAssertEqual(PodcastLinks.spotifySearchQuery(episodeTitle: title), expected, title)
+        }
+    }
+
+    func testSpotifySearchURLEncodedOnce() throws {
+        let cases: [(String, String)] = [
+            ("Romeo + Juliet", "Romeo%20Juliet%20Movie%20Roulette%20Tuesday"),
+            ("Palmer Rockey's SCARLET WARNING 666", "Palmer%20Rockey%27s%20SCARLET%20WARNING%20666%20Movie%20Roulette%20Tuesday"),
+            ("Kon-Tiki", "Kon-Tiki%20Movie%20Roulette%20Tuesday"),
+            ("π", "%CF%80%20Movie%20Roulette%20Tuesday"),
+        ]
+        for (title, path) in cases {
+            let url = try XCTUnwrap(PodcastLinks.spotifySearch(episodeTitle: title), title)
+            XCTAssertEqual(url.absoluteString, "https://open.spotify.com/search/" + path, title)
+            XCTAssertFalse(url.absoluteString.contains("%25"), "double-encoded: \(url)")
+            XCTAssertFalse(url.absoluteString.contains("+"), "\(url)")
+            // Spotify decodes the path once and must get the clean query back.
+            XCTAssertEqual(url.path, "/search/" + PodcastLinks.spotifySearchQuery(episodeTitle: title), title)
+        }
     }
 }
