@@ -1,0 +1,10 @@
+{
+  "_comment": "Optional per-episode poll overrides. Every episode already gets a default poll (good/bad, recommend, or who won the argument), chosen deterministically from its guid. To override one, add an entry to \"polls\" shaped like \"_example\" (2+ options). Changing an existing poll's question or options starts a fresh poll unless you keep the same \"id\". Keys starting with _ are ignored.",
+  "_example": {
+    "episodeGuid": "Buzzsprout-12345678",
+    "question": "Best snack for this movie?",
+    "options": ["Popcorn", "Nachos", "Candy"],
+    "id": "Buzzsprout-12345678.snack"
+  },
+  "polls": []
+}

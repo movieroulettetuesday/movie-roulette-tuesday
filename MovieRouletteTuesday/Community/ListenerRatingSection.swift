@@ -1,0 +1,82 @@
+import SwiftUI
+
+/// Community (anonymous) average for a movie plus this user's listener vote.
+/// Separate from "My rating", which stays on the device unless shared.
+struct ListenerRatingSection: View {
+    let movieId: String
+    /// The local "My rating" (Part of Your Take), offered for sharing.
+    let myRating: Int?
+    @Environment(CommunityService.self) private var community
+
+    private var aggregate: RatingAggregate? { community.ratingAggregates[movieId] }
+    private var shared: Int? { community.myListenerRating(movieId: movieId) }
+    private var canWrite: Bool { community.accountStatus.canWrite }
+    private var isBusy: Bool { community.busy.contains(movieId) }
+
+    var body: some View {
+        CleanProSection(
+            "Listener Rating",
+            footer: "Shared anonymously through iCloud: only the movie and the star count are stored, with no name or account. Your own rating under Your Take stays on this device unless you add it here (or turn on auto-share in Settings)."
+        ) {
+            HStack(spacing: 10) {
+                if let aggregate, let average = aggregate.average {
+                    Text(average, format: .number.precision(.fractionLength(1)))
+                        .font(.title2.bold().monospacedDigit())
+                    StarRatingView(rating: Int(average.rounded()), font: .subheadline, tint: Brand.accentPeach)
+                    Spacer()
+                    Text(aggregate.count == 1 ? "1 rating" : "\(aggregate.count) ratings")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                } else if aggregate == nil, community.errors[movieId] == nil {
+                    Text("Loading listener ratings…").foregroundStyle(.secondary)
+                    Spacer()
+                    ProgressView()
+                } else {
+                    Text("No listener ratings yet").foregroundStyle(.secondary)
+                }
+            }
+            .task(id: movieId) { await community.loadRating(movieId: movieId) }
+
+            if let shared {
+                LabeledContent("Your listener vote") {
+                    StarRatingView(rating: shared, font: .caption, tint: Brand.accentPeach)
+                }
+            }
+
+            if canWrite {
+                if let myRating, myRating != shared {
+                    Button {
+                        Task { await community.submitListenerRating(movieId: movieId, stars: myRating) }
+                    } label: {
+                        Label(shared == nil ? "Add my \(myRating)★ to the listener average"
+                                            : "Update my listener vote to \(myRating)★",
+                              systemImage: "person.3.fill")
+                    }
+                    .disabled(isBusy)
+                } else if myRating == nil, shared == nil {
+                    Text("Rate it under Your Take to add your stars.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+            } else if let message = community.accountMessage {
+                Label(message, systemImage: "icloud.slash")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+
+            if let error = community.errors[movieId] {
+                Label(error, systemImage: "exclamationmark.triangle")
+                    .font(.footnote)
+                    .foregroundStyle(.orange)
+            }
+        }
+    }
+}
+
+#Preview {
+    ScrollView {
+        ListenerRatingSection(movieId: "the-room-2003", myRating: 4)
+            .padding()
+    }
+    .environment(CommunityService.preview())
+}

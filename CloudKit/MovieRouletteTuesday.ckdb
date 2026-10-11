@@ -1,0 +1,40 @@
+// CloudKit schema for Movie Roulette Tuesday
+// Container: iCloud.com.movieroulettetuesday.app
+// Database: PUBLIC
+//
+// Import in CloudKit Console (Development → Schema), then Promote to Production
+// before App Store release. See SCHEMA.md.
+//
+// Privacy: fields never hold a user id, name, email, or device id. One vote /
+// rating per user is enforced by a deterministic recordName that hashes the
+// iCloud user record name (never stored in a field).
+
+DEFINE SCHEMA
+
+RECORD TYPE PollVote (
+    "___createTime" TIMESTAMP,
+    "___createdBy"  REFERENCE,
+    "___etag"       STRING,
+    "___modTime"    TIMESTAMP,
+    "___modifiedBy" REFERENCE,
+    "___recordID"   REFERENCE QUERYABLE,
+    option          STRING,
+    pollId          STRING QUERYABLE,
+    GRANT WRITE TO "_creator",
+    GRANT CREATE TO "_icloud",
+    GRANT READ TO "_world"
+);
+
+RECORD TYPE ListenerRating (
+    "___createTime" TIMESTAMP,
+    "___createdBy"  REFERENCE,
+    "___etag"       STRING,
+    "___modTime"    TIMESTAMP,
+    "___modifiedBy" REFERENCE,
+    "___recordID"   REFERENCE QUERYABLE,
+    movieId         STRING QUERYABLE,
+    stars           INT64,
+    GRANT WRITE TO "_creator",
+    GRANT CREATE TO "_icloud",
+    GRANT READ TO "_world"
+);

@@ -1,0 +1,3256 @@
+{
+  "_note": "Real MRT catalog from Buzzsprout RSS. episodeIds are Buzzsprout guids. Categories are app wheel themes grounded in show rounds (not an official taxonomy). episodeTitle is the RSS episode title for offline display.",
+  "schemaVersion": 2,
+  "show": {
+    "name": "Movie Roulette Tuesday: The Podcast",
+    "hosts": [
+      "Rachael",
+      "Karl",
+      "Matt"
+    ],
+    "rssURL": "https://rss.buzzsprout.com/2117292.rss",
+    "applePodcastsURL": "https://podcasts.apple.com/us/podcast/movie-roulette-tuesday-the-podcast/id1666123849",
+    "spotifyURL": "https://open.spotify.com/show/0jJt5G1XRlbLYWJuyIQnj1",
+    "applePodcastID": "1666123849",
+    "spotifyShowID": "0jJt5G1XRlbLYWJuyIQnj1",
+    "buzzsproutShowID": "2117292"
+  },
+  "categories": [
+    {
+      "id": "cat-horror",
+      "name": "Horror",
+      "fullName": "Horror & Terror",
+      "colorHex": "#C1121F",
+      "weight": null,
+      "movieIds": [
+        "deadly-games-1989",
+        "the-vanishing-1988",
+        "what-ever-happened-to-baby-jane-1962",
+        "the-grave-1996",
+        "tarantulas-the-deadly-cargo-1977",
+        "hereditary-2018",
+        "the-black-phone-2021",
+        "possession-1981",
+        "martin-1977",
+        "talk-to-me-2022",
+        "infinity-pool-2023",
+        "no-one-will-save-you-2023",
+        "violent-night-2022",
+        "christmas-evil-1980",
+        "deadly-friend-1986",
+        "diabolique-1955",
+        "antichrist-2009",
+        "cemetery-man-1994",
+        "the-blob-1958",
+        "drive-in-massacre-1976",
+        "longlegs-2024",
+        "the-hitcher-1986",
+        "the-house-of-the-devil-2009",
+        "scream-1996",
+        "final-destination-2000",
+        "the-substance-2024",
+        "fright-night-1985",
+        "weapons-2025",
+        "night-of-the-living-dead-1990",
+        "leviathan-1989",
+        "the-thing-1982",
+        "lord-of-illusions-1995",
+        "the-texas-chainsaw-massacre-1974",
+        "race-with-the-devil-1975",
+        "return-of-the-living-dead-3-1993",
+        "palmer-rockeys-scarlet-warning-666-1982",
+        "the-ugly-stepsister-2025"
+      ]
+    },
+    {
+      "id": "cat-cult",
+      "name": "Cult",
+      "fullName": "Cult & Bizarre",
+      "colorHex": "#7B2CBF",
+      "weight": null,
+      "movieIds": [
+        "shimmer-lake-2017",
+        "cry-baby-1990",
+        "the-tough-ones-1976",
+        "purple-rain-1984",
+        "impulse-1990",
+        "possession-1981",
+        "martin-1977",
+        "judge-dredd-1995",
+        "vanishing-point-1971",
+        "pi-1998",
+        "the-peanut-butter-solution-1985",
+        "run-lola-run-1998",
+        "night-watch-2004",
+        "gigli-2003",
+        "the-split-1968",
+        "slacker-1990",
+        "the-cooler-2003",
+        "cemetery-man-1994",
+        "drive-in-massacre-1976",
+        "coherence-2013",
+        "the-adventures-of-buckaroo-banzai-across-the-8th-dimension-1984",
+        "enemy-2013",
+        "rock-and-rule-1983",
+        "popeye-1980",
+        "malpertuis-1971",
+        "enter-the-void-2009",
+        "alice-1988",
+        "mirrormask-2005",
+        "strawberry-mansion-2021",
+        "tiptoes-2003",
+        "harlequin-1980",
+        "the-alamo-2004",
+        "palmer-rockeys-scarlet-warning-666-1982"
+      ]
+    },
+    {
+      "id": "cat-criterion",
+      "name": "Criterion",
+      "fullName": "Criterion & Classics",
+      "colorHex": "#E9C46A",
+      "weight": null,
+      "movieIds": [
+        "saturday-night-fever-1977",
+        "my-man-godfrey-1936",
+        "come-and-see-1985",
+        "harvey-1950",
+        "diabolique-1955",
+        "the-killers-1964",
+        "the-odd-couple-1968",
+        "a-face-in-the-crowd-1957",
+        "the-phantom-carriage-1921",
+        "the-man-who-shot-liberty-valance-1962",
+        "the-red-shoes-1948",
+        "the-trial-1962",
+        "double-indemnity-1944",
+        "the-great-escape-1963",
+        "dog-day-afternoon-1975",
+        "arsenic-and-old-lace-1944",
+        "dont-look-now-1973",
+        "inglourious-basterds-2009",
+        "taxi-driver-1976",
+        "black-narcissus-1947"
+      ]
+    },
+    {
+      "id": "cat-love",
+      "name": "Love Hurts",
+      "fullName": "Love Hurts",
+      "colorHex": "#E63980",
+      "weight": null,
+      "movieIds": [
+        "cry-baby-1990",
+        "forgetting-sarah-marshall-2008",
+        "war-of-the-roses-1980",
+        "her-2013",
+        "romeo-plus-juliet-1996",
+        "what-dreams-may-come-1998",
+        "the-bodyguard-1992",
+        "high-fidelity-2000",
+        "crash-1996",
+        "the-notebook-2004",
+        "return-of-the-living-dead-3-1993",
+        "the-ugly-stepsister-2025"
+      ]
+    },
+    {
+      "id": "cat-scifi",
+      "name": "Sci-Fi",
+      "fullName": "Sci-Fi & Fantasy",
+      "colorHex": "#00A6FB",
+      "weight": null,
+      "movieIds": [
+        "guillermo-del-toro-s-pinocchio-2022",
+        "time-after-time-1979",
+        "dungeons-and-dragons-honor-among-thieves-2023",
+        "white-noise-2022",
+        "threads-1984",
+        "her-2013",
+        "mad-max-fury-road-2015",
+        "pi-1998",
+        "what-dreams-may-come-1998",
+        "snowpiercer-2013",
+        "godzilla-minus-one-2023",
+        "nope-2022",
+        "beau-is-afraid-2023",
+        "the-adventures-of-buckaroo-banzai-across-the-8th-dimension-1984",
+        "total-recall-1990",
+        "edge-of-tomorrow-2014",
+        "source-code-2011",
+        "equilibrium-2002",
+        "malpertuis-1971",
+        "alice-1988",
+        "the-fall-2008",
+        "mirrormask-2005",
+        "memento-2000",
+        "project-hail-mary-2026",
+        "strawberry-mansion-2021",
+        "excalibur-1981",
+        "the-thing-1982",
+        "lord-of-illusions-1995",
+        "willow-1988",
+        "harlequin-1980"
+      ]
+    },
+    {
+      "id": "cat-action",
+      "name": "Action",
+      "fullName": "Action & Thrillers",
+      "colorHex": "#F77F00",
+      "weight": null,
+      "movieIds": [
+        "rolling-thunder-1977",
+        "marathon-man-1976",
+        "thirteen-lives-2022",
+        "the-card-counter-2021",
+        "no-country-for-old-men-2007",
+        "sisu-2022",
+        "the-fast-and-the-furious-2001",
+        "judge-dredd-1995",
+        "shaft-1971",
+        "out-of-sight-1998",
+        "mad-max-fury-road-2015",
+        "the-manchurian-candidate-1962",
+        "the-hitcher-1986",
+        "the-usual-suspects-1995",
+        "oldboy-2003",
+        "falling-down-1993",
+        "red-dawn-1984",
+        "final-destination-2000",
+        "hanna-2011",
+        "the-fugitive-1993",
+        "double-indemnity-1944",
+        "first-blood-1982",
+        "inglourious-basterds-2009",
+        "gladiator-2000",
+        "the-bird-with-the-crystal-plumage-1970",
+        "taxi-driver-1976",
+        "runaway-train-1985"
+      ]
+    },
+    {
+      "id": "cat-dark-comedy",
+      "name": "Dark Comedy",
+      "fullName": "Dark Comedy",
+      "colorHex": "#2A9D8F",
+      "weight": null,
+      "movieIds": [
+        "the-unbearable-weight-of-massive-talent-2022",
+        "the-banshees-of-inisherin-2022",
+        "three-oclock-high-1987",
+        "national-lampoons-animal-house-1978",
+        "forgetting-sarah-marshall-2008",
+        "hunt-for-the-wilderpeople-2016",
+        "cocaine-bear-2023",
+        "the-menu-2022",
+        "war-of-the-roses-1980",
+        "gigli-2003",
+        "slacker-1990",
+        "the-odd-couple-1968",
+        "night-shift-1982",
+        "murder-mystery-2019",
+        "the-cooler-2003",
+        "poor-things-2023",
+        "what-we-do-in-the-shadows-2014",
+        "defending-your-life-1991",
+        "brewsters-millions-1980",
+        "fright-night-1985",
+        "arsenic-and-old-lace-1944"
+      ]
+    },
+    {
+      "id": "cat-listener",
+      "name": "Listeners",
+      "fullName": "Listener Picks",
+      "colorHex": "#3A86FF",
+      "weight": null,
+      "movieIds": [
+        "strawberry-mansion-2021",
+        "taxi-driver-1976",
+        "the-thing-1982",
+        "runaway-train-1985",
+        "the-pirates-of-penzance-1983",
+        "the-ugly-stepsister-2025"
+      ]
+    },
+    {
+      "id": "cat-prestige",
+      "name": "Prestige",
+      "fullName": "Prestige Drama",
+      "colorHex": "#6D597A",
+      "weight": null,
+      "movieIds": [
+        "nocturnal-animals-2016",
+        "the-whale-2022",
+        "dream-a-little-dream-1989",
+        "death-of-a-salesman-1985",
+        "there-will-be-blood-2007",
+        "the-imitation-game-2014",
+        "whiplash-2014",
+        "o-brother-where-art-thou-2000",
+        "the-crow-1994",
+        "rudy-1993",
+        "cinderella-man-2005",
+        "the-iron-claw-2023",
+        "the-founder-2016",
+        "frozen-2010",
+        "good-will-hunting-1997",
+        "a-face-in-the-crowd-1957",
+        "the-ice-storm-1997",
+        "the-princess-bride-1987",
+        "ed-wood-1950",
+        "rebecca-2020",
+        "the-pursuit-of-happyness-2006",
+        "mulholland-drive-2001",
+        "shine-1996",
+        "three-billboards-outside-ebbing-missouri-2017",
+        "the-shawshank-redemption-1994",
+        "the-count-of-monte-cristo-2002",
+        "dog-day-afternoon-1975",
+        "the-snake-pit-1948",
+        "groundhog-day-1993",
+        "the-outsiders-1983"
+      ]
+    },
+    {
+      "id": "cat-escape",
+      "name": "Escape",
+      "fullName": "War, Escape & Survival",
+      "colorHex": "#8B5E34",
+      "weight": null,
+      "movieIds": [
+        "thirteen-lives-2022",
+        "no-country-for-old-men-2007",
+        "sisu-2022",
+        "come-and-see-1985",
+        "threads-1984",
+        "unbroken-2014",
+        "master-and-commander-the-far-side-of-the-world-2003",
+        "red-dawn-1984",
+        "the-fugitive-1993",
+        "edge-of-tomorrow-2014",
+        "first-blood-1982",
+        "the-shawshank-redemption-1994",
+        "the-great-escape-1963",
+        "the-count-of-monte-cristo-2002",
+        "malpertuis-1971",
+        "enter-the-void-2009",
+        "the-fall-2008",
+        "inglourious-basterds-2009",
+        "kon-tiki-2012",
+        "the-poseidon-adventure-1972",
+        "runaway-train-1985"
+      ]
+    }
+  ],
+  "movies": [
+    {
+      "id": "the-unbearable-weight-of-massive-talent-2022",
+      "title": "The Unbearable Weight of Massive Talent",
+      "year": 2022,
+      "genre": "Comedy",
+      "categories": [
+        "cat-dark-comedy"
+      ],
+      "episodeIds": [
+        "Buzzsprout-12065131"
+      ],
+      "episodeTitle": "The Unbearable Weight of Massive Talent",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "guillermo-del-toro-s-pinocchio-2022",
+      "title": "Guillermo del Toro’s Pinocchio",
+      "year": 2022,
+      "genre": "Fantasy",
+      "categories": [
+        "cat-scifi"
+      ],
+      "episodeIds": [
+        "Buzzsprout-12065362"
+      ],
+      "episodeTitle": "Guillermo del Toro’s Pinocchio",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "deadly-games-1989",
+      "title": "Deadly Games",
+      "year": 1989,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror"
+      ],
+      "episodeIds": [
+        "Buzzsprout-12096558"
+      ],
+      "episodeTitle": "Deadly Games",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "shimmer-lake-2017",
+      "title": "Shimmer Lake",
+      "year": 2017,
+      "genre": "Drama",
+      "categories": [
+        "cat-cult"
+      ],
+      "episodeIds": [
+        "Buzzsprout-12096587"
+      ],
+      "episodeTitle": "Shimmer Lake",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "time-after-time-1979",
+      "title": "Time After Time",
+      "year": 1979,
+      "genre": "Sci-Fi",
+      "categories": [
+        "cat-scifi"
+      ],
+      "episodeIds": [
+        "Buzzsprout-12096595"
+      ],
+      "episodeTitle": "Time After Time",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "rolling-thunder-1977",
+      "title": "Rolling Thunder",
+      "year": 1977,
+      "genre": "Action",
+      "categories": [
+        "cat-action"
+      ],
+      "episodeIds": [
+        "Buzzsprout-12096601"
+      ],
+      "episodeTitle": "Rolling Thunder",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-banshees-of-inisherin-2022",
+      "title": "The Banshees of Inisherin",
+      "year": 2022,
+      "genre": "Comedy",
+      "categories": [
+        "cat-dark-comedy"
+      ],
+      "episodeIds": [
+        "Buzzsprout-12096606"
+      ],
+      "episodeTitle": "The Banshees of Inisherin",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "marathon-man-1976",
+      "title": "Marathon Man",
+      "year": 1976,
+      "genre": "Thriller",
+      "categories": [
+        "cat-action"
+      ],
+      "episodeIds": [
+        "Buzzsprout-12157952"
+      ],
+      "episodeTitle": "Marathon Man",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "three-oclock-high-1987",
+      "title": "Three O'Clock High",
+      "year": 1987,
+      "genre": "Comedy",
+      "categories": [
+        "cat-dark-comedy"
+      ],
+      "episodeIds": [
+        "Buzzsprout-12189108"
+      ],
+      "episodeTitle": "Three O'Clock High",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-vanishing-1988",
+      "title": "The Vanishing",
+      "year": 1988,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror"
+      ],
+      "episodeIds": [
+        "Buzzsprout-12237842"
+      ],
+      "episodeTitle": "The Vanishing",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "what-ever-happened-to-baby-jane-1962",
+      "title": "What Ever Happened To Baby Jane?",
+      "year": 1962,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror"
+      ],
+      "episodeIds": [
+        "Buzzsprout-12419790"
+      ],
+      "episodeTitle": "What Ever Happened To Baby Jane?",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-grave-1996",
+      "title": "The Grave",
+      "year": 1996,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror"
+      ],
+      "episodeIds": [
+        "Buzzsprout-12419803"
+      ],
+      "episodeTitle": "The Grave",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "saturday-night-fever-1977",
+      "title": "Saturday Night Fever",
+      "year": 1977,
+      "genre": "Musical",
+      "categories": [
+        "cat-criterion"
+      ],
+      "episodeIds": [
+        "Buzzsprout-12471411"
+      ],
+      "episodeTitle": "Saturday Night Fever",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "thirteen-lives-2022",
+      "title": "Thirteen Lives",
+      "year": 2022,
+      "genre": "Action",
+      "categories": [
+        "cat-action",
+        "cat-escape"
+      ],
+      "episodeIds": [
+        "Buzzsprout-12519009"
+      ],
+      "episodeTitle": "Thirteen Lives",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "nocturnal-animals-2016",
+      "title": "Nocturnal Animals",
+      "year": 2016,
+      "genre": "Thriller",
+      "categories": [
+        "cat-prestige"
+      ],
+      "episodeIds": [
+        "Buzzsprout-12569882"
+      ],
+      "episodeTitle": "Nocturnal Animals",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-whale-2022",
+      "title": "The Whale",
+      "year": 2022,
+      "genre": "Drama",
+      "categories": [
+        "cat-prestige"
+      ],
+      "episodeIds": [
+        "Buzzsprout-12624218"
+      ],
+      "episodeTitle": "The Whale",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "cry-baby-1990",
+      "title": "Cry-Baby",
+      "year": 1990,
+      "genre": "Romance",
+      "categories": [
+        "cat-cult",
+        "cat-love"
+      ],
+      "episodeIds": [
+        "Buzzsprout-12670073"
+      ],
+      "episodeTitle": "Cry-Baby",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-tough-ones-1976",
+      "title": "The Tough Ones",
+      "year": 1976,
+      "genre": "Drama",
+      "categories": [
+        "cat-cult"
+      ],
+      "episodeIds": [
+        "Buzzsprout-12711366"
+      ],
+      "episodeTitle": "The Tough Ones",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-card-counter-2021",
+      "title": "The Card Counter",
+      "year": 2021,
+      "genre": "Thriller",
+      "categories": [
+        "cat-action"
+      ],
+      "episodeIds": [
+        "Buzzsprout-12752918"
+      ],
+      "episodeTitle": "The Card Counter",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "my-man-godfrey-1936",
+      "title": "My Man Godfrey",
+      "year": 1936,
+      "genre": "Drama",
+      "categories": [
+        "cat-criterion"
+      ],
+      "episodeIds": [
+        "Buzzsprout-12801979"
+      ],
+      "episodeTitle": "My Man Godfrey",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "dream-a-little-dream-1989",
+      "title": "Dream A Little Dream",
+      "year": 1989,
+      "genre": "Drama",
+      "categories": [
+        "cat-prestige"
+      ],
+      "episodeIds": [
+        "Buzzsprout-12847169"
+      ],
+      "episodeTitle": "Dream A Little Dream",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "purple-rain-1984",
+      "title": "Purple Rain",
+      "year": 1984,
+      "genre": "Musical",
+      "categories": [
+        "cat-cult"
+      ],
+      "episodeIds": [
+        "Buzzsprout-12890914"
+      ],
+      "episodeTitle": "Purple Rain",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "death-of-a-salesman-1985",
+      "title": "Death Of A Salesman",
+      "year": 1985,
+      "genre": "Drama",
+      "categories": [
+        "cat-prestige"
+      ],
+      "episodeIds": [
+        "Buzzsprout-12935199"
+      ],
+      "episodeTitle": "Death Of A Salesman",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "tarantulas-the-deadly-cargo-1977",
+      "title": "Tarantulas: The Deadly Cargo",
+      "year": 1977,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror"
+      ],
+      "episodeIds": [
+        "Buzzsprout-12979985"
+      ],
+      "episodeTitle": "Tarantulas: The Deadly Cargo",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "there-will-be-blood-2007",
+      "title": "There Will Be Blood",
+      "year": 2007,
+      "genre": "Drama",
+      "categories": [
+        "cat-prestige"
+      ],
+      "episodeIds": [
+        "Buzzsprout-13019769"
+      ],
+      "episodeTitle": "There Will Be Blood",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "national-lampoons-animal-house-1978",
+      "title": "National Lampoon's Animal House",
+      "year": 1978,
+      "genre": "Comedy",
+      "categories": [
+        "cat-dark-comedy"
+      ],
+      "episodeIds": [
+        "Buzzsprout-13062114"
+      ],
+      "episodeTitle": "National Lampoon's Animal House",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "dungeons-and-dragons-honor-among-thieves-2023",
+      "title": "Dungeons & Dragons: Honor Among Thieves",
+      "year": 2023,
+      "genre": "Sci-Fi",
+      "categories": [
+        "cat-scifi"
+      ],
+      "episodeIds": [
+        "Buzzsprout-13112614"
+      ],
+      "episodeTitle": "Dungeons & Dragons: Honor Among Thieves",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "no-country-for-old-men-2007",
+      "title": "No Country For Old Men",
+      "year": 2007,
+      "genre": "Thriller",
+      "categories": [
+        "cat-action",
+        "cat-escape"
+      ],
+      "episodeIds": [
+        "Buzzsprout-13152941"
+      ],
+      "episodeTitle": "No Country For Old Men",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "hereditary-2018",
+      "title": "Hereditary",
+      "year": 2018,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror"
+      ],
+      "episodeIds": [
+        "Buzzsprout-13189895"
+      ],
+      "episodeTitle": "Hereditary",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "forgetting-sarah-marshall-2008",
+      "title": "Forgetting Sarah Marshall",
+      "year": 2008,
+      "genre": "Comedy",
+      "categories": [
+        "cat-love",
+        "cat-dark-comedy"
+      ],
+      "episodeIds": [
+        "Buzzsprout-13240932"
+      ],
+      "episodeTitle": "Forgetting Sarah Marshall",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "sisu-2022",
+      "title": "Sisu",
+      "year": 2022,
+      "genre": "Sci-Fi",
+      "categories": [
+        "cat-action",
+        "cat-escape"
+      ],
+      "episodeIds": [
+        "Buzzsprout-13312849"
+      ],
+      "episodeTitle": "Sisu",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "hunt-for-the-wilderpeople-2016",
+      "title": "Hunt for the Wilderpeople",
+      "year": 2016,
+      "genre": "Comedy",
+      "categories": [
+        "cat-dark-comedy"
+      ],
+      "episodeIds": [
+        "Buzzsprout-13358721"
+      ],
+      "episodeTitle": "Hunt for the Wilderpeople",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "impulse-1990",
+      "title": "Impulse",
+      "year": 1990,
+      "genre": "Drama",
+      "categories": [
+        "cat-cult"
+      ],
+      "episodeIds": [
+        "Buzzsprout-13438549"
+      ],
+      "episodeTitle": "Impulse",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "white-noise-2022",
+      "title": "White Noise",
+      "year": 2022,
+      "genre": "Sci-Fi",
+      "categories": [
+        "cat-scifi"
+      ],
+      "episodeIds": [
+        "Buzzsprout-13438555"
+      ],
+      "episodeTitle": "White Noise",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-fast-and-the-furious-2001",
+      "title": "The Fast and the Furious",
+      "year": 2001,
+      "genre": "Action",
+      "categories": [
+        "cat-action"
+      ],
+      "episodeIds": [
+        "Buzzsprout-13478928"
+      ],
+      "episodeTitle": "The Fast and the Furious",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "cocaine-bear-2023",
+      "title": "Cocaine Bear",
+      "year": 2023,
+      "genre": "Comedy",
+      "categories": [
+        "cat-dark-comedy"
+      ],
+      "episodeIds": [
+        "Buzzsprout-13525031"
+      ],
+      "episodeTitle": "Cocaine Bear",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-menu-2022",
+      "title": "The Menu",
+      "year": 2022,
+      "genre": "Comedy",
+      "categories": [
+        "cat-dark-comedy"
+      ],
+      "episodeIds": [
+        "Buzzsprout-13566082"
+      ],
+      "episodeTitle": "The Menu",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-imitation-game-2014",
+      "title": "The Imitation Game",
+      "year": 2014,
+      "genre": "Drama",
+      "categories": [
+        "cat-prestige"
+      ],
+      "episodeIds": [
+        "Buzzsprout-13605032"
+      ],
+      "episodeTitle": "The Imitation Game",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-black-phone-2021",
+      "title": "The Black Phone",
+      "year": 2021,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror"
+      ],
+      "episodeIds": [
+        "Buzzsprout-13649527"
+      ],
+      "episodeTitle": "The Black Phone",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "possession-1981",
+      "title": "Possession",
+      "year": 1981,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror",
+        "cat-cult"
+      ],
+      "episodeIds": [
+        "Buzzsprout-13715413"
+      ],
+      "episodeTitle": "Possession",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "martin-1977",
+      "title": "Martin",
+      "year": 1977,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror",
+        "cat-cult"
+      ],
+      "episodeIds": [
+        "Buzzsprout-13715466"
+      ],
+      "episodeTitle": "Martin",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "talk-to-me-2022",
+      "title": "Talk To Me",
+      "year": 2022,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror"
+      ],
+      "episodeIds": [
+        "Buzzsprout-13785899"
+      ],
+      "episodeTitle": "Talk To Me",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "judge-dredd-1995",
+      "title": "Judge Dredd",
+      "year": 1995,
+      "genre": "Sci-Fi",
+      "categories": [
+        "cat-cult",
+        "cat-action"
+      ],
+      "episodeIds": [
+        "Buzzsprout-13854120"
+      ],
+      "episodeTitle": "Judge Dredd",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "infinity-pool-2023",
+      "title": "Infinity Pool",
+      "year": 2023,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror"
+      ],
+      "episodeIds": [
+        "Buzzsprout-13854139"
+      ],
+      "episodeTitle": "Infinity Pool",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "shaft-1971",
+      "title": "Shaft",
+      "year": 1971,
+      "genre": "Action",
+      "categories": [
+        "cat-action"
+      ],
+      "episodeIds": [
+        "Buzzsprout-13952253"
+      ],
+      "episodeTitle": "Shaft",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "out-of-sight-1998",
+      "title": "Out of Sight",
+      "year": 1998,
+      "genre": "Action",
+      "categories": [
+        "cat-action"
+      ],
+      "episodeIds": [
+        "Buzzsprout-13952309"
+      ],
+      "episodeTitle": "Out of Sight",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "no-one-will-save-you-2023",
+      "title": "No One Will Save You",
+      "year": 2023,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror"
+      ],
+      "episodeIds": [
+        "Buzzsprout-14003870"
+      ],
+      "episodeTitle": "No One Will Save You",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "violent-night-2022",
+      "title": "Violent Night",
+      "year": 2022,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror"
+      ],
+      "episodeIds": [
+        "Buzzsprout-14083886"
+      ],
+      "episodeTitle": "Violent Night",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "christmas-evil-1980",
+      "title": "Christmas Evil",
+      "year": 1980,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror"
+      ],
+      "episodeIds": [
+        "Buzzsprout-14083893"
+      ],
+      "episodeTitle": "Christmas Evil",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "come-and-see-1985",
+      "title": "Come and See",
+      "year": 1985,
+      "genre": "Drama",
+      "categories": [
+        "cat-criterion",
+        "cat-escape"
+      ],
+      "episodeIds": [
+        "Buzzsprout-14308484"
+      ],
+      "episodeTitle": "Come and See",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "war-of-the-roses-1980",
+      "title": "War of the Roses",
+      "year": 1980,
+      "genre": "Comedy",
+      "categories": [
+        "cat-love",
+        "cat-dark-comedy"
+      ],
+      "episodeIds": [
+        "Buzzsprout-14308518"
+      ],
+      "episodeTitle": "War of the Roses",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "threads-1984",
+      "title": "Threads",
+      "year": 1984,
+      "genre": "Sci-Fi",
+      "categories": [
+        "cat-scifi",
+        "cat-escape"
+      ],
+      "episodeIds": [
+        "Buzzsprout-14308533"
+      ],
+      "episodeTitle": "Threads",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "her-2013",
+      "title": "Her",
+      "year": 2013,
+      "genre": "Sci-Fi",
+      "categories": [
+        "cat-love",
+        "cat-scifi"
+      ],
+      "episodeIds": [
+        "Buzzsprout-14308587"
+      ],
+      "episodeTitle": "Her",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "harvey-1950",
+      "title": "Harvey",
+      "year": 1950,
+      "genre": "Drama",
+      "categories": [
+        "cat-criterion"
+      ],
+      "episodeIds": [
+        "Buzzsprout-14432388"
+      ],
+      "episodeTitle": "Harvey",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "deadly-friend-1986",
+      "title": "Deadly Friend",
+      "year": 1986,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror"
+      ],
+      "episodeIds": [
+        "Buzzsprout-14432460"
+      ],
+      "episodeTitle": "Deadly Friend",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "whiplash-2014",
+      "title": "Whiplash",
+      "year": 2014,
+      "genre": "Drama",
+      "categories": [
+        "cat-prestige"
+      ],
+      "episodeIds": [
+        "Buzzsprout-14531313"
+      ],
+      "episodeTitle": "Whiplash",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "mad-max-fury-road-2015",
+      "title": "Mad Max: Fury Road",
+      "year": 2015,
+      "genre": "Sci-Fi",
+      "categories": [
+        "cat-scifi",
+        "cat-action"
+      ],
+      "episodeIds": [
+        "Buzzsprout-14531394"
+      ],
+      "episodeTitle": "Mad Max: Fury Road",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "vanishing-point-1971",
+      "title": "Vanishing Point",
+      "year": 1971,
+      "genre": "Drama",
+      "categories": [
+        "cat-cult"
+      ],
+      "episodeIds": [
+        "Buzzsprout-14632496"
+      ],
+      "episodeTitle": "Vanishing Point",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "o-brother-where-art-thou-2000",
+      "title": "O Brother, Where Art Thou?",
+      "year": 2000,
+      "genre": "Drama",
+      "categories": [
+        "cat-prestige"
+      ],
+      "episodeIds": [
+        "Buzzsprout-14632509"
+      ],
+      "episodeTitle": "O Brother, Where Art Thou?",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "romeo-plus-juliet-1996",
+      "title": "Romeo + Juliet",
+      "year": 1996,
+      "genre": "Romance",
+      "categories": [
+        "cat-love"
+      ],
+      "episodeIds": [
+        "Buzzsprout-14646384"
+      ],
+      "episodeTitle": "Romeo + Juliet",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-crow-1994",
+      "title": "The Crow",
+      "year": 1994,
+      "genre": "Drama",
+      "categories": [
+        "cat-prestige"
+      ],
+      "episodeIds": [
+        "Buzzsprout-14704555"
+      ],
+      "episodeTitle": "The Crow",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "pi-1998",
+      "title": "π",
+      "year": 1998,
+      "genre": "Sci-Fi",
+      "categories": [
+        "cat-cult",
+        "cat-scifi"
+      ],
+      "episodeIds": [
+        "Buzzsprout-14815516"
+      ],
+      "episodeTitle": "π",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "what-dreams-may-come-1998",
+      "title": "What Dreams May Come",
+      "year": 1998,
+      "genre": "Fantasy",
+      "categories": [
+        "cat-love",
+        "cat-scifi"
+      ],
+      "episodeIds": [
+        "Buzzsprout-14815571"
+      ],
+      "episodeTitle": "What Dreams May Come",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-peanut-butter-solution-1985",
+      "title": "The Peanut Butter Solution",
+      "year": 1985,
+      "genre": "Fantasy",
+      "categories": [
+        "cat-cult"
+      ],
+      "episodeIds": [
+        "Buzzsprout-14819559"
+      ],
+      "episodeTitle": "The Peanut Butter Solution",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "run-lola-run-1998",
+      "title": "Run Lola Run",
+      "year": 1998,
+      "genre": "Thriller",
+      "categories": [
+        "cat-cult"
+      ],
+      "episodeIds": [
+        "Buzzsprout-14864193"
+      ],
+      "episodeTitle": "Run Lola Run",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "diabolique-1955",
+      "title": "Diabolique",
+      "year": 1955,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror",
+        "cat-criterion"
+      ],
+      "episodeIds": [
+        "Buzzsprout-14947845"
+      ],
+      "episodeTitle": "Diabolique",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "night-watch-2004",
+      "title": "Night Watch",
+      "year": 2004,
+      "genre": "Drama",
+      "categories": [
+        "cat-cult"
+      ],
+      "episodeIds": [
+        "Buzzsprout-14947956"
+      ],
+      "episodeTitle": "Night Watch",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "rudy-1993",
+      "title": "Rudy",
+      "year": 1993,
+      "genre": "Drama",
+      "categories": [
+        "cat-prestige"
+      ],
+      "episodeIds": [
+        "Buzzsprout-14989560"
+      ],
+      "episodeTitle": "Rudy",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "cinderella-man-2005",
+      "title": "Cinderella Man",
+      "year": 2005,
+      "genre": "Drama",
+      "categories": [
+        "cat-prestige"
+      ],
+      "episodeIds": [
+        "Buzzsprout-15032836"
+      ],
+      "episodeTitle": "Cinderella Man",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-iron-claw-2023",
+      "title": "The Iron Claw",
+      "year": 2023,
+      "genre": "Drama",
+      "categories": [
+        "cat-prestige"
+      ],
+      "episodeIds": [
+        "Buzzsprout-15115114"
+      ],
+      "episodeTitle": "The Iron Claw",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "antichrist-2009",
+      "title": "Antichrist",
+      "year": 2009,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror"
+      ],
+      "episodeIds": [
+        "Buzzsprout-15156362"
+      ],
+      "episodeTitle": "Antichrist",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "gigli-2003",
+      "title": "Gigli",
+      "year": 2003,
+      "genre": "Comedy",
+      "categories": [
+        "cat-cult",
+        "cat-dark-comedy"
+      ],
+      "episodeIds": [
+        "Buzzsprout-15174751"
+      ],
+      "episodeTitle": "Gigli",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-split-1968",
+      "title": "The Split",
+      "year": 1968,
+      "genre": "Drama",
+      "categories": [
+        "cat-cult"
+      ],
+      "episodeIds": [
+        "Buzzsprout-15215848"
+      ],
+      "episodeTitle": "The Split",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-manchurian-candidate-1962",
+      "title": "The Manchurian Candidate",
+      "year": 1962,
+      "genre": "Thriller",
+      "categories": [
+        "cat-action"
+      ],
+      "episodeIds": [
+        "Buzzsprout-15315559"
+      ],
+      "episodeTitle": "The Manchurian Candidate",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-founder-2016",
+      "title": "The Founder",
+      "year": 2016,
+      "genre": "Drama",
+      "categories": [
+        "cat-prestige"
+      ],
+      "episodeIds": [
+        "Buzzsprout-15337266"
+      ],
+      "episodeTitle": "The Founder",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-killers-1964",
+      "title": "The Killers",
+      "year": 1964,
+      "genre": "Drama",
+      "categories": [
+        "cat-criterion"
+      ],
+      "episodeIds": [
+        "Buzzsprout-15392121"
+      ],
+      "episodeTitle": "The Killers",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "slacker-1990",
+      "title": "Slacker",
+      "year": 1990,
+      "genre": "Comedy",
+      "categories": [
+        "cat-cult",
+        "cat-dark-comedy"
+      ],
+      "episodeIds": [
+        "Buzzsprout-15429316"
+      ],
+      "episodeTitle": "Slacker",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-odd-couple-1968",
+      "title": "The Odd Couple",
+      "year": 1968,
+      "genre": "Comedy",
+      "categories": [
+        "cat-criterion",
+        "cat-dark-comedy"
+      ],
+      "episodeIds": [
+        "Buzzsprout-15452203"
+      ],
+      "episodeTitle": "The Odd Couple",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "night-shift-1982",
+      "title": "Night Shift",
+      "year": 1982,
+      "genre": "Comedy",
+      "categories": [
+        "cat-dark-comedy"
+      ],
+      "episodeIds": [
+        "Buzzsprout-15487671"
+      ],
+      "episodeTitle": "Night Shift",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "unbroken-2014",
+      "title": "Unbroken",
+      "year": 2014,
+      "genre": "Drama",
+      "categories": [
+        "cat-escape"
+      ],
+      "episodeIds": [
+        "Buzzsprout-15587737"
+      ],
+      "episodeTitle": "Unbroken",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "master-and-commander-the-far-side-of-the-world-2003",
+      "title": "Master and Commander: The Far Side of the World",
+      "year": 2003,
+      "genre": "Drama",
+      "categories": [
+        "cat-escape"
+      ],
+      "episodeIds": [
+        "Buzzsprout-15595575"
+      ],
+      "episodeTitle": "Master and Commander: The Far Side of the World",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "frozen-2010",
+      "title": "Frozen",
+      "year": 2010,
+      "genre": "Drama",
+      "categories": [
+        "cat-prestige"
+      ],
+      "episodeIds": [
+        "Buzzsprout-15637239"
+      ],
+      "episodeTitle": "Frozen",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "good-will-hunting-1997",
+      "title": "Good Will Hunting",
+      "year": 1997,
+      "genre": "Drama",
+      "categories": [
+        "cat-prestige"
+      ],
+      "episodeIds": [
+        "Buzzsprout-15710927"
+      ],
+      "episodeTitle": "Good Will Hunting",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "a-face-in-the-crowd-1957",
+      "title": "A Face In The Crowd",
+      "year": 1957,
+      "genre": "Drama",
+      "categories": [
+        "cat-criterion",
+        "cat-prestige"
+      ],
+      "episodeIds": [
+        "Buzzsprout-15710929"
+      ],
+      "episodeTitle": "A Face In The Crowd",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "murder-mystery-2019",
+      "title": "Murder Mystery",
+      "year": 2019,
+      "genre": "Comedy",
+      "categories": [
+        "cat-dark-comedy"
+      ],
+      "episodeIds": [
+        "Buzzsprout-15770711"
+      ],
+      "episodeTitle": "Murder Mystery",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-ice-storm-1997",
+      "title": "The Ice Storm",
+      "year": 1997,
+      "genre": "Drama",
+      "categories": [
+        "cat-prestige"
+      ],
+      "episodeIds": [
+        "Buzzsprout-15852446"
+      ],
+      "episodeTitle": "The Ice Storm",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "snowpiercer-2013",
+      "title": "Snowpiercer",
+      "year": 2013,
+      "genre": "Sci-Fi",
+      "categories": [
+        "cat-scifi"
+      ],
+      "episodeIds": [
+        "Buzzsprout-15852450"
+      ],
+      "episodeTitle": "Snowpiercer",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-cooler-2003",
+      "title": "The Cooler",
+      "year": 2003,
+      "genre": "Drama",
+      "categories": [
+        "cat-cult",
+        "cat-dark-comedy"
+      ],
+      "episodeIds": [
+        "Buzzsprout-15913744"
+      ],
+      "episodeTitle": "The Cooler",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-princess-bride-1987",
+      "title": "The Princess Bride",
+      "year": 1987,
+      "genre": "Drama",
+      "categories": [
+        "cat-prestige"
+      ],
+      "episodeIds": [
+        "Buzzsprout-15913772"
+      ],
+      "episodeTitle": "The Princess Bride",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-bodyguard-1992",
+      "title": "The Bodyguard",
+      "year": 1992,
+      "genre": "Romance",
+      "categories": [
+        "cat-love"
+      ],
+      "episodeIds": [
+        "Buzzsprout-15999184"
+      ],
+      "episodeTitle": "The Bodyguard",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "cemetery-man-1994",
+      "title": "Cemetery Man",
+      "year": 1994,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror",
+        "cat-cult"
+      ],
+      "episodeIds": [
+        "Buzzsprout-15999224"
+      ],
+      "episodeTitle": "Cemetery Man",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-blob-1958",
+      "title": "The Blob",
+      "year": 1958,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror"
+      ],
+      "episodeIds": [
+        "Buzzsprout-16094311"
+      ],
+      "episodeTitle": "The Blob",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "ed-wood-1950",
+      "title": "Ed Wood",
+      "year": 1950,
+      "genre": "Drama",
+      "categories": [
+        "cat-prestige"
+      ],
+      "episodeIds": [
+        "Buzzsprout-16094340"
+      ],
+      "episodeTitle": "Ed Wood",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "drive-in-massacre-1976",
+      "title": "Drive-In Massacre",
+      "year": 1976,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror",
+        "cat-cult"
+      ],
+      "episodeIds": [
+        "Buzzsprout-16122798"
+      ],
+      "episodeTitle": "Drive-In Massacre",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "godzilla-minus-one-2023",
+      "title": "Godzilla Minus One",
+      "year": 2023,
+      "genre": "Sci-Fi",
+      "categories": [
+        "cat-scifi"
+      ],
+      "episodeIds": [
+        "Buzzsprout-16237235"
+      ],
+      "episodeTitle": "Godzilla Minus One",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "poor-things-2023",
+      "title": "Poor Things",
+      "year": 2023,
+      "genre": "Comedy",
+      "categories": [
+        "cat-dark-comedy"
+      ],
+      "episodeIds": [
+        "Buzzsprout-16237241"
+      ],
+      "episodeTitle": "Poor Things",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "longlegs-2024",
+      "title": "Longlegs",
+      "year": 2024,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror"
+      ],
+      "episodeIds": [
+        "Buzzsprout-16237314"
+      ],
+      "episodeTitle": "Longlegs",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-hitcher-1986",
+      "title": "The Hitcher",
+      "year": 1986,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror",
+        "cat-action"
+      ],
+      "episodeIds": [
+        "Buzzsprout-16506484"
+      ],
+      "episodeTitle": "The Hitcher",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "coherence-2013",
+      "title": "Coherence",
+      "year": 2013,
+      "genre": "Horror",
+      "categories": [
+        "cat-cult"
+      ],
+      "episodeIds": [
+        "Buzzsprout-16506498"
+      ],
+      "episodeTitle": "Coherence",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-phantom-carriage-1921",
+      "title": "The Phantom Carriage",
+      "year": 1921,
+      "genre": "Drama",
+      "categories": [
+        "cat-criterion"
+      ],
+      "episodeIds": [
+        "Buzzsprout-16506514"
+      ],
+      "episodeTitle": "The Phantom Carriage",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "what-we-do-in-the-shadows-2014",
+      "title": "What We Do in the Shadows",
+      "year": 2014,
+      "genre": "Comedy",
+      "categories": [
+        "cat-dark-comedy"
+      ],
+      "episodeIds": [
+        "Buzzsprout-16627466"
+      ],
+      "episodeTitle": "What We Do in the Shadows",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "rebecca-2020",
+      "title": "Rebecca",
+      "year": 2020,
+      "genre": "Drama",
+      "categories": [
+        "cat-prestige"
+      ],
+      "episodeIds": [
+        "Buzzsprout-16676869"
+      ],
+      "episodeTitle": "Rebecca",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "defending-your-life-1991",
+      "title": "Defending Your Life",
+      "year": 1991,
+      "genre": "Comedy",
+      "categories": [
+        "cat-dark-comedy"
+      ],
+      "episodeIds": [
+        "Buzzsprout-16676872"
+      ],
+      "episodeTitle": "Defending Your Life",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-pursuit-of-happyness-2006",
+      "title": "The Pursuit of Happyness",
+      "year": 2006,
+      "genre": "Drama",
+      "categories": [
+        "cat-prestige"
+      ],
+      "episodeIds": [
+        "Buzzsprout-16760541"
+      ],
+      "episodeTitle": "The Pursuit of Happyness",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "mulholland-drive-2001",
+      "title": "Mulholland Drive",
+      "year": 2001,
+      "genre": "Thriller",
+      "categories": [
+        "cat-prestige"
+      ],
+      "episodeIds": [
+        "Buzzsprout-16760559"
+      ],
+      "episodeTitle": "Mulholland Drive",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "shine-1996",
+      "title": "Shine",
+      "year": 1996,
+      "genre": "Drama",
+      "categories": [
+        "cat-prestige"
+      ],
+      "episodeIds": [
+        "Buzzsprout-16843680"
+      ],
+      "episodeTitle": "Shine",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-usual-suspects-1995",
+      "title": "The Usual Suspects",
+      "year": 1995,
+      "genre": "Thriller",
+      "categories": [
+        "cat-action"
+      ],
+      "episodeIds": [
+        "Buzzsprout-16843681"
+      ],
+      "episodeTitle": "The Usual Suspects",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "oldboy-2003",
+      "title": "Oldboy",
+      "year": 2003,
+      "genre": "Thriller",
+      "categories": [
+        "cat-action"
+      ],
+      "episodeIds": [
+        "Buzzsprout-16926675"
+      ],
+      "episodeTitle": "Oldboy",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "brewsters-millions-1980",
+      "title": "Brewster's Millions",
+      "year": 1980,
+      "genre": "Comedy",
+      "categories": [
+        "cat-dark-comedy"
+      ],
+      "episodeIds": [
+        "Buzzsprout-16969331"
+      ],
+      "episodeTitle": "Brewster's Millions",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-house-of-the-devil-2009",
+      "title": "The House of the Devil",
+      "year": 2009,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror"
+      ],
+      "episodeIds": [
+        "Buzzsprout-17015660"
+      ],
+      "episodeTitle": "The House of the Devil",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "falling-down-1993",
+      "title": "Falling Down",
+      "year": 1993,
+      "genre": "Thriller",
+      "categories": [
+        "cat-action"
+      ],
+      "episodeIds": [
+        "Buzzsprout-17060047"
+      ],
+      "episodeTitle": "Falling Down",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "scream-1996",
+      "title": "Scream",
+      "year": 1996,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror"
+      ],
+      "episodeIds": [
+        "Buzzsprout-17095433"
+      ],
+      "episodeTitle": "Scream",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "red-dawn-1984",
+      "title": "Red Dawn",
+      "year": 1984,
+      "genre": "Action",
+      "categories": [
+        "cat-action",
+        "cat-escape"
+      ],
+      "episodeIds": [
+        "Buzzsprout-17104719"
+      ],
+      "episodeTitle": "Red Dawn",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-man-who-shot-liberty-valance-1962",
+      "title": "The Man Who Shot Liberty Valance",
+      "year": 1962,
+      "genre": "Western",
+      "categories": [
+        "cat-criterion"
+      ],
+      "episodeIds": [
+        "Buzzsprout-17104761"
+      ],
+      "episodeTitle": "The Man Who Shot Liberty Valance",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-red-shoes-1948",
+      "title": "The Red Shoes",
+      "year": 1948,
+      "genre": "Drama",
+      "categories": [
+        "cat-criterion"
+      ],
+      "episodeIds": [
+        "Buzzsprout-17223832"
+      ],
+      "episodeTitle": "The Red Shoes",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "nope-2022",
+      "title": "Nope",
+      "year": 2022,
+      "genre": "Sci-Fi",
+      "categories": [
+        "cat-scifi"
+      ],
+      "episodeIds": [
+        "Buzzsprout-17223861"
+      ],
+      "episodeTitle": "Nope",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "beau-is-afraid-2023",
+      "title": "Beau Is Afraid",
+      "year": 2023,
+      "genre": "Fantasy",
+      "categories": [
+        "cat-scifi"
+      ],
+      "episodeIds": [
+        "Buzzsprout-17308512"
+      ],
+      "episodeTitle": "Beau Is Afraid",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-adventures-of-buckaroo-banzai-across-the-8th-dimension-1984",
+      "title": "The Adventures of Buckaroo Banzai Across the 8th Dimension",
+      "year": 1984,
+      "genre": "Sci-Fi",
+      "categories": [
+        "cat-cult",
+        "cat-scifi"
+      ],
+      "episodeIds": [
+        "Buzzsprout-17308611"
+      ],
+      "episodeTitle": "The Adventures of Buckaroo Banzai Across the 8th Dimension",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "total-recall-1990",
+      "title": "Total Recall",
+      "year": 1990,
+      "genre": "Sci-Fi",
+      "categories": [
+        "cat-scifi"
+      ],
+      "episodeIds": [
+        "Buzzsprout-17308620"
+      ],
+      "episodeTitle": "Total Recall",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "final-destination-2000",
+      "title": "Final Destination",
+      "year": 2000,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror",
+        "cat-action"
+      ],
+      "episodeIds": [
+        "Buzzsprout-17426163"
+      ],
+      "episodeTitle": "Final Destination",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "hanna-2011",
+      "title": "Hanna",
+      "year": 2011,
+      "genre": "Action",
+      "categories": [
+        "cat-action"
+      ],
+      "episodeIds": [
+        "Buzzsprout-17426229"
+      ],
+      "episodeTitle": "Hanna",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "three-billboards-outside-ebbing-missouri-2017",
+      "title": "Three Billboards Outside Ebbing, Missouri",
+      "year": 2017,
+      "genre": "Drama",
+      "categories": [
+        "cat-prestige"
+      ],
+      "episodeIds": [
+        "Buzzsprout-17426236"
+      ],
+      "episodeTitle": "Three Billboards Outside Ebbing, Missouri",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-substance-2024",
+      "title": "The Substance",
+      "year": 2024,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror"
+      ],
+      "episodeIds": [
+        "Buzzsprout-17541598"
+      ],
+      "episodeTitle": "The Substance",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-fugitive-1993",
+      "title": "The Fugitive",
+      "year": 1993,
+      "genre": "Action",
+      "categories": [
+        "cat-action",
+        "cat-escape"
+      ],
+      "episodeIds": [
+        "Buzzsprout-17547293"
+      ],
+      "episodeTitle": "The Fugitive",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "fright-night-1985",
+      "title": "Fright Night",
+      "year": 1985,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror",
+        "cat-dark-comedy"
+      ],
+      "episodeIds": [
+        "Buzzsprout-17547320"
+      ],
+      "episodeTitle": "Fright Night",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "edge-of-tomorrow-2014",
+      "title": "Edge of Tomorrow",
+      "year": 2014,
+      "genre": "Sci-Fi",
+      "categories": [
+        "cat-scifi",
+        "cat-escape"
+      ],
+      "episodeIds": [
+        "Buzzsprout-17649113"
+      ],
+      "episodeTitle": "Edge of Tomorrow",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-trial-1962",
+      "title": "The Trial",
+      "year": 1962,
+      "genre": "Drama",
+      "categories": [
+        "cat-criterion"
+      ],
+      "episodeIds": [
+        "Buzzsprout-17649126"
+      ],
+      "episodeTitle": "The Trial",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "source-code-2011",
+      "title": "Source Code",
+      "year": 2011,
+      "genre": "Sci-Fi",
+      "categories": [
+        "cat-scifi"
+      ],
+      "episodeIds": [
+        "Buzzsprout-17724765"
+      ],
+      "episodeTitle": "Source Code",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "weapons-2025",
+      "title": "Weapons",
+      "year": 2025,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror"
+      ],
+      "episodeIds": [
+        "Buzzsprout-17724842"
+      ],
+      "episodeTitle": "Weapons",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "enemy-2013",
+      "title": "Enemy",
+      "year": 2013,
+      "genre": "Horror",
+      "categories": [
+        "cat-cult"
+      ],
+      "episodeIds": [
+        "Buzzsprout-17880678"
+      ],
+      "episodeTitle": "Enemy",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "double-indemnity-1944",
+      "title": "Double Indemnity",
+      "year": 1944,
+      "genre": "Thriller",
+      "categories": [
+        "cat-criterion",
+        "cat-action"
+      ],
+      "episodeIds": [
+        "Buzzsprout-17880691"
+      ],
+      "episodeTitle": "Double Indemnity",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "first-blood-1982",
+      "title": "First Blood",
+      "year": 1982,
+      "genre": "Action",
+      "categories": [
+        "cat-action",
+        "cat-escape"
+      ],
+      "episodeIds": [
+        "Buzzsprout-17960166"
+      ],
+      "episodeTitle": "First Blood",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-shawshank-redemption-1994",
+      "title": "The Shawshank Redemption",
+      "year": 1994,
+      "genre": "Drama",
+      "categories": [
+        "cat-prestige",
+        "cat-escape"
+      ],
+      "episodeIds": [
+        "Buzzsprout-18005853"
+      ],
+      "episodeTitle": "The Shawshank Redemption",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "rock-and-rule-1983",
+      "title": "Rock & Rule",
+      "year": 1983,
+      "genre": "Fantasy",
+      "categories": [
+        "cat-cult"
+      ],
+      "episodeIds": [
+        "Buzzsprout-18045076"
+      ],
+      "episodeTitle": "Rock & Rule",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "night-of-the-living-dead-1990",
+      "title": "Night of the Living Dead",
+      "year": 1990,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror"
+      ],
+      "episodeIds": [
+        "Buzzsprout-18065167"
+      ],
+      "episodeTitle": "Night of the Living Dead",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "high-fidelity-2000",
+      "title": "High Fidelity",
+      "year": 2000,
+      "genre": "Romance",
+      "categories": [
+        "cat-love"
+      ],
+      "episodeIds": [
+        "Buzzsprout-18127548"
+      ],
+      "episodeTitle": "High Fidelity",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "equilibrium-2002",
+      "title": "Equilibrium",
+      "year": 2002,
+      "genre": "Sci-Fi",
+      "categories": [
+        "cat-scifi"
+      ],
+      "episodeIds": [
+        "Buzzsprout-18167152"
+      ],
+      "episodeTitle": "Equilibrium",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "popeye-1980",
+      "title": "Popeye",
+      "year": 1980,
+      "genre": "Fantasy",
+      "categories": [
+        "cat-cult"
+      ],
+      "episodeIds": [
+        "Buzzsprout-18196517"
+      ],
+      "episodeTitle": "Popeye",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-great-escape-1963",
+      "title": "The Great Escape",
+      "year": 1963,
+      "genre": "Action",
+      "categories": [
+        "cat-criterion",
+        "cat-escape"
+      ],
+      "episodeIds": [
+        "Buzzsprout-18245345"
+      ],
+      "episodeTitle": "The Great Escape",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-count-of-monte-cristo-2002",
+      "title": "The Count of Monte Cristo",
+      "year": 2002,
+      "genre": "Drama",
+      "categories": [
+        "cat-prestige",
+        "cat-escape"
+      ],
+      "episodeIds": [
+        "Buzzsprout-18282017"
+      ],
+      "episodeTitle": "The Count of Monte Cristo",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "malpertuis-1971",
+      "title": "Malpertuis",
+      "year": 1971,
+      "genre": "Fantasy",
+      "categories": [
+        "cat-cult",
+        "cat-scifi",
+        "cat-escape"
+      ],
+      "episodeIds": [
+        "Buzzsprout-18319575"
+      ],
+      "episodeTitle": "Malpertuis",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "enter-the-void-2009",
+      "title": "Enter The Void",
+      "year": 2009,
+      "genre": "Fantasy",
+      "categories": [
+        "cat-cult",
+        "cat-escape"
+      ],
+      "episodeIds": [
+        "Buzzsprout-18359033"
+      ],
+      "episodeTitle": "Enter The Void",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "alice-1988",
+      "title": "Alice",
+      "year": 1988,
+      "genre": "Fantasy",
+      "categories": [
+        "cat-cult",
+        "cat-scifi"
+      ],
+      "episodeIds": [
+        "Buzzsprout-18399363"
+      ],
+      "episodeTitle": "Alice",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-fall-2008",
+      "title": "The Fall",
+      "year": 2008,
+      "genre": "Fantasy",
+      "categories": [
+        "cat-scifi",
+        "cat-escape"
+      ],
+      "episodeIds": [
+        "Buzzsprout-18399671"
+      ],
+      "episodeTitle": "The Fall",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "dog-day-afternoon-1975",
+      "title": "Dog Day Afternoon",
+      "year": 1975,
+      "genre": "Drama",
+      "categories": [
+        "cat-criterion",
+        "cat-prestige"
+      ],
+      "episodeIds": [
+        "Buzzsprout-18565875"
+      ],
+      "episodeTitle": "Dog Day Afternoon",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "arsenic-and-old-lace-1944",
+      "title": "Arsenic and Old Lace",
+      "year": 1944,
+      "genre": "Comedy",
+      "categories": [
+        "cat-criterion",
+        "cat-dark-comedy"
+      ],
+      "episodeIds": [
+        "Buzzsprout-18566038"
+      ],
+      "episodeTitle": "Arsenic and Old Lace",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "dont-look-now-1973",
+      "title": "Don't Look Now",
+      "year": 1973,
+      "genre": "Thriller",
+      "categories": [
+        "cat-criterion"
+      ],
+      "episodeIds": [
+        "Buzzsprout-18566102"
+      ],
+      "episodeTitle": "Don't Look Now",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "inglourious-basterds-2009",
+      "title": "Inglourious Basterds",
+      "year": 2009,
+      "genre": "Action",
+      "categories": [
+        "cat-criterion",
+        "cat-action",
+        "cat-escape"
+      ],
+      "episodeIds": [
+        "Buzzsprout-18601263"
+      ],
+      "episodeTitle": "Inglourious Basterds",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "kon-tiki-2012",
+      "title": "Kon-Tiki",
+      "year": 2012,
+      "genre": "Drama",
+      "categories": [
+        "cat-escape"
+      ],
+      "episodeIds": [
+        "Buzzsprout-18732681"
+      ],
+      "episodeTitle": "Kon-Tiki",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-poseidon-adventure-1972",
+      "title": "The Poseidon Adventure",
+      "year": 1972,
+      "genre": "Drama",
+      "categories": [
+        "cat-escape"
+      ],
+      "episodeIds": [
+        "Buzzsprout-18777983"
+      ],
+      "episodeTitle": "The Poseidon Adventure",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "leviathan-1989",
+      "title": "Leviathan",
+      "year": 1989,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror"
+      ],
+      "episodeIds": [
+        "Buzzsprout-18810737"
+      ],
+      "episodeTitle": "Leviathan",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "mirrormask-2005",
+      "title": "Mirrormask",
+      "year": 2005,
+      "genre": "Fantasy",
+      "categories": [
+        "cat-cult",
+        "cat-scifi"
+      ],
+      "episodeIds": [
+        "Buzzsprout-18849516"
+      ],
+      "episodeTitle": "Mirrormask",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "memento-2000",
+      "title": "Memento",
+      "year": 2000,
+      "genre": "Sci-Fi",
+      "categories": [
+        "cat-scifi"
+      ],
+      "episodeIds": [
+        "Buzzsprout-18896087"
+      ],
+      "episodeTitle": "Memento",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-snake-pit-1948",
+      "title": "The Snake Pit",
+      "year": 1948,
+      "genre": "Drama",
+      "categories": [
+        "cat-prestige"
+      ],
+      "episodeIds": [
+        "Buzzsprout-18927300"
+      ],
+      "episodeTitle": "The Snake Pit",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "project-hail-mary-2026",
+      "title": "Project Hail Mary",
+      "year": 2026,
+      "genre": "Sci-Fi",
+      "categories": [
+        "cat-scifi"
+      ],
+      "episodeIds": [
+        "Buzzsprout-18964572"
+      ],
+      "episodeTitle": "Project Hail Mary",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "strawberry-mansion-2021",
+      "title": "Strawberry Mansion",
+      "year": 2021,
+      "genre": "Sci-Fi",
+      "categories": [
+        "cat-cult",
+        "cat-scifi",
+        "cat-listener"
+      ],
+      "episodeIds": [
+        "Buzzsprout-19010105"
+      ],
+      "episodeTitle": "Strawberry Mansion",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "gladiator-2000",
+      "title": "Gladiator",
+      "year": 2000,
+      "genre": "Action",
+      "categories": [
+        "cat-action"
+      ],
+      "episodeIds": [
+        "Buzzsprout-19048530"
+      ],
+      "episodeTitle": "Gladiator",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "groundhog-day-1993",
+      "title": "Groundhog Day",
+      "year": 1993,
+      "genre": "Drama",
+      "categories": [
+        "cat-prestige"
+      ],
+      "episodeIds": [
+        "Buzzsprout-19086009"
+      ],
+      "episodeTitle": "Groundhog Day",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-bird-with-the-crystal-plumage-1970",
+      "title": "The Bird with the Crystal Plumage",
+      "year": 1970,
+      "genre": "Thriller",
+      "categories": [
+        "cat-action"
+      ],
+      "episodeIds": [
+        "Buzzsprout-19122238"
+      ],
+      "episodeTitle": "The Bird with the Crystal Plumage",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "taxi-driver-1976",
+      "title": "Taxi Driver",
+      "year": 1976,
+      "genre": "Thriller",
+      "categories": [
+        "cat-criterion",
+        "cat-action",
+        "cat-listener"
+      ],
+      "episodeIds": [
+        "Buzzsprout-19160310"
+      ],
+      "episodeTitle": "Taxi Driver",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "excalibur-1981",
+      "title": "Excalibur",
+      "year": 1981,
+      "genre": "Fantasy",
+      "categories": [
+        "cat-scifi"
+      ],
+      "episodeIds": [
+        "Buzzsprout-19196596"
+      ],
+      "episodeTitle": "Excalibur",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "black-narcissus-1947",
+      "title": "Black Narcissus",
+      "year": 1947,
+      "genre": "Drama",
+      "categories": [
+        "cat-criterion"
+      ],
+      "episodeIds": [
+        "Buzzsprout-19234558"
+      ],
+      "episodeTitle": "Black Narcissus",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "tiptoes-2003",
+      "title": "Tiptoes",
+      "year": 2003,
+      "genre": "Drama",
+      "categories": [
+        "cat-cult"
+      ],
+      "episodeIds": [
+        "Buzzsprout-19276702"
+      ],
+      "episodeTitle": "Tiptoes",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-thing-1982",
+      "title": "The Thing",
+      "year": 1982,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror",
+        "cat-scifi",
+        "cat-listener"
+      ],
+      "episodeIds": [
+        "Buzzsprout-19314551"
+      ],
+      "episodeTitle": "The Thing",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "lord-of-illusions-1995",
+      "title": "Lord of Illusions",
+      "year": 1995,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror",
+        "cat-scifi"
+      ],
+      "episodeIds": [
+        "Buzzsprout-19350784"
+      ],
+      "episodeTitle": "Lord of Illusions",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "willow-1988",
+      "title": "Willow",
+      "year": 1988,
+      "genre": "Fantasy",
+      "categories": [
+        "cat-scifi"
+      ],
+      "episodeIds": [
+        "Buzzsprout-19386499"
+      ],
+      "episodeTitle": "Willow",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "harlequin-1980",
+      "title": "Harlequin",
+      "year": 1980,
+      "genre": "Horror",
+      "categories": [
+        "cat-cult",
+        "cat-scifi"
+      ],
+      "episodeIds": [
+        "Buzzsprout-19420540"
+      ],
+      "episodeTitle": "Harlequin",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "runaway-train-1985",
+      "title": "Runaway Train",
+      "year": 1985,
+      "genre": "Action",
+      "categories": [
+        "cat-action",
+        "cat-listener",
+        "cat-escape"
+      ],
+      "episodeIds": [
+        "Buzzsprout-19455167"
+      ],
+      "episodeTitle": "Runaway Train",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-texas-chainsaw-massacre-1974",
+      "title": "The Texas Chainsaw Massacre",
+      "year": 1974,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror"
+      ],
+      "episodeIds": [
+        "Buzzsprout-19488667"
+      ],
+      "episodeTitle": "The Texas Chainsaw Massacre",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-alamo-2004",
+      "title": "The Alamo",
+      "year": 2004,
+      "genre": "Western",
+      "categories": [
+        "cat-cult"
+      ],
+      "episodeIds": [
+        "Buzzsprout-19521965"
+      ],
+      "episodeTitle": "The Alamo",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "race-with-the-devil-1975",
+      "title": "Race with the Devil",
+      "year": 1975,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror"
+      ],
+      "episodeIds": [
+        "Buzzsprout-19627877"
+      ],
+      "episodeTitle": "Race with the Devil",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-pirates-of-penzance-1983",
+      "title": "The Pirates of Penzance",
+      "year": 1983,
+      "genre": "Musical",
+      "categories": [
+        "cat-listener"
+      ],
+      "episodeIds": [
+        "Buzzsprout-19661751"
+      ],
+      "episodeTitle": "The Pirates of Penzance",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "crash-1996",
+      "title": "Crash",
+      "year": 1996,
+      "genre": "Romance",
+      "categories": [
+        "cat-love"
+      ],
+      "episodeIds": [
+        "Buzzsprout-19696022"
+      ],
+      "episodeTitle": "Crash",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-notebook-2004",
+      "title": "The Notebook",
+      "year": 2004,
+      "genre": "Romance",
+      "categories": [
+        "cat-love"
+      ],
+      "episodeIds": [
+        "Buzzsprout-19732008"
+      ],
+      "episodeTitle": "The Notebook",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "return-of-the-living-dead-3-1993",
+      "title": "Return of the Living Dead 3",
+      "year": 1993,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror",
+        "cat-love"
+      ],
+      "episodeIds": [
+        "Buzzsprout-19766374"
+      ],
+      "episodeTitle": "Return of the Living Dead 3",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "palmer-rockeys-scarlet-warning-666-1982",
+      "title": "Palmer Rockey's SCARLET WARNING 666",
+      "year": 1982,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror",
+        "cat-cult"
+      ],
+      "episodeIds": [
+        "Buzzsprout-19833129"
+      ],
+      "episodeTitle": "Palmer Rockey's SCARLET WARNING 666",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-ugly-stepsister-2025",
+      "title": "The Ugly Stepsister",
+      "year": 2025,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror",
+        "cat-love",
+        "cat-listener"
+      ],
+      "episodeIds": [
+        "Buzzsprout-19877460"
+      ],
+      "episodeTitle": "The Ugly Stepsister",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "the-outsiders-1983",
+      "title": "The Outsiders",
+      "year": 1983,
+      "genre": "Drama",
+      "categories": [
+        "cat-prestige"
+      ],
+      "episodeIds": [
+        "Buzzsprout-19913482"
+      ],
+      "episodeTitle": "The Outsiders",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    }
+  ]
+}

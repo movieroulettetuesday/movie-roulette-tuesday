@@ -1,0 +1,212 @@
+import SwiftUI
+
+struct EpisodesView: View {
+    @Bindable var store: EpisodeStore
+    var catalog: MovieCatalog?
+    /// Set by a new-episode notification tap (`mrt://episode/<guid>`).
+    var pendingEpisodeGUID: Binding<String?> = .constant(nil)
+
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    /// Split-view selection (regular width).
+    @State private var selectedGUID: String?
+    /// Stack path (compact width). Synced with `selectedGUID` on size-class changes.
+    @State private var path: [String] = []
+
+    private var isRegular: Bool { horizontalSizeClass == .regular }
+
+    var body: some View {
+        Group {
+            if isRegular {
+                NavigationSplitView {
+                    sidebarContent
+                        .navigationSplitViewColumnWidth(min: 320, ideal: 380, max: 460)
+                } detail: {
+                    NavigationStack {
+                        if let guid = selectedGUID, let episode = store.episode(guid: guid) {
+                            detail(for: episode)
+                        } else {
+                            ContentUnavailableView(
+                                "Pick an Episode",
+                                systemImage: "mic",
+                                description: Text("Choose an episode to see its details and the listener poll.")
+                            )
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .background { CleanProBackground() }
+                        }
+                    }
+                    .id(selectedGUID)
+                }
+            } else {
+                NavigationStack(path: $path) {
+                    sidebarContent
+                        .navigationDestination(for: String.self) { guid in
+                            if let episode = store.episode(guid: guid) {
+                                detail(for: episode)
+                            } else {
+                                ContentUnavailableView("Episode Not Found", systemImage: "mic.slash")
+                            }
+                        }
+                }
+            }
+        }
+        .onChange(of: pendingEpisodeGUID.wrappedValue, initial: true) { _, guid in
+            guard let guid else { return }
+            pendingEpisodeGUID.wrappedValue = nil
+            selectedGUID = guid
+            path = [guid]
+        }
+        .onChange(of: isRegular) { _, regular in
+            if regular {
+                selectedGUID = path.last ?? selectedGUID
+            } else {
+                path = selectedGUID.map { [$0] } ?? []
+            }
+        }
+    }
+
+    private func detail(for episode: PodcastEpisode) -> some View {
+        EpisodeDetailView(
+            episode: episode,
+            catalog: catalog,
+            show: catalog?.showInfo ?? .mrt,
+            showArtworkURL: store.showArtworkURL
+        )
+    }
+
+    private var sidebarContent: some View {
+        Group {
+            switch store.loadState {
+            case .idle:
+                ProgressView("Loading episodes…")
+            case .loading where store.episodes.isEmpty:
+                ProgressView("Loading episodes…")
+            case .failed(let message) where store.episodes.isEmpty:
+                ContentUnavailableView {
+                    Label("Couldn't Load Episodes", systemImage: "wifi.exclamationmark")
+                } description: {
+                    Text(message)
+                } actions: {
+                    Button("Try Again") { Task { await store.load(forceNetwork: true) } }
+                }
+            default:
+                list
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .cleanProListScreen()
+        .navigationTitle("Episodes")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                if case .loaded(fromCache: true) = store.loadState {
+                    Text("Offline")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+        .task { await store.load() }
+    }
+
+    @ViewBuilder
+    private var list: some View {
+        if isRegular {
+            List(selection: $selectedGUID) { listContent }
+                .refreshable { await store.load(forceNetwork: true) }
+        } else {
+            List { listContent }
+                .refreshable { await store.load(forceNetwork: true) }
+        }
+    }
+
+    @ViewBuilder
+    private var listContent: some View {
+        if let err = store.lastError {
+            Section {
+                Label(err, systemImage: "exclamationmark.triangle")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        Section {
+            ForEach(store.episodes) { episode in
+                NavigationLink(value: episode.guid) {
+                    EpisodeRow(
+                        episode: episode,
+                        movie: catalog?.movie(forEpisodeGuid: episode.guid),
+                        showArtworkURL: store.showArtworkURL
+                    )
+                }
+            }
+        } footer: {
+            footer
+        }
+    }
+
+    private var footer: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text("\(store.episodes.count) episodes from the Buzzsprout feed.")
+            if let date = store.lastFetchedAt {
+                Text("Updated \(date.formatted(.relative(presentation: .named)))")
+            }
+        }
+    }
+}
+
+private struct EpisodeRow: View {
+    let episode: PodcastEpisode
+    let movie: Movie?
+    var showArtworkURL: URL?
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            ArtworkImage(
+                urls: ArtworkResolver.candidates(for: episode, showArtwork: showArtworkURL),
+                pointSize: 56,
+                cornerRadius: 10,
+                placeholderSymbol: "mic"
+            )
+            .frame(width: 56, height: 56)
+            .padding(.top, 2)
+            details
+        }
+    }
+
+    private var details: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack {
+                Text(episode.title)
+                    .font(.body.weight(.semibold))
+                    .lineLimit(2)
+                Spacer(minLength: 8)
+                if let se = episode.seasonEpisodeLabel {
+                    Text(se)
+                        .font(.caption.weight(.bold))
+                        .foregroundStyle(.secondary)
+                }
+            }
+            if let date = episode.pubDate {
+                Text(date, format: .dateTime.month(.abbreviated).day().year())
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            if !episode.summary.isEmpty {
+                Text(episode.summary)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
+            }
+            if let movie {
+                Text(verbatim: "\(movie.year) · \(movie.genre)")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+            }
+        }
+        .padding(.vertical, 4)
+    }
+}
+
+#Preview {
+    EpisodesView(store: EpisodeStore(cacheURL: nil), catalog: nil)
+        .environment(PersonalRatingsStore(fileStore: nil))
+        .environment(CommunityService.preview())
+}

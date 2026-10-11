@@ -1,0 +1,184 @@
+import XCTest
+@testable import MovieRouletteTuesday
+
+final class CatalogTests: XCTestCase {
+    /// Bundled catalog (`movies.json` in the app target).
+    private var bundledMoviesURL: URL {
+        if let url = Bundle.main.url(forResource: "movies", withExtension: "json") {
+            return url
+        }
+        return URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent() // MovieRouletteTuesdayTests
+            .deletingLastPathComponent() // project root
+            .appendingPathComponent("MovieRouletteTuesday/Resources/movies.json")
+    }
+
+    private func loadBundledCatalog() async throws -> MovieCatalog {
+        guard FileManager.default.fileExists(atPath: bundledMoviesURL.path) else {
+            throw XCTSkip("movies.json not found at \(bundledMoviesURL.path)")
+        }
+        return try await FileCatalogSource(fileURL: bundledMoviesURL).loadCatalog()
+    }
+
+    func testDecodesMinimalJSONWithDefaults() async throws {
+        let json = """
+        {"categories":[{"id":"c","name":"C","colorHex":"#123456"}],
+         "movies":[{"id":"m","title":"M","year":1999,"genre":"Drama"}]}
+        """
+        let catalog = try await DataCatalogSource(data: Data(json.utf8)).loadCatalog()
+        XCTAssertEqual(catalog.schemaVersion, 1)
+        XCTAssertEqual(catalog.categories[0].movieIds, [])
+        XCTAssertNil(catalog.categories[0].weight)
+        let movie = catalog.movies[0]
+        XCTAssertEqual(movie.categories, [])
+        XCTAssertEqual(movie.episodeIds, [])
+        XCTAssertNil(movie.episodeTitle)
+        XCTAssertFalse(movie.isInfamous)
+    }
+
+    func testRoundTripsThroughJSON() throws {
+        let catalog = MovieCatalog(
+            schemaVersion: 2,
+            show: .mrt,
+            categories: [RouletteCategory(id: "c", name: "C", fullName: "Category", colorHex: "#123456", weight: 2, movieIds: ["m"])],
+            movies: [Movie(id: "m", title: "M", year: 1999, genre: "Drama", categories: ["c"],
+                           episodeIds: ["Buzzsprout-1"], episodeTitle: "M",
+                           posterURL: URL(string: "https://example.com/p.jpg"),
+                           isInfamous: true, hostRating: 4.5)]
+        )
+        XCTAssertEqual(try MovieCatalog.decode(from: JSONEncoder().encode(catalog)), catalog)
+        XCTAssertEqual(catalog.validationIssues(), [])
+    }
+
+    func testValidationFindsProblems() {
+        let catalog = MovieCatalog(
+            categories: [
+                RouletteCategory(id: "c", name: "C", colorHex: "nope", movieIds: ["m", "ghost"]),
+                RouletteCategory(id: "e", name: "E", colorHex: "#000000")
+            ],
+            movies: [Movie(id: "m", title: "M", year: 1999, genre: "Drama", categories: ["x"])]
+        )
+        let issues = catalog.validationIssues()
+        XCTAssertTrue(issues.contains { $0.contains("invalid colorHex") })
+        XCTAssertTrue(issues.contains { $0.contains("unknown movie 'ghost'") })
+        XCTAssertTrue(issues.contains { $0.contains("unknown category 'x'") })
+        XCTAssertTrue(issues.contains { $0.contains("'e' has no movies") })
+        XCTAssertTrue(issues.contains { $0.contains("doesn't list that category") })
+    }
+
+    func testMissingBundleResourceThrows() async {
+        let source = BundleCatalogSource(resourceName: "definitely-not-here", bundle: .main)
+        do {
+            _ = try await source.loadCatalog()
+            XCTFail("Expected an error")
+        } catch {
+            XCTAssertEqual(error as? CatalogLoadingError, .resourceNotFound("definitely-not-here.json"))
+        }
+    }
+
+    func testFallbackSourceUsesFallbackOnFailure() async throws {
+        let good = DataCatalogSource(data: Data(#"{"categories":[],"movies":[]}"#.utf8))
+        let bad = DataCatalogSource(data: Data("not json".utf8))
+        let catalog = try await FallbackCatalogSource(primary: bad, fallback: good).loadCatalog()
+        XCTAssertEqual(catalog.movies.count, 0)
+    }
+
+    func testBundledCatalogIsConsistentAndReal() async throws {
+        let catalog = try await loadBundledCatalog()
+        XCTAssertEqual(catalog.validationIssues(), [])
+        XCTAssertEqual(catalog.categories.count, 10)
+        XCTAssertEqual(catalog.schemaVersion, 2)
+        XCTAssertGreaterThanOrEqual(catalog.movies.count, 170)
+        XCTAssertLessThanOrEqual(catalog.movies.count, 190)
+        let selector = MovieSelector()
+        for category in catalog.categories {
+            XCTAssertGreaterThanOrEqual(
+                selector.candidates(for: category, in: catalog).count, 4,
+                category.displayName
+            )
+            XCTAssertNotNil(HexColor(category.colorHex), category.id)
+        }
+        // Real Buzzsprout guids only — no sample placeholders.
+        for movie in catalog.movies {
+            XCTAssertFalse(movie.episodeIds.isEmpty, movie.title)
+            XCTAssertTrue(
+                movie.episodeIds.allSatisfy { $0.hasPrefix("Buzzsprout-") },
+                "\(movie.title): \(movie.episodeIds)"
+            )
+            XCTAssertTrue((1920...2030).contains(movie.year), "\(movie.title) \(movie.year)")
+        }
+        XCTAssertEqual(catalog.showInfo.applePodcastID, "1666123849")
+        XCTAssertNotNil(catalog.showInfo.rssURL)
+    }
+
+    func testBundledCatalogSpotChecks() async throws {
+        let catalog = try await loadBundledCatalog()
+        let byTitle = Dictionary(uniqueKeysWithValues: catalog.movies.map { ($0.title, $0) })
+        XCTAssertNil(byTitle["Die Hard"], "Sample catalog titles must not remain")
+        XCTAssertEqual(byTitle["The Outsiders"]?.year, 1983)
+        XCTAssertEqual(byTitle["Crash"]?.year, 1996) // Cronenberg, per research
+        XCTAssertTrue(byTitle["The Ugly Stepsister"]?.episodeIds.contains("Buzzsprout-19877460") == true)
+        XCTAssertTrue(catalog.categories.contains { $0.id == "cat-horror" && $0.name == "Horror" })
+        XCTAssertTrue(catalog.categories.contains { $0.id == "cat-listener" && $0.movieIds.count >= 4 })
+    }
+
+    func testEpisodeLabelUsesRealTitles() {
+        let movie = Movie(
+            id: "x", title: "The Outsiders", year: 1983, genre: "Drama",
+            episodeIds: ["Buzzsprout-19913482"], episodeTitle: "The Outsiders"
+        )
+        XCTAssertEqual(
+            EpisodeLabel.discussedText(for: movie),
+            "Discussed on The Outsiders"
+        )
+        let ep = PodcastEpisode(guid: "Buzzsprout-19913482", title: "The Outsiders", season: 4, episode: 34)
+        XCTAssertEqual(
+            EpisodeLabel.discussedText(for: movie, episodesByGUID: [ep.guid: ep]),
+            "Discussed on The Outsiders (S4E34)"
+        )
+    }
+
+    func testPodcastDeepLinks() {
+        XCTAssertNotNil(PodcastLinks.appleShow())
+        XCTAssertNotNil(PodcastLinks.spotifyShow())
+        XCTAssertNotNil(PodcastLinks.appleSearch(episodeTitle: "The Outsiders"))
+        XCTAssertNotNil(PodcastLinks.spotifySearch(episodeTitle: "The Outsiders"))
+        XCTAssertEqual(
+            PodcastLinks.buzzsproutEpisode(guid: "Buzzsprout-19913482")?.absoluteString,
+            "https://www.buzzsprout.com/2117292/episodes/19913482"
+        )
+    }
+
+    func testStatsCalculator() {
+        let catalog = MovieCatalog(
+            categories: [
+                RouletteCategory(id: "a", name: "A", colorHex: "#111111", movieIds: ["m1"]),
+                RouletteCategory(id: "b", name: "B", colorHex: "#222222", movieIds: ["m2"]),
+            ],
+            movies: [
+                Movie(id: "m1", title: "One", year: 2000, genre: "Horror", categories: ["a"]),
+                Movie(id: "m2", title: "Two", year: 2001, genre: "Comedy", categories: ["b"]),
+            ]
+        )
+        let history = [
+            SpinResult(movieId: "m1", categoryId: "a"),
+            SpinResult(movieId: "m1", categoryId: "a"),
+            SpinResult(movieId: "m2", categoryId: "b"),
+        ]
+        let snap = StatsCalculator.snapshot(history: history, catalog: catalog)
+        XCTAssertEqual(snap.totalSpins, 3)
+        XCTAssertEqual(snap.distinctMovies, 2)
+        XCTAssertEqual(snap.mostSpunMovie?.id, "m1")
+        XCTAssertEqual(snap.mostSpunMovie?.count, 2)
+        XCTAssertEqual(snap.mostSpunCategory?.id, "a")
+        XCTAssertEqual(snap.genreBreakdown.first?.genre, "Horror")
+    }
+
+    func testEveryBundledCategoryHasAThemeColor() async throws {
+        let catalog = try await loadBundledCatalog()
+        for category in catalog.categories {
+            XCTAssertNotNil(CategoryPalette.known[category.id], "no theme color for \(category.id)")
+            XCTAssertEqual(category.displayHex, CategoryPalette.known[category.id])
+        }
+    }
+}
