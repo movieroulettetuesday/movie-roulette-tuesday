@@ -10,7 +10,9 @@ struct MoviePageView: View {
     /// When true (Movies tab), episode rows are value links
     /// (`MoviesRoute.episode`) that push the episode page in the same stack.
     /// Other hosts (reveal sheet, Episodes tab) keep plain rows.
-    var linksEpisodes = false
+    /// Default: the film card inside an episode page (no episode links).
+    var context: MoviePageContext = .episodeDetail
+    private var linksEpisodes: Bool { context.linksEpisodes }
 
     @Environment(PersonalRatingsStore.self) private var personal
     @Environment(CommunityService.self) private var community

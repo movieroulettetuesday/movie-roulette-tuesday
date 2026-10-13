@@ -167,7 +167,7 @@ struct MoviesView: View {
             spinCount: stats.spinCount(forMovie: movie.id),
             episodesByGUID: episodesByGUID,
             showArtworkURL: showArtworkURL,
-            linksEpisodes: true
+            context: .moviesTab
         )
     }
 

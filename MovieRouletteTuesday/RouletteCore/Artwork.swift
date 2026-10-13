@@ -85,6 +85,15 @@ public enum ArtworkSizing {
 
 /// Navigation inside the Movies tab: a movie page can push one of its
 /// episodes, so back returns to the movie.
+/// Where a movie page is shown. Decides whether its Episodes rows push the
+/// episode page, so every entry point behaves the same.
+public enum MoviePageContext: Sendable, CaseIterable {
+    case moviesTab, spinHistory, wheelReveal, episodeDetail
+    /// Every stack that can show `MoviesRoute.episode` links episodes. The film
+    /// card inside an episode page doesn't: it would only loop back to that episode.
+    public var linksEpisodes: Bool { self != .episodeDetail }
+}
+
 public enum MoviesRoute: Hashable, Sendable {
     case movie(String)
     case episode(String)

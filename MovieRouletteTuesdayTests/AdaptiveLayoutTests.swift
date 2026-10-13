@@ -151,4 +151,15 @@ final class AdaptiveLayoutTests: XCTestCase {
             XCTAssertEqual(DeepLink(url: DeepLink.movie(id: id).url), .movie(id: id))
         }
     }
+
+    /// TestFlight bug: the movie page reached from the wheel's reveal sheet had a
+    /// dead Episodes row. Every entry point that can push an episode must link it.
+    func testMoviePageEpisodeLinksSameOnEveryPath() {
+        XCTAssertTrue(MoviePageContext.wheelReveal.linksEpisodes, "wheel reveal -> Movie Page")
+        XCTAssertTrue(MoviePageContext.moviesTab.linksEpisodes, "Movies tab")
+        XCTAssertTrue(MoviePageContext.spinHistory.linksEpisodes, "Spin History")
+        XCTAssertEqual(MoviePageContext.wheelReveal.linksEpisodes, MoviePageContext.moviesTab.linksEpisodes)
+        XCTAssertFalse(MoviePageContext.episodeDetail.linksEpisodes, "film card inside an episode page")
+        XCTAssertEqual(MoviePageContext.allCases.filter(\.linksEpisodes).count, 3)
+    }
 }

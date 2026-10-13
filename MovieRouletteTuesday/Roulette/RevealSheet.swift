@@ -5,6 +5,7 @@ struct RevealSheet: View {
     let reveal: RouletteViewModel.Reveal
     let catalog: MovieCatalog?
     var episodesByGUID: [String: PodcastEpisode] = [:]
+    var showArtworkURL: URL? = nil
     let onSpinAgain: () -> Void
     /// True when presented from a regular-width window (iPad): a full form
     /// sheet instead of the iPhone's partial-height detent.
@@ -51,7 +52,9 @@ struct RevealSheet: View {
                                     movie: movie,
                                     catalog: catalog,
                                     spinCount: reveal.spinCount,
-                                    episodesByGUID: episodesByGUID
+                                    episodesByGUID: episodesByGUID,
+                                    showArtworkURL: showArtworkURL,
+                                    context: .wheelReveal
                                 )
                             } label: {
                                 Label("Movie Page", systemImage: "film")
@@ -67,6 +70,19 @@ struct RevealSheet: View {
                 .frame(maxWidth: .infinity)
             }
             .scrollBounceBehavior(.basedOnSize)
+            // Episodes rows on the pushed movie page (same page as the Episodes tab / Spin History).
+            .navigationDestination(for: MoviesRoute.self) { route in
+                if case .episode(let guid) = route, let episode = episodesByGUID[guid] {
+                    EpisodeDetailView(
+                        episode: episode,
+                        catalog: catalog,
+                        show: catalog?.showInfo ?? .mrt,
+                        showArtworkURL: showArtworkURL
+                    )
+                } else {
+                    ContentUnavailableView("Episode Not Found", systemImage: "mic.slash")
+                }
+            }
             .background {
                 if reveal.isJackpot {
                     LinearGradient(colors: CleanProColors.backgroundDark.map { Color(hex: $0) },

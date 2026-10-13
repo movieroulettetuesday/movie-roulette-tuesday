@@ -96,6 +96,7 @@ struct RouletteView: View {
                     reveal: reveal,
                     catalog: model.catalog,
                     episodesByGUID: episodesByGUID,
+                    showArtworkURL: showArtworkURL,
                     onSpinAgain: { model.spinAgain() },
                     presenterIsRegularWidth: horizontalSizeClass == .regular
                 )

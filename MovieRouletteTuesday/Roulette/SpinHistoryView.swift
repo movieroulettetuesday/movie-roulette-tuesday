@@ -92,7 +92,7 @@ struct SpinHistoryView: View {
                     spinCount: stats.spinCount(forMovie: id),
                     episodesByGUID: episodesByGUID,
                     showArtworkURL: showArtworkURL,
-                    linksEpisodes: true
+                    context: .spinHistory
                 )
             } else {
                 ContentUnavailableView("Movie Not Found", systemImage: "film")
