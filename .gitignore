@@ -1,12 +1,57 @@
-# macOS
+# ---- macOS ----
 .DS_Store
+.AppleDouble
+.LSOverride
+._*
 
-# Xcode per-user state and build output
+# ---- Xcode: per-user state ----
 xcuserdata/
 *.xcuserstate
+*.xcuserdatad/
+*.xcscmblueprint
+*.xccheckout
+
+# ---- Xcode: build output ----
 build/
 DerivedData/
+*.xcarchive
+*.ipa
+*.dSYM
+*.dSYM.zip
+*.app.dSYM.zip
+*.moved-aside
+*.hmap
+timeline.xctimeline
+playground.xcworkspace
 
-# Swift Package Manager (if ever added)
+# ---- Test results ----
+*.xcresult
+/test_output/
+fastlane/report.xml
+fastlane/test_output/
+fastlane/screenshots/**/*.png
+fastlane/Preview.html
+
+# ---- Swift Package Manager ----
 .build/
 .swiftpm/
+# Package.resolved is committed on purpose once SPM is used.
+
+# ---- Signing & secrets (never commit) ----
+*.p12
+*.p8
+*.cer
+*.certSigningRequest
+*.mobileprovision
+*.provisionprofile
+ExportOptions*.plist
+AuthKey_*.p8
+.env
+.env.*
+*.pem
+
+# ---- Editors ----
+.vscode/
+.idea/
+*.swp
+*~
