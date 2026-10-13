@@ -54,6 +54,8 @@ struct ContentView: View {
             // Load the catalog here, not only in RouletteView: a cold-launch deep link
             // (or a Movies-first launch) may never show the Roulette tab.
             await roulette.load()
+            // Then (in the background, short timeout) check GitHub for a newer movie list.
+            await roulette.refreshRemoteCatalog()
         }
         .task {
             // Warm the episode cache in parallel with roulette's catalog load.
@@ -73,6 +75,9 @@ struct ContentView: View {
         .onChange(of: episodes.lastFetchedAt) { _, _ in
             // New episodes arriving while the tab is on screen count as seen.
             if selectedTab == .episodes { episodes.markViewed() }
+            // Pull-to-refresh (and other episode fetches) also re-check the movie list,
+            // so a new episode's movie shows up with it. Throttled in the model.
+            Task { await roulette.refreshRemoteCatalog() }
             // Episodes already in the app never trigger a new-episode alert later.
             if NewEpisodeAlerts.isEnabled { NewEpisodeAlerts.markSeen(episodes.episodes) }
         }

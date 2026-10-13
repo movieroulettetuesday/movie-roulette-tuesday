@@ -5,7 +5,7 @@ import WidgetKit
 
 struct SpinOfTheDayEntry: TimelineEntry {
     let date: Date
-    /// Always available: computed from the bundled catalog, no shared data needed.
+    /// Always available: computed from the cached GitHub catalog, else the bundled one.
     let pick: SpinOfTheDay.Pick?
     /// From the App Group (nil if the app hasn't written it yet, or the App Group is unavailable).
     let latestEpisode: WidgetSnapshot.EpisodeInfo?
@@ -31,7 +31,7 @@ struct SpinOfTheDayProvider: TimelineProvider {
 
     private func makeEntry(for date: Date) -> SpinOfTheDayEntry {
         let snapshot = WidgetSnapshotStore.appGroup()?.load()
-        let pick = Self.catalog.flatMap { SpinOfTheDay.pick(for: date, in: $0) }
+        let pick = Self.loadCatalog().flatMap { SpinOfTheDay.pick(for: date, in: $0) }
         return SpinOfTheDayEntry(
             date: date,
             pick: pick,
@@ -40,12 +40,12 @@ struct SpinOfTheDayProvider: TimelineProvider {
         )
     }
 
-    /// The widget ships its own copy of movies.json.
-    private static let catalog: MovieCatalog? = {
-        guard let url = Bundle.main.url(forResource: "movies", withExtension: "json"),
-              let data = try? Data(contentsOf: url) else { return nil }
-        return try? MovieCatalog.decode(from: data)
-    }()
+    /// The app's last good GitHub copy (App Group cache, same build), else the
+    /// widget's own bundled movies.json. Read per timeline so updates show up.
+    private static func loadCatalog() -> MovieCatalog? {
+        let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "0"
+        return LocalCatalog.loadSync(cache: CatalogCache.standard(build: build))
+    }
 }
 
 extension SpinOfTheDayEntry {

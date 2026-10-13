@@ -20,5 +20,5 @@ enum AppSettings {
         store.object(forKey: key) as? Bool ?? defaults[key] ?? false
     }
 
-    static let privacyNote = "This app collects no personal data. Ratings, watchlist, and spin history stay on your device. Poll votes and listener ratings are stored anonymously in iCloud with no name or account attached. Listen links, the optional new-episode check, and Apple’s episode lookup only fetch the show’s public pages and feed; nothing about you is sent. A movie suggestion is an email you send yourself from Mail."
+    static let privacyNote = "This app collects no personal data. Ratings, watchlist, and spin history stay on your device. Poll votes and listener ratings are stored anonymously in iCloud with no name or account attached. Listen links, movie list updates, the optional new-episode check, and Apple’s episode lookup only fetch the show’s public pages, feed, and movie list; nothing about you is sent. A movie suggestion is an email you send yourself from Mail."
 }

@@ -54,6 +54,14 @@ final class RouletteViewModel {
     /// Set by the view from the environment; shortens the spin.
     @ObservationIgnored var reduceMotion = false
     private let catalogSource: any MovieCatalogSource
+    /// Background GitHub refresh; nil = bundled/cached list only.
+    private let catalogRefresher: CatalogRefresher?
+    /// A refreshed list that arrived mid-spin or while a reveal is up; applied when idle.
+    @ObservationIgnored private var pendingCatalog: MovieCatalog?
+    @ObservationIgnored private var catalogRefreshTask: Task<Void, Never>?
+    @ObservationIgnored private var lastCatalogRefresh: ContinuousClock.Instant?
+    /// Launch + pull-to-refresh can fire together; refreshes closer than this are skipped.
+    static let catalogRefreshMinInterval: Duration = .seconds(15)
     private let selector: MovieSelector
     @ObservationIgnored private var rng: AnyRandomNumberGenerator
     @ObservationIgnored private var spinAgainRequested = false
@@ -77,12 +85,14 @@ final class RouletteViewModel {
 
     init(
         catalogSource: any MovieCatalogSource,
+        catalogRefresher: CatalogRefresher? = nil,
         history: SpinHistoryStore,
         selector: MovieSelector = MovieSelector(),
         rng: AnyRandomNumberGenerator = .system,
         settings: UserDefaults = .standard
     ) {
         self.catalogSource = catalogSource
+        self.catalogRefresher = catalogRefresher
         self.history = history
         self.selector = selector
         self.rng = rng
@@ -119,10 +129,9 @@ final class RouletteViewModel {
                 loadState = .failed("The movie list has no categories.")
                 return
             }
-            let clean = loaded.deduplicated()
-            catalog = clean
-            geometry = WheelGeometry(categories: clean.categories)
-            loadState = .loaded
+            // A remote refresh may have landed first; it is newer, keep it.
+            guard catalog == nil else { loadState = .loaded; return }
+            apply(loaded.deduplicated())
         } catch {
             loadState = .failed(error.localizedDescription)
         }
@@ -132,10 +141,60 @@ final class RouletteViewModel {
         startSpin(isForcedRespin: false)
     }
 
+    // MARK: Remote catalog
+
+    /// Fetches the latest movie list (short timeout, off the main actor) and swaps
+    /// it in when it validates. Never blocks the UI; failures keep the current list.
+    /// Swaps are deferred while a spin or reveal is in progress.
+    func refreshRemoteCatalog() async {
+        guard let catalogRefresher else { return }
+        if let catalogRefreshTask { await catalogRefreshTask.value; return }
+        let now = ContinuousClock.now
+        if let last = lastCatalogRefresh, now - last < Self.catalogRefreshMinInterval { return }
+        lastCatalogRefresh = now
+        let task = Task { [weak self] in
+            guard let fresh = try? await catalogRefresher.refresh() else { return }
+            self?.offerRefreshedCatalog(fresh)
+        }
+        catalogRefreshTask = task
+        await task.value
+        catalogRefreshTask = nil
+    }
+
+    /// Movie ids are the stable key for spin history, ratings and votes, so a new
+    /// list simply replaces the old one; ids that disappear keep their history.
+    func offerRefreshedCatalog(_ fresh: MovieCatalog) {
+        let clean = fresh.deduplicated()
+        guard clean != catalog else { return }
+        if catalog == nil || isIdleForCatalogSwap {
+            apply(clean)
+        } else {
+            pendingCatalog = clean
+        }
+        WidgetBridge.catalogUpdated()
+    }
+
+    private var isIdleForCatalogSwap: Bool {
+        !isSpinning && reveal == nil && !isAwaitingForcedRespin
+    }
+
+    private func applyPendingCatalogIfIdle() {
+        guard let pending = pendingCatalog, isIdleForCatalogSwap else { return }
+        pendingCatalog = nil
+        if pending != catalog { apply(pending) }
+    }
+
+    private func apply(_ clean: MovieCatalog) {
+        catalog = clean
+        geometry = WheelGeometry(categories: clean.categories)
+        loadState = .loaded
+    }
+
     private func startSpin(isForcedRespin: Bool) {
         if isForcedRespin {
             isAwaitingForcedRespin = false
         }
+        applyPendingCatalogIfIdle()
         guard canSpin else { return }
         spinToken &+= 1
         let token = spinToken
@@ -241,6 +300,7 @@ final class RouletteViewModel {
     }
 
     func revealDismissed() {
+        applyPendingCatalogIfIdle()
         guard spinAgainRequested else { return }
         spinAgainRequested = false
         // Next main-actor turn: outside the sheet-dismissal transaction, so the

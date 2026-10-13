@@ -17,7 +17,8 @@ struct MovieRouletteTuesdayApp: App {
         UNUserNotificationCenter.current().delegate = NotificationRouter.shared
         _episodes = State(initialValue: EpisodeStore())
         _roulette = State(initialValue: RouletteViewModel(
-            catalogSource: BundleCatalogSource(resourceName: "movies"),
+            catalogSource: AppCatalog.localSource(),
+            catalogRefresher: AppCatalog.refresher(),
             history: history
         ))
         #if DEBUG

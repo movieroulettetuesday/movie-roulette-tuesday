@@ -82,7 +82,7 @@ enum IntentSpinError: Error, CustomLocalizedStringResourceConvertible {
 @MainActor
 enum IntentSpinService {
     static func spin(settings: UserDefaults = .standard) async throws -> IntentSpin {
-        let catalog = try await BundleCatalogSource(resourceName: "movies").loadCatalog().deduplicated()
+        let catalog = try await AppCatalog.localSource().loadCatalog().deduplicated()
         let history = SpinHistoryStore.shared
         let policy = RareOutcomePolicy(isEnabled: AppSettings.bool(AppSettings.rareOutcomes, store: settings))
         var rng = SystemRandomNumberGenerator()

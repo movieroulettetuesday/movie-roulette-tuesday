@@ -24,6 +24,11 @@ enum WidgetBridge {
         }
     }
 
+    /// A refreshed movie list was cached in the App Group; let the widget re-read it.
+    static func catalogUpdated() {
+        WidgetCenter.shared.reloadAllTimelines()
+    }
+
     private static func update(_ mutate: (inout WidgetSnapshot) -> Void) {
         guard let store = WidgetSnapshotStore.appGroup() else { return }
         do {
