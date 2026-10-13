@@ -130,7 +130,8 @@
         "dont-look-now-1973",
         "inglourious-basterds-2009",
         "taxi-driver-1976",
-        "black-narcissus-1947"
+        "black-narcissus-1947",
+        "laura-1944"
       ]
     },
     {
@@ -226,7 +227,8 @@
         "gladiator-2000",
         "the-bird-with-the-crystal-plumage-1970",
         "taxi-driver-1976",
-        "runaway-train-1985"
+        "runaway-train-1985",
+        "laura-1944"
       ]
     },
     {
@@ -3248,6 +3250,23 @@
         "Buzzsprout-19913482"
       ],
       "episodeTitle": "The Outsiders",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
+    },
+    {
+      "id": "laura-1944",
+      "title": "Laura",
+      "year": 1944,
+      "genre": "Thriller",
+      "categories": [
+        "cat-criterion",
+        "cat-action"
+      ],
+      "episodeIds": [
+        "Buzzsprout-19950553"
+      ],
+      "episodeTitle": "Laura",
       "posterURL": null,
       "isInfamous": false,
       "hostRating": null
