@@ -47,16 +47,10 @@ struct RevealSheet: View {
 
                         HStack(spacing: 12) {
                             shareButton
-                            NavigationLink {
-                                MoviePageView(
-                                    movie: movie,
-                                    catalog: catalog,
-                                    spinCount: reveal.spinCount,
-                                    episodesByGUID: episodesByGUID,
-                                    showArtworkURL: showArtworkURL,
-                                    context: .wheelReveal
-                                )
-                            } label: {
+                            // Value route (not a view-destination link): the episode links on the
+                            // pushed movie page are value routes too, and only resolve when the
+                            // whole chain is value-based, as in the Movies tab and Spin History.
+                            NavigationLink(value: MoviesRoute.movie(movie.id)) {
                                 Label("Movie Page", systemImage: "film")
                                     .frame(maxWidth: .infinity)
                             }
@@ -71,18 +65,8 @@ struct RevealSheet: View {
             }
             .scrollBounceBehavior(.basedOnSize)
             // Episodes rows on the pushed movie page (same page as the Episodes tab / Spin History).
-            .navigationDestination(for: MoviesRoute.self) { route in
-                if case .episode(let guid) = route, let episode = episodesByGUID[guid] {
-                    EpisodeDetailView(
-                        episode: episode,
-                        catalog: catalog,
-                        show: catalog?.showInfo ?? .mrt,
-                        showArtworkURL: showArtworkURL
-                    )
-                } else {
-                    ContentUnavailableView("Episode Not Found", systemImage: "mic.slash")
-                }
-            }
+            // Movie Page and its Episodes rows (same pages as the Movies tab / Spin History).
+            .navigationDestination(for: MoviesRoute.self) { destination(for: $0) }
             .background {
                 if reveal.isJackpot {
                     LinearGradient(colors: CleanProColors.backgroundDark.map { Color(hex: $0) },
@@ -108,6 +92,36 @@ struct RevealSheet: View {
         }
         .presentationDetents(presenterIsRegularWidth ? [.large] : [.fraction(0.65), .large])
         .presentationDragIndicator(.visible)
+    }
+
+    @ViewBuilder
+    private func destination(for route: MoviesRoute) -> some View {
+        switch route {
+        case .movie(let id):
+            if let page = id == movie.id ? movie : catalog?.movie(withId: id) {
+                MoviePageView(
+                    movie: page,
+                    catalog: catalog,
+                    spinCount: id == movie.id ? reveal.spinCount : 0,
+                    episodesByGUID: episodesByGUID,
+                    showArtworkURL: showArtworkURL,
+                    context: .wheelReveal
+                )
+            } else {
+                ContentUnavailableView("Movie Not Found", systemImage: "film")
+            }
+        case .episode(let guid):
+            if let episode = episodesByGUID[guid] {
+                EpisodeDetailView(
+                    episode: episode,
+                    catalog: catalog,
+                    show: catalog?.showInfo ?? .mrt,
+                    showArtworkURL: showArtworkURL
+                )
+            } else {
+                ContentUnavailableView("Episode Not Found", systemImage: "mic.slash")
+            }
+        }
     }
 
     private var summaryCard: some View {
