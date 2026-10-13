@@ -6,7 +6,7 @@ Unzip, open `MovieRouletteTuesday.xcodeproj`, select an iPhone simulator, Run.
 
 ## One-time Xcode / CloudKit setup
 
-Walter has a paid Apple Developer membership. The project is set to automatic signing with `DEVELOPMENT_TEAM = 5M2694W54X` (app, widget and tests). To build under your own Apple Developer team instead, change the Team once:
+The project uses automatic signing. To build under your own Apple Developer team, change the Team once:
 
 1. **Signing Team (both targets).** Project → Signing & Capabilities → pick your Team for **MovieRouletteTuesday** and **MovieRouletteTuesdayWidgetExtension**. The App Group `group.com.movieroulettetuesday.app` is already in both entitlements; Xcode registers it for your team. Until that's done the widget still works but only shows Spin of the Day (no latest episode / last spin).
 2. **iCloud container.** The app target already has the CloudKit entitlements (`iCloud.com.movieroulettetuesday.app`). If Xcode asks you to enable the iCloud container under Signing & Capabilities → iCloud → CloudKit, accept. The widget does **not** need iCloud.
