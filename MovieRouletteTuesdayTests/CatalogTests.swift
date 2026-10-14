@@ -358,3 +358,44 @@ final class StreamingFilterSortTests: XCTestCase {
         XCTAssertEqual(StreamingCatalog.tmdbNotice, "This product uses the TMDB API but is not endorsed or certified by TMDB.")
     }
 }
+
+final class WhereToWatchDisplayTests: XCTestCase {
+    private let netflix = StreamingInfo.Provider(id: 8, name: "Netflix", logo: "/n.jpg", priority: 1)
+
+    func testProvidersShownWithLinkAndAttribution() {
+        let m = Movie(id: "a", title: "A", year: 2000, genre: "G", tmdbId: 1,
+                      streaming: StreamingInfo(updated: "2026-10-13", link: "https://www.themoviedb.org/movie/1/watch?locale=US", stream: [netflix]))
+        let d = WhereToWatchDisplay(movie: m)
+        XCTAssertTrue(d.showsProviders)
+        XCTAssertFalse(d.showsEmptyMessage)
+        XCTAssertEqual(d.link?.absoluteString, "https://www.themoviedb.org/movie/1/watch?locale=US")
+        XCTAssertTrue(d.footer?.hasPrefix(StreamingCatalog.attribution) == true)
+        XCTAssertTrue(d.footer?.contains("updated") == true)
+    }
+
+    func testAllListsEmptyShowsMessageKeepsLinkAndFooter() {
+        let m = Movie(id: "b", title: "B", year: 2000, genre: "G", tmdbId: 2,
+                      streaming: StreamingInfo(updated: "2026-10-13", link: "https://www.themoviedb.org/movie/2/watch?locale=US"))
+        let d = WhereToWatchDisplay(movie: m)
+        XCTAssertTrue(d.showsEmptyMessage)
+        XCTAssertEqual(d.region, "US")
+        XCTAssertNotNil(d.link)
+        XCTAssertTrue(d.footer?.contains("updated") == true)
+    }
+
+    func testTmdbIdWithoutStreamingDataStillLinks() {
+        let d = WhereToWatchDisplay(movie: Movie(id: "c", title: "C", year: 2000, genre: "G", tmdbId: 3))
+        XCTAssertTrue(d.showsEmptyMessage)
+        XCTAssertEqual(d.link?.absoluteString, "https://www.themoviedb.org/movie/3/watch?locale=US")
+        XCTAssertEqual(d.footer, StreamingCatalog.attribution)
+    }
+
+    func testNoTmdbIdShowsOnlyMessage() {
+        let d = WhereToWatchDisplay(movie: Movie(id: "d", title: "Scarlet Warning 666", year: 2000, genre: "G"))
+        XCTAssertTrue(d.showsEmptyMessage)
+        XCTAssertEqual(d.region, "US")
+        XCTAssertNil(d.link)
+        XCTAssertNil(d.footer)
+        XCTAssertEqual(WhereToWatchDisplay.emptyMessage, "No streaming sources found.")
+    }
+}

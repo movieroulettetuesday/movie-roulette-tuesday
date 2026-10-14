@@ -483,6 +483,42 @@ public struct MyServices: Equatable, Sendable {
     }
 }
 
+/// What the movie page's "Where to Watch" section shows. The section is always
+/// present; without providers it shows `emptyMessage`. The TMDB link and the
+/// JustWatch/TMDB footer appear only when the movie has a tmdbId or a link.
+public struct WhereToWatchDisplay: Equatable, Sendable {
+    public static let emptyMessage = "No streaming sources found."
+    public var region: String
+    public var showsProviders: Bool
+    public var link: URL?
+    /// Attribution (+ " · updated <date>" when known); nil = message only.
+    public var footer: String?
+
+    public var showsEmptyMessage: Bool { !showsProviders }
+
+    public init(movie: Movie) {
+        let s = movie.streaming
+        region = s?.region ?? "US"
+        showsProviders = !(s?.isEmpty ?? true)
+        if let l = s?.link.flatMap(URL.init(string:)) {
+            link = l
+        } else if let id = movie.tmdbId {
+            link = URL(string: "https://www.themoviedb.org/movie/\(id)/watch?locale=\(region)")
+        } else {
+            link = nil
+        }
+        if link != nil || showsProviders {
+            if let date = StreamingCatalog.updatedLabel(s?.updated) {
+                footer = "\(StreamingCatalog.attribution) · updated \(date)"
+            } else {
+                footer = StreamingCatalog.attribution
+            }
+        } else {
+            footer = nil
+        }
+    }
+}
+
 public enum StreamingCatalog {
     /// Attribution required by TMDB/JustWatch, shown next to the data.
     public static let attribution = "Streaming data by JustWatch via TMDB"

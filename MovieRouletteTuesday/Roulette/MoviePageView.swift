@@ -39,9 +39,7 @@ struct MoviePageView: View {
 
                 episodesSection
 
-                if let streaming = movie.streaming, !streaming.isEmpty {
-                    WhereToWatchSection(streaming: streaming)
-                }
+                WhereToWatchSection(movie: movie)
 
                 yourTake
 
@@ -258,26 +256,28 @@ struct MoviePageView: View {
 
 /// "Where to watch" (approved mockup 6a): Stream / Free / Rent or buy rows of
 /// provider logos + names, the JustWatch/TMDB attribution with the update
-/// date, and "All options on TMDB". Shown only when there is data.
+/// date, and "All options on TMDB". Always shown (see `WhereToWatchDisplay`):
+/// without providers it says "No streaming sources found.".
 struct WhereToWatchSection: View {
-    let streaming: StreamingInfo
+    let movie: Movie
     @AppStorage(MyServices.storageKey) private var myServicesRaw = ""
 
     private var services: MyServices { MyServices(serialized: myServicesRaw) }
-
-    private var footer: String {
-        if let date = StreamingCatalog.updatedLabel(streaming.updated) {
-            return "\(StreamingCatalog.attribution) · updated \(date)"
-        }
-        return StreamingCatalog.attribution
-    }
+    private var display: WhereToWatchDisplay { WhereToWatchDisplay(movie: movie) }
 
     var body: some View {
-        CleanProSection("Where to Watch · \(streaming.region)", footer: footer) {
-            row("Stream", streaming.stream, id: "stream")
-            row("Free", streaming.free, id: "free")
-            row("Rent or buy", StreamingCatalog.rentOrBuy(streaming), id: "rent-buy")
-            if let link = streaming.link.flatMap(URL.init(string:)) {
+        let streaming = movie.streaming ?? StreamingInfo()
+        CleanProSection("Where to Watch · \(display.region)", footer: display.footer) {
+            if display.showsEmptyMessage {
+                Text(WhereToWatchDisplay.emptyMessage)
+                    .foregroundStyle(.secondary)
+                    .accessibilityIdentifier("streaming-empty")
+            } else {
+                row("Stream", streaming.stream, id: "stream")
+                row("Free", streaming.free, id: "free")
+                row("Rent or buy", StreamingCatalog.rentOrBuy(streaming), id: "rent-buy")
+            }
+            if let link = display.link {
                 Link(destination: link) {
                     HStack {
                         Text("All options on TMDB")
