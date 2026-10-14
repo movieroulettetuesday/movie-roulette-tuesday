@@ -1,5 +1,14 @@
 import Foundation
 
+/// App-wide feature switches.
+public enum FeatureFlags {
+    /// Host Rating UI (movie page "Host Rating" section, Stats "You vs hosts").
+    /// Hidden for now; the `Movie.hostRating` field, its decoding and the
+    /// `PersonalRatings.versusHosts` logic stay in place. To re-enable: set this
+    /// to `true` and add `"hostRating"` values to movies.json.
+    public static let showHostRatings = false
+}
+
 /// Podcast / show metadata bundled with the catalog (deep links, RSS).
 public struct ShowInfo: Codable, Hashable, Sendable {
     public var name: String

@@ -130,7 +130,7 @@ struct StatsView: View {
                     StarRatingView(halfStars: rated.halfStars, font: .caption, tint: .orange)
                 }
             }
-            if let diff = mine.averageDifferenceFromHosts {
+            if FeatureFlags.showHostRatings, let diff = mine.averageDifferenceFromHosts {
                 LabeledContent("You vs hosts") {
                     if abs(diff) < 0.05 {
                         Text("Right in line")

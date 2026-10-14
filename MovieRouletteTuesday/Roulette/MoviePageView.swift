@@ -63,9 +63,11 @@ struct MoviePageView: View {
                     LabeledContent("Times spun", value: "\(spinCount)")
                 }
 
-                CleanProSection("Host Rating") {
-                    Text(movie.hostRating.map { $0.formatted() } ?? "The hosts haven't scored this one in the app yet.")
-                        .foregroundStyle(movie.hostRating == nil ? .secondary : .primary)
+                if FeatureFlags.showHostRatings {
+                    CleanProSection("Host Rating") {
+                        Text(movie.hostRating.map { $0.formatted() } ?? "The hosts haven't scored this one in the app yet.")
+                            .foregroundStyle(movie.hostRating == nil ? .secondary : .primary)
+                    }
                 }
 
                 listenSection
