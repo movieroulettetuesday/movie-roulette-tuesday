@@ -122,17 +122,6 @@ struct EpisodesView: View {
                     .refreshable { await store.load(forceNetwork: true) }
             }
         }
-        // Outside the List, so the first list cell is still the newest episode.
-        .safeAreaInset(edge: .top, spacing: 0) {
-            Picker("Group episodes by", selection: $groupingRaw) {
-                ForEach(EpisodeGrouping.allCases) { Text($0.label).tag($0.rawValue) }
-            }
-            .pickerStyle(.segmented)
-            .padding(.horizontal)
-            .padding(.vertical, 8)
-            .background(.bar)
-            .accessibilityIdentifier("episodes-grouping")
-        }
     }
 
     private func row(_ episode: PodcastEpisode) -> some View {
@@ -177,8 +166,22 @@ struct EpisodesView: View {
         .accessibilityIdentifier("episode-group-\(group.id)")
     }
 
+    private var groupingPicker: some View {
+        Section {
+            Picker("Group episodes by", selection: $groupingRaw) {
+                ForEach(EpisodeGrouping.allCases) { Text($0.label).tag($0.rawValue) }
+            }
+            .pickerStyle(.segmented)
+            .labelsHidden()
+            .accessibilityIdentifier("episodes-grouping")
+            .listRowBackground(Color.clear)
+            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+        }
+    }
+
     @ViewBuilder
     private var listContent: some View {
+        groupingPicker
         if let err = store.lastError {
             Section {
                 Label(err, systemImage: "exclamationmark.triangle")
