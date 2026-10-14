@@ -150,6 +150,111 @@ public struct MovieSuggestion: Equatable, Sendable {
     }
 }
 
+// MARK: - In-app suggestion (CloudKit backup to email)
+
+/// A suggestion sent from the in-app form as a `Suggestion` record in the
+/// CloudKit public database (create-only for listeners). Email stays the
+/// default; this is the backup when email isn't available.
+public struct InAppSuggestion: Equatable, Sendable {
+    public static let recordType = "Suggestion"
+    public static let titleLimit = 120
+    public static let noteLimit = 280
+    public static let nameLimit = 60
+
+    public enum Problem: Equatable, Sendable {
+        case missingTitle, titleTooLong, noteTooLong, nameTooLong
+    }
+
+    public var title: String
+    /// nil or empty = no category.
+    public var category: String?
+    public var note: String
+    /// Optional "credit me as".
+    public var creditName: String
+
+    public init(title: String, category: String? = nil, note: String = "", creditName: String = "") {
+        self.title = title
+        self.category = category
+        self.note = note
+        self.creditName = creditName
+    }
+
+    private static func clean(_ s: String) -> String { s.trimmingCharacters(in: .whitespacesAndNewlines) }
+
+    public var trimmedTitle: String { Self.clean(title) }
+    public var trimmedNote: String { Self.clean(note) }
+    public var trimmedCreditName: String { Self.clean(creditName) }
+    public var trimmedCategory: String? { category.map(Self.clean).flatMap { $0.isEmpty ? nil : $0 } }
+
+    public var problems: [Problem] {
+        var out: [Problem] = []
+        if trimmedTitle.isEmpty { out.append(.missingTitle) }
+        if trimmedTitle.count > Self.titleLimit { out.append(.titleTooLong) }
+        if trimmedNote.count > Self.noteLimit { out.append(.noteTooLong) }
+        if trimmedCreditName.count > Self.nameLimit { out.append(.nameTooLong) }
+        return out
+    }
+
+    public var isValid: Bool { problems.isEmpty }
+
+    /// Characters left for the note (negative when over).
+    public var noteCharactersLeft: Int { Self.noteLimit - trimmedNote.count }
+
+    /// Typing guard for the text fields: never longer than `limit` characters.
+    public static func capped(_ text: String, to limit: Int) -> String {
+        text.count > limit ? String(text.prefix(limit)) : text
+    }
+
+    /// The same pick as an email (for the mail fallbacks).
+    public var asEmail: MovieSuggestion {
+        var why = trimmedNote
+        if !trimmedCreditName.isEmpty { why += (why.isEmpty ? "" : "\n") + "From: \(trimmedCreditName)" }
+        return MovieSuggestion(title: title, why: why, category: trimmedCategory)
+    }
+}
+
+/// Local spam guard: one in-app suggestion per `interval` on this device.
+public struct SuggestionRateLimit: Equatable, Sendable {
+    public static let interval: TimeInterval = 600
+    public static let defaultsKey = "suggestions.lastSentAt"
+
+    public var lastSent: Date?
+    public var interval: TimeInterval
+
+    public init(lastSent: Date? = nil, interval: TimeInterval = SuggestionRateLimit.interval) {
+        self.lastSent = lastSent
+        self.interval = interval
+    }
+
+    /// Whole seconds until the next send is allowed, or nil when allowed now.
+    /// A clock that moved backwards never blocks for longer than `interval`.
+    public func secondsRemaining(now: Date = Date()) -> Int? {
+        guard let lastSent else { return nil }
+        let elapsed = now.timeIntervalSince(lastSent)
+        if elapsed < 0 { return nil }
+        guard elapsed < interval else { return nil }
+        return max(1, Int((interval - elapsed).rounded(.up)))
+    }
+
+    public func canSend(now: Date = Date()) -> Bool { secondsRemaining(now: now) == nil }
+
+    public mutating func recordSend(now: Date = Date()) { lastSent = now }
+
+    public static func load(from defaults: UserDefaults) -> SuggestionRateLimit {
+        SuggestionRateLimit(lastSent: defaults.object(forKey: defaultsKey) as? Date)
+    }
+
+    public func save(to defaults: UserDefaults) {
+        defaults.set(lastSent, forKey: Self.defaultsKey)
+    }
+
+    /// "Try again in 7 min."
+    public static func message(seconds: Int) -> String {
+        let minutes = max(1, Int((Double(seconds) / 60).rounded(.up)))
+        return "You just sent one. Try again in \(minutes) min."
+    }
+}
+
 // MARK: - New-episode alerts
 
 /// What the background check remembers between runs (stored locally).

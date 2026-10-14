@@ -122,15 +122,15 @@ final class CommunityTests: XCTestCase {
         XCTAssertEqual(results.total, 2)
         XCTAssertEqual(results.rows[1].count, 2)
 
-        try await store.submitRating(movieId: "m", stars: 4)
-        try await store.submitRating(movieId: "m", stars: 2)
+        try await store.submitRating(movieId: "m", halfStars: 8)
+        try await store.submitRating(movieId: "m", halfStars: 4)
         await store.setCurrentUser("user-1")
-        try await store.submitRating(movieId: "m", stars: 5)
-        let agg = RatingAggregate.from(stars: try await store.fetchRatings(movieId: "m").values)
+        try await store.submitRating(movieId: "m", halfStars: 10)
+        let agg = RatingAggregate.from(halfStars: try await store.fetchRatings(movieId: "m").values)
         XCTAssertEqual(agg.count, 2)
         XCTAssertEqual(agg.average!, 3.5, accuracy: 1e-12)
         let mine = try await store.myRating(movieId: "m")
-        XCTAssertEqual(mine, 5)
+        XCTAssertEqual(mine, 10)
     }
 
     func testNotSignedInCanReadButNotWrite() async throws {
@@ -149,5 +149,60 @@ final class CommunityTests: XCTestCase {
         }
         let mine = try await store.myVote(pollId: "p")
         XCTAssertNil(mine)
+    }
+}
+
+
+/// Half-star listener ratings: new records carry halfStars + rounded stars;
+/// legacy records (stars only) read as stars × 2.
+final class HalfStarCommunityTests: XCTestCase {
+    func testLegacyRecordsReadAsStarsTimesTwo() async throws {
+        let store = InMemoryCommunityStore(currentUser: "u")
+        await store.seedRatings(movieId: "m", stars: [4, 5])          // older builds
+        await store.seedHalfStarRatings(movieId: "m", halfStars: [7])  // new build, 3.5
+        let ratings = try await store.fetchRatings(movieId: "m")
+        XCTAssertEqual(ratings.values.sorted(), [7, 8, 10])
+        let agg = RatingAggregate.from(halfStars: ratings.values)
+        XCTAssertEqual(agg.count, 3)
+        XCTAssertEqual(agg.average!, 25.0 / 6, accuracy: 1e-12)   // 4.1666…
+        XCTAssertEqual(agg.averageToHalf, 4.0)
+        XCTAssertEqual(agg.averageHalfStars, 8)
+    }
+
+    func testNewRecordsAlsoWriteRoundedStars() async throws {
+        let store = InMemoryCommunityStore(currentUser: "u")
+        let name = try await store.submitRating(movieId: "m", halfStars: 7)
+        let record = await store.record(named: name)
+        XCTAssertEqual(record?.halfStars, 7)
+        XCTAssertEqual(record?.stars, 4, "older builds see 3.5 rounded to 4")
+        let mine = try await store.myRating(movieId: "m")
+        XCTAssertEqual(mine, 7)
+    }
+
+    func testHalfStarRangeValidated() async {
+        let store = InMemoryCommunityStore(currentUser: "u")
+        for bad in [0, 11, -1] {
+            do { _ = try await store.submitRating(movieId: "m", halfStars: bad); XCTFail("\(bad) accepted") }
+            catch { XCTAssertEqual(error as? CommunityError, .invalidStars) }
+        }
+    }
+
+    func testAggregateAverageHalfPrecision() {
+        let a = RatingAggregate.from(halfStars: [9, 8, 9, 8, 0, 11])   // 4.25
+        XCTAssertEqual(a.count, 4)
+        XCTAssertEqual(a.average!, 4.25, accuracy: 1e-12)
+        XCTAssertEqual(a.averageToHalf, 4.5)
+        XCTAssertEqual(a.histogram, [0, 0, 0, 2, 2])
+        XCTAssertEqual(RatingAggregate.from(stars: [5, 4]).average!, 4.5, accuracy: 1e-12)
+    }
+
+    func testSuggestionNeedsICloud() async throws {
+        let signedOut = InMemoryCommunityStore(currentUser: nil)
+        do { try await signedOut.submitSuggestion(InAppSuggestion(title: "Tremors"), appVersion: "1"); XCTFail() }
+        catch { XCTAssertEqual(error as? CommunityError, .notSignedIn) }
+        let store = InMemoryCommunityStore(currentUser: "u")
+        try await store.submitSuggestion(InAppSuggestion(title: "Tremors"), appVersion: "1")
+        let saved = await store.suggestions
+        XCTAssertEqual(saved.map(\.title), ["Tremors"])
     }
 }

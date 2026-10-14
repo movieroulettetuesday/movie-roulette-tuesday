@@ -32,9 +32,29 @@ RECORD TYPE ListenerRating (
     "___modTime"    TIMESTAMP,
     "___modifiedBy" REFERENCE,
     "___recordID"   REFERENCE QUERYABLE,
+    halfStars       INT64,
     movieId         STRING QUERYABLE,
     stars           INT64,
     GRANT WRITE TO "_creator",
     GRANT CREATE TO "_icloud",
     GRANT READ TO "_world"
+);
+
+// In-app movie suggestions (backup to email). Listeners can only CREATE:
+// no READ for "_world" or "_icloud", so nobody can see others' submissions.
+// The hosts read them in CloudKit Console (Production → Records → Suggestion,
+// sorted by created date).
+RECORD TYPE Suggestion (
+    "___createTime" TIMESTAMP SORTABLE QUERYABLE,
+    "___createdBy"  REFERENCE,
+    "___etag"       STRING,
+    "___modTime"    TIMESTAMP,
+    "___modifiedBy" REFERENCE,
+    "___recordID"   REFERENCE QUERYABLE,
+    appVersion      STRING,
+    category        STRING,
+    creditName      STRING,
+    note            STRING,
+    title           STRING,
+    GRANT CREATE TO "_icloud"
 );

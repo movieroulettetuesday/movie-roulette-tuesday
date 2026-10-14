@@ -87,3 +87,78 @@ final class PersonalRatingsTests: XCTestCase {
         XCTAssertEqual(NewEpisodeBadge.viewedTimestamp(episodes: eps, now: d(300)), d(300))
     }
 }
+
+
+final class HalfStarMappingTests: XCTestCase {
+    func testLocationMapping() {
+        let w = 100.0  // 5 stars, 20 pt each
+        XCTAssertEqual(HalfStars.fromLocation(0, width: w), 1)
+        XCTAssertEqual(HalfStars.fromLocation(5, width: w), 1)     // left half of star 1
+        XCTAssertEqual(HalfStars.fromLocation(15, width: w), 2)    // right half of star 1
+        XCTAssertEqual(HalfStars.fromLocation(65, width: w), 7)    // left half of star 4 = 3.5
+        XCTAssertEqual(HalfStars.fromLocation(75, width: w), 8)
+        XCTAssertEqual(HalfStars.fromLocation(250, width: w), 10)  // dragged past the end
+        XCTAssertEqual(HalfStars.fromLocation(-30, width: w), 1)
+        XCTAssertEqual(HalfStars.fromLocation(50, width: 0), 1)
+    }
+
+    func testFillAndLabels() {
+        XCTAssertEqual((1...5).map { HalfStars.fill(star: $0, halfStars: 7) }, [1, 1, 1, 0.5, 0])
+        XCTAssertEqual((1...5).map { HalfStars.fill(star: $0, halfStars: nil) }, [0, 0, 0, 0, 0])
+        XCTAssertEqual(HalfStars.label(7), "3.5")
+        XCTAssertEqual(HalfStars.label(8), "4")
+        XCTAssertEqual(HalfStars.label(stars: 4.26), "4.5")
+        XCTAssertEqual(HalfStars.label(stars: 4.24), "4")
+        XCTAssertEqual(HalfStars.roundedToHalf(3.74), 3.5)
+        XCTAssertEqual(HalfStars.roundedToHalf(3.75), 4.0)
+    }
+
+    func testRoundingForOlderBuilds() {
+        XCTAssertEqual((1...10).map(HalfStars.roundedStars), [1, 1, 2, 2, 3, 3, 4, 4, 5, 5])
+        XCTAssertEqual(HalfStars.clamped(0), nil)
+        XCTAssertEqual(HalfStars.clamped(14), 10)
+        XCTAssertEqual(HalfStars.fromLegacyStars(3), 6)
+        XCTAssertEqual(HalfStars.fromLegacyStars(9), 10)
+        XCTAssertNil(HalfStars.fromLegacyStars(0))
+        XCTAssertEqual(HalfStars.resolved(halfStars: 7, legacyStars: 4), 7)
+        XCTAssertEqual(HalfStars.resolved(halfStars: nil, legacyStars: 4), 8)
+        XCTAssertNil(HalfStars.resolved(halfStars: nil, legacyStars: nil))
+    }
+
+    func testVoiceOverAdjustSteps() {
+        XCTAssertEqual(HalfStars.adjusted(nil, increment: true), 1)
+        XCTAssertEqual(HalfStars.adjusted(7, increment: true), 8)
+        XCTAssertEqual(HalfStars.adjusted(10, increment: true), 10)
+        XCTAssertEqual(HalfStars.adjusted(7, increment: false), 6)
+        XCTAssertNil(HalfStars.adjusted(1, increment: false))
+    }
+
+    func testLegacyPersonalFileMigratesInPlace() throws {
+        let legacy = #"{"entries":{"a":{"rating":4,"status":"watched","updatedAt":0},"b":{"status":"wantToWatch","updatedAt":0}}}"#
+        var r = try JSONDecoder().decode(PersonalRatings.self, from: Data(legacy.utf8))
+        XCTAssertEqual(r.halfStars(for: "a"), 8)
+        XCTAssertEqual(r.rating(for: "a"), 4)
+        XCTAssertNil(r.halfStars(for: "b"))
+        r.setHalfStars(7, for: "a", now: Date(timeIntervalSinceReferenceDate: 5))
+        let data = try JSONEncoder().encode(r)
+        let json = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
+        let a = try XCTUnwrap((json["entries"] as? [String: Any])?["a"] as? [String: Any])
+        XCTAssertEqual(a["halfStars"] as? Int, 7)
+        XCTAssertEqual(a["rating"] as? Int, 4, "rounded stars kept for a downgrade")
+        let back = try JSONDecoder().decode(PersonalRatings.self, from: data)
+        XCTAssertEqual(back.halfStars(for: "a"), 7)
+    }
+
+    func testSummaryUsesHalfStars() {
+        var r = PersonalRatings()
+        r.setHalfStars(7, for: "a")
+        r.setHalfStars(10, for: "b")
+        r.setHalfStars(0, for: "c")
+        let s = PersonalRatingsSummary(ratings: r, catalog: nil)
+        XCTAssertEqual(s.ratedCount, 2)
+        XCTAssertEqual(s.averageStars!, 4.25, accuracy: 1e-12)
+        XCTAssertEqual(s.topRated.map(\.movieId), ["b", "a"])
+        XCTAssertEqual(s.topRated.last?.halfStars, 7)
+        XCTAssertEqual(r.status(for: "a"), .watched, "rating implies watched")
+    }
+}

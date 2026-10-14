@@ -11,6 +11,10 @@ struct EpisodesView: View {
     @State private var selectedGUID: String?
     /// Stack path (compact width). Synced with `selectedGUID` on size-class changes.
     @State private var path: [String] = []
+    @AppStorage("episodes.grouping") private var groupingRaw = EpisodeGrouping.season.rawValue
+    @AppStorage("episodes.expandedGroups") private var expansionRaw = ""
+
+    private var grouping: EpisodeGrouping { EpisodeGrouping(rawValue: groupingRaw) ?? .season }
 
     private var isRegular: Bool { horizontalSizeClass == .regular }
 
@@ -109,13 +113,68 @@ struct EpisodesView: View {
 
     @ViewBuilder
     private var list: some View {
-        if isRegular {
-            List(selection: $selectedGUID) { listContent }
-                .refreshable { await store.load(forceNetwork: true) }
-        } else {
-            List { listContent }
-                .refreshable { await store.load(forceNetwork: true) }
+        Group {
+            if isRegular {
+                List(selection: $selectedGUID) { listContent }
+                    .refreshable { await store.load(forceNetwork: true) }
+            } else {
+                List { listContent }
+                    .refreshable { await store.load(forceNetwork: true) }
+            }
         }
+        // Outside the List, so the first list cell is still the newest episode.
+        .safeAreaInset(edge: .top, spacing: 0) {
+            Picker("Group episodes by", selection: $groupingRaw) {
+                ForEach(EpisodeGrouping.allCases) { Text($0.label).tag($0.rawValue) }
+            }
+            .pickerStyle(.segmented)
+            .padding(.horizontal)
+            .padding(.vertical, 8)
+            .background(.bar)
+            .accessibilityIdentifier("episodes-grouping")
+        }
+    }
+
+    private func row(_ episode: PodcastEpisode) -> some View {
+        NavigationLink(value: episode.guid) {
+            EpisodeRow(
+                episode: episode,
+                movie: catalog?.movie(forEpisodeGuid: episode.guid),
+                catalog: catalog,
+                showArtworkURL: store.showArtworkURL
+            )
+        }
+        .accessibilityIdentifier("episode-row")
+    }
+
+    private func groupHeader(_ group: EpisodeGroup, expanded: Bool, isNewest: Bool) -> some View {
+        Button {
+            var e = EpisodeGroupExpansion(serialized: expansionRaw)
+            e.toggle(group.id, isNewest: isNewest)
+            withAnimation(.easeInOut(duration: 0.2)) { expansionRaw = e.serialized }
+        } label: {
+            HStack {
+                Text(group.title)
+                    .font(.title3.weight(.bold))
+                    .foregroundStyle(.primary)
+                Spacer()
+                Text(group.episodes.count == 1 ? "1 episode" : "\(group.episodes.count) episodes")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                Image(systemName: "chevron.right")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .rotationEffect(.degrees(expanded ? 90 : 0))
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .textCase(nil)
+        .accessibilityLabel("\(group.title), \(group.episodes.count) episodes")
+        .accessibilityValue(expanded ? "Expanded" : "Collapsed")
+        .accessibilityHint(expanded ? "Collapses the section" : "Expands the section")
+        .accessibilityAddTraits(.isHeader)
+        .accessibilityIdentifier("episode-group-\(group.id)")
     }
 
     @ViewBuilder
@@ -127,19 +186,28 @@ struct EpisodesView: View {
                     .foregroundStyle(.secondary)
             }
         }
-        Section {
-            ForEach(store.episodes) { episode in
-                NavigationLink(value: episode.guid) {
-                    EpisodeRow(
-                        episode: episode,
-                        movie: catalog?.movie(forEpisodeGuid: episode.guid),
-                        catalog: catalog,
-                        showArtworkURL: store.showArtworkURL
-                    )
+        if grouping == .all {
+            Section {
+                ForEach(store.episodes) { row($0) }
+            } footer: {
+                footer
+            }
+        } else {
+            let groups = EpisodeGrouper.groups(store.episodes, by: grouping)
+            let expansion = EpisodeGroupExpansion(serialized: expansionRaw)
+            ForEach(Array(groups.enumerated()), id: \.element.id) { index, group in
+                let isNewest = index == 0
+                let expanded = expansion.isExpanded(group.id, isNewest: isNewest)
+                Section {
+                    if expanded {
+                        ForEach(group.episodes) { row($0) }
+                    }
+                } header: {
+                    groupHeader(group, expanded: expanded, isNewest: isNewest)
+                } footer: {
+                    if index == groups.count - 1 { footer }
                 }
             }
-        } footer: {
-            footer
         }
     }
 

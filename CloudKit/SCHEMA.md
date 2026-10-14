@@ -18,9 +18,23 @@ Record name: `vote-<pollId>-<sha256(userRecordName + pollId)>`.
 | Field     | Type  | Notes |
 |-----------|-------|-------|
 | `movieId` | String | **QUERYABLE**. Catalog movie id. |
-| `stars`   | Int64  | 1…5. |
+| `stars`   | Int64  | 1…5 whole stars. Still written (rounded, 3.5 → 4) so older app versions keep working. |
+| `halfStars` | Int64 | 1…10 half-stars (added Oct 2026, build 5+). Readers use `halfStars`, else `stars × 2` for records from older builds. No backfill needed. |
 
 Record name: `rating-<movieId>-<sha256(userRecordName + "rating:" + movieId)>`.
+
+### `Suggestion` (added Oct 2026)
+| Field        | Type   | Notes |
+|--------------|--------|-------|
+| `title`      | String | Movie title (≤120 chars). |
+| `category`   | String | Optional category name ("" when none). |
+| `note`       | String | Optional "why" (≤280 chars). |
+| `creditName` | String | Optional "credit me as" (≤60 chars). |
+| `appVersion` | String | e.g. `1.0 (5)`. |
+
+Record name: `suggestion-<UUID>` (always a new record). Grants: **CREATE to `_icloud` only** — no `_world`/`_icloud` READ, so listeners can't read each other's suggestions. `___createTime` is SORTABLE + QUERYABLE so the Console can list them newest first. The app also limits itself to one suggestion per 10 minutes per device.
+
+**Reading suggestions:** CloudKit Console → container → **Production** → Records → Public Database → type `Suggestion` → query, sort by created date.
 
 ## Public-database grants (already in the `.ckdb`)
 
@@ -32,7 +46,8 @@ Record name: `rating-<movieId>-<sha256(userRecordName + "rating:" + movieId)>`.
 
 1. Open [CloudKit Console](https://icloud.developer.apple.com) → your team → container `iCloud.com.movieroulettetuesday.app`.
 2. **Development → Schema → Import Schema** → choose `CloudKit/MovieRouletteTuesday.ckdb`.
-   Or create the two record types by hand and mark `pollId` / `movieId` QUERYABLE.
+   Or create the record types by hand and mark `pollId` / `movieId` QUERYABLE.
+   For `Suggestion`, check the type's Security Roles: only `Authenticated` (`_icloud`) **Create**; make sure **World** has no Read.
 3. **Deploy Schema Changes → Promote to Production**.
 4. Until the schema exists the app still runs: polls and ratings simply show empty results / “couldn't load”.
 

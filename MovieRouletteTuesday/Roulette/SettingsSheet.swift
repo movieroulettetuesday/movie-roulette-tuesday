@@ -73,7 +73,7 @@ struct SettingsSheet: View {
                     .tint(.primary)
                     .accessibilityIdentifier("settings-suggest")
                 } footer: {
-                    Text("Opens Mail to \(MovieSuggestion.address).")
+                    Text("Emails \(MovieSuggestion.address), or send it in the app.")
                 }
 
                 Section {

@@ -83,3 +83,55 @@ final class RSSFeedParserTests: XCTestCase {
         XCTAssertNil(ep.fanMailURL)
     }
 }
+
+
+final class EpisodeGroupingTests: XCTestCase {
+    private var utc: Calendar { var c = Calendar(identifier: .gregorian); c.timeZone = TimeZone(identifier: "UTC")!; return c }
+    private func date(_ y: Int, _ m: Int) -> Date { utc.date(from: DateComponents(year: y, month: m, day: 15))! }
+
+    private var episodes: [PodcastEpisode] {
+        [
+            PodcastEpisode(guid: "e5", title: "S3 new", pubDate: date(2026, 9), season: 3, episode: 2),
+            PodcastEpisode(guid: "b1", title: "Bonus", pubDate: date(2026, 5)),
+            PodcastEpisode(guid: "e4", title: "S3 first", pubDate: date(2026, 1), season: 3, episode: 1),
+            PodcastEpisode(guid: "e3", title: "S2", pubDate: date(2025, 6), season: 2, episode: 1),
+            PodcastEpisode(guid: "e1", title: "S1", pubDate: date(2024, 3), season: 1, episode: 1),
+            PodcastEpisode(guid: "x", title: "Undated, no season"),
+        ]
+    }
+
+    func testBySeasonNewestFirstBonusLast() {
+        let g = EpisodeGrouper.groups(episodes, by: .season, calendar: utc)
+        XCTAssertEqual(g.map(\.id), ["season-3", "season-2", "season-1", "bonus"])
+        XCTAssertEqual(g.map(\.title), ["Season 3", "Season 2", "Season 1", "Bonus"])
+        XCTAssertEqual(g[0].episodes.map(\.guid), ["e5", "e4"], "feed order kept")
+        XCTAssertEqual(g[3].episodes.map(\.guid), ["b1", "x"])
+        XCTAssertEqual(g.map(\.episodes.count).reduce(0, +), episodes.count)
+    }
+
+    func testByYearPutsUnseasonedUnderTheirYear() {
+        let g = EpisodeGrouper.groups(episodes, by: .year, calendar: utc)
+        XCTAssertEqual(g.map(\.id), ["year-2026", "year-2025", "year-2024", "undated"])
+        XCTAssertEqual(g[0].episodes.map(\.guid), ["e5", "b1", "e4"])
+        XCTAssertEqual(g[3].episodes.map(\.guid), ["x"])
+    }
+
+    func testAllAndEmpty() {
+        XCTAssertEqual(EpisodeGrouper.groups(episodes, by: .all).first?.episodes.count, episodes.count)
+        XCTAssertTrue(EpisodeGrouper.groups([], by: .season).isEmpty)
+        XCTAssertTrue(EpisodeGrouper.groups([], by: .all).isEmpty)
+    }
+
+    func testExpansionDefaultsAndPersistence() {
+        var e = EpisodeGroupExpansion(serialized: "")
+        XCTAssertTrue(e.isExpanded("season-3", isNewest: true), "newest group starts open")
+        XCTAssertFalse(e.isExpanded("season-2", isNewest: false))
+        e.toggle("season-3", isNewest: true)
+        e.toggle("season-1", isNewest: false)
+        XCTAssertEqual(e.serialized, "season-1:1,season-3:0")
+        let restored = EpisodeGroupExpansion(serialized: e.serialized)
+        XCTAssertFalse(restored.isExpanded("season-3", isNewest: true))
+        XCTAssertTrue(restored.isExpanded("season-1", isNewest: false))
+        XCTAssertEqual(EpisodeGroupExpansion(serialized: "junk,:1,a:1:2,b:0").states, ["b": false])
+    }
+}

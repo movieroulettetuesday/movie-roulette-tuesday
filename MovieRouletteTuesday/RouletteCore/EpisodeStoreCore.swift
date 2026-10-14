@@ -153,3 +153,89 @@ public enum StatsCalculator {
         )
     }
 }
+
+// MARK: - Episode grouping (Season / Year / All)
+
+public enum EpisodeGrouping: String, CaseIterable, Identifiable, Sendable {
+    case season, year, all
+    public var id: String { rawValue }
+    public var label: String {
+        switch self {
+        case .season: return "Season"
+        case .year: return "Year"
+        case .all: return "All"
+        }
+    }
+}
+
+public struct EpisodeGroup: Identifiable, Equatable, Sendable {
+    /// Stable key for the remembered open/closed state ("season-4", "bonus", "year-2026", "all").
+    public let id: String
+    public let title: String
+    public let episodes: [PodcastEpisode]
+}
+
+/// Pure grouping, newest group first. Episodes keep their order inside a group.
+/// No season -> "Bonus" (last); by year, every episode goes under its pubDate
+/// year (season or not); no date -> "Undated" (last).
+public enum EpisodeGrouper {
+    public static let bonusID = "bonus"
+
+    public static func groups(_ episodes: [PodcastEpisode], by grouping: EpisodeGrouping,
+                              calendar: Calendar = .current) -> [EpisodeGroup] {
+        switch grouping {
+        case .all:
+            return episodes.isEmpty ? [] : [EpisodeGroup(id: "all", title: "All Episodes", episodes: episodes)]
+        case .season:
+            var bySeason: [Int: [PodcastEpisode]] = [:]
+            var bonus: [PodcastEpisode] = []
+            for ep in episodes {
+                if let s = ep.season { bySeason[s, default: []].append(ep) } else { bonus.append(ep) }
+            }
+            var out = bySeason.keys.sorted(by: >).map {
+                EpisodeGroup(id: "season-\($0)", title: "Season \($0)", episodes: bySeason[$0] ?? [])
+            }
+            if !bonus.isEmpty { out.append(EpisodeGroup(id: bonusID, title: "Bonus", episodes: bonus)) }
+            return out
+        case .year:
+            var byYear: [Int: [PodcastEpisode]] = [:]
+            var undated: [PodcastEpisode] = []
+            for ep in episodes {
+                if let d = ep.pubDate { byYear[calendar.component(.year, from: d), default: []].append(ep) } else { undated.append(ep) }
+            }
+            var out = byYear.keys.sorted(by: >).map {
+                EpisodeGroup(id: "year-\($0)", title: String($0), episodes: byYear[$0] ?? [])
+            }
+            if !undated.isEmpty { out.append(EpisodeGroup(id: "undated", title: "Undated", episodes: undated)) }
+            return out
+        }
+    }
+}
+
+/// Remembered open/closed headers, stored as one string ("season-4:1,season-3:0").
+/// A group with no saved state is open only when it is the newest group.
+public struct EpisodeGroupExpansion: Equatable, Sendable {
+    public private(set) var states: [String: Bool]
+
+    public init(states: [String: Bool] = [:]) { self.states = states }
+
+    public init(serialized: String) {
+        var states: [String: Bool] = [:]
+        for part in serialized.split(separator: ",") {
+            let kv = part.split(separator: ":")
+            guard kv.count == 2, !kv[0].isEmpty else { continue }
+            states[String(kv[0])] = kv[1] == "1"
+        }
+        self.states = states
+    }
+
+    public var serialized: String {
+        states.keys.sorted().map { "\($0):\(states[$0]! ? 1 : 0)" }.joined(separator: ",")
+    }
+
+    public func isExpanded(_ id: String, isNewest: Bool) -> Bool { states[id] ?? isNewest }
+
+    public mutating func toggle(_ id: String, isNewest: Bool) {
+        states[id] = !isExpanded(id, isNewest: isNewest)
+    }
+}

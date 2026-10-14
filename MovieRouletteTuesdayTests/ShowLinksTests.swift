@@ -148,3 +148,53 @@ final class ShowLinksTests: XCTestCase {
         }
     }
 }
+
+
+final class InAppSuggestionTests: XCTestCase {
+    func testValidation() {
+        XCTAssertEqual(InAppSuggestion(title: "   ").problems, [.missingTitle])
+        XCTAssertTrue(InAppSuggestion(title: " Tremors ", note: "Graboids.").isValid)
+        let long = String(repeating: "x", count: 281)
+        XCTAssertEqual(InAppSuggestion(title: "T", note: long).problems, [.noteTooLong])
+        XCTAssertTrue(InAppSuggestion(title: "T", note: String(repeating: "x", count: 280)).isValid)
+        XCTAssertEqual(InAppSuggestion(title: "T", creditName: String(repeating: "n", count: 61)).problems, [.nameTooLong])
+        XCTAssertEqual(InAppSuggestion(title: String(repeating: "t", count: 121)).problems, [.titleTooLong])
+        XCTAssertEqual(InAppSuggestion(title: "T", note: "abc").noteCharactersLeft, 277)
+        XCTAssertEqual(InAppSuggestion.capped(long, to: 280).count, 280)
+        XCTAssertEqual(InAppSuggestion.capped("short", to: 280), "short")
+        XCTAssertNil(InAppSuggestion(title: "T", category: "  ").trimmedCategory)
+    }
+
+    func testEmailFallbackCarriesTheSamePick() throws {
+        let s = InAppSuggestion(title: "Tremors", category: "Cult", note: "Graboids.", creditName: "Laura from Ohio")
+        let mail = s.asEmail
+        XCTAssertEqual(mail.subject, "Movie suggestion: Tremors")
+        XCTAssertTrue(mail.body.contains("Graboids."))
+        XCTAssertTrue(mail.body.contains("From: Laura from Ohio"))
+        XCTAssertTrue(mail.body.contains("Category: Cult"))
+        XCTAssertEqual(try XCTUnwrap(mail.mailtoURL).scheme, "mailto")
+    }
+
+    func testRateLimitOnePerTenMinutes() {
+        let t0 = Date(timeIntervalSinceReferenceDate: 1_000_000)
+        var limit = SuggestionRateLimit()
+        XCTAssertTrue(limit.canSend(now: t0))
+        limit.recordSend(now: t0)
+        XCTAssertFalse(limit.canSend(now: t0.addingTimeInterval(60)))
+        XCTAssertEqual(limit.secondsRemaining(now: t0.addingTimeInterval(60)), 540)
+        XCTAssertEqual(limit.secondsRemaining(now: t0.addingTimeInterval(599.5)), 1)
+        XCTAssertTrue(limit.canSend(now: t0.addingTimeInterval(600)))
+        XCTAssertTrue(limit.canSend(now: t0.addingTimeInterval(-5)), "clock moved back: never stuck")
+        XCTAssertEqual(SuggestionRateLimit.message(seconds: 540), "You just sent one. Try again in 9 min.")
+    }
+
+    func testRateLimitPersists() {
+        let defaults = UserDefaults(suiteName: "mrt-test-ratelimit-\(UUID().uuidString)")!
+        XCTAssertNil(SuggestionRateLimit.load(from: defaults).lastSent)
+        var limit = SuggestionRateLimit()
+        let now = Date()
+        limit.recordSend(now: now)
+        limit.save(to: defaults)
+        XCTAssertFalse(SuggestionRateLimit.load(from: defaults).canSend(now: now.addingTimeInterval(10)))
+    }
+}

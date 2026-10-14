@@ -4,7 +4,7 @@ import SwiftUI
 /// Separate from "My rating", which stays on the device unless shared.
 struct ListenerRatingSection: View {
     let movieId: String
-    /// The local "My rating" (Part of Your Take), offered for sharing.
+    /// The local "My rating" in half-stars (Part of Your Take), offered for sharing.
     let myRating: Int?
     @Environment(CommunityService.self) private var community
 
@@ -20,9 +20,9 @@ struct ListenerRatingSection: View {
         ) {
             HStack(spacing: 10) {
                 if let aggregate, let average = aggregate.average {
-                    Text(average, format: .number.precision(.fractionLength(1)))
+                    Text(HalfStars.label(stars: average))
                         .font(.title2.bold().monospacedDigit())
-                    StarRatingView(rating: Int(average.rounded()), font: .subheadline, tint: Brand.accentPeach)
+                    StarRatingView(halfStars: aggregate.averageHalfStars, font: .subheadline, tint: Brand.accentPeach)
                     Spacer()
                     Text(aggregate.count == 1 ? "1 rating" : "\(aggregate.count) ratings")
                         .font(.caption)
@@ -39,17 +39,17 @@ struct ListenerRatingSection: View {
 
             if let shared {
                 LabeledContent("Your listener vote") {
-                    StarRatingView(rating: shared, font: .caption, tint: Brand.accentPeach)
+                    StarRatingView(halfStars: shared, font: .caption, tint: Brand.accentPeach)
                 }
             }
 
             if canWrite {
                 if let myRating, myRating != shared {
                     Button {
-                        Task { await community.submitListenerRating(movieId: movieId, stars: myRating) }
+                        Task { await community.submitListenerRating(movieId: movieId, halfStars: myRating) }
                     } label: {
-                        Label(shared == nil ? "Add my \(myRating)★ to the listener average"
-                                            : "Update my listener vote to \(myRating)★",
+                        Label(shared == nil ? "Add my \(HalfStars.label(myRating))★ to the listener average"
+                                            : "Update my listener vote to \(HalfStars.label(myRating))★",
                               systemImage: "person.3.fill")
                     }
                     .disabled(isBusy)
@@ -75,7 +75,7 @@ struct ListenerRatingSection: View {
 
 #Preview {
     ScrollView {
-        ListenerRatingSection(movieId: "the-room-2003", myRating: 4)
+        ListenerRatingSection(movieId: "the-room-2003", myRating: 7)
             .padding()
     }
     .environment(CommunityService.preview())

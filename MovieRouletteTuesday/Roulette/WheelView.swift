@@ -9,6 +9,8 @@ struct WheelView: View {
     let geometry: WheelGeometry
     /// Degrees; applied to the face only (render-only transform, no relayout).
     var rotation: Double = 0
+    /// Static extra rotation while a stopped spin decelerates (see SpinStopPlan).
+    var stopOffset: Double = 0
 
     @Environment(\.colorScheme) private var scheme
 
@@ -33,6 +35,9 @@ struct WheelView: View {
                 }
                 .frame(width: diameter - rim * 2, height: diameter - rim * 2)
                 .rotationEffect(.degrees(rotation))
+                // Tap-to-stop offset: a separate, never-animated rotation, so
+                // changing it doesn't touch the running spin animation.
+                .rotationEffect(.degrees(stopOffset))
 
                 // Static: rim and hub.
                 Circle()

@@ -117,7 +117,7 @@ struct StatsView: View {
             LabeledContent("Movies rated", value: "\(mine.ratedCount)")
             if let average = mine.averageStars {
                 LabeledContent("Your average") {
-                    Text("\(average, format: .number.precision(.fractionLength(1))) ★")
+                    Text("\(HalfStars.label(stars: average)) ★")
                 }
             }
             LabeledContent("Watched", value: "\(mine.watchedCount)")
@@ -127,7 +127,7 @@ struct StatsView: View {
                     Text(rated.title)
                         .lineLimit(1)
                     Spacer()
-                    StarRatingView(rating: rated.stars, font: .caption, tint: .orange)
+                    StarRatingView(halfStars: rated.halfStars, font: .caption, tint: .orange)
                 }
             }
             if let diff = mine.averageDifferenceFromHosts {
@@ -140,7 +140,7 @@ struct StatsView: View {
                 }
                 ForEach(mine.versusHosts, id: \.movieId) { row in
                     LabeledContent(row.title) {
-                        Text("You \(row.yourStars) · Hosts \(row.hostRating, format: .number.precision(.fractionLength(0...1)))")
+                        Text("You \(HalfStars.label(row.yourHalfStars)) · Hosts \(row.hostRating, format: .number.precision(.fractionLength(0...1)))")
                     }
                 }
             }

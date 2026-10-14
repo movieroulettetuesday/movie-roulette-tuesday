@@ -1,55 +1,76 @@
 import SwiftUI
 
-/// 1–5 stars. Tap a star to set; tap the current value again to clear.
-/// Read-only when `onChange` is nil.
+/// 0.5…5 stars in half-star steps (values are half-stars, 1...10).
+/// Tap a star's left half for ½, its right half for the whole star, or drag
+/// across the row; tapping the current value again clears it. VoiceOver:
+/// swipe up/down adjusts by ½ star. Read-only when `onChange` is nil.
 struct StarRatingView: View {
-    let rating: Int?
+    let halfStars: Int?
     var font: Font = .title3
     var tint: Color = .orange
     var onChange: ((Int?) -> Void)?
 
+    @State private var rowWidth: CGFloat = 0
+    /// Live value while a finger is on the stars.
+    @State private var dragValue: Int?
+    @State private var dragMoved = false
+
+    private var shown: Int? { dragValue ?? halfStars }
+
     var body: some View {
         HStack(spacing: 4) {
             ForEach(1...5, id: \.self) { star in
-                let filled = star <= (rating ?? 0)
-                if let onChange {
-                    Button {
-                        onChange(rating == star ? nil : star)
-                    } label: {
-                        starImage(filled: filled)
-                    }
-                    // Borderless so each star is its own tap target inside a List row.
-                    .buttonStyle(.borderless)
-                } else {
-                    starImage(filled: filled)
-                }
+                starImage(fill: HalfStars.fill(star: star, halfStars: shown))
             }
         }
+        .background {
+            GeometryReader { g in
+                Color.clear
+                    .onAppear { rowWidth = g.size.width }
+                    .onChange(of: g.size.width) { _, w in rowWidth = w }
+            }
+        }
+        .contentShape(Rectangle())
+        .gesture(onChange == nil ? nil : dragGesture)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Rating")
-        .accessibilityValue(rating.map { "\($0) of 5 stars" } ?? "Not rated")
+        .accessibilityValue(shown.map { "\(HalfStars.label($0)) of 5 stars" } ?? "Not rated")
         .accessibilityAdjustableAction { direction in
             guard let onChange else { return }
-            let current = rating ?? 0
             switch direction {
-            case .increment: onChange(min(current + 1, 5))
-            case .decrement: onChange(current <= 1 ? nil : current - 1)
+            case .increment: onChange(HalfStars.adjusted(halfStars, increment: true))
+            case .decrement: onChange(HalfStars.adjusted(halfStars, increment: false))
             @unknown default: break
             }
         }
     }
 
-    private func starImage(filled: Bool) -> some View {
-        Image(systemName: filled ? "star.fill" : "star")
+    private var dragGesture: some Gesture {
+        DragGesture(minimumDistance: 0)
+            .onChanged { value in
+                if abs(value.translation.width) > 6 { dragMoved = true }
+                dragValue = HalfStars.fromLocation(Double(value.location.x), width: Double(rowWidth))
+            }
+            .onEnded { value in
+                let picked = HalfStars.fromLocation(Double(value.location.x), width: Double(rowWidth))
+                // A plain tap on the current value clears it (as before).
+                let result: Int? = (!dragMoved && picked == halfStars) ? nil : picked
+                dragValue = nil
+                dragMoved = false
+                onChange?(result)
+            }
+    }
+
+    private func starImage(fill: Double) -> some View {
+        Image(systemName: fill >= 1 ? "star.fill" : (fill > 0 ? "star.leadinghalf.filled" : "star"))
             .font(font)
-            .foregroundStyle(filled ? tint : Color.secondary.opacity(0.5))
-            .contentShape(Rectangle())
+            .foregroundStyle(fill > 0 ? tint : Color.secondary.opacity(0.5))
     }
 }
 
 #Preview {
     VStack(spacing: 20) {
-        StarRatingView(rating: 3, onChange: { _ in })
-        StarRatingView(rating: nil, font: .caption)
+        StarRatingView(halfStars: 7, onChange: { _ in })
+        StarRatingView(halfStars: nil, font: .caption)
     }
 }

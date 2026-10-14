@@ -240,3 +240,77 @@ public struct SpinMotion: Hashable, Sendable {
         return min(max(y, y0), y1)
     }
 }
+
+/// "Tap to stop": the spin in flight ends early on a NEW random landing,
+/// decelerating over `duration` from the wheel's current angle.
+///
+/// The running animation (start -> oldTarget) is not replaced. From
+/// `startTime` on it follows `progress(at:)` instead, and the wheel adds a
+/// static `offset` (= newTarget - oldTarget), so what's drawn is
+/// `start + (oldTarget - start) * q + offset`: equal to the current angle at
+/// `startTime` and to `newTarget` at the end. Pure, so it's testable.
+public struct SpinStopPlan: Equatable, Sendable {
+    public static let duration = 0.8
+    /// Window for the new landing, degrees past the current angle: at least
+    /// ~1/3 turn (so it visibly slows), 360° wide so every slice keeps its odds.
+    public static let minimumTravel = 120.0
+    public static let curve = TimingCurve.easeOut
+
+    /// Animation-local time (s) when the deceleration starts.
+    public let startTime: Double
+    public let start: Double
+    public let oldTarget: Double
+    public let currentAngle: Double
+    public let newTarget: Double
+
+    public var offset: Double { newTarget - oldTarget }
+    public var span: Double { oldTarget - start }
+    /// Old-animation progress that, plus `offset`, shows `currentAngle`.
+    public var fromProgress: Double { span == 0 ? 1 : (currentAngle - offset - start) / span }
+    public var endTime: Double { startTime + Self.duration }
+
+    public init(startTime: Double, start: Double, oldTarget: Double, currentAngle: Double, newTarget: Double) {
+        self.startTime = startTime
+        self.start = start
+        self.oldTarget = oldTarget
+        self.currentAngle = currentAngle
+        self.newTarget = newTarget
+    }
+
+    /// Old-animation progress at animation time `t` (>= startTime); 1 at the end.
+    public func progress(at t: Double) -> Double {
+        let u = min(max((t - startTime) / Self.duration, 0), 1)
+        let from = fromProgress
+        return from + (1 - from) * Self.curve.progress(atTimeFraction: u)
+    }
+
+    /// What the wheel shows at time `t` (old animation + offset).
+    public func displayedAngle(at t: Double) -> Double { start + span * progress(at: t) + offset }
+
+    /// Stop plan for a spin `elapsed` seconds into `motion`, or nil when it is
+    /// too close to its natural end to stop sooner (it just finishes).
+    public static func make<G: RandomNumberGenerator>(
+        motion: SpinMotion, start: Double, oldTarget: Double, elapsed: Double,
+        geometry: WheelGeometry, using rng: inout G
+    ) -> SpinStopPlan? {
+        guard elapsed.isFinite, elapsed >= 0, elapsed < motion.duration - duration else { return nil }
+        let current = start + (oldTarget - start) * motion.progress(at: elapsed)
+        let target = randomTarget(from: current, geometry: geometry, using: &rng)
+        return SpinStopPlan(startTime: elapsed, start: start, oldTarget: oldTarget, currentAngle: current, newTarget: target)
+    }
+
+    /// current + 120° + a uniformly random 0..<360°, nudged off slice edges
+    /// exactly like a normal spin target (same slice, so odds are unchanged).
+    public static func randomTarget<G: RandomNumberGenerator>(
+        from current: Double, geometry: WheelGeometry, using rng: inout G
+    ) -> Double {
+        geometry.randomTargetRotation(from: current + minimumTravel, fullTurns: 0...0, using: &rng)
+    }
+
+    /// Crossing times (s, from the stop) for ticks/haptics: they slow down
+    /// with the wheel because they follow the same curve.
+    public func crossingTimes(geometry: WheelGeometry) -> [Double] {
+        SpinTicks.tickTimes(from: currentAngle, to: newTarget, geometry: geometry,
+                            curve: Self.curve, duration: Self.duration, minInterval: 0)
+    }
+}

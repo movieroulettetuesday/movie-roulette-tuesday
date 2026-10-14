@@ -34,8 +34,8 @@ final class SpinFeedback {
     }
 
     /// Fades out (or cuts) the clip: spin interrupted, view gone, app backgrounded.
-    func stopClip(fade: Bool = true) {
-        audio.stop(fade: fade)
+    func stopClip(fade: Bool = true, duration: TimeInterval = SpinAudio.fadeDuration) {
+        audio.stop(fade: fade, duration: duration)
     }
 
     /// One selection haptic (a boundary crossing).
@@ -121,7 +121,7 @@ final class SpinAudio: @unchecked Sendable {
     }
 
     /// Fades the clip out (`fade`) or stops it at once.
-    func stop(fade: Bool) {
+    func stop(fade: Bool, duration: TimeInterval = SpinAudio.fadeDuration) {
         queue.async { [self] in
             dispatchPrecondition(condition: .onQueue(queue))
             pendingStart = nil
@@ -132,8 +132,8 @@ final class SpinAudio: @unchecked Sendable {
                 return
             }
             let token = generation
-            player.setVolume(0, fadeDuration: Self.fadeDuration)
-            queue.asyncAfter(deadline: .now() + Self.fadeDuration + 0.02) { [self] in
+            player.setVolume(0, fadeDuration: duration)
+            queue.asyncAfter(deadline: .now() + duration + 0.02) { [self] in
                 guard token == generation, let player = self.player else { return }
                 player.stop()
                 player.volume = Self.volume

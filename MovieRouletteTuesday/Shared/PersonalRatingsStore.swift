@@ -31,6 +31,13 @@ final class PersonalRatingsStore {
     func status(for movieId: String) -> WatchStatus? { ratings.status(for: movieId) }
     func entry(for movieId: String) -> PersonalMovieEntry? { ratings.entry(for: movieId) }
 
+    func halfStars(for movieId: String) -> Int? { ratings.halfStars(for: movieId) }
+
+    func setHalfStars(_ halfStars: Int?, for movieId: String) {
+        ratings.setHalfStars(halfStars, for: movieId)
+        persist()
+    }
+
     func setRating(_ stars: Int?, for movieId: String) {
         ratings.setRating(stars, for: movieId)
         persist()

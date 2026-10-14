@@ -52,6 +52,12 @@ public struct Movie: Codable, Hashable, Identifiable, Sendable {
     public var posterURL: URL?
     public var isInfamous: Bool
     public var hostRating: Double?
+    /// TMDB movie id (future "Where to stream"; no UI yet). Optional, so
+    /// catalogs without it still decode.
+    public var tmdbId: Int?
+    /// Streaming providers, precomputed into movies.json (future feature;
+    /// no UI yet). Optional and tolerant.
+    public var streaming: StreamingInfo?
 
     public init(
         id: String,
@@ -63,7 +69,9 @@ public struct Movie: Codable, Hashable, Identifiable, Sendable {
         episodeTitle: String? = nil,
         posterURL: URL? = nil,
         isInfamous: Bool = false,
-        hostRating: Double? = nil
+        hostRating: Double? = nil,
+        tmdbId: Int? = nil,
+        streaming: StreamingInfo? = nil
     ) {
         self.id = id
         self.title = title
@@ -75,10 +83,13 @@ public struct Movie: Codable, Hashable, Identifiable, Sendable {
         self.posterURL = posterURL
         self.isInfamous = isInfamous
         self.hostRating = hostRating
+        self.tmdbId = tmdbId
+        self.streaming = streaming
     }
 
     enum CodingKeys: String, CodingKey {
         case id, title, year, genre, categories, episodeIds, episodeTitle, posterURL, isInfamous, hostRating
+        case tmdbId, streaming
     }
 
     public init(from decoder: Decoder) throws {
@@ -93,7 +104,75 @@ public struct Movie: Codable, Hashable, Identifiable, Sendable {
         posterURL = try c.decodeIfPresent(URL.self, forKey: .posterURL)
         isInfamous = try c.decodeIfPresent(Bool.self, forKey: .isInfamous) ?? false
         hostRating = try c.decodeIfPresent(Double.self, forKey: .hostRating)
+        // New optional fields never fail the catalog: a malformed value reads as nil.
+        tmdbId = (try? c.decodeIfPresent(Int.self, forKey: .tmdbId)) ?? nil
+        streaming = (try? c.decodeIfPresent(StreamingInfo.self, forKey: .streaming)) ?? nil
     }
+}
+
+/// Where a movie streams (TMDB watch/providers, data by JustWatch),
+/// precomputed into movies.json. Data model only; no UI yet.
+/// JSON: {"region":"US","updated":"YYYY-MM-DD","link":"…","stream":[…],"free":[…],"rent":[…],"buy":[…]}
+public struct StreamingInfo: Codable, Hashable, Sendable {
+    /// {"id":8,"name":"Netflix","logo":"/abc.jpg","priority":1}
+    public struct Provider: Codable, Hashable, Sendable {
+        public static let logoBase = "https://image.tmdb.org/t/p/w92"
+        public var id: Int
+        public var name: String
+        /// TMDB `logo_path`.
+        public var logo: String?
+        public var priority: Int?
+
+        public init(id: Int, name: String, logo: String? = nil, priority: Int? = nil) {
+            self.id = id
+            self.name = name
+            self.logo = logo
+            self.priority = priority
+        }
+
+        public var logoURL: URL? {
+            guard let logo, !logo.isEmpty else { return nil }
+            return URL(string: Self.logoBase + (logo.hasPrefix("/") ? logo : "/" + logo))
+        }
+    }
+
+    public var region: String
+    /// "YYYY-MM-DD"
+    public var updated: String?
+    /// TMDB "All options" page.
+    public var link: String?
+    public var stream: [Provider]
+    public var free: [Provider]
+    public var rent: [Provider]
+    public var buy: [Provider]
+
+    public init(region: String = "US", updated: String? = nil, link: String? = nil,
+                stream: [Provider] = [], free: [Provider] = [], rent: [Provider] = [], buy: [Provider] = []) {
+        self.region = region
+        self.updated = updated
+        self.link = link
+        self.stream = stream
+        self.free = free
+        self.rent = rent
+        self.buy = buy
+    }
+
+    enum CodingKeys: String, CodingKey { case region, updated, link, stream, free, rent, buy }
+
+    /// Lists may be missing or empty; a malformed provider list reads as empty.
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        func list(_ k: CodingKeys) -> [Provider] { ((try? c.decodeIfPresent([Provider].self, forKey: k)) ?? nil) ?? [] }
+        region = ((try? c.decodeIfPresent(String.self, forKey: .region)) ?? nil) ?? "US"
+        updated = (try? c.decodeIfPresent(String.self, forKey: .updated)) ?? nil
+        link = (try? c.decodeIfPresent(String.self, forKey: .link)) ?? nil
+        stream = list(.stream)
+        free = list(.free)
+        rent = list(.rent)
+        buy = list(.buy)
+    }
+
+    public var isEmpty: Bool { stream.isEmpty && free.isEmpty && rent.isEmpty && buy.isEmpty }
 }
 
 /// One slice of the wheel.

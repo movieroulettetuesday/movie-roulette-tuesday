@@ -23,7 +23,7 @@ final class CommunityService {
 
     /// Local "votedPolls" cache: pollId -> option id (+ record name).
     private var votedPolls: [String: LocalSubmission<String>] = [:]
-    /// movieId -> stars this device submitted to the listener average.
+    /// movieId -> half-stars (1...10) this device submitted to the listener average.
     private var listenerRatings: [String: LocalSubmission<Int>] = [:]
 
     let pollOverrides: PollOverrides?
@@ -38,7 +38,9 @@ final class CommunityService {
     @ObservationIgnored private var backoff = CommunityBackoff()
 
     private static let votedPollsKey = "community.votedPolls"
+    /// Whole stars (before half-stars); migrated once to `listenerHalfStarsKey`.
     private static let listenerRatingsKey = "community.listenerRatings"
+    private static let listenerHalfStarsKey = "community.listenerHalfStars"
 
     init(store: any CommunityStore, defaults: UserDefaults = .standard, bundle: Bundle = .main) {
         self.store = store
@@ -47,7 +49,15 @@ final class CommunityService {
             .flatMap { try? Data(contentsOf: $0) }
             .flatMap { try? PollOverrides.decode($0) }
         votedPolls = Self.load(Self.votedPollsKey, from: defaults) ?? [:]
-        listenerRatings = Self.load(Self.listenerRatingsKey, from: defaults) ?? [:]
+        if let half: [String: LocalSubmission<Int>] = Self.load(Self.listenerHalfStarsKey, from: defaults) {
+            listenerRatings = half
+        } else {
+            let legacy: [String: LocalSubmission<Int>] = Self.load(Self.listenerRatingsKey, from: defaults) ?? [:]
+            listenerRatings = legacy.compactMapValues { sub in
+                HalfStars.fromLegacyStars(sub.value).map { LocalSubmission(value: $0, recordName: sub.recordName) }
+            }
+            if !legacy.isEmpty { save(listenerRatings, Self.listenerHalfStarsKey) }
+        }
     }
 
     // MARK: Account
@@ -152,14 +162,15 @@ final class CommunityService {
 
     // MARK: Listener ratings
 
+    /// Half-stars this device shared for the movie.
     func myListenerRating(movieId: String) -> Int? { listenerRatings[movieId]?.value }
 
     func loadRating(movieId: String, force: Bool = false) async {
         await refreshAccountStatus()
         if accountStatus.canWrite, listenerRatings[movieId] == nil,
-           let stars = try? await store.myRating(movieId: movieId) {
-            listenerRatings[movieId] = LocalSubmission(value: stars, recordName: "")
-            save(listenerRatings, Self.listenerRatingsKey)
+           let half = try? await store.myRating(movieId: movieId) {
+            listenerRatings[movieId] = LocalSubmission(value: half, recordName: "")
+            save(listenerRatings, Self.listenerHalfStarsKey)
         }
         if !force, let cached = ratingCache.value(for: movieId) {
             publishRating(movieId, ratings: cached)
@@ -184,8 +195,8 @@ final class CommunityService {
         }
     }
 
-    func submitListenerRating(movieId: String, stars: Int) async {
-        guard PersonalRatings.ratingRange.contains(stars), !busy.contains(movieId) else { return }
+    func submitListenerRating(movieId: String, halfStars: Int) async {
+        guard HalfStars.range.contains(halfStars), !busy.contains(movieId) else { return }
         if let blocked = backoffMessage() { errors[movieId] = blocked; return }
         busy.insert(movieId)
         await refreshAccountStatus()
@@ -196,9 +207,9 @@ final class CommunityService {
         }
         defer { busy.remove(movieId) }
         do {
-            let name = try await store.submitRating(movieId: movieId, stars: stars)
-            listenerRatings[movieId] = LocalSubmission(value: stars, recordName: name)
-            save(listenerRatings, Self.listenerRatingsKey)
+            let name = try await store.submitRating(movieId: movieId, halfStars: halfStars)
+            listenerRatings[movieId] = LocalSubmission(value: halfStars, recordName: name)
+            save(listenerRatings, Self.listenerHalfStarsKey)
             errors[movieId] = nil
             ratingCache.invalidate(movieId)
         } catch {
@@ -210,7 +221,29 @@ final class CommunityService {
 
     private func publishRating(_ movieId: String, ratings: [String: Int]) {
         let merged = CommunityMerge.merging(ratings, own: Self.own(listenerRatings[movieId]))
-        ratingAggregates[movieId] = RatingAggregate.from(stars: merged.values)
+        ratingAggregates[movieId] = RatingAggregate.from(halfStars: merged.values)
+    }
+
+    // MARK: Suggestions (in-app backup to email)
+
+    /// Saves the suggestion to iCloud. Returns nil on success, else a friendly
+    /// message (the form then offers the email fallbacks).
+    func submitSuggestion(_ suggestion: InAppSuggestion) async -> String? {
+        guard suggestion.isValid else { return "Add a movie title (note up to \(InAppSuggestion.noteLimit) characters)." }
+        await refreshAccountStatus(force: true)
+        guard accountStatus.canWrite else {
+            return "iCloud isn't available. Sign in to iCloud in Settings to send from the app, or use email below."
+        }
+        let version = (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?")
+            + " (" + (Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "?") + ")"
+        do {
+            try await store.submitSuggestion(suggestion, appVersion: version)
+            return nil
+        } catch {
+            if error is CancellationError { return "Cancelled." }
+            if (error as? CommunityError) == .notSignedIn { accountStatus = .noAccount }
+            return (error as? LocalizedError)?.errorDescription ?? "Couldn't send. Try email instead."
+        }
     }
 
     /// Friendly message for an error, or nil when it should be ignored

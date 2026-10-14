@@ -8,19 +8,38 @@ import SwiftUI
 struct HubSpinButton: View {
     let hubSize: CGFloat
     let enabled: Bool
+    /// While spinning: a ■ stop button sits on the hub (the Spin button stays
+    /// there, dimmed, as before).
+    var canStop: Bool = false
+    var onStop: () -> Void = {}
     let action: () -> Void
     @Environment(\.colorScheme) private var scheme
 
     var body: some View {
-        Button(action: action) {
-            Color.clear.frame(width: hubSize, height: hubSize)
+        ZStack {
+            Button(action: action) {
+                Color.clear.frame(width: hubSize, height: hubSize)
+            }
+            .buttonStyle(HubSpinButtonStyle(hubSize: hubSize, dark: scheme == .dark, forcedPressed: Self.forcedPressed))
+            .disabled(!enabled)
+            .accessibilityLabel("Spin")
+            .accessibilityHint("Spins the wheel")
+            .accessibilityInputLabels(["Spin", "Spin the wheel", "Spin wheel"])
+            .accessibilityIdentifier("hub-spin-button")
+
+            if canStop {
+                Button(action: onStop) {
+                    HubStopFace(hubSize: hubSize, dark: scheme == .dark)
+                }
+                .buttonStyle(.plain)
+                .transition(.opacity.combined(with: .scale(scale: 0.85)))
+                .accessibilityLabel("Stop")
+                .accessibilityHint("Stops the wheel early on a random slice")
+                .accessibilityInputLabels(["Stop", "Stop the wheel", "Stop spin"])
+                .accessibilityIdentifier("hub-stop-button")
+            }
         }
-        .buttonStyle(HubSpinButtonStyle(hubSize: hubSize, dark: scheme == .dark, forcedPressed: Self.forcedPressed))
-        .disabled(!enabled)
-        .accessibilityLabel("Spin")
-        .accessibilityHint("Spins the wheel")
-        .accessibilityInputLabels(["Spin", "Spin the wheel", "Spin wheel"])
-        .accessibilityIdentifier("hub-spin-button")
+        .animation(.easeInOut(duration: 0.15), value: canStop)
     }
 
     private static var forcedPressed: Bool {
@@ -29,6 +48,26 @@ struct HubSpinButton: View {
         #else
         false
         #endif
+    }
+}
+
+/// ■ on a teal disc over the hub (approved Oct 14 mockup).
+private struct HubStopFace: View {
+    let hubSize: CGFloat
+    let dark: Bool
+
+    var body: some View {
+        let teal = Color(hex: dark ? CleanProColors.hubTealDark : CleanProColors.hubTealLight)
+        ZStack {
+            Circle().fill(.white)
+            Circle().strokeBorder(Color(hex: CleanProColors.peach), lineWidth: max(2, hubSize * 0.03))
+            Circle().fill(teal).padding(hubSize * 0.12)
+            RoundedRectangle(cornerRadius: hubSize * 0.03)
+                .fill(.white)
+                .frame(width: hubSize * 0.26, height: hubSize * 0.26)
+        }
+        .frame(width: hubSize, height: hubSize)
+        .contentShape(Circle())
     }
 }
 

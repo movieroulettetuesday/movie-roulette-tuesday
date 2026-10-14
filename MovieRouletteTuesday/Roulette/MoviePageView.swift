@@ -23,7 +23,7 @@ struct MoviePageView: View {
     @Environment(\.colorScheme) private var colorScheme
 
     private var show: ShowInfo { catalog?.showInfo ?? .mrt }
-    private var myRating: Int? { personal.rating(for: movie.id) }
+    private var myRating: Int? { personal.halfStars(for: movie.id) }
 
     private var statusBinding: Binding<WatchStatus?> {
         Binding(
@@ -135,12 +135,18 @@ struct MoviePageView: View {
             HStack {
                 Text("My rating")
                 Spacer()
-                StarRatingView(rating: myRating, tint: .orange) { stars in
-                    personal.setRating(stars, for: movie.id)
-                    if autoShareRatings, let stars {
-                        Task { await community.submitListenerRating(movieId: movie.id, stars: stars) }
+                StarRatingView(halfStars: myRating, tint: .orange) { half in
+                    personal.setHalfStars(half, for: movie.id)
+                    if autoShareRatings, let half {
+                        Task { await community.submitListenerRating(movieId: movie.id, halfStars: half) }
                     }
                 }
+                .accessibilityIdentifier("my-rating-stars")
+            }
+            if let myRating {
+                Text("\(HalfStars.label(myRating)) of 5 · drag across the stars or tap a star's left half for ½")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
             }
             Picker("Status", selection: statusBinding) {
                 Text("None").tag(WatchStatus?.none)
@@ -171,9 +177,11 @@ struct MoviePageView: View {
                 Text(movie.title)
                     .font(.largeTitle.bold())
                     .multilineTextAlignment(.center)
+                    .textSelection(.enabled)
                 Text(verbatim: catalog?.subtitle(for: movie) ?? "\(movie.year) · \(movie.genre)")
                     .font(.headline)
                     .foregroundStyle(.secondary)
+                    .textSelection(.enabled)
                 if movie.isInfamous {
                     Label("Infamous", systemImage: "flame.fill")
                         .font(.subheadline)

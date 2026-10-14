@@ -400,8 +400,9 @@ private struct MovieRow: View {
 
     @ViewBuilder
     private var personalIndicators: some View {
-        if let stars = entry?.rating {
-            Label("\(stars)", systemImage: "star.fill")
+        if let half = entry?.halfStars {
+            let stars = HalfStars.label(half)
+            Label(stars, systemImage: "star.fill")
                 .labelStyle(.titleAndIcon)
                 .font(.caption.weight(.bold))
                 .foregroundStyle(.orange)

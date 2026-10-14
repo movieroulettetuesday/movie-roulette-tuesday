@@ -225,3 +225,65 @@ final class CatalogTests: XCTestCase {
         XCTAssertEqual(store.stats.spinCount(forMovie: "m1"), 2)
     }
 }
+
+
+/// tmdbId + streaming providers: optional, backward compatible, no UI.
+final class CatalogStreamingFieldTests: XCTestCase {
+    private let base = #""id":"the-thing-1982","title":"The Thing","year":1982,"genre":"Horror""#
+
+    func testDecodesWithoutNewFields() throws {
+        let m = try JSONDecoder().decode(Movie.self, from: Data("{\(base)}".utf8))
+        XCTAssertNil(m.tmdbId)
+        XCTAssertNil(m.streaming)
+    }
+
+    func testDecodesWithNewFields() throws {
+        let json = """
+        {\(base),"tmdbId":1091,"streaming":{"region":"US","updated":"2026-10-14",
+         "link":"https://www.themoviedb.org/movie/1091-the-thing/watch?locale=US",
+         "stream":[{"id":8,"name":"Netflix","logo":"/pbpMk2JmcoNnQwx5JGpXngfoWtp.jpg","priority":1}],
+         "free":[],
+         "rent":[{"id":2,"name":"Apple TV","logo":"/peURlLlr8jggOwK53fJ5wdQl05y.jpg","priority":4}],
+         "buy":[{"id":3,"name":"Google Play Movies","logo":null}]}}
+        """
+        let m = try JSONDecoder().decode(Movie.self, from: Data(json.utf8))
+        XCTAssertEqual(m.tmdbId, 1091)
+        let s = try XCTUnwrap(m.streaming)
+        XCTAssertEqual(s.region, "US")
+        XCTAssertEqual(s.updated, "2026-10-14")
+        XCTAssertEqual(s.link, "https://www.themoviedb.org/movie/1091-the-thing/watch?locale=US")
+        XCTAssertEqual(s.stream, [StreamingInfo.Provider(id: 8, name: "Netflix", logo: "/pbpMk2JmcoNnQwx5JGpXngfoWtp.jpg", priority: 1)])
+        XCTAssertEqual(s.stream[0].logoURL?.absoluteString, "https://image.tmdb.org/t/p/w92/pbpMk2JmcoNnQwx5JGpXngfoWtp.jpg")
+        XCTAssertTrue(s.free.isEmpty)
+        XCTAssertEqual(s.rent.first?.priority, 4)
+        XCTAssertNil(s.buy.first?.logo)
+        XCTAssertNil(s.buy.first?.priority)
+        XCTAssertNil(s.buy.first?.logoURL)
+        XCTAssertFalse(s.isEmpty)
+        let again = try JSONDecoder().decode(Movie.self, from: JSONEncoder().encode(m))
+        XCTAssertEqual(again, m, "round trip")
+    }
+
+    func testEmptyStreamingLists() throws {
+        let json = #"{\#(base),"streaming":{"region":"US","updated":"2026-10-14","link":"x","stream":[],"free":[],"rent":[],"buy":[]}}"#
+        let m = try JSONDecoder().decode(Movie.self, from: Data(json.utf8))
+        XCTAssertNil(m.tmdbId)
+        XCTAssertEqual(m.streaming?.isEmpty, true)
+    }
+
+    func testMalformedNewFieldsNeverBreakTheCatalog() throws {
+        let m = try JSONDecoder().decode(Movie.self, from: Data(#"{\#(base),"tmdbId":"abc","streaming":[1,2]}"#.utf8))
+        XCTAssertNil(m.tmdbId)
+        XCTAssertNil(m.streaming)
+    }
+
+    func testBundledCatalogStillDecodes() async throws {
+        let url = Bundle.main.url(forResource: "movies", withExtension: "json")
+            ?? URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+                .appendingPathComponent("MovieRouletteTuesday/Resources/movies.json")
+        guard FileManager.default.fileExists(atPath: url.path) else { throw XCTSkip("no movies.json") }
+        let catalog = try await FileCatalogSource(fileURL: url).loadCatalog()
+        XCTAssertFalse(catalog.movies.isEmpty)
+        XCTAssertTrue(catalog.movies.allSatisfy { $0.tmdbId == nil && $0.streaming == nil }, "current movies.json has neither")
+    }
+}

@@ -39,6 +39,12 @@ final class RouletteViewModel {
     /// Total clockwise rotation in degrees. Accumulates across spins; never reset.
     private(set) var rotation: Double = 0
     private(set) var isSpinning = false
+    /// Static extra rotation drawn while a stopped spin decelerates (SpinStopPlan.offset); 0 otherwise.
+    private(set) var stopOffset: Double = 0
+    /// True from a stop tap until the wheel has settled.
+    private(set) var isStopping = false
+    /// The spin in flight can be stopped early (clip-timed spins only).
+    private(set) var spinIsStoppable = false
     private(set) var lastCategory: RouletteCategory?
     private(set) var notice: String?
     /// Bumped on every reveal; drives the haptic.
@@ -72,6 +78,10 @@ final class RouletteViewModel {
     @ObservationIgnored private var spinToken = 0
     /// When the spin in flight should end (its animation's full duration).
     @ObservationIgnored private var spinEndsAt: ContinuousClock.Instant?
+    /// The clip-timed spin in flight (for tap-to-stop).
+    @ObservationIgnored private var activeSpin: (start: Double, target: Double, motion: SpinMotion, began: CFTimeInterval, control: SpinStopControl, wasForcedRespin: Bool)?
+    /// Where a stopped spin lands; applied to `rotation` when it settles.
+    @ObservationIgnored private var pendingFinalRotation: Double?
     /// Finishes the spin if SwiftUI never delivers the animation completion
     /// (e.g. the wheel was off-screen), so the wheel can't get stuck "spinning".
     @ObservationIgnored private var watchdogTask: Task<Void, Never>?
@@ -99,6 +109,9 @@ final class RouletteViewModel {
         self.settings = settings
         self.feedback = SpinFeedback()
     }
+
+    /// Tap-to-stop is available: spinning, not already stopping, not a stress run.
+    var canStop: Bool { isSpinning && spinIsStoppable && !isStopping }
 
     var canSpin: Bool {
         catalog != nil && !isSpinning && reveal == nil && !isAwaitingForcedRespin
@@ -208,6 +221,8 @@ final class RouletteViewModel {
         let duration: Double
         let animation: Animation
         let crossings: [Double]
+        activeSpin = nil
+        pendingFinalRotation = nil
         if shortStress {
             duration = Self.stressSpinDuration
             animation = .easeOut(duration: duration)
@@ -216,9 +231,11 @@ final class RouletteViewModel {
         } else {
             // Timing (not outcome) is locked to the recorded clip.
             let motion = SpinMotion.plan(from: start, to: target, geometry: geometry)
+            let control = SpinStopControl()
             duration = motion.duration
-            animation = Animation(SpinMotionAnimation(motion: motion, id: token))
+            animation = Animation(SpinMotionAnimation(motion: motion, id: token, stop: control))
             crossings = motion.crossingTimes
+            activeSpin = (start, target, motion, CACurrentMediaTime(), control, isForcedRespin)
         }
         startFeedback(crossings: crossings)
         spinEndsAt = ContinuousClock.now.advanced(by: .seconds(duration))
@@ -231,6 +248,8 @@ final class RouletteViewModel {
             self?.spinAnimationEnded(token: token, wasForcedRespin: isForcedRespin)
         }
         isSpinning = true
+        isStopping = false
+        spinIsStoppable = activeSpin != nil
         notice = isForcedRespin ? "Re-spin forced! Here we go again…" : nil
         watchdogTask?.cancel()
         watchdogTask = Task { @MainActor [weak self] in
@@ -240,6 +259,56 @@ final class RouletteViewModel {
         }
     }
 
+    /// Tap to stop: picks a new random landing at least ~1/3 turn ahead and
+    /// decelerates to it over ~0.8 s (SpinStopPlan). The spin sound fades out
+    /// over the same time and the haptic ticks follow the slowing wheel. The
+    /// result is recorded exactly once, by the usual completion/watchdog path.
+    func stopEarly() {
+        guard canStop, let spin = activeSpin else { return }
+        // Lead slightly: the animation clock starts a hair after `began`, so
+        // the next frame is always past the plan's start (no one-frame jump).
+        let elapsed = max(0, CACurrentMediaTime() - spin.began - Self.stopLead)
+        guard let plan = SpinStopPlan.make(
+            motion: spin.motion, start: spin.start, oldTarget: spin.target,
+            elapsed: elapsed, geometry: geometry, using: &rng
+        ), spin.control.set(plan) else { return }
+        isStopping = true
+        pendingFinalRotation = plan.newTarget
+        var t = Transaction()
+        t.disablesAnimations = true
+        withTransaction(t) { stopOffset = plan.offset }
+
+        // Sound fades over the decel; haptics follow the new, slowing crossings.
+        feedback.stopClip(fade: true, duration: SpinStopPlan.duration)
+        hapticsTask?.cancel()
+        hapticsTask = nil
+        if AppSettings.bool(AppSettings.haptics, store: settings) {
+            let times = SpinTicks.thinned(plan.crossingTimes(geometry: geometry), minInterval: Self.hapticMinInterval)
+            let feedback = self.feedback
+            hapticsTask = Task { @MainActor in
+                let clock = ContinuousClock()
+                let began = clock.now
+                for time in times {
+                    try? await Task.sleep(until: began.advanced(by: .seconds(time)), clock: clock)
+                    if Task.isCancelled { return }
+                    feedback.crossing()
+                }
+            }
+        }
+
+        let token = spinToken
+        let remaining = max(0, plan.endTime - (CACurrentMediaTime() - spin.began))
+        spinEndsAt = ContinuousClock.now.advanced(by: .seconds(remaining))
+        let wasForced = spin.wasForcedRespin
+        watchdogTask?.cancel()
+        watchdogTask = Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .seconds(remaining + RouletteViewModel.watchdogGrace))
+            guard !Task.isCancelled else { return }
+            self?.finishSpin(token: token, wasForcedRespin: wasForced)
+        }
+    }
+
+    static let stopLead = 0.03
     static let stressSpinDuration = 0.25
     static let watchdogGrace = 1.5
 
@@ -311,7 +380,17 @@ final class RouletteViewModel {
     private func finishSpin(token: Int, wasForcedRespin: Bool) {
         // Exactly once per spin: whichever of completion/watchdog comes first.
         guard isSpinning, token == spinToken else { return }
-        defer { isSpinning = false }
+        defer { isSpinning = false; isStopping = false; spinIsStoppable = false; activeSpin = nil }
+        // A stopped spin: fold the offset into `rotation` (same drawn angle).
+        if let final = pendingFinalRotation {
+            pendingFinalRotation = nil
+            var t = Transaction()
+            t.disablesAnimations = true
+            withTransaction(t) {
+                rotation = final
+                stopOffset = 0
+            }
+        }
         watchdogTask?.cancel()
         watchdogTask = nil
         hapticsTask?.cancel()

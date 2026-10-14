@@ -128,3 +128,89 @@ final class SpinMotionTests: XCTestCase {
         }
     }
 }
+
+
+/// Tap to stop: continuity, landing window, single stop, slowing ticks.
+final class SpinStopTests: XCTestCase {
+    private let geometry = WheelGeometry(segmentCount: 12)
+
+    private func plan(elapsed: Double, seed: UInt64 = 7) -> (SpinMotion, SpinStopPlan?) {
+        var rng = SeededRandomNumberGenerator(seed: seed)
+        let start = 30.0
+        let target = geometry.randomTargetRotation(from: start, using: &rng)
+        let motion = SpinMotion.plan(from: start, to: target, geometry: geometry)
+        return (motion, SpinStopPlan.make(motion: motion, start: start, oldTarget: target,
+                                          elapsed: elapsed, geometry: geometry, using: &rng))
+    }
+
+    func testStopIsContinuousAndLandsOnNewTarget() throws {
+        for elapsed in [0.0, 0.4, 1.5, 3.0] {
+            let (motion, p) = plan(elapsed: elapsed)
+            let stop = try XCTUnwrap(p)
+            let expectedNow = stop.start + stop.span * motion.progress(at: elapsed)
+            XCTAssertEqual(stop.currentAngle, expectedNow, accuracy: 1e-9)
+            XCTAssertEqual(stop.displayedAngle(at: stop.startTime), stop.currentAngle, accuracy: 1e-6, "no jump at the tap")
+            XCTAssertEqual(stop.displayedAngle(at: stop.endTime), stop.newTarget, accuracy: 1e-6, "settles on the new target")
+            let travel = stop.newTarget - stop.currentAngle
+            XCTAssertGreaterThanOrEqual(travel, SpinStopPlan.minimumTravel - 4)
+            XCTAssertLessThan(travel, SpinStopPlan.minimumTravel + 360 + 4)
+            // Monotonic deceleration: never moves backwards.
+            var last = stop.displayedAngle(at: stop.startTime)
+            for k in 1...40 {
+                let a = stop.displayedAngle(at: stop.startTime + SpinStopPlan.duration * Double(k) / 40)
+                XCTAssertGreaterThanOrEqual(a, last - 1e-9)
+                last = a
+            }
+            XCTAssertEqual(SpinStopPlan.duration, 0.8)
+        }
+    }
+
+    func testNoStopRightAtTheEnd() {
+        let (motion, p) = plan(elapsed: 1)
+        XCTAssertNotNil(p)
+        let (_, late) = plan(elapsed: motion.duration - 0.5)
+        XCTAssertNil(late, "within the last 0.8 s the spin just finishes")
+        let (_, bad) = plan(elapsed: .nan)
+        XCTAssertNil(bad)
+    }
+
+    func testStopControlAcceptsOnlyTheFirstPlan() throws {
+        let (_, p1) = plan(elapsed: 1, seed: 1)
+        let (_, p2) = plan(elapsed: 2, seed: 2)
+        let control = SpinStopControl()
+        XCTAssertNil(control.plan)
+        XCTAssertTrue(control.set(try XCTUnwrap(p1)))
+        XCTAssertFalse(control.set(try XCTUnwrap(p2)), "a second tap never re-targets")
+        XCTAssertEqual(control.plan, p1)
+    }
+
+    func testStopPlanProgressEndpoints() throws {
+        let (motion, p) = plan(elapsed: 1.0)
+        let stop = try XCTUnwrap(p)
+        XCTAssertEqual(SpinMotionAnimation(motion: motion, id: 1, stop: SpinStopControl()), SpinMotionAnimation(motion: motion, id: 1))
+        XCTAssertEqual(stop.progress(at: stop.endTime), 1, accuracy: 1e-12)
+        XCTAssertEqual(stop.progress(at: stop.startTime), stop.fromProgress, accuracy: 1e-12)
+        XCTAssertEqual(stop.endTime, 1.8, accuracy: 1e-12)
+    }
+
+    func testStopTicksSlowDown() throws {
+        let (_, p) = plan(elapsed: 0.5)
+        let stop = try XCTUnwrap(p)
+        let times = stop.crossingTimes(geometry: geometry)
+        XCTAssertFalse(times.isEmpty)
+        XCTAssertEqual(times, times.sorted())
+        XCTAssertLessThan(times.last!, SpinStopPlan.duration)
+        let gaps = zip(times.dropFirst(), times).map { $0 - $1 }
+        if gaps.count >= 2 { XCTAssertGreaterThan(gaps.last!, gaps.first!, "ticks get further apart") }
+    }
+
+    func testStoppedLandingIsUniform() {
+        var rng = SeededRandomNumberGenerator(seed: 99)
+        var counts = [Int](repeating: 0, count: geometry.count)
+        for i in 0..<6_000 {
+            let t = SpinStopPlan.randomTarget(from: Double(i) * 17.3, geometry: geometry, using: &rng)
+            counts[geometry.segmentIndex(forRotation: t)] += 1
+        }
+        for c in counts { XCTAssertEqual(Double(c), 500, accuracy: 110) }
+    }
+}

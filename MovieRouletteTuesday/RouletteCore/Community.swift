@@ -180,14 +180,25 @@ public struct RatingAggregate: Equatable, Sendable {
     /// Index 0 = 1 star ... index 4 = 5 stars.
     public var histogram: [Int]
 
-    /// Values outside 1...5 are ignored.
+    /// The average in stars rounded to the nearest half star (for display).
+    public var averageToHalf: Double? { average.map(HalfStars.roundedToHalf) }
+    /// `averageToHalf` as half-stars 1...10 (for `StarRatingView`).
+    public var averageHalfStars: Int? { averageToHalf.flatMap { HalfStars.clamped(Int(($0 * 2).rounded())) } }
+
+    /// Whole stars; values outside 1...5 are ignored.
     public static func from<S: Sequence>(stars: S) -> RatingAggregate where S.Element == Int {
-        let valid = stars.filter { PersonalRatings.ratingRange.contains($0) }
+        from(halfStars: stars.filter { PersonalRatings.ratingRange.contains($0) }.map { $0 * 2 })
+    }
+
+    /// Half-stars 1...10 (average in stars); values outside 1...10 are ignored.
+    /// The histogram counts rounded whole stars.
+    public static func from<S: Sequence>(halfStars: S) -> RatingAggregate where S.Element == Int {
+        let valid = halfStars.filter { HalfStars.range.contains($0) }
         var histogram = [Int](repeating: 0, count: 5)
-        for s in valid { histogram[s - 1] += 1 }
+        for h in valid { histogram[HalfStars.roundedStars(h) - 1] += 1 }
         return RatingAggregate(
             count: valid.count,
-            average: valid.isEmpty ? nil : Double(valid.reduce(0, +)) / Double(valid.count),
+            average: valid.isEmpty ? nil : Double(valid.reduce(0, +)) / 2 / Double(valid.count),
             histogram: histogram
         )
     }
@@ -257,7 +268,7 @@ public enum CommunityError: Error, Equatable, LocalizedError, Sendable {
         switch self {
         case .notSignedIn: return "Sign in to iCloud in Settings to vote."
         case .invalidOption: return "That isn't an option in this poll."
-        case .invalidStars: return "Ratings are 1 to 5 stars."
+        case .invalidStars: return "Ratings are ½ to 5 stars."
         case .offline: return "You're offline. Listener results will load when you're back online."
         case .busy(let seconds?) where seconds > 0:
             return "iCloud is busy right now. Try again in \(seconds) second\(seconds == 1 ? "" : "s")."
@@ -320,12 +331,17 @@ public protocol CommunityStore: Sendable {
     func fetchVotes(pollId: String) async throws -> [String: String]
     /// This user's vote, if signed in and they've voted.
     func myVote(pollId: String) async throws -> String?
-    /// Creates or overwrites this user's single rating for `movieId`. Returns the record name.
+    /// Creates or overwrites this user's single rating for `movieId` (half-stars
+    /// 1...10; the legacy `stars` field gets the rounded value). Returns the record name.
     @discardableResult
-    func submitRating(movieId: String, stars: Int) async throws -> String
-    /// recordName -> stars for every listener rating of the movie.
+    func submitRating(movieId: String, halfStars: Int) async throws -> String
+    /// recordName -> half-stars for every listener rating of the movie
+    /// (legacy records without `halfStars` read as stars × 2).
     func fetchRatings(movieId: String) async throws -> [String: Int]
+    /// This user's rating in half-stars.
     func myRating(movieId: String) async throws -> Int?
+    /// Creates one `Suggestion` record (create-only; listeners can't read them).
+    func submitSuggestion(_ suggestion: InAppSuggestion, appVersion: String) async throws
 }
 
 /// Merges this device's own just-saved record into fetched results. Public-DB
@@ -344,11 +360,19 @@ public enum CommunityMerge {
 /// (records keyed by the deterministic record name).
 public actor InMemoryCommunityStore: CommunityStore {
     public struct VoteRecord: Equatable, Sendable { public var pollId: String; public var option: String }
-    public struct RatingRecord: Equatable, Sendable { public var movieId: String; public var stars: Int }
+    public struct RatingRecord: Equatable, Sendable {
+        public var movieId: String
+        /// Legacy whole stars (always written).
+        public var stars: Int
+        /// nil = a record from an older build.
+        public var halfStars: Int?
+        public var resolvedHalfStars: Int? { HalfStars.resolved(halfStars: halfStars, legacyStars: stars) }
+    }
 
     private var votes: [String: VoteRecord] = [:]
     private var ratings: [String: RatingRecord] = [:]
     private var currentUser: String?
+    public private(set) var suggestions: [InAppSuggestion] = []
 
     /// `currentUser == nil` behaves like "not signed into iCloud".
     public init(currentUser: String? = "preview-user") {
@@ -368,9 +392,19 @@ public actor InMemoryCommunityStore: CommunityStore {
 
     public func seedRatings(movieId: String, stars: [Int]) {
         for (i, s) in stars.enumerated() {
-            ratings[CommunityRecordNames.rating(movieId: movieId, userRecordName: "seed-\(i)")] = RatingRecord(movieId: movieId, stars: s)
+            ratings[CommunityRecordNames.rating(movieId: movieId, userRecordName: "seed-\(i)")] = RatingRecord(movieId: movieId, stars: s, halfStars: nil)
         }
     }
+
+    /// Seeds half-star records written by new builds.
+    public func seedHalfStarRatings(movieId: String, halfStars: [Int]) {
+        for (i, h) in halfStars.enumerated() {
+            ratings[CommunityRecordNames.rating(movieId: movieId, userRecordName: "seed-half-\(i)")] =
+                RatingRecord(movieId: movieId, stars: HalfStars.roundedStars(h), halfStars: h)
+        }
+    }
+
+    public func record(named name: String) -> RatingRecord? { ratings[name] }
 
     public func accountStatus() async -> CommunityAccountStatus {
         currentUser == nil ? .noAccount : .available
@@ -394,20 +428,25 @@ public actor InMemoryCommunityStore: CommunityStore {
     }
 
     @discardableResult
-    public func submitRating(movieId: String, stars: Int) async throws -> String {
+    public func submitRating(movieId: String, halfStars: Int) async throws -> String {
         guard let user = currentUser else { throw CommunityError.notSignedIn }
-        guard PersonalRatings.ratingRange.contains(stars) else { throw CommunityError.invalidStars }
+        guard HalfStars.range.contains(halfStars) else { throw CommunityError.invalidStars }
         let name = CommunityRecordNames.rating(movieId: movieId, userRecordName: user)
-        ratings[name] = RatingRecord(movieId: movieId, stars: stars)
+        ratings[name] = RatingRecord(movieId: movieId, stars: HalfStars.roundedStars(halfStars), halfStars: halfStars)
         return name
     }
 
     public func fetchRatings(movieId: String) async throws -> [String: Int] {
-        ratings.filter { $0.value.movieId == movieId }.mapValues(\.stars)
+        ratings.filter { $0.value.movieId == movieId }.compactMapValues(\.resolvedHalfStars)
+    }
+
+    public func submitSuggestion(_ suggestion: InAppSuggestion, appVersion: String) async throws {
+        guard currentUser != nil else { throw CommunityError.notSignedIn }
+        suggestions.append(suggestion)
     }
 
     public func myRating(movieId: String) async throws -> Int? {
         guard let user = currentUser else { return nil }
-        return ratings[CommunityRecordNames.rating(movieId: movieId, userRecordName: user)]?.stars
+        return ratings[CommunityRecordNames.rating(movieId: movieId, userRecordName: user)]?.resolvedHalfStars
     }
 }

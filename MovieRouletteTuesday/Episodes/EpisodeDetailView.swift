@@ -22,6 +22,7 @@ struct EpisodeDetailView: View {
                     CleanProSection("About") {
                         if !episode.displaySummary.isEmpty {
                             Text(episode.displaySummary)
+                                .textSelection(.enabled)
                         }
                         if let url = episode.fanMailURL {
                             Link(destination: url) {
@@ -99,6 +100,7 @@ struct EpisodeDetailView: View {
                 Text(episode.title)
                     .font(.title.bold())
                     .multilineTextAlignment(.center)
+                    .textSelection(.enabled)
                 HStack(spacing: 8) {
                     if let se = episode.seasonEpisodeLabel {
                         Text(se).fontWeight(.semibold)

@@ -4,7 +4,7 @@ import Foundation
 /// `CommunityStore` backed by the CloudKit PUBLIC database of
 /// iCloud.com.movieroulettetuesday.app.
 ///
-/// Privacy: records hold only `pollId`/`option` or `movieId`/`stars`. The
+/// Privacy: records hold only `pollId`/`option` or `movieId`/`stars`/`halfStars`. The
 /// iCloud user record ID is used solely as hash input for the deterministic
 /// record name (one vote per user per poll); it is never written to a field.
 /// Reading works without iCloud sign-in; writing requires it.
@@ -61,12 +61,12 @@ actor CloudKitCommunityStore: CommunityStore {
     }
 
     func fetchVotes(pollId: String) async throws -> [String: String] {
-        let pairs = try await allRecordValues(
-            recordType: CommunityRecordNames.voteRecordType, field: "pollId", equals: pollId, valueKey: "option"
+        let rows = try await allRecordValues(
+            recordType: CommunityRecordNames.voteRecordType, field: "pollId", equals: pollId, valueKeys: ["option"]
         )
         var votes: [String: String] = [:]
-        for (name, value) in pairs {
-            if case .string(let option) = value { votes[name] = option }
+        for (name, values) in rows {
+            if case .string(let option)? = values["option"] { votes[name] = option }
         }
         return votes
     }
@@ -81,32 +81,61 @@ actor CloudKitCommunityStore: CommunityStore {
     // MARK: Listener ratings
 
     @discardableResult
-    func submitRating(movieId: String, stars: Int) async throws -> String {
-        guard PersonalRatings.ratingRange.contains(stars) else { throw CommunityError.invalidStars }
+    func submitRating(movieId: String, halfStars: Int) async throws -> String {
+        guard HalfStars.range.contains(halfStars) else { throw CommunityError.invalidStars }
         let name = CommunityRecordNames.rating(movieId: movieId, userRecordName: try await userRecordName())
         try await overwrite(
             recordName: name, recordType: CommunityRecordNames.ratingRecordType,
-            fields: .rating(movieId: movieId, stars: stars)
+            fields: .rating(movieId: movieId, halfStars: halfStars)
         )
         return name
     }
 
     func fetchRatings(movieId: String) async throws -> [String: Int] {
-        let pairs = try await allRecordValues(
-            recordType: CommunityRecordNames.ratingRecordType, field: "movieId", equals: movieId, valueKey: "stars"
+        let rows = try await allRecordValues(
+            recordType: CommunityRecordNames.ratingRecordType, field: "movieId", equals: movieId,
+            valueKeys: ["halfStars", "stars"]
         )
         var ratings: [String: Int] = [:]
-        for (name, value) in pairs {
-            if case .int(let stars) = value { ratings[name] = stars }
+        for (name, values) in rows {
+            if let half = Self.resolvedHalfStars(values) { ratings[name] = half }
         }
         return ratings
+    }
+
+    /// `halfStars` (new builds) or legacy `stars` × 2.
+    private static func resolvedHalfStars(_ values: [String: FieldValue]) -> Int? {
+        func int(_ key: String) -> Int? { if case .int(let v)? = values[key] { return v }; return nil }
+        return HalfStars.resolved(halfStars: int("halfStars"), legacyStars: int("stars"))
     }
 
     func myRating(movieId: String) async throws -> Int? {
         guard let user = try? await userRecordName() else { return nil }
         let name = CommunityRecordNames.rating(movieId: movieId, userRecordName: user)
-        if case .int(let stars)? = try await existingValue(recordName: name, key: "stars") { return stars }
-        return nil
+        let values = try await existingValues(recordName: name, keys: ["halfStars", "stars"])
+        return values.flatMap(Self.resolvedHalfStars)
+    }
+
+    // MARK: Suggestions
+
+    /// One new `Suggestion` record with a random name (never overwrites).
+    func submitSuggestion(_ suggestion: InAppSuggestion, appVersion: String) async throws {
+        do {
+            try await database.configuredWith(configuration: Self.configuration()) { db in
+                let record = CKRecord(
+                    recordType: InAppSuggestion.recordType,
+                    recordID: CKRecord.ID(recordName: "suggestion-\(UUID().uuidString)")
+                )
+                record["title"] = suggestion.trimmedTitle
+                record["category"] = suggestion.trimmedCategory ?? ""
+                record["note"] = suggestion.trimmedNote
+                record["creditName"] = suggestion.trimmedCreditName
+                record["appVersion"] = appVersion
+                try await Self.save(record, in: db, policy: .ifServerRecordUnchanged)
+            }
+        } catch {
+            throw Self.communityError(for: error)
+        }
     }
 
     // MARK: Helpers
@@ -125,16 +154,18 @@ actor CloudKitCommunityStore: CommunityStore {
 
     private enum Fields: Sendable {
         case vote(pollId: String, option: String)
-        case rating(movieId: String, stars: Int)
+        case rating(movieId: String, halfStars: Int)
 
         func apply(to record: CKRecord) {
             switch self {
             case .vote(let pollId, let option):
                 record["pollId"] = pollId
                 record["option"] = option
-            case .rating(let movieId, let stars):
+            case .rating(let movieId, let halfStars):
                 record["movieId"] = movieId
-                record["stars"] = Int64(stars)
+                record["halfStars"] = Int64(halfStars)
+                // Rounded whole stars, so older app versions keep reading it.
+                record["stars"] = Int64(HalfStars.roundedStars(halfStars))
             }
         }
     }
@@ -180,6 +211,23 @@ actor CloudKitCommunityStore: CommunityStore {
         if let result = saveResults[record.recordID] { _ = try result.get() }
     }
 
+    private func existingValues(recordName: String, keys: [String]) async throws -> [String: FieldValue]? {
+        do {
+            return try await database.configuredWith(configuration: Self.configuration()) { db in
+                do {
+                    let record = try await db.record(for: CKRecord.ID(recordName: recordName))
+                    var out: [String: FieldValue] = [:]
+                    for key in keys { if let v = FieldValue(record[key]) { out[key] = v } }
+                    return out
+                } catch let error as CKError where error.code == .unknownItem {
+                    return nil
+                }
+            }
+        } catch {
+            throw Self.communityError(for: error)
+        }
+    }
+
     private func existingValue(recordName: String, key: String) async throws -> FieldValue? {
         do {
             return try await database.configuredWith(configuration: Self.configuration()) { db in
@@ -199,25 +247,26 @@ actor CloudKitCommunityStore: CommunityStore {
     /// `maxRecords`, returning recordName -> value. A record type that doesn't
     /// exist yet (nobody has voted/rated) means "no records".
     private func allRecordValues(
-        recordType: String, field: String, equals value: String, valueKey: String
-    ) async throws -> [(String, FieldValue)] {
+        recordType: String, field: String, equals value: String, valueKeys: [String]
+    ) async throws -> [(String, [String: FieldValue])] {
         let maxRecords = Self.maxRecords
         let pageSize = Self.pageSize
         do {
             return try await database.configuredWith(configuration: Self.configuration()) { db in
                 let query = CKQuery(recordType: recordType, predicate: NSPredicate(format: "%K == %@", field, value))
-                var out: [(String, FieldValue)] = []
+                var out: [(String, [String: FieldValue])] = []
                 do {
-                    var page = try await db.records(matching: query, desiredKeys: [valueKey], resultsLimit: pageSize)
+                    var page = try await db.records(matching: query, desiredKeys: valueKeys, resultsLimit: pageSize)
                     while true {
                         try Task.checkCancellation()
                         for (_, result) in page.matchResults {
-                            if let record = try? result.get(), let v = FieldValue(record[valueKey]) {
-                                out.append((record.recordID.recordName, v))
-                            }
+                            guard let record = try? result.get() else { continue }
+                            var values: [String: FieldValue] = [:]
+                            for key in valueKeys { if let v = FieldValue(record[key]) { values[key] = v } }
+                            if !values.isEmpty { out.append((record.recordID.recordName, values)) }
                         }
                         guard let cursor = page.queryCursor, out.count < maxRecords else { break }
-                        page = try await db.records(continuingMatchFrom: cursor, desiredKeys: [valueKey], resultsLimit: pageSize)
+                        page = try await db.records(continuingMatchFrom: cursor, desiredKeys: valueKeys, resultsLimit: pageSize)
                     }
                 } catch let error as CKError where error.code == .unknownItem {
                     return []
