@@ -32,10 +32,14 @@ struct MoviesView: View {
     @State private var categoryFilter: String? = nil  // category id
     @State private var sort: MovieSort = .title
     @State private var listFilter: MovieListFilter = .all
+    @State private var onMyServices = false
+    @AppStorage(MyServices.storageKey) private var myServicesRaw = ""
+    private var myServices: MyServices { MyServices(serialized: myServicesRaw) }
+    private var hasStreamingData: Bool { catalog?.movies.contains { $0.streaming != nil } ?? false }
     @Environment(PersonalRatingsStore.self) private var personal
 
     enum MovieSort: String, CaseIterable, Identifiable {
-        case title, yearNewest, yearOldest, spins
+        case title, yearNewest, yearOldest, spins, availableFirst
         var id: String { rawValue }
         var label: String {
             switch self {
@@ -43,6 +47,7 @@ struct MoviesView: View {
             case .yearNewest: return "Year ↓"
             case .yearOldest: return "Year ↑"
             case .spins: return "Most spun"
+            case .availableFirst: return "Available first"
             }
         }
     }
@@ -55,6 +60,10 @@ struct MoviesView: View {
         var list = listFilter.apply(to: catalog.movies, ratings: personal.ratings, spinStats: stats)
         if let categoryFilter {
             list = list.filter { $0.categories.contains(categoryFilter) }
+        }
+        let services = myServices
+        if onMyServices {
+            list = StreamingCatalog.filter(list, services: services)
         }
         if !query.isEmpty {
             let q = query.lowercased()
@@ -75,6 +84,9 @@ struct MoviesView: View {
                 if a == b { return $0.title < $1.title }
                 return a > b
             }
+        case .availableFirst:
+            list.sort { $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending }
+            list = StreamingCatalog.availableFirst(list, services: services)
         }
         return list
     }
@@ -203,9 +215,9 @@ struct MoviesView: View {
         ScrollViewReader { proxy in
             Group {
                 if isRegular {
-                    List(selection: $selectedMovieID) { suggestSection; listSection }
+                    List(selection: $selectedMovieID) { streamingChips; suggestSection; listSection }
                 } else {
-                    List { suggestSection; listSection }
+                    List { streamingChips; suggestSection; listSection }
                 }
             }
             .overlay { emptyOverlay }
@@ -215,11 +227,51 @@ struct MoviesView: View {
         }
     }
 
+    /// "On my services" / "Available first" chips (approved mockup 6b).
+    @ViewBuilder
+    private var streamingChips: some View {
+        if hasStreamingData {
+            Section {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        chip(onMyServices ? "On my services ✓" : "On my services", on: onMyServices) {
+                            onMyServices.toggle()
+                        }
+                        .accessibilityIdentifier("chip-my-services")
+                        chip("Available first", on: sort == .availableFirst) {
+                            sort = sort == .availableFirst ? .title : .availableFirst
+                        }
+                        .accessibilityIdentifier("chip-available-first")
+                    }
+                }
+                .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                if onMyServices && myServices.isEmpty {
+                    Text("Choose your services in Settings › My Services.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+    }
+
+    private func chip(_ title: String, on: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(title)
+                .font(.subheadline.weight(.medium))
+                .foregroundStyle(on ? Color.white : Color.primary)
+                .padding(.horizontal, 14).padding(.vertical, 7)
+                .background(on ? AnyShapeStyle(Brand.teal) : AnyShapeStyle(.thinMaterial), in: Capsule())
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(on ? .isSelected : [])
+    }
+
     /// "Suggest a movie" entry (approved v4 mockup). Hidden while searching or
     /// filtering so results stay on top.
     @ViewBuilder
     private var suggestSection: some View {
-        if query.isEmpty && categoryFilter == nil && listFilter == .all {
+        if query.isEmpty && categoryFilter == nil && listFilter == .all && !onMyServices {
             Section {
                 SuggestMovieRow { showsSuggest = true }
             }
@@ -236,6 +288,7 @@ struct MoviesView: View {
                     catalog: catalog,
                     spinCount: stats.spinCount(forMovie: movie.id),
                     entry: personal.entry(for: movie.id),
+                    service: StreamingCatalog.matchingServices(movie, services: myServices).first,
                     artworkURLs: ArtworkResolver.candidates(
                         for: movie, episodesByGUID: episodesByGUID, showArtwork: showArtworkURL
                     )
@@ -370,6 +423,8 @@ private struct MovieRow: View {
     let catalog: MovieCatalog?
     let spinCount: Int
     var entry: PersonalMovieEntry? = nil
+    /// First of my services this movie streams on (logo on the row).
+    var service: StreamingInfo.Provider? = nil
     var artworkURLs: [URL] = []
 
     var body: some View {
@@ -388,6 +443,10 @@ private struct MovieRow: View {
                 }
             }
             Spacer()
+            if let service {
+                ProviderLogo(provider: service, size: 30)
+                    .accessibilityLabel("On \(service.name)")
+            }
             personalIndicators
             if spinCount > 0 {
                 Text("×\(spinCount)")

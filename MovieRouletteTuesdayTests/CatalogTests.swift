@@ -284,6 +284,77 @@ final class CatalogStreamingFieldTests: XCTestCase {
         guard FileManager.default.fileExists(atPath: url.path) else { throw XCTSkip("no movies.json") }
         let catalog = try await FileCatalogSource(fileURL: url).loadCatalog()
         XCTAssertFalse(catalog.movies.isEmpty)
-        XCTAssertTrue(catalog.movies.allSatisfy { $0.tmdbId == nil && $0.streaming == nil }, "current movies.json has neither")
+        XCTAssertGreaterThan(catalog.movies.filter { $0.tmdbId != nil && $0.streaming != nil }.count, 150, "bundled catalog carries streaming data")
+        let byId = Dictionary(uniqueKeysWithValues: catalog.movies.map { ($0.id, $0) })
+        // Approved Oct 14 year fixes (ids unchanged so history/ratings keep working).
+        XCTAssertEqual(byId["war-of-the-roses-1980"]?.year, 1989)
+        XCTAssertEqual(byId["brewsters-millions-1980"]?.year, 1985)
+        XCTAssertEqual(byId["ed-wood-1950"]?.year, 1994)
+    }
+}
+
+
+final class StreamingFilterSortTests: XCTestCase {
+    private typealias P = StreamingInfo.Provider
+    private let netflix = P(id: 8, name: "Netflix", logo: "/n.jpg", priority: 1)
+    private let max = P(id: 1899, name: "Max", logo: "/m.jpg", priority: 2)
+    private let tubi = P(id: 73, name: "Tubi TV", logo: nil, priority: 5)
+    private let apple = P(id: 2, name: "Apple TV", logo: "/a.jpg", priority: 3)
+
+    private func movie(_ id: String, stream: [P] = [], free: [P] = [], rent: [P] = [], buy: [P] = [], data: Bool = true) -> Movie {
+        Movie(id: id, title: id, year: 2000, genre: "Drama",
+              streaming: data ? StreamingInfo(updated: "2026-10-13", link: "https://x", stream: stream, free: free, rent: rent, buy: buy) : nil)
+    }
+
+    private var movies: [Movie] {
+        [
+            movie("a-rent", rent: [apple], buy: [apple]),
+            movie("b-netflix", stream: [netflix]),
+            movie("c-none", data: false),
+            movie("d-max-tubi", stream: [max], free: [tubi]),
+            movie("e-tubi", free: [tubi]),
+            movie("f-empty"),
+        ]
+    }
+
+    func testMyServicesSerialization() {
+        var s = MyServices(serialized: "8, 1899,x,,8")
+        XCTAssertEqual(s.ids, [8, 1899])
+        s.toggle(8); s.toggle(73)
+        XCTAssertEqual(s.serialized, "73,1899")
+        XCTAssertTrue(MyServices(serialized: "").isEmpty)
+    }
+
+    func testServicesFromCatalog() {
+        let list = StreamingCatalog.services(in: movies)
+        XCTAssertEqual(list.map(\.name), ["Tubi TV", "Max", "Netflix"], "most titles first, then by name; rent/buy stores excluded")
+    }
+
+    func testOnMyServicesFilter() {
+        XCTAssertEqual(StreamingCatalog.filter(movies, services: MyServices(ids: [8])).map(\.id), ["b-netflix"])
+        XCTAssertEqual(StreamingCatalog.filter(movies, services: MyServices(ids: [73])).map(\.id), ["d-max-tubi", "e-tubi"], "free counts")
+        XCTAssertEqual(StreamingCatalog.filter(movies, services: MyServices(ids: [2])).map(\.id), [], "rent/buy is not 'on my services'")
+        XCTAssertTrue(StreamingCatalog.filter(movies, services: MyServices()).isEmpty)
+        XCTAssertEqual(StreamingCatalog.matchingServices(movies[3], services: MyServices(ids: [73, 1899])).map(\.id), [1899, 73])
+    }
+
+    func testAvailableFirstWithServices() {
+        let sorted = StreamingCatalog.availableFirst(movies, services: MyServices(ids: [8]))
+        XCTAssertEqual(sorted.map(\.id), ["b-netflix", "d-max-tubi", "e-tubi", "a-rent", "c-none", "f-empty"])
+    }
+
+    func testAvailableFirstWithoutServicesUsesAnyStreaming() {
+        let sorted = StreamingCatalog.availableFirst(movies, services: MyServices())
+        XCTAssertEqual(sorted.map(\.id), ["b-netflix", "d-max-tubi", "e-tubi", "a-rent", "c-none", "f-empty"])
+        XCTAssertEqual(StreamingCatalog.availableFirst([], services: MyServices()), [])
+    }
+
+    func testRentOrBuyAndLabels() {
+        let info = StreamingInfo(updated: "2026-10-13", rent: [apple, netflix], buy: [apple, max])
+        XCTAssertEqual(StreamingCatalog.rentOrBuy(info).map(\.id), [2, 8, 1899])
+        XCTAssertEqual(StreamingCatalog.updatedLabel("2026-10-13"), "Oct 13")
+        XCTAssertNil(StreamingCatalog.updatedLabel("soon"))
+        XCTAssertNil(StreamingCatalog.updatedLabel(nil))
+        XCTAssertEqual(StreamingCatalog.tmdbNotice, "This product uses the TMDB API but is not endorsed or certified by TMDB.")
     }
 }

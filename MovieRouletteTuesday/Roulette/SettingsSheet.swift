@@ -14,6 +14,8 @@ struct SettingsSheet: View {
     var categories: [RouletteCategory] = []
     /// Newest episodes the app already shows (baseline for alerts).
     var knownEpisodes: [PodcastEpisode] = []
+    /// For My Services (providers found in the catalog).
+    var movies: [Movie] = []
     @State private var showsSuggest = false
     @State private var alertNote: String?
 
@@ -112,6 +114,28 @@ struct SettingsSheet: View {
                     Text("When on, rating a movie also adds your stars to the anonymous listener average (needs iCloud). When off, you can still add them movie by movie.")
                 }
 
+                Section {
+                    NavigationLink {
+                        MyServicesView(providers: StreamingCatalog.services(in: movies))
+                    } label: {
+                        Label("My Services", systemImage: "play.tv")
+                    }
+                    .accessibilityIdentifier("settings-my-services")
+                } header: {
+                    Text("Where to Watch")
+                } footer: {
+                    Text("Pick the services you have to filter the Movies list with “On my services”. Saved on this device only.")
+                }
+
+                Section {
+                    NavigationLink {
+                        CreditsView()
+                    } label: {
+                        Label("Credits & About", systemImage: "info.circle")
+                    }
+                    .accessibilityIdentifier("settings-credits")
+                }
+
                 Section("Privacy") {
                     Text(AppSettings.privacyNote)
                         .font(.callout)
@@ -161,6 +185,95 @@ struct SettingsSheet: View {
                 }
             }
         )
+    }
+}
+
+/// Settings › My Services (approved mockup 6b): multi-select of the
+/// providers that appear in the catalog, saved in UserDefaults.
+struct MyServicesView: View {
+    let providers: [StreamingInfo.Provider]
+    @AppStorage(MyServices.storageKey) private var raw = ""
+
+    var body: some View {
+        let selected = MyServices(serialized: raw)
+        List {
+            if providers.isEmpty {
+                Text("No streaming data in the movie list yet.")
+                    .foregroundStyle(.secondary)
+            } else {
+                Section {
+                    ForEach(providers, id: \.id) { p in
+                        Button {
+                            var s = MyServices(serialized: raw)
+                            s.toggle(p.id)
+                            raw = s.serialized
+                        } label: {
+                            HStack(spacing: 12) {
+                                ProviderLogo(provider: p, size: 36)
+                                Text(p.name).foregroundStyle(.primary)
+                                Spacer()
+                                if selected.contains(p.id) {
+                                    Image(systemName: "checkmark").foregroundStyle(Brand.teal)
+                                }
+                            }
+                            .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityAddTraits(selected.contains(p.id) ? .isSelected : [])
+                        .accessibilityIdentifier("service-\(p.id)")
+                    }
+                } footer: {
+                    Text(StreamingCatalog.attribution)
+                }
+            }
+        }
+        .cleanProListScreen()
+        .navigationTitle("My Services")
+    }
+}
+
+/// Credits & About: TMDB attribution (required by the TMDB API terms).
+struct CreditsView: View {
+    var body: some View {
+        List {
+            Section {
+                HStack(spacing: 14) {
+                    TMDBMark()
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("The Movie Database (TMDB)").font(.headline)
+                        Text("Movie ids and streaming availability").font(.caption).foregroundStyle(.secondary)
+                    }
+                }
+                .accessibilityElement(children: .combine)
+                Text(StreamingCatalog.tmdbNotice)
+                    .font(.callout)
+                    .accessibilityIdentifier("tmdb-notice")
+                Text(StreamingCatalog.attribution + ".")
+                    .font(.callout)
+                if let url = URL(string: "https://www.themoviedb.org") {
+                    Link("themoviedb.org", destination: url)
+                }
+            } header: { Text("Data") }
+            Section {
+                Text("Movie Roulette Tuesday is a fan-made companion app for the podcast.")
+                    .font(.callout)
+            } header: { Text("About") }
+        }
+        .cleanProListScreen()
+        .navigationTitle("Credits & About")
+    }
+}
+
+/// TMDB wordmark in TMDB's brand colors (drawn, no bundled asset).
+private struct TMDBMark: View {
+    var body: some View {
+        Text("TMDB")
+            .font(.system(size: 15, weight: .heavy, design: .rounded))
+            .foregroundStyle(LinearGradient(colors: [Color(hex: "#90CEA1"), Color(hex: "#01B4E4")],
+                                            startPoint: .leading, endPoint: .trailing))
+            .padding(.horizontal, 10).padding(.vertical, 8)
+            .background(Color(hex: "#0D253F"), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+            .accessibilityLabel("TMDB logo")
     }
 }
 

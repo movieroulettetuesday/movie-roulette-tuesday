@@ -451,3 +451,108 @@ extension MovieCatalog {
         return names.isEmpty ? "\(movie.year) · \(movie.genre)" : "\(movie.year) · " + names.joined(separator: ", ")
     }
 }
+
+// MARK: - Where to stream (feature 6): pure logic
+
+/// The user's streaming services (provider ids), saved locally as "8,9,337".
+public struct MyServices: Equatable, Sendable {
+    public static let storageKey = "streaming.myServices"
+    public private(set) var ids: Set<Int>
+
+    public init(ids: Set<Int> = []) { self.ids = ids }
+
+    public init(serialized: String) {
+        ids = Set(serialized.split(separator: ",").compactMap { Int($0.trimmingCharacters(in: .whitespaces)) })
+    }
+
+    public var serialized: String { ids.sorted().map(String.init).joined(separator: ",") }
+    public var isEmpty: Bool { ids.isEmpty }
+    public func contains(_ id: Int) -> Bool { ids.contains(id) }
+
+    public mutating func toggle(_ id: Int) {
+        if ids.contains(id) { ids.remove(id) } else { ids.insert(id) }
+    }
+}
+
+public enum StreamingCatalog {
+    /// Attribution required by TMDB/JustWatch, shown next to the data.
+    public static let attribution = "Streaming data by JustWatch via TMDB"
+    public static let tmdbNotice = "This product uses the TMDB API but is not endorsed or certified by TMDB."
+
+    /// Subscription/free services found in the catalog (stream + free lists),
+    /// for Settings › My Services: most titles first, then by name.
+    public static func services(in movies: [Movie]) -> [StreamingInfo.Provider] {
+        var byId: [Int: StreamingInfo.Provider] = [:]
+        var counts: [Int: Int] = [:]
+        for m in movies {
+            guard let s = m.streaming else { continue }
+            var seen = Set<Int>()
+            for p in s.stream + s.free where seen.insert(p.id).inserted {
+                if byId[p.id] == nil || (byId[p.id]?.logo == nil && p.logo != nil) { byId[p.id] = p }
+                counts[p.id, default: 0] += 1
+            }
+        }
+        return byId.values.sorted {
+            let a = counts[$0.id] ?? 0, b = counts[$1.id] ?? 0
+            return a != b ? a > b : $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
+        }
+    }
+
+    /// Providers of `movie` (stream, then free) that are among `services`.
+    public static func matchingServices(_ movie: Movie, services: MyServices) -> [StreamingInfo.Provider] {
+        guard let s = movie.streaming else { return [] }
+        var seen = Set<Int>()
+        return (s.stream + s.free).filter { services.contains($0.id) && seen.insert($0.id).inserted }
+    }
+
+    public static func isOnMyServices(_ movie: Movie, services: MyServices) -> Bool {
+        !matchingServices(movie, services: services).isEmpty
+    }
+
+    /// Streams or is free anywhere (used when no services are chosen yet).
+    public static func isStreamable(_ movie: Movie) -> Bool {
+        guard let s = movie.streaming else { return false }
+        return !s.stream.isEmpty || !s.free.isEmpty
+    }
+
+    /// "On my services" filter. No services chosen -> nothing matches.
+    public static func filter(_ movies: [Movie], services: MyServices) -> [Movie] {
+        movies.filter { isOnMyServices($0, services: services) }
+    }
+
+    /// "Available first": stable partition, keeping the incoming order within
+    /// each part. Available = on my services, or (no services chosen) streamable
+    /// anywhere; then rent/buy-only; then no data.
+    public static func availableFirst(_ movies: [Movie], services: MyServices) -> [Movie] {
+        func rank(_ m: Movie) -> Int {
+            if services.isEmpty ? isStreamable(m) : isOnMyServices(m, services: services) { return 0 }
+            if services.isEmpty == false, isStreamable(m) { return 1 }
+            if let s = m.streaming, !s.rent.isEmpty || !s.buy.isEmpty { return 2 }
+            return 3
+        }
+        return movies.enumerated()
+            .sorted { (rank($0.element), $0.offset) < (rank($1.element), $1.offset) }
+            .map(\.element)
+    }
+
+    /// Rent and buy merged, de-duplicated (rent order first).
+    public static func rentOrBuy(_ info: StreamingInfo) -> [StreamingInfo.Provider] {
+        var seen = Set<Int>()
+        return (info.rent + info.buy).filter { seen.insert($0.id).inserted }
+    }
+
+    /// "Oct 13" from "2026-10-13" (nil when unparseable).
+    public static func updatedLabel(_ updated: String?, locale: Locale = Locale(identifier: "en_US")) -> String? {
+        guard let updated else { return nil }
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "en_US_POSIX")
+        f.timeZone = TimeZone(identifier: "UTC")
+        f.dateFormat = "yyyy-MM-dd"
+        guard let d = f.date(from: updated) else { return nil }
+        let out = DateFormatter()
+        out.locale = locale
+        out.timeZone = TimeZone(identifier: "UTC")
+        out.setLocalizedDateFormatFromTemplate("MMM d")
+        return out.string(from: d)
+    }
+}

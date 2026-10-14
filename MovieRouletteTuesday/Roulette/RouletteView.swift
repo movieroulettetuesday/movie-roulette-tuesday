@@ -69,7 +69,8 @@ struct RouletteView: View {
                 }
             }
             .sheet(isPresented: $showingSettings) {
-                SettingsSheet(categories: model.catalog?.categories ?? [], knownEpisodes: Array(episodesByGUID.values))
+                SettingsSheet(categories: model.catalog?.categories ?? [], knownEpisodes: Array(episodesByGUID.values),
+                              movies: model.catalog?.movies ?? [])
                     .appAppearance()
                     .adaptiveSheetSizing()
             }

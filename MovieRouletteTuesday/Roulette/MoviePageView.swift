@@ -39,6 +39,10 @@ struct MoviePageView: View {
 
                 episodesSection
 
+                if let streaming = movie.streaming, !streaming.isEmpty {
+                    WhereToWatchSection(streaming: streaming)
+                }
+
                 yourTake
 
                 ListenerRatingSection(movieId: movie.id, myRating: myRating)
@@ -246,5 +250,105 @@ struct MoviePageView: View {
                 }
             }
         }
+    }
+}
+
+
+/// "Where to watch" (approved mockup 6a): Stream / Free / Rent or buy rows of
+/// provider logos + names, the JustWatch/TMDB attribution with the update
+/// date, and "All options on TMDB". Shown only when there is data.
+struct WhereToWatchSection: View {
+    let streaming: StreamingInfo
+    @AppStorage(MyServices.storageKey) private var myServicesRaw = ""
+
+    private var services: MyServices { MyServices(serialized: myServicesRaw) }
+
+    private var footer: String {
+        if let date = StreamingCatalog.updatedLabel(streaming.updated) {
+            return "\(StreamingCatalog.attribution) · updated \(date)"
+        }
+        return StreamingCatalog.attribution
+    }
+
+    var body: some View {
+        CleanProSection("Where to Watch · \(streaming.region)", footer: footer) {
+            row("Stream", streaming.stream, id: "stream")
+            row("Free", streaming.free, id: "free")
+            row("Rent or buy", StreamingCatalog.rentOrBuy(streaming), id: "rent-buy")
+            if let link = streaming.link.flatMap(URL.init(string:)) {
+                Link(destination: link) {
+                    HStack {
+                        Text("All options on TMDB")
+                        Spacer()
+                        Image(systemName: "arrow.up.right").font(.footnote)
+                    }
+                }
+                .accessibilityIdentifier("streaming-tmdb-link")
+            }
+        }
+        .accessibilityIdentifier("where-to-watch")
+    }
+
+    @ViewBuilder
+    private func row(_ title: String, _ providers: [StreamingInfo.Provider], id: String) -> some View {
+        if !providers.isEmpty {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    Text(title).font(.body.weight(.semibold))
+                    Spacer()
+                    if providers.contains(where: { services.contains($0.id) }) {
+                        Text("Your service")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 10).padding(.vertical, 4)
+                            .background(Brand.teal, in: Capsule())
+                    }
+                }
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(alignment: .top, spacing: 12) {
+                        ForEach(providers, id: \.id) { p in
+                            VStack(spacing: 4) {
+                                ProviderLogo(provider: p, size: 44)
+                                Text(p.name)
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                                    .lineLimit(2)
+                                    .multilineTextAlignment(.center)
+                                    .frame(width: 64)
+                            }
+                            .accessibilityElement(children: .combine)
+                        }
+                    }
+                }
+            }
+            .accessibilityIdentifier("streaming-\(id)")
+        }
+    }
+}
+
+/// A provider's TMDB logo (AsyncImage); its name on a tile while loading or when it fails.
+struct ProviderLogo: View {
+    let provider: StreamingInfo.Provider
+    var size: CGFloat = 32
+
+    var body: some View {
+        AsyncImage(url: provider.logoURL) { phase in
+            if let image = phase.image {
+                image.resizable().scaledToFill()
+            } else {
+                ZStack {
+                    Brand.teal.opacity(0.85)
+                    Text(provider.name)
+                        .font(.system(size: max(8, size * 0.2), weight: .bold))
+                        .foregroundStyle(.white)
+                        .multilineTextAlignment(.center)
+                        .minimumScaleFactor(0.5)
+                        .padding(2)
+                }
+            }
+        }
+        .frame(width: size, height: size)
+        .clipShape(RoundedRectangle(cornerRadius: size * 0.22, style: .continuous))
+        .accessibilityLabel(provider.name)
     }
 }
