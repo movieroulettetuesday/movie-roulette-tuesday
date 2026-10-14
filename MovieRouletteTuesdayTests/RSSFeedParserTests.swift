@@ -30,6 +30,11 @@ final class RSSFeedParserTests: XCTestCase {
         XCTAssertNotNil(first.pubDate)
         XCTAssertFalse(first.summary.isEmpty)
         XCTAssertFalse(first.summary.contains("<p>"))
+        // Full show notes, not Buzzsprout's 500-char itunes:summary ("...").
+        XCTAssertGreaterThan(first.summary.count, 500)
+        XCTAssertFalse(first.summary.hasSuffix("..."))
+        XCTAssertFalse(first.summary.lowercased().hasPrefix("send us fan mail"))
+        XCTAssertNotNil(first.fanMailURL)
 
         let second = feed.episodes[1]
         XCTAssertEqual(second.title, "The Ugly Stepsister")

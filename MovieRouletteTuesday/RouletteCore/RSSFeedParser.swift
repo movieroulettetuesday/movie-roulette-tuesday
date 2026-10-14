@@ -37,6 +37,12 @@ public enum RSSFeedError: Error, LocalizedError, Equatable {
 /// description / itunes:summary, itunes:season, itunes:episode, itunes:episodeType,
 /// itunes:image (per item and per channel).
 public enum RSSFeedParser {
+    /// The longest of the candidate show-notes texts (description, content:encoded,
+    /// itunes:summary), so a truncated itunes:summary never wins.
+    static func fullestNotes(_ candidates: [String]) -> String {
+        candidates.max { $0.count < $1.count } ?? ""
+    }
+
     public static func parse(data: Data) throws -> PodcastFeed {
         guard !data.isEmpty else { throw RSSFeedError.emptyDocument }
         let delegate = FeedDelegate()
@@ -107,6 +113,7 @@ private final class FeedDelegate: NSObject, XMLParserDelegate {
     private var itemLink = ""
     private var itemPubDate = ""
     private var itemDescription = ""
+    private var itemSummary = ""
     private var itemSeason = ""
     private var itemEpisode = ""
     private var itemEpisodeType = ""
@@ -128,7 +135,7 @@ private final class FeedDelegate: NSObject, XMLParserDelegate {
             inItem = true
             itemTitle = ""; itemGUID = ""; itemLink = ""; itemPubDate = ""
             itemDescription = ""; itemSeason = ""; itemEpisode = ""; itemEpisodeType = ""
-            itemImage = ""; itemHTML = ""
+            itemImage = ""; itemHTML = ""; itemSummary = ""
         }
         // itunes:image carries the URL in an attribute (`href`); RSS <image> has none.
         if name == "image", let href = attributeDict["href"] ?? attributeDict["HREF"] {
@@ -165,8 +172,9 @@ private final class FeedDelegate: NSObject, XMLParserDelegate {
             case "link": itemLink = value
             case "pubdate": itemPubDate = value
             case "summary":
-                // Prefer itunes:summary (plain text) over HTML description when present.
-                if !value.isEmpty { itemDescription = value }
+                // Buzzsprout caps itunes:summary at 500 chars ("…b..."), so it is only
+                // a fallback; the full show notes come from description/content:encoded.
+                if !value.isEmpty { itemSummary = value }
             case "description":
                 if itemDescription.isEmpty { itemDescription = value }
                 if itemHTML.isEmpty { itemHTML = value }
@@ -187,7 +195,9 @@ private final class FeedDelegate: NSObject, XMLParserDelegate {
                         season: Int(itemSeason),
                         episode: Int(itemEpisode),
                         episodeType: itemEpisodeType.isEmpty ? nil : itemEpisodeType,
-                        summary: ShowNotes.strippingFanMail(stripHTML(itemDescription)),
+                        summary: RSSFeedParser.fullestNotes(
+                            [itemDescription, itemHTML, itemSummary].map { ShowNotes.strippingFanMail(stripHTML($0)) }
+                        ),
                         imageURL: ArtworkResolver.usableURL(itemImage),
                         fanMailURL: ShowNotes.fanMailURL(inHTML: itemHTML)
                     ))

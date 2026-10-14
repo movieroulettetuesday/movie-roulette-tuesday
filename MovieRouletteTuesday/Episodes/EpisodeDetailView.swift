@@ -23,6 +23,11 @@ struct EpisodeDetailView: View {
                         if !episode.displaySummary.isEmpty {
                             Text(episode.displaySummary)
                                 .textSelection(.enabled)
+                                // Never truncate long show notes: grow vertically.
+                                .lineLimit(nil)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .accessibilityIdentifier("episode-about-text")
                         }
                         if let url = episode.fanMailURL {
                             Link(destination: url) {
