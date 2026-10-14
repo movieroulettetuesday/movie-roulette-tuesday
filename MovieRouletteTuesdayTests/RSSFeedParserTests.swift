@@ -52,4 +52,34 @@ final class RSSFeedParserTests: XCTestCase {
         XCTAssertEqual(feed.title, "Empty")
         XCTAssertEqual(feed.episodes.count, 0)
     }
+
+    // TestFlight 1.0 (4): show notes began with "Send us Fan Mail" as plain text.
+    func testFanMailLineIsStrippedAndOfferedAsLink() throws {
+        let feed = try RSSFeedParser.parse(data: Data(contentsOf: fixtureURL))
+        for ep in feed.episodes {
+            XCTAssertFalse(ep.summary.lowercased().hasPrefix("send us fan mail"), ep.summary)
+            XCTAssertEqual(ep.fanMailURL?.absoluteString, "https://www.buzzsprout.com/2117292/fan_mail/new")
+        }
+        XCTAssertTrue(feed.episodes[0].summary.hasPrefix("Hi everyone"))
+    }
+
+    func testShowNotesHelpers() {
+        XCTAssertEqual(ShowNotes.strippingFanMail("Send us Fan Mail Hi there"), "Hi there")
+        XCTAssertEqual(ShowNotes.strippingFanMail("send us fanmail: Hi"), "Hi")
+        XCTAssertEqual(ShowNotes.strippingFanMail("We read fan mail today"), "We read fan mail today")
+        XCTAssertEqual(ShowNotes.strippingFanMail("Send us Fan Mail"), "")
+        XCTAssertNil(ShowNotes.fanMailURL(inHTML: "<p>No link</p>"))
+        XCTAssertNil(ShowNotes.fanMailURL(inHTML: #"<a href="https://example.com/x">Other</a>"#))
+        XCTAssertEqual(
+            ShowNotes.fanMailURL(inHTML: #"<p><a target="_blank" href="https://www.buzzsprout.com/1/fan_mail/new">Send us Fan Mail</a></p>"#)?.absoluteString,
+            "https://www.buzzsprout.com/1/fan_mail/new")
+        // Summaries cached by older builds are cleaned at display time.
+        XCTAssertEqual(PodcastEpisode(guid: "g", title: "t", summary: "Send us Fan Mail Hello").displaySummary, "Hello")
+    }
+
+    func testOldCacheWithoutFanMailURLDecodes() throws {
+        let json = #"{"guid":"g","title":"t","summary":"s"}"#
+        let ep = try JSONDecoder().decode(PodcastEpisode.self, from: Data(json.utf8))
+        XCTAssertNil(ep.fanMailURL)
+    }
 }

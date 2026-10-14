@@ -272,6 +272,9 @@ public struct PodcastEpisode: Codable, Hashable, Identifiable, Sendable {
     /// Per-episode artwork (`<itunes:image href>` on the item). Optional so
     /// feed caches written before artwork support still decode (as nil).
     public var imageURL: URL?
+    /// Buzzsprout "Send us Fan Mail" link from the show-notes HTML. Optional so
+    /// older feed caches still decode (as nil).
+    public var fanMailURL: URL?
 
     public init(
         guid: String,
@@ -282,7 +285,8 @@ public struct PodcastEpisode: Codable, Hashable, Identifiable, Sendable {
         episode: Int? = nil,
         episodeType: String? = nil,
         summary: String = "",
-        imageURL: URL? = nil
+        imageURL: URL? = nil,
+        fanMailURL: URL? = nil
     ) {
         self.guid = guid
         self.title = title
@@ -293,11 +297,78 @@ public struct PodcastEpisode: Codable, Hashable, Identifiable, Sendable {
         self.episodeType = episodeType
         self.summary = summary
         self.imageURL = imageURL
+        self.fanMailURL = fanMailURL
     }
+
+    /// Show notes without Buzzsprout's leading "Send us Fan Mail" line. Applied at
+    /// display time too, so summaries cached by older builds are cleaned.
+    public var displaySummary: String { ShowNotes.strippingFanMail(summary) }
 
     /// "S4E34" when season/episode are known.
     public var seasonEpisodeLabel: String? {
         guard let season, let episode else { return nil }
         return "S\(season)E\(episode)"
+    }
+}
+
+/// Buzzsprout injects a "Send us Fan Mail" link at the start of every episode's
+/// show notes; as plain text it is noise, so it is stripped and offered as a link.
+public enum ShowNotes {
+    /// Removes a leading "Send us fan mail" phrase (any case, optional trailing
+    /// punctuation) from plain-text show notes.
+    public static func strippingFanMail(_ text: String) -> String {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        let pattern = #"^send us fan ?mail[\s.:!\-–—|]*"#
+        guard let range = trimmed.range(of: pattern, options: [.regularExpression, .caseInsensitive]) else {
+            return trimmed
+        }
+        return String(trimmed[range.upperBound...]).trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    /// The href of the "Send us Fan Mail" anchor (or any Buzzsprout fan_mail
+    /// link) in show-notes HTML; nil when absent or not http(s).
+    public static func fanMailURL(inHTML html: String) -> URL? {
+        let anchor = #"<a\b[^>]*href\s*=\s*["']([^"']+)["'][^>]*>\s*([^<]*)</a>"#
+        guard let re = try? NSRegularExpression(pattern: anchor, options: [.caseInsensitive]) else { return nil }
+        let ns = html as NSString
+        for m in re.matches(in: html, range: NSRange(location: 0, length: ns.length)) {
+            let href = ns.substring(with: m.range(at: 1)).replacingOccurrences(of: "&amp;", with: "&")
+            let label = ns.substring(with: m.range(at: 2))
+            let isFanMail = href.lowercased().contains("fan_mail")
+                || label.range(of: #"fan ?mail"#, options: [.regularExpression, .caseInsensitive]) != nil
+            guard isFanMail, let url = URL(string: href),
+                  let scheme = url.scheme?.lowercased(), scheme == "https" || scheme == "http" else { continue }
+            return url
+        }
+        return nil
+    }
+}
+
+/// Totals shown under the Episodes and Movies lists. The feed also carries
+/// trailers, bonus and non-movie episodes, so "episodes in the feed" and
+/// "films in the catalog" differ; both footers label which count they show.
+public struct EpisodeTotals: Equatable, Sendable {
+    /// Every episode in the Buzzsprout feed.
+    public let feedEpisodes: Int
+    /// Feed episodes that discuss a film in the catalog (Movies tab).
+    public let feedEpisodesWithFilm: Int
+
+    public init(episodes: [PodcastEpisode], catalog: MovieCatalog?) {
+        feedEpisodes = episodes.count
+        feedEpisodesWithFilm = catalog.map { c in episodes.filter { c.movie(forEpisodeGuid: $0.guid) != nil }.count } ?? 0
+    }
+
+    /// Distinct episodes linked from the catalog's films.
+    public static func catalogEpisodeCount(_ catalog: MovieCatalog?) -> Int {
+        Set(catalog?.movies.flatMap(\.episodeIds) ?? []).count
+    }
+}
+
+extension MovieCatalog {
+    /// The line under a movie's title: year plus the same category names the
+    /// movie page's "Categories" section lists (catalog categories, not `genre`).
+    public func subtitle(for movie: Movie) -> String {
+        let names = movie.categories.compactMap { category(withId: $0)?.displayName }
+        return names.isEmpty ? "\(movie.year) · \(movie.genre)" : "\(movie.year) · " + names.joined(separator: ", ")
     }
 }

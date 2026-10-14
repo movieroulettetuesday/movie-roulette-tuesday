@@ -4,7 +4,6 @@ import SwiftUI
 struct MoviePageView: View {
     let movie: Movie
     let catalog: MovieCatalog?
-    let spinCount: Int
     var episodesByGUID: [String: PodcastEpisode] = [:]
     var showArtworkURL: URL? = nil
     /// When true (Movies tab), episode rows are value links
@@ -15,6 +14,10 @@ struct MoviePageView: View {
     private var linksEpisodes: Bool { context.linksEpisodes }
 
     @Environment(PersonalRatingsStore.self) private var personal
+    /// The app's one spin log (`SpinHistoryStore.shared`, injected at the root).
+    /// Read here, not passed in, so every host shows the same live count.
+    @Environment(SpinHistoryStore.self) private var history
+    private var spinCount: Int { history.stats.spinCount(forMovie: movie.id) }
     @Environment(CommunityService.self) private var community
     @AppStorage(AppSettings.autoShareRatings) private var autoShareRatings = false
     @Environment(\.colorScheme) private var colorScheme
@@ -168,7 +171,7 @@ struct MoviePageView: View {
                 Text(movie.title)
                     .font(.largeTitle.bold())
                     .multilineTextAlignment(.center)
-                Text(verbatim: "\(movie.year) · \(movie.genre)")
+                Text(verbatim: catalog?.subtitle(for: movie) ?? "\(movie.year) · \(movie.genre)")
                     .font(.headline)
                     .foregroundStyle(.secondary)
                 if movie.isInfamous {

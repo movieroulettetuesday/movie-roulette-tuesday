@@ -164,7 +164,6 @@ struct MoviesView: View {
         MoviePageView(
             movie: movie,
             catalog: catalog,
-            spinCount: stats.spinCount(forMovie: movie.id),
             episodesByGUID: episodesByGUID,
             showArtworkURL: showArtworkURL,
             context: .moviesTab
@@ -250,9 +249,11 @@ struct MoviesView: View {
                 }
             }
         } footer: {
+                let total = catalog?.movies.count ?? 0
+                let episodes = EpisodeTotals.catalogEpisodeCount(catalog)
                 Text(listFilter == .all
-                     ? "\(rows.count) of \(catalog?.movies.count ?? 0) films discussed on the show."
-                     : "\(rows.count) of \(catalog?.movies.count ?? 0) films · \(listFilter.label)")
+                     ? "\(rows.count) of \(total) films, discussed in \(episodes) movie episodes. The Episodes tab also counts trailers and bonus episodes."
+                     : "\(rows.count) of \(total) films · \(listFilter.label)")
         }
     }
 
@@ -381,7 +382,7 @@ private struct MovieRow: View {
                     .lineLimit(2)
                 HStack(spacing: 6) {
                     categoryDots
-                    Text(verbatim: "\(movie.year) · \(movie.genre)")
+                    Text(verbatim: catalog?.subtitle(for: movie) ?? "\(movie.year) · \(movie.genre)")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -484,5 +485,6 @@ struct LinkedEpisodeView: View {
 #Preview {
     MoviesView(catalog: nil, history: SpinHistoryStore(fileStore: nil))
         .environment(PersonalRatingsStore(fileStore: nil))
+        .environment(SpinHistoryStore(fileStore: nil))
         .environment(CommunityService.preview())
 }

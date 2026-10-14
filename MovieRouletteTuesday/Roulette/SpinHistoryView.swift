@@ -89,7 +89,6 @@ struct SpinHistoryView: View {
                 MoviePageView(
                     movie: movie,
                     catalog: catalog,
-                    spinCount: stats.spinCount(forMovie: id),
                     episodesByGUID: episodesByGUID,
                     showArtworkURL: showArtworkURL,
                     context: .spinHistory

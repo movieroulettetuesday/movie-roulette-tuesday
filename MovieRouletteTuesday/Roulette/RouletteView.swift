@@ -88,6 +88,7 @@ struct RouletteView: View {
                     // Re-inject for the episode/movie pages pushed inside the sheet.
                     .environment(personal)
                     .environment(community)
+                    .environment(model.history)
                     .appAppearance()
                     .adaptiveSheetSizing()
             }
@@ -103,6 +104,7 @@ struct RouletteView: View {
                 // Re-inject for the movie page pushed inside the sheet.
                 .environment(personal)
                 .environment(community)
+                .environment(model.history)
                 .appAppearance()
                 .adaptiveSheetSizing()
             }
@@ -343,6 +345,7 @@ struct RouletteView: View {
 #Preview {
     RouletteView(model: .preview())
         .environment(PersonalRatingsStore(fileStore: nil))
+        .environment(SpinHistoryStore(fileStore: nil))
         .environment(CommunityService.preview())
 }
 

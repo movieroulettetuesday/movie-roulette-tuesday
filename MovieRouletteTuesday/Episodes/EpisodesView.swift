@@ -133,6 +133,7 @@ struct EpisodesView: View {
                     EpisodeRow(
                         episode: episode,
                         movie: catalog?.movie(forEpisodeGuid: episode.guid),
+                        catalog: catalog,
                         showArtworkURL: store.showArtworkURL
                     )
                 }
@@ -144,7 +145,11 @@ struct EpisodesView: View {
 
     private var footer: some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text("\(store.episodes.count) episodes from the Buzzsprout feed.")
+            let totals = EpisodeTotals(episodes: store.episodes, catalog: catalog)
+            Text("\(totals.feedEpisodes) episodes in the Buzzsprout feed.")
+            if catalog != nil {
+                Text("\(totals.feedEpisodesWithFilm) discuss a film in the Movies tab; the rest are trailers, bonus or non-movie episodes.")
+            }
             if let date = store.lastFetchedAt {
                 Text("Updated \(date.formatted(.relative(presentation: .named)))")
             }
@@ -155,6 +160,7 @@ struct EpisodesView: View {
 private struct EpisodeRow: View {
     let episode: PodcastEpisode
     let movie: Movie?
+    var catalog: MovieCatalog? = nil
     var showArtworkURL: URL?
 
     var body: some View {
@@ -189,14 +195,14 @@ private struct EpisodeRow: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
-            if !episode.summary.isEmpty {
-                Text(episode.summary)
+            if !episode.displaySummary.isEmpty {
+                Text(episode.displaySummary)
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .lineLimit(2)
             }
             if let movie {
-                Text(verbatim: "\(movie.year) · \(movie.genre)")
+                Text(verbatim: catalog?.subtitle(for: movie) ?? "\(movie.year) · \(movie.genre)")
                     .font(.caption2)
                     .foregroundStyle(.tertiary)
             }
@@ -208,5 +214,6 @@ private struct EpisodeRow: View {
 #Preview {
     EpisodesView(store: EpisodeStore(cacheURL: nil), catalog: nil)
         .environment(PersonalRatingsStore(fileStore: nil))
+        .environment(SpinHistoryStore(fileStore: nil))
         .environment(CommunityService.preview())
 }

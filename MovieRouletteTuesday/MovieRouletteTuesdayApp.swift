@@ -40,6 +40,7 @@ struct MovieRouletteTuesdayApp: App {
                     .environment(personal)
                     .environment(community)
                     .environment(splash)
+                    .environment(roulette.history)
                 // Pure overlay: ContentView (and its data loading) runs underneath from the first frame.
                 if splash.isActive {
                     SplashCover(state: splash)

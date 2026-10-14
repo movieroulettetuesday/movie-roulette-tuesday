@@ -109,5 +109,6 @@ struct ContentView: View {
         episodes: EpisodeStore(cacheURL: nil)
     )
     .environment(PersonalRatingsStore(fileStore: nil))
+    .environment(SpinHistoryStore(fileStore: nil))
     .environment(CommunityService.preview())
 }

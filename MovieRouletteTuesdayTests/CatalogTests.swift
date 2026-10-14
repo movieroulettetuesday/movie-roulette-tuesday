@@ -181,4 +181,47 @@ final class CatalogTests: XCTestCase {
             XCTAssertEqual(category.displayHex, CategoryPalette.known[category.id])
         }
     }
+
+    // TestFlight 1.0 (4): the line under the title used `genre`, the Categories section used categories.
+    func testSubtitleUsesSameCategoryNamesAsCategoriesSection() {
+        let catalog = MovieCatalog(
+            categories: [
+                RouletteCategory(id: "a", name: "Cult", fullName: "Cult & Bizarre", colorHex: "#111111", movieIds: ["m1"]),
+                RouletteCategory(id: "b", name: "Horror", colorHex: "#222222", movieIds: ["m1"]),
+            ],
+            movies: [Movie(id: "m1", title: "One", year: 2000, genre: "Drama", categories: ["a", "b"])]
+        )
+        let movie = catalog.movies[0]
+        XCTAssertEqual(catalog.subtitle(for: movie), "2000 · Cult & Bizarre, Horror")
+        let section = movie.categories.compactMap { catalog.category(withId: $0)?.displayName }
+        for name in section { XCTAssertTrue(catalog.subtitle(for: movie).contains(name)) }
+    }
+
+    // TestFlight 1.0 (4): Episodes vs Movies totals differ because the feed has non-movie episodes.
+    func testEpisodeTotalsSeparateFeedFromCatalog() {
+        let catalog = MovieCatalog(
+            categories: [RouletteCategory(id: "a", name: "A", colorHex: "#111111", movieIds: ["m1", "m2"])],
+            movies: [
+                Movie(id: "m1", title: "One", year: 2000, genre: "Drama", categories: ["a"], episodeIds: ["e1"]),
+                Movie(id: "m2", title: "Two", year: 2001, genre: "Drama", categories: ["a"], episodeIds: ["e2"]),
+            ]
+        )
+        let feed = [PodcastEpisode(guid: "e1", title: "1"), PodcastEpisode(guid: "e2", title: "2"),
+                    PodcastEpisode(guid: "trailer", title: "Trailer")]
+        let totals = EpisodeTotals(episodes: feed, catalog: catalog)
+        XCTAssertEqual(totals.feedEpisodes, 3)
+        XCTAssertEqual(totals.feedEpisodesWithFilm, 2)
+        XCTAssertEqual(EpisodeTotals.catalogEpisodeCount(catalog), 2)
+    }
+
+    // TestFlight 1.0 (4): every movie page reads Times Spun from the one shared store, live.
+    @MainActor
+    func testSpinCountComesFromSharedStoreAndUpdatesLive() {
+        let store = SpinHistoryStore(fileStore: nil)
+        XCTAssertEqual(store.stats.spinCount(forMovie: "m1"), 0)
+        store.record(SpinResult(movieId: "m1", categoryId: "a"))
+        XCTAssertEqual(store.stats.spinCount(forMovie: "m1"), 1)
+        store.record(SpinResult(movieId: "m1", categoryId: "a"))
+        XCTAssertEqual(store.stats.spinCount(forMovie: "m1"), 2)
+    }
 }

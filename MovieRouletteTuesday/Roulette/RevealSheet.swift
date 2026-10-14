@@ -102,7 +102,6 @@ struct RevealSheet: View {
                 MoviePageView(
                     movie: page,
                     catalog: catalog,
-                    spinCount: id == movie.id ? reveal.spinCount : 0,
                     episodesByGUID: episodesByGUID,
                     showArtworkURL: showArtworkURL,
                     context: .wheelReveal
@@ -136,7 +135,7 @@ struct RevealSheet: View {
                 .minimumScaleFactor(0.6)
 
             // verbatim: avoid locale grouping ("1,988").
-            Text(verbatim: "\(movie.year) · \(movie.genre)")
+            Text(verbatim: catalog?.subtitle(for: movie) ?? "\(movie.year) · \(movie.genre)")
                 .font(.headline)
                 .foregroundStyle(.secondary)
 
@@ -215,6 +214,7 @@ struct RevealSheet: View {
                 onSpinAgain: {}
             )
             .environment(PersonalRatingsStore(fileStore: nil))
+            .environment(SpinHistoryStore(fileStore: nil))
             .environment(CommunityService.preview())
         }
 }

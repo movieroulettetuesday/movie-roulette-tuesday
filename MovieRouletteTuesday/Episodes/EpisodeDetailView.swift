@@ -18,9 +18,17 @@ struct EpisodeDetailView: View {
             VStack(alignment: .leading, spacing: CleanPro.spacing) {
                 header
 
-                if !episode.summary.isEmpty {
+                if !episode.displaySummary.isEmpty || episode.fanMailURL != nil {
                     CleanProSection("About") {
-                        Text(episode.summary)
+                        if !episode.displaySummary.isEmpty {
+                            Text(episode.displaySummary)
+                        }
+                        if let url = episode.fanMailURL {
+                            Link(destination: url) {
+                                Label("Send us Fan Mail", systemImage: "envelope")
+                            }
+                            .accessibilityIdentifier("episode-fan-mail")
+                        }
                     }
                 }
 
@@ -30,7 +38,6 @@ struct EpisodeDetailView: View {
                             MoviePageView(
                                 movie: movie,
                                 catalog: catalog,
-                                spinCount: 0,
                                 episodesByGUID: [episode.guid: episode],
                                 showArtworkURL: showArtworkURL
                             )
@@ -38,7 +45,7 @@ struct EpisodeDetailView: View {
                             HStack {
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(movie.title).font(.body.weight(.semibold))
-                                    Text(verbatim: "\(movie.year) · \(movie.genre)")
+                                    Text(verbatim: catalog?.subtitle(for: movie) ?? "\(movie.year) · \(movie.genre)")
                                         .font(.caption)
                                         .foregroundStyle(.secondary)
                                 }
