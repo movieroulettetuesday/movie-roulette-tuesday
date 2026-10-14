@@ -255,7 +255,7 @@ struct CreditsView: View {
                 }
             } header: { Text("Data") }
             Section {
-                Text("Movie Roulette Tuesday is a fan-made companion app for the podcast.")
+                Text("Movie Roulette Tuesday is the official companion app from the hosts of Movie Roulette Tuesday: The Podcast.")
                     .font(.callout)
             } header: { Text("About") }
         }
