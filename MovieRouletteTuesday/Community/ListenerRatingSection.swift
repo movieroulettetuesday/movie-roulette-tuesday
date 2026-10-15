@@ -16,7 +16,7 @@ struct ListenerRatingSection: View {
     var body: some View {
         CleanProSection(
             "Listener Rating",
-            footer: "Shared anonymously through iCloud: only the movie and the star count are stored, with no name or account. Your own rating under Your Take stays on this device unless you add it here (or turn on auto-share in Settings)."
+            footer: "Shared anonymously through iCloud; only the movie and star count are stored."
         ) {
             HStack(spacing: 10) {
                 if let aggregate, let average = aggregate.average {
@@ -38,7 +38,7 @@ struct ListenerRatingSection: View {
             .task(id: movieId) { await community.loadRating(movieId: movieId) }
 
             if let shared {
-                LabeledContent("Your listener vote") {
+                LabeledContent("Your listener rating") {
                     StarRatingView(halfStars: shared, font: .caption, tint: Brand.accentPeach)
                 }
             }
@@ -48,13 +48,13 @@ struct ListenerRatingSection: View {
                     Button {
                         Task { await community.submitListenerRating(movieId: movieId, halfStars: myRating) }
                     } label: {
-                        Label(shared == nil ? "Add my \(HalfStars.label(myRating))★ to the listener average"
-                                            : "Update my listener vote to \(HalfStars.label(myRating))★",
+                        Label(shared == nil ? "Add my \(HalfStars.label(myRating)) ★ rating to the listener average"
+                                            : "Update my listener rating to \(HalfStars.label(myRating)) ★",
                               systemImage: "person.3.fill")
                     }
                     .disabled(isBusy)
                 } else if myRating == nil, shared == nil {
-                    Text("Rate it under Your Take to add your stars.")
+                    Text("Rate it under Your Rating to add your stars.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }

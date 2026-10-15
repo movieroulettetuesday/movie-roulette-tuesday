@@ -71,7 +71,7 @@ struct SpinOfTheDayWidget: Widget {
             SpinOfTheDayWidgetView(entry: entry)
         }
         .configurationDisplayName("Spin of the Day")
-        .description("Today's pick from the Movie Roulette Tuesday wheel, plus the latest episode.")
+        .description("Today’s pick from the Movie Roulette Tuesday wheel, plus the latest episode.")
         .supportedFamilies([.systemSmall, .systemMedium, .systemLarge, .accessoryRectangular])
     }
 }
@@ -158,7 +158,7 @@ struct SpinOfTheDayWidgetView: View {
                 PickView(pick: entry.pick, compact: true)
                 Spacer(minLength: 0)
                 if let episode = entry.latestEpisode {
-                    Text("New: \(episode.seasonEpisodeLabel ?? episode.title)")
+                    Text("New episode · \(episode.seasonEpisodeLabel ?? episode.title)")
                         .font(.caption2.weight(.semibold))
                         .foregroundStyle(palette.accent)
                         .lineLimit(1)
@@ -199,7 +199,7 @@ private struct PickView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             } else {
-                Text("Open the app to spin the wheel.")
+                Text("Tap to spin.")
                     .font(.caption)
                     .foregroundStyle(.primary)
             }
@@ -247,7 +247,7 @@ private struct SecondaryView: View {
                 Text("MOVIE ROULETTE TUESDAY")
                     .font(.caption2.weight(.heavy))
                     .foregroundStyle(palette.accent)
-                Text("Open the app to load the latest episode.")
+                Text("Open the app for the latest episode.")
                     .font(.caption)
                     .foregroundStyle(.primary)
             }
@@ -288,7 +288,7 @@ private struct AccessoryView: View {
                 .font(.headline)
                 .lineLimit(1)
             if let episode = entry.latestEpisode {
-                Text("New: \(episode.seasonEpisodeLabel ?? episode.title)")
+                Text("New episode · \(episode.seasonEpisodeLabel ?? episode.title)")
                     .font(.caption2)
                     .lineLimit(1)
             } else if let year = entry.pick?.movie.year {

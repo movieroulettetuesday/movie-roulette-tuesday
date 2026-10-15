@@ -38,11 +38,11 @@ struct RouletteView: View {
                     ProgressView("Loading movies…")
                 case .failed(let message):
                     ContentUnavailableView {
-                        Label("Couldn't Load Movies", systemImage: "film.stack")
+                        Label("Couldn’t Load Movies", systemImage: "film.stack")
                     } description: {
                         Text(message)
                     } actions: {
-                        Button("Try Again") { Task { await model.load() } }
+                        Button("Try again") { Task { await model.load() } }
                     }
                 case .loaded:
                     loadedContent
@@ -61,7 +61,7 @@ struct RouletteView: View {
                 }
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     Button { showingRules = true } label: {
-                        Label("Rules", systemImage: "info.circle")
+                        Label("House Rules", systemImage: "list.bullet.clipboard")
                     }
                     Button { showingSettings = true } label: {
                         Label("Settings", systemImage: "gearshape")
@@ -328,7 +328,7 @@ struct RouletteView: View {
             } else if model.isStopping {
                 Text("Slowing down…")
             } else if model.isSpinning {
-                Text(model.canStop ? "Spinning… tap to stop" : "No take-backsies…")
+                Text("Spinning…")
             } else if let category = model.lastCategory {
                 Text("Last landed on \(category.name)")
             } else {

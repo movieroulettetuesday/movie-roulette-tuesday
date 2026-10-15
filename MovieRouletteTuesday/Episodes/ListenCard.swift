@@ -9,10 +9,8 @@ struct ListenCard: View {
     var show: ShowInfo = .mrt
     private var apple: AppleEpisodeLinks { .shared }
 
-    static let footer = "Apple Podcasts and Buzzsprout open this exact episode. Spotify opens a search for it (it usually lands on the episode). Overcast opens the show."
-
     var body: some View {
-        CleanProSection("Listen", footer: Self.footer) {
+        CleanProSection("Listen") {
             Group {
                 let appleLink = apple.link(forGUID: episode.guid, show: show)
                 if let appleLink {
@@ -30,7 +28,7 @@ struct ListenCard: View {
                 }
                 if let url = PodcastLinks.buzzsproutEpisode(guid: episode.guid, show: show) ?? PodcastLinks.buzzsproutShow(show: show) {
                     Divider()
-                    row(url, "Buzzsprout", "Episode page in the browser", "globe", "#3A9CA6", id: "listen-buzzsprout")
+                    row(url, "Buzzsprout", "Episode page", "globe", "#3A9CA6", id: "listen-buzzsprout")
                 }
             }
         }

@@ -23,9 +23,9 @@ struct StatsView: View {
                 let summary = mine
                 if snap.totalSpins == 0 && summary.ratedCount == 0 && summary.watchlistCount == 0 && summary.watchedCount == 0 {
                     ContentUnavailableView {
-                        Label("No Spins Yet", systemImage: "chart.bar")
+                        Label("No Stats Yet", systemImage: "chart.bar")
                     } description: {
-                        Text("Spin the wheel on the Roulette tab, or rate a movie. Stats for this device will show up here — total spins, favorites, your ratings, and category breakdowns.")
+                        Text("Spin the wheel or rate a movie to see your stats.")
                     }
                 } else {
                     // One column of cards on iPhone / narrow windows; a
@@ -112,7 +112,7 @@ struct StatsView: View {
     private func yourRatings(_ mine: PersonalRatingsSummary) -> some View {
         group(
             "Your Ratings",
-            footer: mine.topRated.isEmpty ? nil : "Top rated by you. Your ratings stay on this device."
+            footer: mine.topRated.isEmpty ? nil : "Your top-rated movies."
         ) {
             LabeledContent("Movies rated", value: "\(mine.ratedCount)")
             if let average = mine.averageStars {

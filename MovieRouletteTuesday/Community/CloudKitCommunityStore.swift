@@ -39,12 +39,12 @@ actor CloudKitCommunityStore: CommunityStore {
             case .available: return .available
             case .noAccount, .restricted: return .noAccount
             case .temporarilyUnavailable: return .unavailable("iCloud is temporarily unavailable. Results may still load.")
-            case .couldNotDetermine: return .unavailable("Couldn't check iCloud status.")
-            @unknown default: return .unavailable("Couldn't check iCloud status.")
+            case .couldNotDetermine: return .unavailable("iCloud isn’t available right now.")
+            @unknown default: return .unavailable("iCloud isn’t available right now.")
             }
         } catch {
             let mapped = Self.communityError(for: error)
-            return .unavailable((mapped as? LocalizedError)?.errorDescription ?? "Couldn't check iCloud status.")
+            return .unavailable((mapped as? LocalizedError)?.errorDescription ?? "iCloud isn’t available right now.")
         }
     }
 
@@ -285,7 +285,7 @@ actor CloudKitCommunityStore: CommunityStore {
             if let url = error as? URLError {
                 return url.code == .cancelled ? CancellationError() : CommunityError.offline
             }
-            return CommunityError.service("Something went wrong talking to iCloud. Try again later.")
+            return CommunityError.service("Couldn’t reach iCloud. Try again later.")
         }
         switch ck.code {
         case .notAuthenticated:
@@ -298,7 +298,7 @@ actor CloudKitCommunityStore: CommunityStore {
             return CommunityError.quotaExceeded
         case .partialFailure:
             if let first = ck.partialErrorsByItemID?.values.first { return communityError(for: first) }
-            return CommunityError.service("iCloud couldn't save that. Try again later.")
+            return CommunityError.service("iCloud couldn’t save that. Try again later.")
         case .operationCancelled:
             return CancellationError()
         case .badContainer, .missingEntitlement, .invalidArguments, .unknownItem, .badDatabase, .permissionFailure:

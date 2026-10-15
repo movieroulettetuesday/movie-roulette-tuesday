@@ -36,7 +36,7 @@ struct SettingsSheet: View {
                 } header: {
                     Text("New Episodes")
                 } footer: {
-                    Text("Off by default. When on, the app occasionally checks the show’s public RSS feed in the background and notifies you about a new episode. iOS decides when that check runs, so alerts can arrive hours late. No account, no server; notification permission is asked only when you turn this on.")
+                    Text("Checks for new episodes in the background, so alerts can arrive late.")
                 }
 
                 Section {
@@ -57,8 +57,6 @@ struct SettingsSheet: View {
                     }
                 } header: {
                     Text("Follow the Show")
-                } footer: {
-                    Text("Opens in the app or your browser. Nothing about you is shared.")
                 }
 
                 Section {
@@ -66,7 +64,7 @@ struct SettingsSheet: View {
                         showsSuggest = true
                     } label: {
                         HStack {
-                            Label("Suggest a movie", systemImage: "envelope")
+                            Label("Suggest a movie for the show", systemImage: "envelope")
                             Spacer()
                             Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(.tertiary)
                         }
@@ -75,7 +73,7 @@ struct SettingsSheet: View {
                     .tint(.primary)
                     .accessibilityIdentifier("settings-suggest")
                 } footer: {
-                    Text("Emails \(MovieSuggestion.address), or send it in the app.")
+                    Text("Send the hosts a pick for a future episode.")
                 }
 
                 Section {
@@ -88,7 +86,7 @@ struct SettingsSheet: View {
                 } header: {
                     Text("Appearance")
                 } footer: {
-                    Text("System follows your iPhone's Light/Dark setting.")
+                    Text("System follows your iPhone’s Light or Dark setting.")
                 }
 
                 Section {
@@ -97,13 +95,11 @@ struct SettingsSheet: View {
                 } header: {
                     Text("Spin")
                 } footer: {
-                    Text("A real wheel clicks as each slice passes the pointer. It follows your Ring/Silent switch.")
+                    Text("Sound follows your Ring/Silent switch.")
                 }
 
                 Section {
                     Toggle("Rare outcomes", isOn: $rareOutcomes)
-                } footer: {
-                    Text("About 1 spin in 100 is a “Re-spin forced!”, and about 1 in 100 hits the Infamous Jackpot (only when the movie list has infamous picks).")
                 }
 
                 Section {
@@ -111,20 +107,20 @@ struct SettingsSheet: View {
                 } header: {
                     Text("Listener Ratings")
                 } footer: {
-                    Text("When on, rating a movie also adds your stars to the anonymous listener average (needs iCloud). When off, you can still add them movie by movie.")
+                    Text("Shares your star ratings anonymously with other listeners (needs iCloud).")
                 }
 
                 Section {
                     NavigationLink {
                         MyServicesView(providers: StreamingCatalog.services(in: movies))
                     } label: {
-                        Label("My Services", systemImage: "play.tv")
+                        Label("My services", systemImage: "play.tv")
                     }
                     .accessibilityIdentifier("settings-my-services")
                 } header: {
                     Text("Where to Watch")
                 } footer: {
-                    Text("Pick the services you have to filter the Movies list with “On my services”. Saved on this device only.")
+                    Text("Choose your streaming services to filter the Movies tab.")
                 }
 
                 Section {
@@ -198,7 +194,7 @@ struct MyServicesView: View {
         let selected = MyServices(serialized: raw)
         List {
             if providers.isEmpty {
-                Text("No streaming data in the movie list yet.")
+                Text("Streaming info isn’t available yet.")
                     .foregroundStyle(.secondary)
             } else {
                 Section {
@@ -241,7 +237,7 @@ struct CreditsView: View {
                     TMDBMark()
                     VStack(alignment: .leading, spacing: 2) {
                         Text("The Movie Database (TMDB)").font(.headline)
-                        Text("Movie ids and streaming availability").font(.caption).foregroundStyle(.secondary)
+                        Text("Streaming availability").font(.caption).foregroundStyle(.secondary)
                     }
                 }
                 .accessibilityElement(children: .combine)
@@ -253,10 +249,14 @@ struct CreditsView: View {
                 if let url = URL(string: "https://www.themoviedb.org") {
                     Link("themoviedb.org", destination: url)
                 }
-            } header: { Text("Data") }
+            } header: { Text("Streaming Data") }
             Section {
-                Text("Movie Roulette Tuesday is the official companion app from the hosts of Movie Roulette Tuesday: The Podcast.")
+                Text("The official companion app from the hosts of Movie Roulette Tuesday: The Podcast.")
                     .font(.callout)
+                Text("Version \(AppSettings.versionString)")
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+                    .accessibilityIdentifier("about-version")
             } header: { Text("About") }
         }
         .cleanProListScreen()

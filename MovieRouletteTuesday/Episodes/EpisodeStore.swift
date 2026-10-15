@@ -116,16 +116,16 @@ final class EpisodeStore {
         if let urlError = error as? URLError {
             switch urlError.code {
             case .notConnectedToInternet, .networkConnectionLost, .dataNotAllowed, .internationalRoamingOff:
-                return "You're offline. Showing saved episodes when available."
+                return "You’re offline. Showing saved episodes."
             case .timedOut:
-                return "The podcast feed took too long to respond. Try again in a moment."
+                return "Loading episodes took too long. Pull down to try again."
             case .cannotFindHost, .cannotConnectToHost, .dnsLookupFailed:
-                return "Couldn't reach the podcast feed. Try again later."
+                return "Couldn’t load episodes. Pull down to try again."
             default:
                 break
             }
         }
-        if error is RSSFeedError { return "The podcast feed couldn't be read. Try again later." }
+        if error is RSSFeedError { return "Couldn’t read the episode list. Pull down to try again." }
         return error.localizedDescription
     }
 

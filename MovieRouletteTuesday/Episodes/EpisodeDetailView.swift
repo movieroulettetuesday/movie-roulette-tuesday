@@ -31,7 +31,7 @@ struct EpisodeDetailView: View {
                         }
                         if let url = episode.fanMailURL {
                             Link(destination: url) {
-                                Label("Send us Fan Mail", systemImage: "envelope")
+                                Label("Send us fan mail", systemImage: "envelope")
                             }
                             .accessibilityIdentifier("episode-fan-mail")
                         }
@@ -39,7 +39,7 @@ struct EpisodeDetailView: View {
                 }
 
                 if showsFilmLink, let movie {
-                    CleanProSection("Film Discussed") {
+                    CleanProSection("Movie Discussed") {
                         NavigationLink {
                             MoviePageView(
                                 movie: movie,

@@ -6,6 +6,13 @@ enum AppSettings {
     static let tickSound = "settings.tickSound"
     static let haptics = "settings.haptics"
     static let rareOutcomes = "settings.rareOutcomes"
+    /// "1.0 (8)": marketing version and build, for Credits & About.
+    static var versionString: String {
+        let info = Bundle.main.infoDictionary
+        let version = info?["CFBundleShortVersionString"] as? String ?? "1.0"
+        let build = info?["CFBundleVersion"] as? String ?? "?"
+        return "\(version) (\(build))"
+    }
     /// When on, setting "my rating" also submits the anonymous listener rating.
     static let autoShareRatings = "settings.autoShareRatings"
 

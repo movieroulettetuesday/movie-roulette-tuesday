@@ -86,11 +86,11 @@ struct EpisodesView: View {
                 ProgressView("Loading episodes…")
             case .failed(let message) where store.episodes.isEmpty:
                 ContentUnavailableView {
-                    Label("Couldn't Load Episodes", systemImage: "wifi.exclamationmark")
+                    Label("Couldn’t Load Episodes", systemImage: "wifi.exclamationmark")
                 } description: {
                     Text(message)
                 } actions: {
-                    Button("Try Again") { Task { await store.load(forceNetwork: true) } }
+                    Button("Try again") { Task { await store.load(forceNetwork: true) } }
                 }
             default:
                 list
@@ -159,7 +159,7 @@ struct EpisodesView: View {
         }
         .buttonStyle(.plain)
         .textCase(nil)
-        .accessibilityLabel("\(group.title), \(group.episodes.count) episodes")
+        .accessibilityLabel("\(group.title), \(group.episodes.count == 1 ? "1 episode" : "\(group.episodes.count) episodes")")
         .accessibilityValue(expanded ? "Expanded" : "Collapsed")
         .accessibilityHint(expanded ? "Collapses the section" : "Expands the section")
         .accessibilityAddTraits(.isHeader)
@@ -217,10 +217,7 @@ struct EpisodesView: View {
     private var footer: some View {
         VStack(alignment: .leading, spacing: 2) {
             let totals = EpisodeTotals(episodes: store.episodes, catalog: catalog)
-            Text("\(totals.feedEpisodes) episodes in the Buzzsprout feed.")
-            if catalog != nil {
-                Text("\(totals.feedEpisodesWithFilm) discuss a film in the Movies tab; the rest are trailers, bonus or non-movie episodes.")
-            }
+            Text("\(totals.feedEpisodes) episodes")
             if let date = store.lastFetchedAt {
                 Text("Updated \(date.formatted(.relative(presentation: .named)))")
             }

@@ -71,7 +71,7 @@ final class CommunityService {
     var accountMessage: String? {
         switch accountStatus {
         case .unknown, .available: return nil
-        case .noAccount: return "Sign in to iCloud in Settings to vote."
+        case .noAccount: return "Sign in to iCloud in Settings to vote or rate."
         case .unavailable(let message): return message
         }
     }
@@ -232,7 +232,7 @@ final class CommunityService {
         guard suggestion.isValid else { return "Add a movie title (note up to \(InAppSuggestion.noteLimit) characters)." }
         await refreshAccountStatus(force: true)
         guard accountStatus.canWrite else {
-            return "iCloud isn't available. Sign in to iCloud in Settings to send from the app, or use email below."
+            return "iCloud isn’t available. Sign in to iCloud in Settings, or use email instead."
         }
         let version = (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?")
             + " (" + (Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "?") + ")"
@@ -242,7 +242,7 @@ final class CommunityService {
         } catch {
             if error is CancellationError { return "Cancelled." }
             if (error as? CommunityError) == .notSignedIn { accountStatus = .noAccount }
-            return (error as? LocalizedError)?.errorDescription ?? "Couldn't send. Try email instead."
+            return (error as? LocalizedError)?.errorDescription ?? "Couldn’t send. Try email instead."
         }
     }
 

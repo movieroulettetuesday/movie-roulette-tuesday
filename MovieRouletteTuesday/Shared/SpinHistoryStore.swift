@@ -78,7 +78,7 @@ final class SpinHistoryStore {
             try fileStore.saveLog(SpinHistoryLog(results: results, archive: archive))
             lastError = nil
         } catch {
-            lastError = "Couldn't save spin history: \(error.localizedDescription)"
+            lastError = "Couldn’t save spin history: \(error.localizedDescription)"
         }
     }
 }

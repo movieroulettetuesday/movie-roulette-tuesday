@@ -303,7 +303,7 @@ public enum MovieListFilter: String, CaseIterable, Identifiable, Sendable {
         case .watchlist: return "Watchlist"
         case .watched: return "Watched"
         case .rated: return "Rated by me"
-        case .notSpunYet: return "Haven't spun yet"
+        case .notSpunYet: return "Not spun yet"
         }
     }
 

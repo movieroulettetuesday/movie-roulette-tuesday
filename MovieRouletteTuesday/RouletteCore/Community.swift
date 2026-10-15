@@ -266,15 +266,15 @@ public enum CommunityError: Error, Equatable, LocalizedError, Sendable {
 
     public var errorDescription: String? {
         switch self {
-        case .notSignedIn: return "Sign in to iCloud in Settings to vote."
-        case .invalidOption: return "That isn't an option in this poll."
+        case .notSignedIn: return "Sign in to iCloud in Settings to vote or rate."
+        case .invalidOption: return "Something went wrong with that vote. Try again."
         case .invalidStars: return "Ratings are ½ to 5 stars."
-        case .offline: return "You're offline. Listener results will load when you're back online."
+        case .offline: return "You’re offline. Listener results will load when you’re back online."
         case .busy(let seconds?) where seconds > 0:
             return "iCloud is busy right now. Try again in \(seconds) second\(seconds == 1 ? "" : "s")."
         case .busy: return "iCloud is busy right now. Try again in a moment."
         case .quotaExceeded: return "Listener features are temporarily unavailable. Please try again later."
-        case .notSetUp: return "Listener polls and ratings aren't available yet. Check back later."
+        case .notSetUp: return "Listener polls and ratings aren’t available yet. Check back later."
         case .service(let message): return message
         }
     }

@@ -139,14 +139,14 @@ final class RouletteViewModel {
         do {
             let loaded = try await catalogSource.loadCatalog()
             guard !loaded.categories.isEmpty else {
-                loadState = .failed("The movie list has no categories.")
+                loadState = .failed("The movie list couldn’t be loaded. Check your connection and try again.")
                 return
             }
             // A remote refresh may have landed first; it is newer, keep it.
             guard catalog == nil else { loadState = .loaded; return }
             apply(loaded.deduplicated())
         } catch {
-            loadState = .failed(error.localizedDescription)
+            loadState = .failed("The movie list couldn’t be loaded. Check your connection and try again.")
         }
     }
 
@@ -448,7 +448,7 @@ final class RouletteViewModel {
             notice = "No movies in \(landed.name) yet. Spin again!"
             return
         }
-        if isJackpot { notice = "INFAMOUS JACKPOT!" }
+        if isJackpot { notice = "Infamous Jackpot!" }
 
         let result = SpinResult(movieId: movie.id, categoryId: category.id)
         history.record(result)

@@ -19,7 +19,7 @@ struct SuggestMovieSheet: View {
     @State private var showsInApp = false
     @FocusState private var titleFocused: Bool
 
-    static let footer = "Opens Mail with this filled in, addressed to \(MovieSuggestion.address). Nothing is sent until you tap Send in Mail. No mail app? Send it in the app instead."
+    static let footer = "Opens Mail with your pick filled in; nothing is sent until you tap Send there."
 
     private var suggestion: MovieSuggestion {
         MovieSuggestion(title: title, why: why, category: categoryName.isEmpty ? nil : categoryName)
@@ -35,7 +35,7 @@ struct SuggestMovieSheet: View {
                         .accessibilityIdentifier("suggest-title")
                 } header: { Text("Movie") }
                 Section {
-                    TextField("Why should the crew watch it?", text: $why, axis: .vertical)
+                    TextField("Why should the hosts watch it?", text: $why, axis: .vertical)
                         .lineLimit(3...5)
                         .accessibilityIdentifier("suggest-why")
                 } header: { Text("Why") }
@@ -56,7 +56,7 @@ struct SuggestMovieSheet: View {
                     }
                     .accessibilityIdentifier("suggest-in-app")
                 } footer: {
-                    Text("Saves your pick for the crew through iCloud, no email needed.")
+                    Text("Sends your pick to the hosts through iCloud, no email needed.")
                 }
             }
             .cleanProListScreen()
@@ -184,7 +184,7 @@ struct InAppSuggestionSheet: View {
                         }
                         .accessibilityIdentifier("suggest-app-credit")
                 } header: { Text("Credit me as (optional)") } footer: {
-                    Text("Sent anonymously through iCloud. Only what you type here is stored. \(InAppSuggestion.noteLimit) chars max.")
+                    Text("Only what you type here is sent.")
                 }
 
                 if let errorMessage {
@@ -242,13 +242,13 @@ struct InAppSuggestionSheet: View {
             .alert("Thanks! Suggestion sent.", isPresented: $sent) {
                 Button("OK") { dismiss(); onSent() }
             } message: {
-                Text("The crew reads every pick.")
+                Text("The hosts will see your pick.")
             }
             .task {
                 if !loaded { draft = initial; loaded = true }
                 await community.refreshAccountStatus()
                 if iCloudUnavailable, errorMessage == nil {
-                    errorMessage = "iCloud isn't available, so this can't be sent from the app. Use email below."
+                    errorMessage = "iCloud isn’t available, so this can’t be sent from the app. Use email below."
                 }
             }
         }
@@ -281,7 +281,7 @@ struct InAppSuggestionSheet: View {
     private func openMail() {
         guard let url = draft.asEmail.mailtoURL else { return }
         openURL(url) { accepted in
-            if !accepted { errorMessage = "No mail app could open. Copy the address instead." }
+            if !accepted { errorMessage = "Couldn’t open a mail app. Copy the address instead." }
         }
     }
 }
@@ -333,8 +333,8 @@ struct SuggestMovieRow: View {
                     .font(.title2).foregroundStyle(Brand.teal)
                     .frame(width: 40)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Suggest a movie").font(.body.weight(.semibold)).foregroundStyle(.primary)
-                    Text("Email the crew a pick for a future episode").font(.caption).foregroundStyle(.secondary)
+                    Text("Suggest a movie for the show").font(.body.weight(.semibold)).foregroundStyle(.primary)
+                    Text("Send the hosts a pick for a future episode").font(.caption).foregroundStyle(.secondary)
                 }
                 Spacer()
                 Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(.tertiary)
@@ -343,8 +343,8 @@ struct SuggestMovieRow: View {
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("Suggest a movie")
-        .accessibilityHint("Email the crew a pick for a future episode")
+        .accessibilityLabel("Suggest a movie for the show")
+        .accessibilityHint("Send the hosts a pick for a future episode")
         .accessibilityAddTraits(.isButton)
         .accessibilityIdentifier("suggest-movie-row")
     }

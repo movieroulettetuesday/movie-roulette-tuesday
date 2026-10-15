@@ -14,8 +14,8 @@ struct EpisodePollSection: View {
         CleanProSection(
             "Listener Poll",
             footer: myVote != nil && canVote
-                ? "Tap another answer to change your vote. One anonymous vote per iCloud account; no name or account is stored."
-                : "One anonymous vote per iCloud account; no name or account is stored."
+                ? "Tap another answer to change your vote."
+                : "One anonymous vote per iCloud account."
         ) {
             HStack {
                 Text(poll.question)

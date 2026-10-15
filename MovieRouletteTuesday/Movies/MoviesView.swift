@@ -44,8 +44,8 @@ struct MoviesView: View {
         var label: String {
             switch self {
             case .title: return "Title"
-            case .yearNewest: return "Year ↓"
-            case .yearOldest: return "Year ↑"
+            case .yearNewest: return "Newest first"
+            case .yearOldest: return "Oldest first"
             case .spins: return "Most spun"
             case .availableFirst: return "Available first"
             }
@@ -234,7 +234,7 @@ struct MoviesView: View {
             Section {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
-                        chip(onMyServices ? "On my services ✓" : "On my services", on: onMyServices) {
+                        chip("On my services", on: onMyServices) {
                             onMyServices.toggle()
                         }
                         .accessibilityIdentifier("chip-my-services")
@@ -303,10 +303,9 @@ struct MoviesView: View {
             }
         } footer: {
                 let total = catalog?.movies.count ?? 0
-                let episodes = EpisodeTotals.catalogEpisodeCount(catalog)
                 Text(listFilter == .all
-                     ? "\(rows.count) of \(total) films, discussed in \(episodes) movie episodes. The Episodes tab also counts trailers and bonus episodes."
-                     : "\(rows.count) of \(total) films · \(listFilter.label)")
+                     ? "\(rows.count) of \(total) movies"
+                     : "\(rows.count) of \(total) movies · \(listFilter.label)")
         }
     }
 
@@ -326,7 +325,7 @@ struct MoviesView: View {
         case .watchlist: return "Watchlist Is Empty"
         case .watched: return "Nothing Marked Watched"
         case .rated: return "No Ratings Yet"
-        case .notSpunYet: return "You've Spun Them All"
+        case .notSpunYet: return "You’ve Spun Them All"
         case .all: return "No Movies"
         }
     }
@@ -343,9 +342,9 @@ struct MoviesView: View {
 
     private var emptyMessage: String {
         switch listFilter {
-        case .watchlist: return "Open a movie and set its status to Want to Watch."
+        case .watchlist: return "Open a movie and set its status to Want to watch."
         case .watched, .rated: return "Open a movie to rate it or mark it watched."
-        case .notSpunYet: return "Every movie in this view has come up on the wheel at least once."
+        case .notSpunYet: return "Every movie in this view has come up on the wheel."
         case .all: return ""
         }
     }
@@ -530,10 +529,10 @@ struct LinkedEpisodeView: View {
             ContentUnavailableView {
                 Label("Episode Not Available", systemImage: "mic.slash")
             } description: {
-                Text("This episode isn't in the podcast feed right now. Check your connection and try again.")
+                Text("This episode isn’t available right now. Check your connection and try again.")
             } actions: {
                 if let store {
-                    Button("Try Again") {
+                    Button("Try again") {
                         Task { await store.load(forceNetwork: true) }
                     }
                 }

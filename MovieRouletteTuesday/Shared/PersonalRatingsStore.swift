@@ -54,7 +54,7 @@ final class PersonalRatingsStore {
             try fileStore.save(ratings)
             lastError = nil
         } catch {
-            lastError = "Couldn't save your ratings: \(error.localizedDescription)"
+            lastError = "Couldn’t save your ratings: \(error.localizedDescription)"
         }
     }
 }

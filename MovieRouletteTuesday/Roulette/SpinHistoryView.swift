@@ -18,7 +18,7 @@ struct SpinHistoryView: View {
                     ContentUnavailableView(
                         "No Spins Yet",
                         image: "roulette.wheel",
-                        description: Text("Every spin on this device gets logged here.")
+                        description: Text("Your spins will be listed here.")
                     )
                 } else {
                     List {
@@ -64,7 +64,7 @@ struct SpinHistoryView: View {
                 isPresented: $confirmingClear,
                 titleVisibility: .visible
             ) {
-                Button("Clear History", role: .destructive) { history.clear() }
+                Button("Clear history", role: .destructive) { history.clear() }
             }
         }
     }
@@ -101,9 +101,9 @@ struct SpinHistoryView: View {
 
     private var footerText: String {
         if history.archive.totalSpins > 0 {
-            return "Showing your latest \(history.results.count) spins; older spins still count toward totals. History is stored only on this device."
+            return "Showing your latest \(history.results.count) spins; older spins still count toward totals."
         }
-        return "History is stored only on this device."
+        return ""
     }
 
     private func row(for result: SpinResult, stats: SpinStats) -> some View {

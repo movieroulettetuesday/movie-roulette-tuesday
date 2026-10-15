@@ -10,10 +10,8 @@ struct RulesSheet: View {
             List {
                 Section {
                     Label("Tap the glowing hub in the middle of the wheel, or anywhere on the wheel, to spin.", image: "roulette.wheel")
-                    Label("The arrow at the top picks a theme category — grounded in the show’s rotating rounds (Horror, Criterion, Love Hurts, Listener Picks, and more).", systemImage: "arrowtriangle.down.fill")
-                    Label("Then a film from that category is drawn. Recent spins are less likely to repeat; every title was actually discussed on Movie Roulette Tuesday.", systemImage: "film.stack")
-                    Label("Open Episodes for the full Buzzsprout feed, Movies to browse the catalog, and Stats for your local spin history.", systemImage: "menubar.dock.rectangle")
-                    Label("Spins and the episode cache stay on this device.", systemImage: "iphone")
+                    Label("The arrow at the top picks a theme category, like Horror, Criterion, Love Hurts or Listener Picks.", systemImage: "arrowtriangle.down.fill")
+                    Label("Then a movie from that category is drawn. Recent spins are less likely to repeat, and every title was discussed on the show.", systemImage: "film.stack")
                 } footer: {
                     Text("Dinner, discussion, and dice. Spin responsibly.")
                 }

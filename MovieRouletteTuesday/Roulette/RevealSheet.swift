@@ -21,8 +21,8 @@ struct RevealSheet: View {
 
     private var spinCountText: String {
         reveal.spinCount == 1
-            ? "First time this one has come up on this device"
-            : "Spun \(reveal.spinCount) times on this device"
+            ? "First spin"
+            : "Spun \(reveal.spinCount) times"
     }
 
     var body: some View {
@@ -37,7 +37,7 @@ struct RevealSheet: View {
                         // Same bordered family as Share / Movie Page (no SPIN pill anywhere
                         // now; the hub is the spin button). Teal, full width, it leads.
                         Button(action: onSpinAgain) {
-                            Label("Spin Again", systemImage: "arrow.clockwise")
+                            Label("Spin again", systemImage: "arrow.clockwise")
                                 .font(.headline)
                                 .frame(maxWidth: .infinity)
                         }
@@ -51,7 +51,7 @@ struct RevealSheet: View {
                             // pushed movie page are value routes too, and only resolve when the
                             // whole chain is value-based, as in the Movies tab and Spin History.
                             NavigationLink(value: MoviesRoute.movie(movie.id)) {
-                                Label("Movie Page", systemImage: "film")
+                                Label("Movie page", systemImage: "film")
                                     .frame(maxWidth: .infinity)
                             }
                             .buttonStyle(.bordered)
@@ -81,7 +81,7 @@ struct RevealSheet: View {
                 ConfettiView()
                     .ignoresSafeArea()
             }
-            .navigationTitle(reveal.isJackpot ? "Infamous Jackpot" : "Tonight's Movie")
+            .navigationTitle(reveal.isJackpot ? "Infamous Jackpot" : "Tonight’s Movie")
             .navigationBarTitleDisplayMode(.inline)
         }
         .onAppear {
@@ -164,7 +164,7 @@ struct RevealSheet: View {
             ShareLink(
                 item: shareImage,
                 subject: Text(movie.title),
-                message: Text(verbatim: "Tonight's Movie Roulette Tuesday spin: \(movie.title) (\(movie.year))"),
+                message: Text(verbatim: "Tonight’s Movie Roulette Tuesday spin: \(movie.title) (\(movie.year))"),
                 preview: SharePreview(movie.title, image: shareImage)
             ) {
                 Label("Share", systemImage: "square.and.arrow.up")
@@ -177,10 +177,10 @@ struct RevealSheet: View {
     }
 
     private var jackpotBanner: some View {
-        Text("💀 INFAMOUS JACKPOT 💀")
+        Text("Infamous Jackpot")
             .font(.headline.weight(.black))
             .fontDesign(.rounded)
-            .tracking(1.5)
+            .tracking(0.5)
             .foregroundStyle(Brand.ink)
             .padding(.horizontal, 16)
             .padding(.vertical, 8)

@@ -63,7 +63,7 @@ struct MoviePageView: View {
 
                 if FeatureFlags.showHostRatings {
                     CleanProSection("Host Rating") {
-                        Text(movie.hostRating.map { $0.formatted() } ?? "The hosts haven't scored this one in the app yet.")
+                        Text(movie.hostRating.map { $0.formatted() } ?? "The hosts haven’t scored this one in the app yet.")
                             .foregroundStyle(movie.hostRating == nil ? .secondary : .primary)
                     }
                 }
@@ -131,13 +131,13 @@ struct MoviePageView: View {
 
     private var yourTake: some View {
         CleanProSection(
-            "Your Take",
+            "Your Rating",
             footer: autoShareRatings
-                ? "Your stars and watchlist are saved on this device. Auto-share is on, so your stars are also added anonymously to the listener average."
-                : "Your stars and watchlist stay on this device."
+                ? "Saved on this device and shared anonymously with other listeners."
+                : "Saved on this device."
         ) {
             HStack {
-                Text("My rating")
+                Text("Your rating")
                 Spacer()
                 StarRatingView(halfStars: myRating, tint: .orange) { half in
                     personal.setHalfStars(half, for: movie.id)
@@ -148,13 +148,13 @@ struct MoviePageView: View {
                 .accessibilityIdentifier("my-rating-stars")
             }
             if let myRating {
-                Text("\(HalfStars.label(myRating)) of 5 · drag across the stars or tap a star's left half for ½")
+                Text("\(HalfStars.label(myRating)) of 5")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
             Picker("Status", selection: statusBinding) {
                 Text("None").tag(WatchStatus?.none)
-                Text("Want to Watch").tag(WatchStatus?.some(.wantToWatch))
+                Text("Want to watch").tag(WatchStatus?.some(.wantToWatch))
                 Text("Watched").tag(WatchStatus?.some(.watched))
             }
             .pickerStyle(.segmented)
