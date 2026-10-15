@@ -88,18 +88,24 @@ struct StatsView: View {
                 LabeledContent {
                     Text("×\(top.count)")
                 } label: {
-                    Text(catalog?.movie(withId: top.id)?.title ?? top.id)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Movie").font(.caption).foregroundStyle(.secondary)
+                        Text(catalog?.movie(withId: top.id)?.title ?? top.id)
+                    }
                 }
             }
             if let top = snap.mostSpunCategory {
                 LabeledContent {
                     Text("×\(top.count)")
                 } label: {
-                    HStack(spacing: 8) {
-                        Circle()
-                            .fill(CleanPro.category(catalog?.category(withId: top.id)))
-                            .frame(width: 10, height: 10)
-                        Text(catalog?.category(withId: top.id)?.displayName ?? top.id)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Category").font(.caption).foregroundStyle(.secondary)
+                        HStack(spacing: 8) {
+                            Circle()
+                                .fill(CleanPro.category(catalog?.category(withId: top.id)))
+                                .frame(width: 10, height: 10)
+                            Text(catalog?.category(withId: top.id)?.displayName ?? top.id)
+                        }
                     }
                 }
             }

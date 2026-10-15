@@ -41,8 +41,8 @@ struct RevealSheet: View {
                                 .font(.headline)
                                 .frame(maxWidth: .infinity)
                         }
-                        .buttonStyle(.bordered)
-                        .tint(Brand.accentTeal)
+                        .buttonStyle(.borderedProminent)
+                        .tint(Brand.tealDark)
                         .controlSize(.large)
 
                         HStack(spacing: 12) {

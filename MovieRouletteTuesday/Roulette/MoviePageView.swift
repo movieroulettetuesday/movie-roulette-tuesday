@@ -57,10 +57,6 @@ struct MoviePageView: View {
                     }
                 }
 
-                CleanProSection("On This Device") {
-                    LabeledContent("Times spun", value: "\(spinCount)")
-                }
-
                 if FeatureFlags.showHostRatings {
                     CleanProSection("Host Rating") {
                         Text(movie.hostRating.map { $0.formatted() } ?? "The hosts haven’t scored this one in the app yet.")
@@ -191,6 +187,12 @@ struct MoviePageView: View {
                         .font(.subheadline)
                         .foregroundStyle(.orange)
                 }
+                if spinCount > 0 {
+                    Text(spinCount == 1 ? "Spun 1 time" : "Spun \(spinCount) times")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .accessibilityIdentifier("movie-spin-count")
+                }
             }
         }
         .frame(maxWidth: .infinity)
@@ -303,7 +305,7 @@ struct WhereToWatchSection: View {
                             .font(.caption.weight(.semibold))
                             .foregroundStyle(.white)
                             .padding(.horizontal, 10).padding(.vertical, 4)
-                            .background(Brand.teal, in: Capsule())
+                            .background(Brand.tealDark, in: Capsule())
                     }
                 }
                 ScrollView(.horizontal, showsIndicators: false) {
@@ -339,7 +341,7 @@ struct ProviderLogo: View {
                 image.resizable().scaledToFill()
             } else {
                 ZStack {
-                    Brand.teal.opacity(0.85)
+                    Brand.tealDark
                     Text(provider.name)
                         .font(.system(size: max(8, size * 0.2), weight: .bold))
                         .foregroundStyle(.white)

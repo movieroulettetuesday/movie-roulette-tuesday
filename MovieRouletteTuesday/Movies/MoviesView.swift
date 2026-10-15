@@ -261,7 +261,7 @@ struct MoviesView: View {
                 .font(.subheadline.weight(.medium))
                 .foregroundStyle(on ? Color.white : Color.primary)
                 .padding(.horizontal, 14).padding(.vertical, 7)
-                .background(on ? AnyShapeStyle(Brand.teal) : AnyShapeStyle(.thinMaterial), in: Capsule())
+                .background(on ? AnyShapeStyle(Brand.tealDark) : AnyShapeStyle(.thinMaterial), in: Capsule())
         }
         .buttonStyle(.plain)
         .accessibilityAddTraits(on ? .isSelected : [])
@@ -311,7 +311,15 @@ struct MoviesView: View {
 
     @ViewBuilder
     private var emptyOverlay: some View {
-            if catalog != nil, filtered.isEmpty, listFilter != .all, query.isEmpty {
+            if catalog != nil, filtered.isEmpty, !query.isEmpty {
+                ContentUnavailableView.search(text: query)
+            } else if catalog != nil, filtered.isEmpty, listFilter == .all {
+                ContentUnavailableView(
+                    "No Matches",
+                    systemImage: "film",
+                    description: Text("Try a different category or service filter.")
+                )
+            } else if catalog != nil, filtered.isEmpty, listFilter != .all {
                 ContentUnavailableView {
                     Label(emptyTitle, systemImage: emptySymbol)
                 } description: {

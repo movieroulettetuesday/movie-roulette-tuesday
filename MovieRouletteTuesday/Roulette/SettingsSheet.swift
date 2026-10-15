@@ -23,8 +23,31 @@ struct SettingsSheet: View {
         NavigationStack {
             Form {
                 Section {
+                    Picker("Appearance", selection: $appearance) {
+                        ForEach(AppearancePreference.allCases) { option in
+                            Text(option.label).tag(option.rawValue)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                } header: {
+                    Text("Appearance")
+                } footer: {
+                    Text("System follows your iPhone’s Light or Dark setting.")
+                }
+
+                Section {
+                    Toggle(isOn: $tickSound) { SettingsRowLabel("Spin sound", symbol: "speaker.wave.2.fill") }
+                    Toggle(isOn: $haptics) { SettingsRowLabel("Haptics", symbol: "iphone.radiowaves.left.and.right") }
+                    Toggle(isOn: $rareOutcomes) { SettingsRowLabel("Rare outcomes", symbol: "sparkles") }
+                } header: {
+                    Text("Spin")
+                } footer: {
+                    Text("Sound follows your Ring/Silent switch.")
+                }
+
+                Section {
                     Toggle(isOn: alertsBinding) {
-                        Label("New-episode alert", systemImage: "bell.badge")
+                        SettingsRowLabel("New-episode alert", symbol: "bell.badge.fill")
                     }
                     .accessibilityIdentifier("settings-new-episode-alert")
                     if let alertNote {
@@ -34,9 +57,30 @@ struct SettingsSheet: View {
                             .accessibilityIdentifier("settings-alert-note")
                     }
                 } header: {
-                    Text("New Episodes")
+                    Text("Notifications")
                 } footer: {
                     Text("Checks for new episodes in the background, so alerts can arrive late.")
+                }
+
+                Section {
+                    NavigationLink {
+                        MyServicesView(providers: StreamingCatalog.services(in: movies))
+                    } label: {
+                        SettingsRowLabel("My services", symbol: "play.tv.fill")
+                    }
+                    .accessibilityIdentifier("settings-my-services")
+                } header: {
+                    Text("Where to Watch")
+                } footer: {
+                    Text("Choose your streaming services to filter the Movies tab.")
+                }
+
+                Section {
+                    Toggle(isOn: $autoShareRatings) { SettingsRowLabel("Auto-share my ratings", symbol: "person.3.fill") }
+                } header: {
+                    Text("Listener Ratings")
+                } footer: {
+                    Text("Shares your star ratings anonymously with other listeners (needs iCloud).")
                 }
 
                 Section {
@@ -64,7 +108,7 @@ struct SettingsSheet: View {
                         showsSuggest = true
                     } label: {
                         HStack {
-                            Label("Suggest a movie for the show", systemImage: "envelope")
+                            SettingsRowLabel("Suggest a movie for the show", symbol: "envelope.fill")
                             Spacer()
                             Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(.tertiary)
                         }
@@ -77,59 +121,14 @@ struct SettingsSheet: View {
                 }
 
                 Section {
-                    Picker("Appearance", selection: $appearance) {
-                        ForEach(AppearancePreference.allCases) { option in
-                            Text(option.label).tag(option.rawValue)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-                } header: {
-                    Text("Appearance")
-                } footer: {
-                    Text("System follows your iPhone’s Light or Dark setting.")
-                }
-
-                Section {
-                    Toggle("Spin sound", isOn: $tickSound)
-                    Toggle("Haptics", isOn: $haptics)
-                } header: {
-                    Text("Spin")
-                } footer: {
-                    Text("Sound follows your Ring/Silent switch.")
-                }
-
-                Section {
-                    Toggle("Rare outcomes", isOn: $rareOutcomes)
-                }
-
-                Section {
-                    Toggle("Auto-share my star ratings", isOn: $autoShareRatings)
-                } header: {
-                    Text("Listener Ratings")
-                } footer: {
-                    Text("Shares your star ratings anonymously with other listeners (needs iCloud).")
-                }
-
-                Section {
-                    NavigationLink {
-                        MyServicesView(providers: StreamingCatalog.services(in: movies))
-                    } label: {
-                        Label("My services", systemImage: "play.tv")
-                    }
-                    .accessibilityIdentifier("settings-my-services")
-                } header: {
-                    Text("Where to Watch")
-                } footer: {
-                    Text("Choose your streaming services to filter the Movies tab.")
-                }
-
-                Section {
                     NavigationLink {
                         CreditsView()
                     } label: {
-                        Label("Credits & About", systemImage: "info.circle")
+                        SettingsRowLabel("Credits & About", symbol: "info.circle.fill")
                     }
                     .accessibilityIdentifier("settings-credits")
+                } header: {
+                    Text("About")
                 }
 
                 Section("Privacy") {
@@ -181,6 +180,25 @@ struct SettingsSheet: View {
                 }
             }
         )
+    }
+}
+
+/// Settings row label: a 28 pt teal tile with a white glyph (same size as the
+/// Follow the Show tiles), so every Settings row reads the same.
+struct SettingsRowLabel: View {
+    let title: String
+    let symbol: String
+    init(_ title: String, symbol: String) { self.title = title; self.symbol = symbol }
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: symbol)
+                .font(.system(size: 14, weight: .semibold)).foregroundStyle(.white)
+                .frame(width: 28, height: 28)
+                .background(Brand.tealDark, in: RoundedRectangle(cornerRadius: 7, style: .continuous))
+                .accessibilityHidden(true)
+            Text(title)
+        }
     }
 }
 

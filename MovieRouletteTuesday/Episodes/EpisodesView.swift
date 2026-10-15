@@ -263,12 +263,6 @@ private struct EpisodeRow: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
-            if !episode.displaySummary.isEmpty {
-                Text(episode.displaySummary)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(2)
-            }
             if let movie {
                 Text(verbatim: catalog?.subtitle(for: movie) ?? "\(movie.year) · \(movie.genre)")
                     .font(.caption2)
