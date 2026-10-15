@@ -407,8 +407,8 @@ final class RouletteViewModel {
         let landed = catalog.categories[index]
         lastCategory = landed
 
-        // Rare outcomes (~1% each; toggle in Settings). Re-spins never chain.
-        let policy = RareOutcomePolicy(isEnabled: AppSettings.bool(AppSettings.rareOutcomes, store: settings))
+        // Rare outcomes (~1% each; always on). Re-spins never chain.
+        let policy = RareOutcomePolicy(isEnabled: true)
         let outcome = RareOutcomeRoller.roll(
             policy: policy,
             infamousAvailable: !RareOutcomeRoller.infamousMovies(in: catalog).isEmpty,

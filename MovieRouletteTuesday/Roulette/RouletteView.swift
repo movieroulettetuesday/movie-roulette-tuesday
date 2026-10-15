@@ -282,7 +282,7 @@ struct RouletteView: View {
             // Its own view, so `rotation` has its own observer (see SpinningWheel).
             SpinningWheel(model: model)
                 .contentShape(Circle())
-                .onTapGesture { model.canStop ? model.stopEarly() : spinFromUser() }
+                .onTapGesture { spinFromUser() }  // idle only; the hub’s ■ stops a spin
                 // Cold-launch opening: fades/scales in with a small settle (identity afterwards).
                 .modifier(SplashWheelEffect(state: splash))
                 .padding(.top, pointer.height * 0.5)
@@ -294,13 +294,13 @@ struct RouletteView: View {
                 .allowsHitTesting(false)
         }
         .frame(width: diameter, height: CGFloat(RouletteLayout.wheelFrameHeight(forDiameter: Double(diameter))))
-        .allowsHitTesting(model.canSpin || model.canStop)
+        .allowsHitTesting(model.canSpin)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Roulette wheel")
         .accessibilityValue(model.lastCategory.map { "Last landed on \($0.name)" } ?? "")
-        .accessibilityHint(model.canStop ? "Double tap to stop the spin" : "Double tap to spin")
+        .accessibilityHint(model.isSpinning ? "Use the Stop button in the center to stop early" : "Double tap to spin")
         .accessibilityAddTraits(.isButton)
-        .accessibilityAction { model.canStop ? model.stopEarly() : spinFromUser() }
+        .accessibilityAction { spinFromUser() }
     }
 
     private func spinFromUser() {

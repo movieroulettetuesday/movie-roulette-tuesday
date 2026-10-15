@@ -84,7 +84,7 @@ enum IntentSpinService {
     static func spin(settings: UserDefaults = .standard) async throws -> IntentSpin {
         let catalog = try await AppCatalog.localSource().loadCatalog().deduplicated()
         let history = SpinHistoryStore.shared
-        let policy = RareOutcomePolicy(isEnabled: AppSettings.bool(AppSettings.rareOutcomes, store: settings))
+        let policy = RareOutcomePolicy(isEnabled: true)
         var rng = SystemRandomNumberGenerator()
         guard let out = QuickSpin.resolve(catalog: catalog, history: history.results, rareOutcomes: policy, using: &rng) else {
             throw IntentSpinError.noMovies

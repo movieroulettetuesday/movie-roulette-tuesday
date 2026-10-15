@@ -2,139 +2,24 @@ import MessageUI
 import SwiftUI
 import UIKit
 
-/// "Suggest a movie" (approved v4 mockup). Opens a pre-filled email to the
-/// show; nothing is sent unless the user taps Send in their mail app.
-/// Order: Mail's compose sheet, else a `mailto:` link (other mail apps),
-/// else copy the address and say so.
+/// "Suggest a Movie": one sheet. The primary action, Send, saves a `Suggestion`
+/// record to the CloudKit public database (anonymous, create-only for
+/// listeners). "Send by email instead" opens Mail's compose sheet, else a
+/// `mailto:` link (other mail apps), else copies the address and says so.
+/// When iCloud isn't available the email option still works.
 struct SuggestMovieSheet: View {
     var categories: [RouletteCategory] = []
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.openURL) private var openURL
-
-    @State private var title = ""
-    @State private var why = ""
-    @State private var categoryName = ""
-    @State private var showsComposer = false
-    @State private var copiedAddress = false
-    @State private var showsInApp = false
-    @FocusState private var titleFocused: Bool
-
-    static let footer = "Opens Mail with your pick filled in; nothing is sent until you tap Send there."
-
-    private var suggestion: MovieSuggestion {
-        MovieSuggestion(title: title, why: why, category: categoryName.isEmpty ? nil : categoryName)
-    }
-
-    var body: some View {
-        NavigationStack {
-            Form {
-                Section {
-                    TextField("Movie title", text: $title)
-                        .focused($titleFocused)
-                        .submitLabel(.next)
-                        .accessibilityIdentifier("suggest-title")
-                } header: { Text("Movie") }
-                Section {
-                    TextField("Why should the hosts watch it?", text: $why, axis: .vertical)
-                        .lineLimit(3...5)
-                        .accessibilityIdentifier("suggest-why")
-                } header: { Text("Why") }
-                Section {
-                    Picker("Category (optional)", selection: $categoryName) {
-                        Text("None").tag("")
-                        ForEach(categories) { Text($0.displayName).tag($0.displayName) }
-                    }
-                    .accessibilityIdentifier("suggest-category")
-                } footer: {
-                    Text(Self.footer)
-                }
-                Section {
-                    Button {
-                        showsInApp = true
-                    } label: {
-                        Label("Send in the app instead", systemImage: "icloud.and.arrow.up")
-                    }
-                    .accessibilityIdentifier("suggest-in-app")
-                } footer: {
-                    Text("Sends your pick to the hosts through iCloud, no email needed.")
-                }
-            }
-            .cleanProListScreen()
-            .navigationTitle("Suggest")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Compose", action: compose)
-                        .fontWeight(.semibold)
-                        .disabled(!suggestion.isValid)
-                        .accessibilityIdentifier("suggest-compose")
-                }
-            }
-            .sheet(isPresented: $showsComposer) {
-                MailComposeView(suggestion: suggestion) { sent in
-                    showsComposer = false
-                    if sent { dismiss() }
-                }
-                .ignoresSafeArea()
-            }
-            .sheet(isPresented: $showsInApp) {
-                InAppSuggestionSheet(
-                    categories: categories,
-                    initial: InAppSuggestion(title: title, category: categoryName.isEmpty ? nil : categoryName,
-                                             note: InAppSuggestion.capped(why, to: InAppSuggestion.noteLimit)),
-                    onSent: { dismiss() }
-                )
-            }
-            .alert("Email address copied", isPresented: $copiedAddress) {
-                Button("OK") { dismiss() }
-            } message: {
-                Text("No mail app is set up, so we copied \(MovieSuggestion.address). Paste it into any email app to send your pick.")
-            }
-        }
-    }
-
-    private func compose() {
-        let suggestion = self.suggestion
-        guard suggestion.isValid else { return }
-        if MFMailComposeViewController.canSendMail() {
-            showsComposer = true
-        } else if let url = suggestion.mailtoURL {
-            openURL(url) { accepted in
-                // No mail app at all: the in-app form is the backup.
-                if accepted { dismiss() } else { showsInApp = true }
-            }
-        } else {
-            showsInApp = true
-        }
-    }
-
-    private func copyAddress() {
-        UIPasteboard.general.string = MovieSuggestion.address
-        copiedAddress = true
-    }
-}
-
-/// "Suggest a Movie" in the app (approved Oct 14 mockup): saves a `Suggestion`
-/// record to the CloudKit public database. The backup to email: offered when
-/// no mail app is set up, or as "Send in the app instead". When iCloud isn't
-/// available the email options below still work.
-struct InAppSuggestionSheet: View {
-    var categories: [RouletteCategory] = []
-    var initial = InAppSuggestion(title: "")
     var onSent: () -> Void = {}
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) private var openURL
     @Environment(CommunityService.self) private var community
 
     @State private var draft = InAppSuggestion(title: "")
-    @State private var loaded = false
     @State private var sending = false
     @State private var errorMessage: String?
     @State private var sent = false
-    @State private var copied = false
+    @State private var showsComposer = false
+    @State private var copiedAddress = false
 
     private var iCloudUnavailable: Bool {
         switch community.accountStatus {
@@ -152,7 +37,7 @@ struct InAppSuggestionSheet: View {
                             let c = InAppSuggestion.capped(v, to: InAppSuggestion.titleLimit)
                             if c != v { draft.title = c }
                         }
-                        .accessibilityIdentifier("suggest-app-title")
+                        .accessibilityIdentifier("suggest-title")
                     Picker("Category", selection: Binding(
                         get: { draft.category ?? "" },
                         set: { draft.category = $0.isEmpty ? nil : $0 }
@@ -161,6 +46,7 @@ struct InAppSuggestionSheet: View {
                         ForEach(categories) { Text($0.displayName).tag($0.displayName) }
                     }
                     .pickerStyle(.navigationLink)
+                    .accessibilityIdentifier("suggest-category")
                 } header: { Text("What should the hosts spin?") }
 
                 Section {
@@ -170,19 +56,19 @@ struct InAppSuggestionSheet: View {
                             let c = InAppSuggestion.capped(v, to: InAppSuggestion.noteLimit)
                             if c != v { draft.note = c }
                         }
-                        .accessibilityIdentifier("suggest-app-note")
+                        .accessibilityIdentifier("suggest-why")
                 } header: { Text("Why (optional)") } footer: {
                     Text("\(max(draft.noteCharactersLeft, 0)) characters left")
                         .monospacedDigit()
                 }
 
                 Section {
-                    TextField("Credit me as", text: $draft.creditName, prompt: Text("e.g. \"Laura from Ohio\""))
+                    TextField("Credit me as", text: $draft.creditName, prompt: Text("e.g. “Laura from Ohio”"))
                         .onChange(of: draft.creditName) { _, v in
                             let c = InAppSuggestion.capped(v, to: InAppSuggestion.nameLimit)
                             if c != v { draft.creditName = c }
                         }
-                        .accessibilityIdentifier("suggest-app-credit")
+                        .accessibilityIdentifier("suggest-credit")
                 } header: { Text("Credit me as (optional)") } footer: {
                     Text("Only what you type here is sent.")
                 }
@@ -192,34 +78,23 @@ struct InAppSuggestionSheet: View {
                         Label(errorMessage, systemImage: iCloudUnavailable ? "icloud.slash" : "exclamationmark.triangle")
                             .font(.footnote)
                             .foregroundStyle(.orange)
-                            .accessibilityIdentifier("suggest-app-error")
+                            .accessibilityIdentifier("suggest-error")
                     }
                 }
 
                 Section {
                     Button {
-                        openMail()
+                        sendByEmail()
                     } label: {
                         HStack {
-                            Text("Open in mail app")
+                            Text("Send by email instead")
                             Spacer()
                             Image(systemName: "arrow.up.right").foregroundStyle(.secondary)
                         }
                     }
                     .disabled(!draft.isValid)
-                    .accessibilityIdentifier("suggest-app-mailto")
-                    Button {
-                        UIPasteboard.general.string = MovieSuggestion.address
-                        copied = true
-                    } label: {
-                        HStack {
-                            Text("Copy \(MovieSuggestion.address)")
-                            Spacer()
-                            Image(systemName: copied ? "checkmark" : "doc.on.doc").foregroundStyle(.secondary)
-                        }
-                    }
-                    .accessibilityIdentifier("suggest-app-copy")
-                } header: { Text("Prefer email?") }
+                    .accessibilityIdentifier("suggest-email")
+                }
             }
             .cleanProListScreen()
             .navigationTitle("Suggest a Movie")
@@ -235,20 +110,31 @@ struct InAppSuggestionSheet: View {
                         Button("Send", action: send)
                             .fontWeight(.semibold)
                             .disabled(!draft.isValid)
-                            .accessibilityIdentifier("suggest-app-send")
+                            .accessibilityIdentifier("suggest-send")
                     }
                 }
+            }
+            .sheet(isPresented: $showsComposer) {
+                MailComposeView(suggestion: draft.asEmail) { sentByMail in
+                    showsComposer = false
+                    if sentByMail { dismiss(); onSent() }
+                }
+                .ignoresSafeArea()
             }
             .alert("Thanks! Suggestion sent.", isPresented: $sent) {
                 Button("OK") { dismiss(); onSent() }
             } message: {
                 Text("The hosts will see your pick.")
             }
+            .alert("Email address copied", isPresented: $copiedAddress) {
+                Button("OK") { dismiss() }
+            } message: {
+                Text("No mail app is set up, so we copied \(MovieSuggestion.address). Paste it into any email app to send your pick.")
+            }
             .task {
-                if !loaded { draft = initial; loaded = true }
                 await community.refreshAccountStatus()
                 if iCloudUnavailable, errorMessage == nil {
-                    errorMessage = "iCloud isn’t available, so this can’t be sent from the app. Use email below."
+                    errorMessage = "iCloud isn’t available, so Send won’t work. Use email instead."
                 }
             }
         }
@@ -278,11 +164,23 @@ struct InAppSuggestionSheet: View {
         }
     }
 
-    private func openMail() {
-        guard let url = draft.asEmail.mailtoURL else { return }
-        openURL(url) { accepted in
-            if !accepted { errorMessage = "Couldn’t open a mail app. Copy the address instead." }
+    private func sendByEmail() {
+        let email = draft.asEmail
+        guard email.isValid else { return }
+        if MFMailComposeViewController.canSendMail() {
+            showsComposer = true
+        } else if let url = email.mailtoURL {
+            openURL(url) { accepted in
+                if accepted { dismiss() } else { copyAddress() }
+            }
+        } else {
+            copyAddress()
         }
+    }
+
+    private func copyAddress() {
+        UIPasteboard.general.string = MovieSuggestion.address
+        copiedAddress = true
     }
 }
 

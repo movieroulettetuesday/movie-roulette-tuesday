@@ -4,7 +4,6 @@ import SwiftUI
 struct SettingsSheet: View {
     @AppStorage(AppSettings.tickSound) private var tickSound = true
     @AppStorage(AppSettings.haptics) private var haptics = true
-    @AppStorage(AppSettings.rareOutcomes) private var rareOutcomes = true
     @AppStorage(AppSettings.autoShareRatings) private var autoShareRatings = false
     @AppStorage(AppearancePreference.storageKey) private var appearance = AppearancePreference.default.rawValue
     @AppStorage(NewEpisodeAlerts.enabledKey) private var newEpisodeAlerts = false
@@ -38,7 +37,6 @@ struct SettingsSheet: View {
                 Section {
                     Toggle(isOn: $tickSound) { SettingsRowLabel("Spin sound", symbol: "speaker.wave.2.fill") }
                     Toggle(isOn: $haptics) { SettingsRowLabel("Haptics", symbol: "iphone.radiowaves.left.and.right") }
-                    Toggle(isOn: $rareOutcomes) { SettingsRowLabel("Rare outcomes", symbol: "sparkles") }
                 } header: {
                     Text("Spin")
                 } footer: {

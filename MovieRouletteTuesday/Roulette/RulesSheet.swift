@@ -9,7 +9,7 @@ struct RulesSheet: View {
         NavigationStack {
             List {
                 Section {
-                    Label("Tap the glowing hub in the middle of the wheel, or anywhere on the wheel, to spin.", image: "roulette.wheel")
+                    Label("Tap the glowing hub, or anywhere on the wheel, to spin. While it spins, tap the ■ in the center to stop early.", image: "roulette.wheel")
                     Label("The arrow at the top picks a theme category, like Horror, Criterion, Love Hurts or Listener Picks.", systemImage: "arrowtriangle.down.fill")
                     Label("Then a movie from that category is drawn. Recent spins are less likely to repeat, and every title was discussed on the show.", systemImage: "film.stack")
                 } footer: {
