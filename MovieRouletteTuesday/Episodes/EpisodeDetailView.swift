@@ -69,13 +69,6 @@ struct EpisodeDetailView: View {
                 EpisodePollSection(poll: community.poll(forEpisode: episode.guid, show: show))
 
                 ListenCard(episode: episode, show: show)
-
-                CleanProSection("Episode ID") {
-                    Text(episode.guid)
-                        .font(.caption2.monospaced())
-                        .foregroundStyle(.secondary)
-                        .textSelection(.enabled)
-                }
             }
             .padding(.horizontal, 20)
             .padding(.bottom, 32)

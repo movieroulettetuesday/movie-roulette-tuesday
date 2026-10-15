@@ -376,14 +376,6 @@ struct MoviesView: View {
             }
         }
         ToolbarItem(placement: .topBarTrailing) {
-            Button {
-                showsSuggest = true
-            } label: {
-                Label("Suggest a movie", systemImage: "envelope")
-            }
-            .accessibilityIdentifier("suggest-toolbar")
-        }
-        ToolbarItem(placement: .topBarTrailing) {
             Menu {
                 Picker("Show", selection: $listFilter) {
                     ForEach(MovieListFilter.allCases) { option in

@@ -79,9 +79,6 @@ struct StatsView: View {
         group("This Device") {
             LabeledContent("Total spins", value: "\(snap.totalSpins)")
             LabeledContent("Different movies", value: "\(snap.distinctMovies)")
-            if let catalog {
-                LabeledContent("Catalog size", value: "\(catalog.movies.count) films")
-            }
         }
     }
 

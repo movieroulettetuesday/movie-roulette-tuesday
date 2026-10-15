@@ -244,9 +244,9 @@ struct MoviePageView: View {
                 if let se = ep?.seasonEpisodeLabel {
                     Text(se).font(.caption).foregroundStyle(.secondary)
                 } else {
-                    Text(guid)
-                        .font(.caption2.monospaced())
-                        .foregroundStyle(.tertiary)
+                    Text("Episode")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
             }
         }
