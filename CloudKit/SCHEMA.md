@@ -53,4 +53,4 @@ Record name: `suggestion-<UUID>` (always a new record). Grants: **CREATE to `_ic
 
 ## Privacy
 
-Records store only the poll/movie id and the chosen option or star count. The iCloud user record ID is hashed into the record name and never written to a field. Reading the public database does not require iCloud sign-in; writing does.
+Records store only the poll/movie id and the chosen option or star count; a `Suggestion` stores only what the listener typed (title, optional category, note and credit name). The iCloud user record ID is hashed into the record name and never written to a field. Reading the public database does not require iCloud sign-in; writing does.
