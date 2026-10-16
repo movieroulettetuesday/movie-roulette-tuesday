@@ -13,7 +13,7 @@ struct RulesSheet: View {
                     Label("The arrow at the top picks a theme category, like Horror, Criterion, Love Hurts or Listener Picks.", systemImage: "arrowtriangle.down.fill")
                     Label("Then a movie from that category is drawn. Recent spins are less likely to repeat, and every title was discussed on the show.", systemImage: "film.stack")
                 } footer: {
-                    Text("Dinner, discussion, and dice. Spin responsibly.")
+                    Text("Dinner, discussion, and the wheel. Spin responsibly.")
                 }
                 .labelStyle(RuleLabelStyle())
             }

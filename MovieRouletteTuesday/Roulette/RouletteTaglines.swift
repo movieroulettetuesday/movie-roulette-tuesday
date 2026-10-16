@@ -11,7 +11,7 @@ enum RouletteTaglines {
         "Love Hurts — sometimes literally",
         "Cult classics & questionable takes",
         "No take-backsies",
-        "Dinner, discussion, and dice",
+        "Dinner, discussion, and the wheel",
     ]
 
     static func random(excluding current: String? = nil) -> String {
