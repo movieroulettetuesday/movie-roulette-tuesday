@@ -11,6 +11,7 @@ struct MoviesView: View {
     var pendingMovieID: Binding<String?> = .constant(nil)
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     /// Selected movie in the split view (regular width).
     @State private var selectedMovieID: String?
     /// Navigation path in the stack (compact width): `[.movie(id), .episode(guid)…]`.
@@ -232,16 +233,25 @@ struct MoviesView: View {
     private var streamingChips: some View {
         if hasStreamingData {
             Section {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
-                        chip("On my services", on: onMyServices) {
-                            onMyServices.toggle()
+                let chips = Group {
+                    chip("On my services", on: onMyServices) {
+                        onMyServices.toggle()
+                    }
+                    .accessibilityIdentifier("chip-my-services")
+                    chip("Available first", on: sort == .availableFirst) {
+                        sort = sort == .availableFirst ? .title : .availableFirst
+                    }
+                    .accessibilityIdentifier("chip-available-first")
+                }
+                Group {
+                    if dynamicTypeSize.isAccessibilitySize {
+                        // Stacked: both chips fully visible, no sideways scrolling.
+                        VStack(alignment: .leading, spacing: 8) { chips }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    } else {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 8) { chips }
                         }
-                        .accessibilityIdentifier("chip-my-services")
-                        chip("Available first", on: sort == .availableFirst) {
-                            sort = sort == .availableFirst ? .title : .availableFirst
-                        }
-                        .accessibilityIdentifier("chip-available-first")
                     }
                 }
                 .listRowBackground(Color.clear)

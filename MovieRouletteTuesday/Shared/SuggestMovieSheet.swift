@@ -224,18 +224,32 @@ struct MailComposeView: UIViewControllerRepresentable {
 /// The Movies tab entry row (approved v4 mockup).
 struct SuggestMovieRow: View {
     let action: () -> Void
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 14) {
-                Image(systemName: "envelope.badge")
-                    .font(.title2).foregroundStyle(Brand.teal)
-                    .frame(width: 40)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Suggest a movie for the show").font(.body.weight(.semibold)).foregroundStyle(.primary)
-                    Text("Send the hosts a pick for a future episode").font(.caption).foregroundStyle(.secondary)
+            let icon = Image(systemName: "envelope.badge")
+                .font(.title2).foregroundStyle(Brand.teal)
+            let texts = VStack(alignment: .leading, spacing: 2) {
+                Text("Suggest a movie for the show").font(.body.weight(.semibold)).foregroundStyle(.primary)
+                Text("Send the hosts a pick for a future episode").font(.caption).foregroundStyle(.secondary)
+            }
+            let chevron = Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(.tertiary)
+            Group {
+                if dynamicTypeSize.isAccessibilitySize {
+                    // Icon above the text so the icon can't overlap the (large) title.
+                    HStack(alignment: .top, spacing: 8) {
+                        VStack(alignment: .leading, spacing: 8) { icon; texts }
+                        Spacer(minLength: 0)
+                        chevron
+                    }
+                } else {
+                    HStack(spacing: 14) {
+                        icon.frame(width: 40)
+                        texts
+                        Spacer()
+                        chevron
+                    }
                 }
-                Spacer()
-                Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(.tertiary)
             }
             .contentShape(Rectangle())
         }
