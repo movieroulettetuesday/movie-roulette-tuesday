@@ -223,11 +223,18 @@ struct RouletteView: View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Movie Roulette")
                 .font(.largeTitle.bold())
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
             Text(subtitle)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
+                .lineLimit(2)
+                .minimumScaleFactor(0.8)
         }
         .multilineTextAlignment(.leading)
+        // Keep the wheel a sensible size: the header stops growing at the
+        // largest standard size (accessibility sizes still scale everything else).
+        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isHeader)
     }
