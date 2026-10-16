@@ -11,6 +11,7 @@ struct EpisodesView: View {
     @State private var selectedGUID: String?
     /// Stack path (compact width). Synced with `selectedGUID` on size-class changes.
     @State private var path: [String] = []
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @AppStorage("episodes.grouping") private var groupingRaw = EpisodeGrouping.season.rawValue
     @AppStorage("episodes.expandedGroups") private var expansionRaw = ""
 
@@ -142,18 +143,38 @@ struct EpisodesView: View {
             e.toggle(group.id, isNewest: isNewest)
             withAnimation(.easeInOut(duration: 0.2)) { expansionRaw = e.serialized }
         } label: {
-            HStack {
-                Text(group.title)
-                    .font(.title3.weight(.bold))
-                    .foregroundStyle(.primary)
-                Spacer()
-                Text(group.episodes.count == 1 ? "1 episode" : "\(group.episodes.count) episodes")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                Image(systemName: "chevron.right")
-                    .font(.footnote.weight(.semibold))
-                    .foregroundStyle(.secondary)
-                    .rotationEffect(.degrees(expanded ? 90 : 0))
+            let count = Text(group.episodes.count == 1 ? "1 episode" : "\(group.episodes.count) episodes")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
+                .fixedSize(horizontal: true, vertical: false)
+            let chevron = Image(systemName: "chevron.right")
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(.secondary)
+                .rotationEffect(.degrees(expanded ? 90 : 0))
+            Group {
+                if dynamicTypeSize.isAccessibilitySize {
+                    // Stack so neither the title nor the count has to break mid-word.
+                    HStack(alignment: .firstTextBaseline) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(group.title)
+                                .font(.title3.weight(.bold))
+                                .foregroundStyle(.primary)
+                            count
+                        }
+                        Spacer()
+                        chevron
+                    }
+                } else {
+                    HStack {
+                        Text(group.title)
+                            .font(.title3.weight(.bold))
+                            .foregroundStyle(.primary)
+                        Spacer()
+                        count
+                        chevron
+                    }
+                }
             }
             .contentShape(Rectangle())
         }
@@ -231,31 +252,57 @@ private struct EpisodeRow: View {
     var catalog: MovieCatalog? = nil
     var showArtworkURL: URL?
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
-        HStack(alignment: .top, spacing: 12) {
-            ArtworkImage(
-                urls: ArtworkResolver.candidates(for: episode, showArtwork: showArtworkURL),
-                pointSize: 56,
-                cornerRadius: 10,
-                placeholderSymbol: "mic"
-            )
-            .frame(width: 56, height: 56)
-            .padding(.top, 2)
-            details
+        let art = ArtworkImage(
+            urls: ArtworkResolver.candidates(for: episode, showArtwork: showArtworkURL),
+            pointSize: 56,
+            cornerRadius: 10,
+            placeholderSymbol: "mic"
+        )
+        .frame(width: 56, height: 56)
+        .padding(.top, 2)
+        if dynamicTypeSize.isAccessibilitySize {
+            // Full-width text at accessibility sizes (no letter-by-letter wrapping).
+            VStack(alignment: .leading, spacing: 8) {
+                art
+                details
+            }
+        } else {
+            HStack(alignment: .top, spacing: 12) {
+                art
+                details
+            }
         }
     }
 
     private var details: some View {
         VStack(alignment: .leading, spacing: 4) {
-            HStack {
-                Text(episode.title)
-                    .font(.body.weight(.semibold))
-                    .lineLimit(2)
-                Spacer(minLength: 8)
+            if dynamicTypeSize.isAccessibilitySize {
                 if let se = episode.seasonEpisodeLabel {
                     Text(se)
                         .font(.caption.weight(.bold))
                         .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                        .fixedSize(horizontal: true, vertical: false)
+                }
+                Text(episode.title)
+                    .font(.body.weight(.semibold))
+                    .lineLimit(4)
+            } else {
+                HStack {
+                    Text(episode.title)
+                        .font(.body.weight(.semibold))
+                        .lineLimit(2)
+                    Spacer(minLength: 8)
+                    if let se = episode.seasonEpisodeLabel {
+                        Text(se)
+                            .font(.caption.weight(.bold))
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                            .fixedSize(horizontal: true, vertical: false)
+                    }
                 }
             }
             if let date = episode.pubDate {
