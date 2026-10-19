@@ -2073,7 +2073,7 @@
       "tmdbId": 13562,
       "streaming": {
         "region": "US",
-        "updated": "2026-10-14",
+        "updated": "2026-10-19",
         "link": "https://www.themoviedb.org/movie/13562-my-man-godfrey/watch?locale=US",
         "stream": [
           {
@@ -2221,12 +2221,6 @@
             "name": "Cineverse",
             "logo": "/rqCIpmrCBpnL6oliak6E1mrq5DD.png",
             "priority": 160
-          },
-          {
-            "id": 1963,
-            "name": "Xumo Play",
-            "logo": "/n6E9OeoQicCDd43PnLsMpVIVYFK.png",
-            "priority": 166
           },
           {
             "id": 2533,
@@ -3941,20 +3935,26 @@
       "tmdbId": 804150,
       "streaming": {
         "region": "US",
-        "updated": "2026-10-14",
+        "updated": "2026-10-19",
         "link": "https://www.themoviedb.org/movie/804150-cocaine-bear/watch?locale=US",
         "stream": [
           {
-            "id": 386,
-            "name": "Peacock Premium",
-            "logo": "/a1UIdq5BrkcAxnxcUhFsNbXnxeu.png",
-            "priority": 16
+            "id": 8,
+            "name": "Netflix",
+            "logo": "/rK1KljqmbvO9HQa1PBFLILWah72.png",
+            "priority": 1
           },
           {
             "id": 2528,
             "name": "YouTube TV",
             "logo": "/48bVXEIyCLSL9pZUQ7gB9ToyWto.png",
             "priority": 38
+          },
+          {
+            "id": 1796,
+            "name": "Netflix Standard with Ads",
+            "logo": "/eGUwOOIxcazwEBxqJpSN5sWEu6V.png",
+            "priority": 150
           }
         ],
         "free": [],
@@ -5566,7 +5566,7 @@
       "tmdbId": 17835,
       "streaming": {
         "region": "US",
-        "updated": "2026-10-14",
+        "updated": "2026-10-19",
         "link": "https://www.themoviedb.org/movie/17835-threads/watch?locale=US",
         "stream": [
           {
@@ -5580,6 +5580,12 @@
             "name": "AMC+ Amazon Channel",
             "logo": "/tg5ufQ1GkYDCMxSSxemfeKWcvRe.png",
             "priority": 28
+          },
+          {
+            "id": 99,
+            "name": "Shudder",
+            "logo": "/58O6yqUFM6qoOiBNAddJs7xNKc.png",
+            "priority": 53
           },
           {
             "id": 455,
@@ -8214,9 +8220,15 @@
       "tmdbId": 14022,
       "streaming": {
         "region": "US",
-        "updated": "2026-10-14",
+        "updated": "2026-10-19",
         "link": "https://www.themoviedb.org/movie/14022-slacker/watch?locale=US",
         "stream": [
+          {
+            "id": 257,
+            "name": "fuboTV",
+            "logo": "/3wF8xISfVlcrc8X3jaa3uMUFGAr.png",
+            "priority": 10
+          },
           {
             "id": 1825,
             "name": "HBO Max Amazon Channel",
@@ -8482,22 +8494,9 @@
       "tmdbId": 227306,
       "streaming": {
         "region": "US",
-        "updated": "2026-10-14",
+        "updated": "2026-10-19",
         "link": "https://www.themoviedb.org/movie/227306-unbroken/watch?locale=US",
-        "stream": [
-          {
-            "id": 8,
-            "name": "Netflix",
-            "logo": "/rK1KljqmbvO9HQa1PBFLILWah72.png",
-            "priority": 1
-          },
-          {
-            "id": 1796,
-            "name": "Netflix Standard with Ads",
-            "logo": "/eGUwOOIxcazwEBxqJpSN5sWEu6V.png",
-            "priority": 150
-          }
-        ],
+        "stream": [],
         "free": [],
         "rent": [
           {
@@ -8672,7 +8671,7 @@
       "tmdbId": 44363,
       "streaming": {
         "region": "US",
-        "updated": "2026-10-14",
+        "updated": "2026-10-19",
         "link": "https://www.themoviedb.org/movie/44363-frozen/watch?locale=US",
         "stream": [
           {
@@ -8712,6 +8711,12 @@
             "name": "The Roku Channel",
             "logo": "/b7uhrYJtAe7b1ieJGg705vTbwrX.png",
             "priority": 29
+          },
+          {
+            "id": 457,
+            "name": "VIX ",
+            "logo": "/ieJ55scAVrvboTpeJcZa3JlLIrS.png",
+            "priority": 75
           },
           {
             "id": 235,
@@ -9651,7 +9656,7 @@
       "tmdbId": 21588,
       "streaming": {
         "region": "US",
-        "updated": "2026-10-14",
+        "updated": "2026-10-19",
         "link": "https://www.themoviedb.org/movie/21588-dellamorte-dellamore/watch?locale=US",
         "stream": [
           {
@@ -9777,6 +9782,12 @@
             "priority": 338
           },
           {
+            "id": 2667,
+            "name": "YOW.tv",
+            "logo": "/oMEvAYpfx85D9HHQzXqFbHC0S6F.png",
+            "priority": 352
+          },
+          {
             "id": 2383,
             "name": "Philo",
             "logo": "/mfbhzQwmQKjm7bLZPF5CTeu3Ilc.png",
@@ -9873,15 +9884,9 @@
       "tmdbId": 8851,
       "streaming": {
         "region": "US",
-        "updated": "2026-10-14",
+        "updated": "2026-10-19",
         "link": "https://www.themoviedb.org/movie/8851-the-blob/watch?locale=US",
         "stream": [
-          {
-            "id": 257,
-            "name": "fuboTV",
-            "logo": "/3wF8xISfVlcrc8X3jaa3uMUFGAr.png",
-            "priority": 10
-          },
           {
             "id": 1825,
             "name": "HBO Max Amazon Channel",
@@ -10094,7 +10099,7 @@
       "tmdbId": 30833,
       "streaming": {
         "region": "US",
-        "updated": "2026-10-14",
+        "updated": "2026-10-19",
         "link": "https://www.themoviedb.org/movie/30833-drive-in-massacre/watch?locale=US",
         "stream": [
           {
@@ -10252,6 +10257,12 @@
         ],
         "rent": [
           {
+            "id": 10,
+            "name": "Amazon Video",
+            "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
+            "priority": 8
+          },
+          {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
@@ -10277,6 +10288,12 @@
           }
         ],
         "buy": [
+          {
+            "id": 10,
+            "name": "Amazon Video",
+            "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
+            "priority": 8
+          },
           {
             "id": 3,
             "name": "Google Play Movies",
@@ -10685,7 +10702,7 @@
       "tmdbId": 220289,
       "streaming": {
         "region": "US",
-        "updated": "2026-10-14",
+        "updated": "2026-10-19",
         "link": "https://www.themoviedb.org/movie/220289-coherence/watch?locale=US",
         "stream": [
           {
@@ -10767,12 +10784,6 @@
             "name": "Fawesome",
             "logo": "/dNF4vWhF3TduWvOyfVxEyTqSNRl.png",
             "priority": 143
-          },
-          {
-            "id": 2667,
-            "name": "YOW.tv",
-            "logo": "/oMEvAYpfx85D9HHQzXqFbHC0S6F.png",
-            "priority": 352
           },
           {
             "id": 300,
@@ -11680,7 +11691,7 @@
       "tmdbId": 11064,
       "streaming": {
         "region": "US",
-        "updated": "2026-10-14",
+        "updated": "2026-10-19",
         "link": "https://www.themoviedb.org/movie/11064-brewster-s-millions/watch?locale=US",
         "stream": [
           {
@@ -11702,7 +11713,14 @@
             "priority": 150
           }
         ],
-        "free": [],
+        "free": [
+          {
+            "id": 2383,
+            "name": "Philo",
+            "logo": "/mfbhzQwmQKjm7bLZPF5CTeu3Ilc.png",
+            "priority": 17
+          }
+        ],
         "rent": [
           {
             "id": 10,
@@ -12050,7 +12068,7 @@
       "tmdbId": 4232,
       "streaming": {
         "region": "US",
-        "updated": "2026-10-14",
+        "updated": "2026-10-19",
         "link": "https://www.themoviedb.org/movie/4232-scream/watch?locale=US",
         "stream": [
           {
@@ -12094,12 +12112,6 @@
             "name": "Paramount+ Roku Premium Channel",
             "logo": "/tnZCMxbcKdxuVmjxefyXCaip7q3.png",
             "priority": 62
-          },
-          {
-            "id": 1855,
-            "name": "Starz Apple TV channel",
-            "logo": "/lgxDo2a3iGr617vm1rf0k5Hc8jz.png",
-            "priority": 201
           },
           {
             "id": 387,
@@ -13475,9 +13487,21 @@
       "tmdbId": 5503,
       "streaming": {
         "region": "US",
-        "updated": "2026-10-14",
+        "updated": "2026-10-19",
         "link": "https://www.themoviedb.org/movie/5503-the-fugitive/watch?locale=US",
         "stream": [
+          {
+            "id": 363,
+            "name": "TNT",
+            "logo": "/6cgMswJ1yXtJLP1uJhM476h2WTH.png",
+            "priority": 99
+          },
+          {
+            "id": 506,
+            "name": "TBS",
+            "logo": "/8MX4rbkjJUf2NMb2ZVwHq0IATJf.png",
+            "priority": 115
+          },
           {
             "id": 507,
             "name": "tru TV",
