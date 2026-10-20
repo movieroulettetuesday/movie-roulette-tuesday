@@ -47,3 +47,37 @@ final class SpinHistoryRoutingTests: XCTestCase {
                                                     episodesByGUID: ["Buzzsprout-old": episode("Buzzsprout-old")]))
     }
 }
+
+/// 1.0 (10) crashed when a new-episode banner was tapped: the notification
+/// delegate's completion ran off the main thread. Tapping must route to the
+/// episode and complete on main, whatever thread the delegate is called from.
+final class NotificationTapRoutingTests: XCTestCase {
+    @MainActor
+    func testTapFromBackgroundThreadRoutesAndCompletesOnMain() {
+        AppRouter.shared.pendingURL = nil
+        let done = expectation(description: "completion")
+        DispatchQueue.global(qos: .userInitiated).async {
+            NotificationRouter.shared.handleTap(episodeGUID: "Buzzsprout-19913482") {
+                XCTAssertTrue(Thread.isMainThread, "completion handler must run on main")
+                MainActor.assumeIsolated {
+                    XCTAssertEqual(AppRouter.shared.pendingURL, DeepLink.episode(guid: "Buzzsprout-19913482").url)
+                }
+                done.fulfill()
+            }
+        }
+        wait(for: [done], timeout: 5)
+        AppRouter.shared.pendingURL = nil
+    }
+
+    @MainActor
+    func testTapOnMainWithoutGUIDCompletesSynchronously() {
+        AppRouter.shared.pendingURL = nil
+        var completed = false
+        NotificationRouter.shared.handleTap(episodeGUID: nil) {
+            XCTAssertTrue(Thread.isMainThread)
+            completed = true
+        }
+        XCTAssertTrue(completed)
+        XCTAssertNil(AppRouter.shared.pendingURL)
+    }
+}
