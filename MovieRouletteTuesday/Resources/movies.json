@@ -59,7 +59,8 @@
         "race-with-the-devil-1975",
         "return-of-the-living-dead-3-1993",
         "palmer-rockeys-scarlet-warning-666-1982",
-        "the-ugly-stepsister-2025"
+        "the-ugly-stepsister-2025",
+        "piranha-ii-the-spawning-1982"
       ]
     },
     {
@@ -101,7 +102,8 @@
         "tiptoes-2003",
         "harlequin-1980",
         "the-alamo-2004",
-        "palmer-rockeys-scarlet-warning-666-1982"
+        "palmer-rockeys-scarlet-warning-666-1982",
+        "piranha-ii-the-spawning-1982"
       ]
     },
     {
@@ -19602,6 +19604,23 @@
           }
         ]
       }
+    },
+    {
+      "id": "piranha-ii-the-spawning-1982",
+      "title": "Piranha II: The Spawning",
+      "year": 1982,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror",
+        "cat-cult"
+      ],
+      "episodeIds": [
+        "Buzzsprout-19980357"
+      ],
+      "episodeTitle": "Piranha II:  The Spawning",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
     }
   ]
 }
