@@ -22,11 +22,14 @@ public struct PodcastFeed: Equatable, Sendable {
 public enum RSSFeedError: Error, LocalizedError, Equatable {
     case emptyDocument
     case malformed
+    /// Parsed, but no episodes (captive portal / outage page / empty channel).
+    case noEpisodes
 
     public var errorDescription: String? {
         switch self {
         case .emptyDocument: return "The feed was empty."
         case .malformed: return "The feed could not be parsed."
+        case .noEpisodes: return "The feed had no episodes."
         }
     }
 }

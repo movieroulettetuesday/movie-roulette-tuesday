@@ -49,10 +49,21 @@ public enum EpisodeFeedIO {
         return try RSSFeedParser.parse(data: data)
     }
 
-    /// Fetch, parse and write the cache, all off the main actor.
+    /// A refresh that yields 0 episodes is a failure, never a valid (empty) feed:
+    /// any well-formed non-RSS HTTP 200 (captive portal, outage page) or a channel
+    /// with no items parses as 0 episodes and must not replace the cached list.
+    public static func validated(_ feed: PodcastFeed) throws -> PodcastFeed {
+        guard !feed.episodes.isEmpty else { throw RSSFeedError.noEpisodes }
+        return feed
+    }
+
+    /// Fetch, parse and write the cache, all off the main actor. Throws (and
+    /// leaves the cache untouched) when the feed has no episodes.
     @concurrent
-    public static func refresh(from url: URL, cacheURL: URL?) async throws -> CachedEpisodeFeed {
-        let feed = try await fetchRemote(from: url)
+    public static func refresh(
+        from url: URL, cacheURL: URL?, session: URLSession = .shared
+    ) async throws -> CachedEpisodeFeed {
+        let feed = try validated(await fetchRemote(from: url, session: session))
         let cached = CachedEpisodeFeed(title: feed.title, episodes: feed.episodes, artworkURL: feed.artworkURL)
         if let cacheURL { try? saveCache(cached, to: cacheURL) }
         return cached

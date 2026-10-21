@@ -140,3 +140,101 @@ final class EpisodeGroupingTests: XCTestCase {
         XCTAssertEqual(EpisodeGroupExpansion(serialized: "junk,:1,a:1:2,b:0").states, ["b": false])
     }
 }
+
+/// 1.0.1: an empty or non-RSS HTTP 200 feed response is a failure and never
+/// overwrites the cached episodes.
+final class EmptyFeedRefreshTests: XCTestCase {
+    /// Serves a fixed body per URL path with HTTP 200 (no network).
+    final class StubProtocol: URLProtocol {
+        static let bodies: [String: String] = [
+            "/empty-channel.rss": "<?xml version=\"1.0\"?><rss version=\"2.0\"><channel><title>Show</title></channel></rss>",
+            "/portal.html": "<html><body><h1>Sign in to Wi-Fi</h1></body></html>",
+            "/truncated.html": "<html><body>oops",
+            "/one.rss": "<?xml version=\"1.0\"?><rss version=\"2.0\"><channel><title>Show</title>"
+                + "<item><guid>Buzzsprout-9</guid><title>New</title></item></channel></rss>",
+        ]
+        override class func canInit(with request: URLRequest) -> Bool { request.url?.host == "feed.stub" }
+        override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
+        override func startLoading() {
+            let url = request.url!
+            let body = Data((Self.bodies[url.path] ?? "").utf8)
+            let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: "HTTP/1.1",
+                                           headerFields: ["Content-Type": "text/html"])!
+            client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+            client?.urlProtocol(self, didLoad: body)
+            client?.urlProtocolDidFinishLoading(self)
+        }
+        override func stopLoading() {}
+    }
+
+    private var session: URLSession!
+    private var cacheURL: URL!
+
+    override func setUpWithError() throws {
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [StubProtocol.self]
+        session = URLSession(configuration: config)
+        cacheURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent("mrt-feed-\(UUID().uuidString)", isDirectory: true)
+            .appendingPathComponent("episodes-cache.json")
+        let cached = CachedEpisodeFeed(fetchedAt: Date(timeIntervalSince1970: 700_000_000), title: "Show",
+                                       episodes: [PodcastEpisode(guid: "Buzzsprout-1", title: "Old")])
+        try EpisodeFeedIO.saveCache(cached, to: cacheURL)
+    }
+
+    override func tearDownWithError() throws {
+        session.invalidateAndCancel()
+        try? FileManager.default.removeItem(at: cacheURL.deletingLastPathComponent())
+    }
+
+    private func refresh(_ path: String) async throws -> CachedEpisodeFeed {
+        try await EpisodeFeedIO.refresh(from: URL(string: "https://feed.stub\(path)")!, cacheURL: cacheURL, session: session)
+    }
+
+    func testZeroEpisodeResponsesFailAndLeaveCacheByteIdentical() async throws {
+        let before = try Data(contentsOf: cacheURL)
+        // Well-formed but empty -> .noEpisodes. Broken bodies may fail earlier: Darwin's
+        // XMLParser rejects truncated HTML (NSXMLParserErrorDomain), an empty body is
+        // .emptyDocument. Either way the refresh throws and the cache is untouched.
+        let cases: [(path: String, expected: RSSFeedError?)] = [
+            ("/empty-channel.rss", .noEpisodes), ("/portal.html", .noEpisodes),
+            ("/truncated.html", nil), ("/missing", .emptyDocument),
+        ]
+        for (path, expected) in cases {
+            do {
+                _ = try await refresh(path)
+                XCTFail("\(path): a 0-episode refresh must throw")
+            } catch {
+                if let expected { XCTAssertEqual(error as? RSSFeedError, expected, "\(path): \(error)") }
+            }
+            XCTAssertEqual(try Data(contentsOf: cacheURL), before, path)
+            XCTAssertEqual(try EpisodeFeedIO.loadCache(from: cacheURL).episodes.map(\.guid), ["Buzzsprout-1"], path)
+        }
+    }
+
+    @MainActor
+    func testEmptyChannelThrowsNoEpisodes() async {
+        do {
+            _ = try await refresh("/empty-channel.rss")
+            XCTFail("expected .noEpisodes")
+        } catch {
+            XCTAssertEqual(error as? RSSFeedError, .noEpisodes)
+        }
+        XCTAssertEqual(EpisodeStore.friendlyMessage(for: RSSFeedError.noEpisodes),
+                       "Couldn’t read the episode list. Pull down to try again.")
+    }
+
+    func testRealFeedStillReplacesCache() async throws {
+        let fresh = try await refresh("/one.rss")
+        XCTAssertEqual(fresh.episodes.map(\.guid), ["Buzzsprout-9"])
+        XCTAssertEqual(try EpisodeFeedIO.loadCache(from: cacheURL).episodes.map(\.guid), ["Buzzsprout-9"])
+    }
+
+    func testValidatedRejectsEmptyFeed() throws {
+        XCTAssertThrowsError(try EpisodeFeedIO.validated(PodcastFeed(title: "Show", episodes: []))) {
+            XCTAssertEqual($0 as? RSSFeedError, .noEpisodes)
+        }
+        let one = PodcastFeed(title: "Show", episodes: [PodcastEpisode(guid: "g", title: "T")])
+        XCTAssertEqual(try EpisodeFeedIO.validated(one).episodes.count, 1)
+    }
+}
