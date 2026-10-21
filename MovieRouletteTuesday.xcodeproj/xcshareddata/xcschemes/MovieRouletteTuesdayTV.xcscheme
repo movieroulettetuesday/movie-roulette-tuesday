@@ -29,6 +29,17 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       shouldAutocreateTestPlan = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "FBD9EEA65DA488214544A713"
+               BuildableName = "MovieRouletteTuesdayTVUITests.xctest"
+               BlueprintName = "MovieRouletteTuesdayTVUITests"
+               ReferencedContainer = "container:MovieRouletteTuesday.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

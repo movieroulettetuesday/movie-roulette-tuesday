@@ -16,6 +16,7 @@
 		0EC23BA49F1D19A18180B832 /* CommunityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63342DA7EFB3459E60213B8E /* CommunityService.swift */; };
 		0EE3B2F20A96B59E993A8311 /* MoviePageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19FF5A4CD08C9313DFEBA0C /* MoviePageView.swift */; };
 		111D597F056E32F4CB793C00 /* MovieRouletteTuesdayWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB9FC31C5C8EB655C39961D /* MovieRouletteTuesdayWidgetBundle.swift */; };
+		14F5A0A9E5E244300E356896 /* TVRouletteUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC803B0E7D8A8A0470F2A74 /* TVRouletteUITests.swift */; };
 		163678659FE30E9306D67A12 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B399E931BE8167CB1CF65E77 /* Assets.xcassets */; };
 		1B26F74CE6D60CCE0CFE8AEC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 85398768919AA8673807FA76 /* Assets.xcassets */; };
 		1BD7BEC2B3C9AC0AFACA5527 /* SettingsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 910226E8C518E795A6FDD73C /* SettingsSheet.swift */; };
@@ -103,6 +104,13 @@
 			remoteGlobalIDString = A5A0AA9F4FB5BC8D9254438A;
 			remoteInfo = MovieRouletteTuesdayWidgetExtension;
 		};
+		E9DB3FD65D8322577542B082 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 98F54143AB4E86B28C3AFEE0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BC2FCFF52D648C4AE601445D;
+			remoteInfo = MovieRouletteTuesdayTV;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -173,6 +181,7 @@
 		92E4CFC63F379359666F25D5 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		94FA157C8FAB5D7F7EC78246 /* MovieRouletteTuesdayTV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MovieRouletteTuesdayTV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		967CD961E57CAD6F61F9B1F4 /* SpinHistoryRoutingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinHistoryRoutingTests.swift; sourceTree = "<group>"; };
+		9AD5B014AF4E6FE808BB0547 /* MovieRouletteTuesdayTVUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MovieRouletteTuesdayTVUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9B37ABE5A15E0050A18B79C3 /* SpinTicksTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinTicksTests.swift; sourceTree = "<group>"; };
 		A1A3A92A79916C6B4B34AE15 /* AdaptiveLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveLayoutTests.swift; sourceTree = "<group>"; };
 		A85FBE8A0B5EB54069D0E8D0 /* ListenerRatingSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListenerRatingSection.swift; sourceTree = "<group>"; };
@@ -187,6 +196,7 @@
 		BD793B3392A6E2372202AA06 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		BFC5EEE89669C6899654052B /* wheel-spin.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = "wheel-spin.m4a"; sourceTree = "<group>"; };
 		C46495DB72BC46A3319009BC /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
+		CEC803B0E7D8A8A0470F2A74 /* TVRouletteUITests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TVRouletteUITests.swift; sourceTree = "<group>"; };
 		CF892772A8012B1CB98E65B8 /* WheelMathTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WheelMathTests.swift; sourceTree = "<group>"; };
 		D45556E0D190C544404C5AB4 /* MoviesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesView.swift; sourceTree = "<group>"; };
 		DE80DAF59B7205B4463F132E /* DebugLaunch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugLaunch.swift; sourceTree = "<group>"; };
@@ -221,6 +231,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		86218FCF4B4153B0362BD560 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ABC5269FAD653CAF3EB6BEDA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -288,6 +305,7 @@
 				4C47665D1BA4105DF9684DC4 /* MovieRouletteTuesdayWidgetExtension.appex */,
 				E02A90D9643568EA39115CFB /* MovieRouletteTuesdayTests.xctest */,
 				94FA157C8FAB5D7F7EC78246 /* MovieRouletteTuesdayTV.app */,
+				9AD5B014AF4E6FE808BB0547 /* MovieRouletteTuesdayTVUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -398,6 +416,15 @@
 			path = MovieRouletteTuesdayTV;
 			sourceTree = "<group>";
 		};
+		A9AC0BCB46E8F057E1CAF264 /* MovieRouletteTuesdayTVUITests */ = {
+			isa = PBXGroup;
+			children = (
+				CEC803B0E7D8A8A0470F2A74 /* TVRouletteUITests.swift */,
+			);
+			name = MovieRouletteTuesdayTVUITests;
+			path = MovieRouletteTuesdayTVUITests;
+			sourceTree = "<group>";
+		};
 		ADCF10F76EBF2A74473E9DC4 = {
 			isa = PBXGroup;
 			children = (
@@ -407,6 +434,7 @@
 				FDBCBD0C3752F92E1102FE92 /* CloudKit */,
 				5151B46607EBC8890D8DFCC2 /* Products */,
 				A4A76E22E48E61EC17001DCB /* MovieRouletteTuesdayTV */,
+				A9AC0BCB46E8F057E1CAF264 /* MovieRouletteTuesdayTVUITests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -531,6 +559,24 @@
 			productReference = 94FA157C8FAB5D7F7EC78246 /* MovieRouletteTuesdayTV.app */;
 			productType = "com.apple.product-type.application";
 		};
+		FBD9EEA65DA488214544A713 /* MovieRouletteTuesdayTVUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 203E1EC3E23B7272B38437A7 /* Build configuration list for PBXNativeTarget "MovieRouletteTuesdayTVUITests" */;
+			buildPhases = (
+				C7B6707257634F64823F34C1 /* Sources */,
+				ABC5269FAD653CAF3EB6BEDA /* Frameworks */,
+				A21700F01A6D55DFFC7642A1 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				22B43A24FE18195186183AB2 /* PBXTargetDependency */,
+			);
+			name = MovieRouletteTuesdayTVUITests;
+			productName = MovieRouletteTuesdayTVUITests;
+			productReference = 9AD5B014AF4E6FE808BB0547 /* MovieRouletteTuesdayTVUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -554,6 +600,10 @@
 					BC2FCFF52D648C4AE601445D = {
 						CreatedOnToolsVersion = 16.0;
 					};
+					FBD9EEA65DA488214544A713 = {
+						CreatedOnToolsVersion = 16.0;
+						TestTargetID = BC2FCFF52D648C4AE601445D;
+					};
 				};
 			};
 			buildConfigurationList = 12D04D787E90C9B967248BFD /* Build configuration list for PBXProject "MovieRouletteTuesday" */;
@@ -576,6 +626,7 @@
 				A5A0AA9F4FB5BC8D9254438A /* MovieRouletteTuesdayWidgetExtension */,
 				7EC8F98B7A265120217712DE /* MovieRouletteTuesdayTests */,
 				BC2FCFF52D648C4AE601445D /* MovieRouletteTuesdayTV */,
+				FBD9EEA65DA488214544A713 /* MovieRouletteTuesdayTVUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -618,6 +669,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				4052E03879AABA4D453C76A9 /* feed-snippet.xml in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A21700F01A6D55DFFC7642A1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -671,6 +729,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C7B6707257634F64823F34C1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				14F5A0A9E5E244300E356896 /* TVRouletteUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D7FDE3A15F5D8A309D2F1B09 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -715,6 +781,12 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		22B43A24FE18195186183AB2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = MovieRouletteTuesdayTV;
+			target = BC2FCFF52D648C4AE601445D /* MovieRouletteTuesdayTV */;
+			targetProxy = E9DB3FD65D8322577542B082 /* PBXContainerItemProxy */;
+		};
 		AB1A462FDEA6F3D7D0CA7B27 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = A5A0AA9F4FB5BC8D9254438A /* MovieRouletteTuesdayWidgetExtension */;
@@ -728,6 +800,43 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		08D90647B2307DB6CC421130 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.movieroulettetuesday.app.tvuitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TEST_TARGET_NAME = MovieRouletteTuesdayTV;
+				TVOS_DEPLOYMENT_TARGET = 17.0;
+			};
+			name = Debug;
+		};
+		1D77A922183507244F239409 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.movieroulettetuesday.app.tvuitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TEST_TARGET_NAME = MovieRouletteTuesdayTV;
+				TVOS_DEPLOYMENT_TARGET = 17.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		23FB2CAEB38545C3793097DD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1071,6 +1180,15 @@
 			buildConfigurations = (
 				877A6BA951A2EA0025A2ABE8 /* Debug */,
 				959134B361DD7E21ADEA3164 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		203E1EC3E23B7272B38437A7 /* Build configuration list for PBXNativeTarget "MovieRouletteTuesdayTVUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1D77A922183507244F239409 /* Release */,
+				08D90647B2307DB6CC421130 /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
