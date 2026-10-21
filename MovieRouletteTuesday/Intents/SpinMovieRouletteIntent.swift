@@ -86,7 +86,12 @@ enum IntentSpinService {
         let history = SpinHistoryStore.shared
         let policy = RareOutcomePolicy(isEnabled: true)
         var rng = SystemRandomNumberGenerator()
-        guard let out = QuickSpin.resolve(catalog: catalog, history: history.results, rareOutcomes: policy, using: &rng) else {
+        // Cached listener averages (saved by the app), so a jackpot is weighted offline.
+        let averages = ListenerRatingsSnapshot.load(from: settings)?.averages ?? [:]
+        guard let out = QuickSpin.resolve(
+            catalog: catalog, history: history.results, rareOutcomes: policy,
+            listenerAverages: averages, using: &rng
+        ) else {
             throw IntentSpinError.noMovies
         }
         let result = SpinResult(movieId: out.movie.id, categoryId: out.category.id)
