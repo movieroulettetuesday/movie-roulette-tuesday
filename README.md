@@ -37,6 +37,7 @@ This app collects no personal data. No accounts, no analytics, no third-party se
 
 - `MovieRouletteTuesday/` — app (SwiftUI, iOS 17+, no third-party deps). Shared code lives in the local package `MRTKit/`: `MRTCore` (pure logic, Foundation only, also compiles on Linux for unit tests) and `MRTShared` (stores, wheel drawing, spin audio and the Roulette view model, shared with the tvOS app).
 - `MovieRouletteTuesdayWidget/` — WidgetKit extension (App Group).
+- `MovieRouletteTuesdayTV/` — Apple TV app (tvOS 17+, scheme `MovieRouletteTuesdayTV`), in progress: phase 1 has the Roulette tab only; the other tabs are placeholders.
 - `MovieRouletteTuesdayTests/` — XCTest (imports `MRTCore` / `MRTShared`).
 - `CloudKit/` — `.ckdb` schema + `SCHEMA.md`.
 - Project files: add new source files through Xcode (File → New / Add Files) so they join the right targets (app, widget, tests).
