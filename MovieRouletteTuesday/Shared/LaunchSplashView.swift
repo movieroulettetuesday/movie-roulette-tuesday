@@ -2,6 +2,7 @@ import SwiftUI
 import UIKit
 import Observation
 import MRTCore
+import MRTShared
 
 /// Cold-launch opening animation (see `LaunchSplash` for the geometry/curves).
 ///

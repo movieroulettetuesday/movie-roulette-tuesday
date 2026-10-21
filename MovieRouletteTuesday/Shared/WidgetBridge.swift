@@ -1,6 +1,7 @@
 import Foundation
 import WidgetKit
 import MRTCore
+import MRTShared
 
 /// Pushes the latest episode and last spin to the App Group so the home-screen
 /// widget can show them. If the App Group isn't available (for example, no
@@ -39,5 +40,17 @@ enum WidgetBridge {
         } catch {
             // Widget data is best-effort; never let it affect the app.
         }
+    }
+}
+
+extension RouletteSideEffects {
+    /// The iOS app's Roulette hooks: keep the widget's snapshot and timelines current.
+    static var widgetBridge: RouletteSideEffects {
+        RouletteSideEffects(
+            catalogUpdated: { WidgetBridge.catalogUpdated() },
+            spinRecorded: { movie, category, date in
+                WidgetBridge.publishSpin(movie: movie, category: category, at: date)
+            }
+        )
     }
 }

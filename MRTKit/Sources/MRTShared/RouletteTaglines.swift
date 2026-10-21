@@ -2,8 +2,8 @@ import Foundation
 import MRTCore
 
 /// Rotating subtitle / theme flavor for the Roulette header.
-enum RouletteTaglines {
-    static let lines: [String] = [
+public enum RouletteTaglines {
+    public static let lines: [String] = [
         "Spin responsibly",
         "May contain regrets",
         "Theme rounds never sleep",
@@ -15,7 +15,7 @@ enum RouletteTaglines {
         "Dinner, discussion, and the wheel",
     ]
 
-    static func random(excluding current: String? = nil) -> String {
+    public static func random(excluding current: String? = nil) -> String {
         let pool = lines.filter { $0 != current }
         return (pool.isEmpty ? lines : pool).randomElement() ?? "Spin responsibly"
     }

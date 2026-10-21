@@ -1,5 +1,6 @@
 import SwiftUI
 import MRTCore
+import MRTShared
 
 struct EpisodesView: View {
     @Bindable var store: EpisodeStore

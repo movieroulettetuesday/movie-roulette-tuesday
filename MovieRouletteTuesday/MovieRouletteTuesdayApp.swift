@@ -2,6 +2,7 @@ import SwiftUI
 import UIKit
 import UserNotifications
 import MRTCore
+import MRTShared
 
 @main
 struct MovieRouletteTuesdayApp: App {
@@ -20,7 +21,8 @@ struct MovieRouletteTuesdayApp: App {
         _roulette = State(initialValue: RouletteViewModel(
             catalogSource: AppCatalog.localSource(),
             catalogRefresher: AppCatalog.refresher(),
-            history: history
+            history: history,
+            sideEffects: .widgetBridge
         ))
         #if DEBUG
         _splash = State(initialValue: SplashState(

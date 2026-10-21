@@ -3,6 +3,7 @@ import Foundation
 import UIKit
 import UserNotifications
 import MRTCore
+import MRTShared
 
 /// Optional "New-episode alert" (Settings > New Episodes, off by default).
 ///

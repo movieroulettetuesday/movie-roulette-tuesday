@@ -1,5 +1,6 @@
 import SwiftUI
 import MRTCore
+import MRTShared
 
 /// Episode page "Listen" card (approved v4 mockup).
 /// Apple Podcasts: the exact episode once the iTunes lookup matches its GUID

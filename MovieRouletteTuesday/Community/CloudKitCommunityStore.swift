@@ -1,6 +1,7 @@
 import CloudKit
 import Foundation
 import MRTCore
+import MRTShared
 
 /// `CommunityStore` backed by the CloudKit PUBLIC database of
 /// iCloud.com.movieroulettetuesday.app.

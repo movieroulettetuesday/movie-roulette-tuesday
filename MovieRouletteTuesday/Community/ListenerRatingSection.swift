@@ -1,5 +1,6 @@
 import SwiftUI
 import MRTCore
+import MRTShared
 
 /// Community (anonymous) average for a movie plus this user's listener vote.
 /// Separate from "My rating", which stays on the device unless shared.

@@ -1,6 +1,7 @@
 import SwiftUI
 import WidgetKit
 import MRTCore
+import MRTShared
 
 @main
 struct MovieRouletteTuesdayWidgetBundle: WidgetBundle {

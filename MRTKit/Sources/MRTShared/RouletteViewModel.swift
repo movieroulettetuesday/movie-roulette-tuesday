@@ -3,63 +3,83 @@ import Observation
 import QuartzCore
 import MRTCore
 
+/// Platform hooks the view model calls after its own state changes. The iOS
+/// app passes `.widgetBridge` (WidgetKit); tvOS has no widget and uses `.none`.
+public struct RouletteSideEffects: Sendable {
+    /// A refreshed movie list was offered (applied now or when idle).
+    public var catalogUpdated: @MainActor @Sendable () -> Void
+    /// A spin landed and was recorded in the history.
+    public var spinRecorded: @MainActor @Sendable (_ movie: Movie, _ category: RouletteCategory, _ date: Date) -> Void
+
+    public init(
+        catalogUpdated: @escaping @MainActor @Sendable () -> Void = {},
+        spinRecorded: @escaping @MainActor @Sendable (_ movie: Movie, _ category: RouletteCategory, _ date: Date) -> Void = { _, _, _ in }
+    ) {
+        self.catalogUpdated = catalogUpdated
+        self.spinRecorded = spinRecorded
+    }
+
+    /// No side effects (previews, tests, tvOS).
+    public static var none: RouletteSideEffects { RouletteSideEffects() }
+}
+
 /// State and actions for the Roulette screen.
 @MainActor
 @Observable
-final class RouletteViewModel {
-    enum LoadState: Equatable {
+public final class RouletteViewModel {
+    public enum LoadState: Equatable {
         case loading
         case loaded
         case failed(String)
     }
 
-    struct Reveal: Identifiable, Equatable {
-        let id: UUID // the SpinResult id
-        let movie: Movie
-        let category: RouletteCategory
+    public struct Reveal: Identifiable, Equatable {
+        public let id: UUID // the SpinResult id
+        public let movie: Movie
+        public let category: RouletteCategory
         /// Spin count for this movie on this device, including this spin.
-        let spinCount: Int
+        public let spinCount: Int
         /// Rare "Infamous jackpot" outcome: special reveal styling.
-        var isJackpot = false
+        public var isJackpot = false
     }
 
     /// The spin follows the recorded spin sound (`SpinMotion`): the wheel
     /// runs as long as the clip's ratchet and stops on its final thunk.
     /// Reduce Motion keeps that timeline but turns the wheel only 1–2 times.
-    static var spinDuration: Double { SpinSoundTrack.spinDuration }
-    static let fullTurns = 5...8
-    static let reducedMotionFullTurns = 1...2
+    public static var spinDuration: Double { SpinSoundTrack.spinDuration }
+    public static let fullTurns = 5...8
+    public static let reducedMotionFullTurns = 1...2
     /// Selection haptics closer together than this are skipped.
-    static let hapticMinInterval = 0.045
+    public static let hapticMinInterval = 0.045
     /// Pause on "Re-spin forced!" before the automatic re-spin.
-    static let forcedRespinDelay = 1.6
+    public static let forcedRespinDelay = 1.6
 
-    private(set) var loadState: LoadState = .loading
-    private(set) var catalog: MovieCatalog?
-    private(set) var geometry = WheelGeometry(segmentCount: 1)
+    public private(set) var loadState: LoadState = .loading
+    public private(set) var catalog: MovieCatalog?
+    public private(set) var geometry = WheelGeometry(segmentCount: 1)
     /// Total clockwise rotation in degrees. Accumulates across spins; never reset.
-    private(set) var rotation: Double = 0
-    private(set) var isSpinning = false
+    public private(set) var rotation: Double = 0
+    public private(set) var isSpinning = false
     /// Static extra rotation drawn while a stopped spin decelerates (SpinStopPlan.offset); 0 otherwise.
-    private(set) var stopOffset: Double = 0
+    public private(set) var stopOffset: Double = 0
     /// True from a stop tap until the wheel has settled.
-    private(set) var isStopping = false
+    public private(set) var isStopping = false
     /// The spin in flight can be stopped early (clip-timed spins only).
-    private(set) var spinIsStoppable = false
-    private(set) var lastCategory: RouletteCategory?
-    private(set) var notice: String?
+    public private(set) var spinIsStoppable = false
+    public private(set) var lastCategory: RouletteCategory?
+    public private(set) var notice: String?
     /// Bumped on every reveal; drives the haptic.
-    private(set) var revealCount = 0
+    public private(set) var revealCount = 0
     /// Big overlay text for rare outcomes ("RE-SPIN FORCED!").
-    private(set) var rareBanner: String?
+    public private(set) var rareBanner: String?
     /// True between a forced re-spin message and the automatic re-spin.
-    private(set) var isAwaitingForcedRespin = false
-    var reveal: Reveal?
+    public private(set) var isAwaitingForcedRespin = false
+    public var reveal: Reveal?
 
-    let history: SpinHistoryStore
+    public let history: SpinHistoryStore
 
     /// Set by the view from the environment; shortens the spin.
-    @ObservationIgnored var reduceMotion = false
+    @ObservationIgnored public var reduceMotion = false
     private let catalogSource: any MovieCatalogSource
     /// Background GitHub refresh; nil = bundled/cached list only.
     private let catalogRefresher: CatalogRefresher?
@@ -68,7 +88,7 @@ final class RouletteViewModel {
     @ObservationIgnored private var catalogRefreshTask: Task<Void, Never>?
     @ObservationIgnored private var lastCatalogRefresh: ContinuousClock.Instant?
     /// Launch + pull-to-refresh can fire together; refreshes closer than this are skipped.
-    static let catalogRefreshMinInterval: Duration = .seconds(15)
+    public static let catalogRefreshMinInterval: Duration = .seconds(15)
     private let selector: MovieSelector
     @ObservationIgnored private var rng: AnyRandomNumberGenerator
     @ObservationIgnored private var spinAgainRequested = false
@@ -93,14 +113,16 @@ final class RouletteViewModel {
     /// DEBUG stress runs with the real, full-length clip-timed spins.
     @ObservationIgnored private var stressRealTiming = false
     private let settings: UserDefaults
+    private let sideEffects: RouletteSideEffects
 
-    init(
+    public init(
         catalogSource: any MovieCatalogSource,
         catalogRefresher: CatalogRefresher? = nil,
         history: SpinHistoryStore,
         selector: MovieSelector = MovieSelector(),
         rng: AnyRandomNumberGenerator = .system,
-        settings: UserDefaults = .standard
+        settings: UserDefaults = .standard,
+        sideEffects: RouletteSideEffects = .none
     ) {
         self.catalogSource = catalogSource
         self.catalogRefresher = catalogRefresher
@@ -108,13 +130,14 @@ final class RouletteViewModel {
         self.selector = selector
         self.rng = rng
         self.settings = settings
+        self.sideEffects = sideEffects
         self.feedback = SpinFeedback()
     }
 
     /// Tap-to-stop is available: spinning, not already stopping, not a stress run.
-    var canStop: Bool { isSpinning && spinIsStoppable && !isStopping }
+    public var canStop: Bool { isSpinning && spinIsStoppable && !isStopping }
 
-    var canSpin: Bool {
+    public var canSpin: Bool {
         catalog != nil && !isSpinning && reveal == nil && !isAwaitingForcedRespin
     }
 
@@ -123,7 +146,7 @@ final class RouletteViewModel {
 
     /// Loads the catalog once. Safe to call from several views at the same time:
     /// later callers await the in-flight load. After a failure the next call retries.
-    func load() async {
+    public func load() async {
         guard catalog == nil else { return }
         if let catalogLoadTask {
             await catalogLoadTask.value
@@ -151,7 +174,7 @@ final class RouletteViewModel {
         }
     }
 
-    func spin() {
+    public func spin() {
         startSpin(isForcedRespin: false)
     }
 
@@ -160,7 +183,7 @@ final class RouletteViewModel {
     /// Fetches the latest movie list (short timeout, off the main actor) and swaps
     /// it in when it validates. Never blocks the UI; failures keep the current list.
     /// Swaps are deferred while a spin or reveal is in progress.
-    func refreshRemoteCatalog() async {
+    public func refreshRemoteCatalog() async {
         guard let catalogRefresher else { return }
         if let catalogRefreshTask { await catalogRefreshTask.value; return }
         let now = ContinuousClock.now
@@ -177,7 +200,7 @@ final class RouletteViewModel {
 
     /// Movie ids are the stable key for spin history, ratings and votes, so a new
     /// list simply replaces the old one; ids that disappear keep their history.
-    func offerRefreshedCatalog(_ fresh: MovieCatalog) {
+    public func offerRefreshedCatalog(_ fresh: MovieCatalog) {
         let clean = fresh.deduplicated()
         guard clean != catalog else { return }
         if catalog == nil || isIdleForCatalogSwap {
@@ -185,7 +208,7 @@ final class RouletteViewModel {
         } else {
             pendingCatalog = clean
         }
-        WidgetBridge.catalogUpdated()
+        sideEffects.catalogUpdated()
     }
 
     private var isIdleForCatalogSwap: Bool {
@@ -264,7 +287,7 @@ final class RouletteViewModel {
     /// decelerates to it over ~0.8 s (SpinStopPlan). The spin sound fades out
     /// over the same time and the haptic ticks follow the slowing wheel. The
     /// result is recorded exactly once, by the usual completion/watchdog path.
-    func stopEarly() {
+    public func stopEarly() {
         guard canStop, let spin = activeSpin else { return }
         // Lead slightly: the animation clock starts a hair after `began`, so
         // the next frame is always past the plan's start (no one-frame jump).
@@ -309,13 +332,13 @@ final class RouletteViewModel {
         }
     }
 
-    static let stopLead = 0.03
-    static let stressSpinDuration = 0.25
-    static let watchdogGrace = 1.5
+    public static let stopLead = 0.03
+    public static let stressSpinDuration = 0.25
+    public static let watchdogGrace = 1.5
 
     /// Stops the spin sound (fade) and pending haptics: view disappeared or
     /// app went to the background. The spin result itself is unaffected.
-    func stopFeedback() {
+    public func stopFeedback() {
         hapticsTask?.cancel()
         hapticsTask = nil
         feedback.stopClip(fade: true)
@@ -364,12 +387,12 @@ final class RouletteViewModel {
     }
 
     /// Called from the reveal sheet: dismiss, then spin once the sheet is gone.
-    func spinAgain() {
+    public func spinAgain() {
         spinAgainRequested = true
         reveal = nil
     }
 
-    func revealDismissed() {
+    public func revealDismissed() {
         applyPendingCatalogIfIdle()
         guard spinAgainRequested else { return }
         spinAgainRequested = false
@@ -453,7 +476,7 @@ final class RouletteViewModel {
 
         let result = SpinResult(movieId: movie.id, categoryId: category.id)
         history.record(result)
-        WidgetBridge.publishSpin(movie: movie, category: category, at: result.timestamp)
+        sideEffects.spinRecorded(movie, category, result.timestamp)
         reveal = Reveal(
             id: result.id,
             movie: movie,
@@ -468,12 +491,12 @@ final class RouletteViewModel {
 #if DEBUG
 extension RouletteViewModel {
     /// `-MRTStressRealTiming`: stress with full-length, clip-timed spins.
-    static var stressRealTimingArgument: Bool {
+    public static var stressRealTimingArgument: Bool {
         ProcessInfo.processInfo.arguments.contains("-MRTStressRealTiming")
     }
 
     /// `-MRTStressSpins N` launch argument (DEBUG builds only).
-    static var stressSpinArgument: Int? {
+    public static var stressSpinArgument: Int? {
         let args = ProcessInfo.processInfo.arguments
         guard let i = args.firstIndex(of: "-MRTStressSpins"), args.indices.contains(i + 1),
               let n = Int(args[i + 1]), n > 0 else { return nil }
@@ -481,14 +504,14 @@ extension RouletteViewModel {
     }
 
     /// Unbuffered (stderr) so progress is visible even when output goes to a file.
-    static func stressLog(_ message: String) {
+    public static func stressLog(_ message: String) {
         FileHandle.standardError.write(Data((message + "\n").utf8))
     }
 
     /// Performs `count` rapid spins with a shortened animation, presenting and
     /// auto-dismissing each reveal sheet. Progress goes to stdout as
     /// `MRT-STRESS ...` lines. Nothing else about spinning changes.
-    func runStressSpins(_ count: Int) async {
+    public func runStressSpins(_ count: Int) async {
         stressMode = true
         stressRealTiming = Self.stressRealTimingArgument
         defer { stressMode = false; stressRealTiming = false }
@@ -527,7 +550,7 @@ extension RouletteViewModel {
 
 extension RouletteViewModel {
     /// Bundled data + in-memory history, for SwiftUI previews.
-    static func preview() -> RouletteViewModel {
+    public static func preview() -> RouletteViewModel {
         RouletteViewModel(
             catalogSource: BundleCatalogSource(),
             history: SpinHistoryStore(fileStore: nil)

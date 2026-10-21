@@ -1,6 +1,7 @@
 import SwiftUI
 import UIKit
 import MRTCore
+import MRTShared
 
 extension AppearancePreference {
     var colorScheme: ColorScheme? {

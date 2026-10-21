@@ -15,19 +15,16 @@
 		0EC23BA49F1D19A18180B832 /* CommunityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63342DA7EFB3459E60213B8E /* CommunityService.swift */; };
 		0EE3B2F20A96B59E993A8311 /* MoviePageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19FF5A4CD08C9313DFEBA0C /* MoviePageView.swift */; };
 		111D597F056E32F4CB793C00 /* MovieRouletteTuesdayWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB9FC31C5C8EB655C39961D /* MovieRouletteTuesdayWidgetBundle.swift */; };
-		1123EEBD6B6C22414DAF4CFB /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E25ECBF52E92B2653E19F04 /* AppRouter.swift */; };
-		11EC08503AF367BF11EFCE7C /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = A150C7D509637343B85ECD76 /* Color+Hex.swift */; };
-		18B810447E2CFF13C16CECC3 /* SpinHistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 401B3C8A76DF49FF80A52500 /* SpinHistoryStore.swift */; };
 		1B26F74CE6D60CCE0CFE8AEC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 85398768919AA8673807FA76 /* Assets.xcassets */; };
 		1BD7BEC2B3C9AC0AFACA5527 /* SettingsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 910226E8C518E795A6FDD73C /* SettingsSheet.swift */; };
 		1ED841E441462030261695D2 /* SpinMovieRouletteIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F758513FC3E5C240C02C1E /* SpinMovieRouletteIntent.swift */; };
+		24174D2379DE26689B1065BC /* MRTShared in Frameworks */ = {isa = PBXBuildFile; productRef = F87A9360B58846AE2E60F79F /* MRTShared */; };
 		30FEF5FC931536C76A87B2B4 /* RouletteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D191027304BD1A3ADAA0CC3 /* RouletteView.swift */; };
 		3144B5CB7EF7678B191C09ED /* SpinHistoryRoutingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967CD961E57CAD6F61F9B1F4 /* SpinHistoryRoutingTests.swift */; };
 		32E30C48DEAA93D45361EFD9 /* LaunchSplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CE15704D05827C746AD662F /* LaunchSplashView.swift */; };
 		35AC62C0B225CFE60274723E /* EpisodesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29D2E0E727CA77F01422151 /* EpisodesView.swift */; };
 		368F9E27B3ACA6BB32ACB9A2 /* wheel-spin.m4a in Resources */ = {isa = PBXBuildFile; fileRef = BFC5EEE89669C6899654052B /* wheel-spin.m4a */; };
 		38010DEB88451E9FEB4A9CCF /* AdaptiveLayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A3A92A79916C6B4B34AE15 /* AdaptiveLayoutTests.swift */; };
-		3A9ADD3AE3696D238D5DBD43 /* RouletteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D272434F6BBBFB3F562293FC /* RouletteViewModel.swift */; };
 		3D7B4C883B262CC895029351 /* RareOutcomeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D8079CF4BA2B6704A094AC /* RareOutcomeTests.swift */; };
 		4052E03879AABA4D453C76A9 /* feed-snippet.xml in Resources */ = {isa = PBXBuildFile; fileRef = 4A39E1E7BAB101678D6AEACF /* feed-snippet.xml */; };
 		4438C4FA34EF01A00C3C02F7 /* ShareCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A78AC385DA90899EE063668 /* ShareCard.swift */; };
@@ -37,15 +34,11 @@
 		4B125919D8979A200BD95548 /* QuickSpinTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 384E9A73BF374E767DFADDC5 /* QuickSpinTests.swift */; };
 		4C8E1F4AECDD48962B025295 /* NewEpisodeAlerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A42CD0BB872834C6AEFBE57 /* NewEpisodeAlerts.swift */; };
 		4EC7D86A5DF16E84BE01AEF7 /* polls.json in Resources */ = {isa = PBXBuildFile; fileRef = 8DB13E25EE3F416E5B9585A5 /* polls.json */; };
-		5836D8C8967D83D7A3B8E4E7 /* SpinFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7C8100F899D15A27E769319 /* SpinFeedback.swift */; };
 		5B64184F4370C278BE378B9B /* ListenCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A37804115A7A51647DE324B /* ListenCard.swift */; };
-		5D2B0ADDDC9F26BA839B9D06 /* RouletteTaglines.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F717EADE81CE670EACF4589 /* RouletteTaglines.swift */; };
-		64D354FF208027EF2D0F7203 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EC78ED88091FA572AD20406 /* AppSettings.swift */; };
 		672473312590654CC24BE71F /* MovieRouletteTuesdayApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9956B48DC29D6A503BF0222 /* MovieRouletteTuesdayApp.swift */; };
 		675E6F8D10737B4BF2035BB9 /* EpisodeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D3DD92B98390366A61EC0CB /* EpisodeStore.swift */; };
 		6E1BE3260AEC7973F2965318 /* ListenerRatingSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A85FBE8A0B5EB54069D0E8D0 /* ListenerRatingSection.swift */; };
 		6FA361A4E1237090AECC6A09 /* RSSFeedParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C6E0217EF54248CFDE0D42 /* RSSFeedParserTests.swift */; };
-		70ADD36EA0BDEB4D41FD9682 /* AppCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86131A01751FE62686E80C33 /* AppCatalog.swift */; };
 		76654956F2CC47267149D4F5 /* CatalogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89981D55DC937AB6C2C9A029 /* CatalogTests.swift */; };
 		77C6CCE6E402D9916D2F6C4D /* PersonalRatingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C001CB2DEEC27D9D42625A9 /* PersonalRatingsTests.swift */; };
 		7E2ACAD42B7BA7B037483A61 /* movies.json in Resources */ = {isa = PBXBuildFile; fileRef = 26E04D0E6DC29070B52F4220 /* movies.json */; };
@@ -57,15 +50,13 @@
 		8D13A420FA583F1A28270F1C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = BD793B3392A6E2372202AA06 /* PrivacyInfo.xcprivacy */; };
 		905262973D07D24863F16C22 /* AppearancePreferenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A1D1705C870623937EA427 /* AppearancePreferenceTests.swift */; };
 		972BF3D6480C9B32876FDD7A /* PersonalRatingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1321078DE95E06A1D4F7A4ED /* PersonalRatingsStore.swift */; };
-		9CDB44AA9D7B3238F01D2C69 /* SpinMotionAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24AC3D169F91BF9F5641AF29 /* SpinMotionAnimation.swift */; };
+		9C426CD571C0BA9EAEE982CA /* MRTShared in Frameworks */ = {isa = PBXBuildFile; productRef = D53C0F6450E158D2B33EC98E /* MRTShared */; };
 		9F26575565BE89FA32FA0DD6 /* EpisodePollSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A496A90EE14BC14A4F906A /* EpisodePollSection.swift */; };
-		A3A11A2F193484BDDA6499BF /* WheelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CE8F9DDF791B61A2BADFBA6 /* WheelView.swift */; };
 		A3E6B19FA4B17A23A9B7C261 /* MovieRouletteTuesdayWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 4C47665D1BA4105DF9684DC4 /* MovieRouletteTuesdayWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		A576FAC81EC23FE220AF9A47 /* CommunityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0573A1DA6C9FAF0B433CD15E /* CommunityTests.swift */; };
 		A90CF49AA2F52CA0E39F7528 /* WidgetBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D0A07A06B2C39EB1AEBB959 /* WidgetBridge.swift */; };
 		B483660AF79AD22C38C923D8 /* ConfettiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 606D45B78ACF499D53FDEAD9 /* ConfettiView.swift */; };
 		B493AE402F0DDF09C787E9D6 /* MovieSelectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0FA2879C4335C305F845BF8 /* MovieSelectorTests.swift */; };
-		B55DDB7B80271A422423D7B2 /* CleanPro.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB96EAF36E1683B551858A92 /* CleanPro.swift */; };
 		B8634279B7D8F06C3C145743 /* SpinMotionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754A3F0184E8B91219550B4B /* SpinMotionTests.swift */; };
 		BFB61D70F369A64583F80417 /* PaletteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 789D7D206E7AA3D8A6C8A971 /* PaletteTests.swift */; };
 		C86B0E834A47BAACE983F0DC /* Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4E0D4BBCA956D405439F42 /* Appearance.swift */; };
@@ -78,7 +69,6 @@
 		DCBD3FAC55E75E68D82975E3 /* WidgetSupportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF27295B306776F31F4CB7F /* WidgetSupportTests.swift */; };
 		DEDE6FC13E9E2F735C8AD074 /* SpinOfTheDayWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D9A7992FE17C2561593AF1D /* SpinOfTheDayWidget.swift */; };
 		E19EF79B249DCCE565A741E5 /* ShowLinksTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBC1240CDD0B2935F7AF538 /* ShowLinksTests.swift */; };
-		E856973DA9F14A7D68262752 /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = A150C7D509637343B85ECD76 /* Color+Hex.swift */; };
 		E99960B9D1F5B0A2C0A47356 /* MRTCore in Frameworks */ = {isa = PBXBuildFile; productRef = 0A8AC3C32DC6FA0D5E24A278 /* MRTCore */; };
 		E9ADE1118D85F5A6E88D8372 /* CloudKitCommunityStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63BB50427E823403D273D553 /* CloudKitCommunityStore.swift */; };
 		EEC084A6488074D0C6FAF648 /* WheelMathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF892772A8012B1CB98E65B8 /* WheelMathTests.swift */; };
@@ -86,7 +76,6 @@
 		F2C9BA67A2B019B280AF47F7 /* movies.json in Resources */ = {isa = PBXBuildFile; fileRef = 26E04D0E6DC29070B52F4220 /* movies.json */; };
 		F62B8E5A9200EF2B5D0D9F2A /* SheetSizing.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFAB6C715F92094EB219D7D3 /* SheetSizing.swift */; };
 		F70B7798DDA1A90129934316 /* LaunchSplashTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344715B1FACA833038072F89 /* LaunchSplashTests.swift */; };
-		F7868260C9915C7C10B0E91B /* Brand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861F94CB60FA3E429E13B19C /* Brand.swift */; };
 		FD62B08430047DD4D1992E12 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 92E4CFC63F379359666F25D5 /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
@@ -126,16 +115,13 @@
 		065CCF25035FB61DFE034E8C /* SCHEMA.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = SCHEMA.md; sourceTree = "<group>"; };
 		09B0C5460E510564FB287D8C /* SuggestMovieSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestMovieSheet.swift; sourceTree = "<group>"; };
 		0AF27295B306776F31F4CB7F /* WidgetSupportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSupportTests.swift; sourceTree = "<group>"; };
-		0CE8F9DDF791B61A2BADFBA6 /* WheelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WheelView.swift; sourceTree = "<group>"; };
 		0D3DD92B98390366A61EC0CB /* EpisodeStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeStore.swift; sourceTree = "<group>"; };
 		0DFB8329CEE9F53C63EAE4F9 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		0EC78ED88091FA572AD20406 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		11F758513FC3E5C240C02C1E /* SpinMovieRouletteIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinMovieRouletteIntent.swift; sourceTree = "<group>"; };
 		1321078DE95E06A1D4F7A4ED /* PersonalRatingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalRatingsStore.swift; sourceTree = "<group>"; };
 		1A78AC385DA90899EE063668 /* ShareCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCard.swift; sourceTree = "<group>"; };
 		1C1694457E20093AA60C2404 /* MovieRouletteTuesday.ckdb */ = {isa = PBXFileReference; lastKnownFileType = text; path = MovieRouletteTuesday.ckdb; sourceTree = "<group>"; };
 		1D9A7992FE17C2561593AF1D /* SpinOfTheDayWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinOfTheDayWidget.swift; sourceTree = "<group>"; };
-		24AC3D169F91BF9F5641AF29 /* SpinMotionAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinMotionAnimation.swift; sourceTree = "<group>"; };
 		26E04D0E6DC29070B52F4220 /* movies.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = movies.json; sourceTree = "<group>"; };
 		2A42CD0BB872834C6AEFBE57 /* NewEpisodeAlerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewEpisodeAlerts.swift; sourceTree = "<group>"; };
 		314659749C1F22CA3377B702 /* RemoteCatalogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteCatalogTests.swift; sourceTree = "<group>"; };
@@ -144,7 +130,6 @@
 		384E9A73BF374E767DFADDC5 /* QuickSpinTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickSpinTests.swift; sourceTree = "<group>"; };
 		3D191027304BD1A3ADAA0CC3 /* RouletteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouletteView.swift; sourceTree = "<group>"; };
 		3E8600244C761C1697C1AE1E /* MovieRouletteTuesdayWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MovieRouletteTuesdayWidget.entitlements; sourceTree = "<group>"; };
-		401B3C8A76DF49FF80A52500 /* SpinHistoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinHistoryStore.swift; sourceTree = "<group>"; };
 		4297248DCB58C5C36273F887 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		42A1D1705C870623937EA427 /* AppearancePreferenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearancePreferenceTests.swift; sourceTree = "<group>"; };
 		42CC8B6733C88E3D9611C6DA /* MovieRouletteTuesday.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MovieRouletteTuesday.entitlements; sourceTree = "<group>"; };
@@ -152,7 +137,6 @@
 		4A39E1E7BAB101678D6AEACF /* feed-snippet.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "feed-snippet.xml"; sourceTree = "<group>"; };
 		4AB9FC31C5C8EB655C39961D /* MovieRouletteTuesdayWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieRouletteTuesdayWidgetBundle.swift; sourceTree = "<group>"; };
 		4C47665D1BA4105DF9684DC4 /* MovieRouletteTuesdayWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MovieRouletteTuesdayWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		4F717EADE81CE670EACF4589 /* RouletteTaglines.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouletteTaglines.swift; sourceTree = "<group>"; };
 		54C16BE2C569E84C3613C990 /* AppleEpisodeLinks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleEpisodeLinks.swift; sourceTree = "<group>"; };
 		582F0301105672642F32122D /* StarRatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarRatingView.swift; sourceTree = "<group>"; };
 		5C9D0A7685F09A8A7B79AAED /* ArtworkImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtworkImage.swift; sourceTree = "<group>"; };
@@ -168,8 +152,6 @@
 		7D0A07A06B2C39EB1AEBB959 /* WidgetBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBridge.swift; sourceTree = "<group>"; };
 		85398768919AA8673807FA76 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8598FC5574D9C0227CBC509C /* StabilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StabilityTests.swift; sourceTree = "<group>"; };
-		86131A01751FE62686E80C33 /* AppCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCatalog.swift; sourceTree = "<group>"; };
-		861F94CB60FA3E429E13B19C /* Brand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Brand.swift; sourceTree = "<group>"; };
 		89981D55DC937AB6C2C9A029 /* CatalogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogTests.swift; sourceTree = "<group>"; };
 		8A37804115A7A51647DE324B /* ListenCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListenCard.swift; sourceTree = "<group>"; };
 		8C001CB2DEEC27D9D42625A9 /* PersonalRatingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalRatingsTests.swift; sourceTree = "<group>"; };
@@ -179,8 +161,6 @@
 		92E4CFC63F379359666F25D5 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		967CD961E57CAD6F61F9B1F4 /* SpinHistoryRoutingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinHistoryRoutingTests.swift; sourceTree = "<group>"; };
 		9B37ABE5A15E0050A18B79C3 /* SpinTicksTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinTicksTests.swift; sourceTree = "<group>"; };
-		9E25ECBF52E92B2653E19F04 /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
-		A150C7D509637343B85ECD76 /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
 		A1A3A92A79916C6B4B34AE15 /* AdaptiveLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveLayoutTests.swift; sourceTree = "<group>"; };
 		A85FBE8A0B5EB54069D0E8D0 /* ListenerRatingSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListenerRatingSection.swift; sourceTree = "<group>"; };
 		AA4E0D4BBCA956D405439F42 /* Appearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Appearance.swift; sourceTree = "<group>"; };
@@ -189,12 +169,10 @@
 		B29D2E0E727CA77F01422151 /* EpisodesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodesView.swift; sourceTree = "<group>"; };
 		B6CDB6E5D160E013280D3C68 /* MovieRouletteTuesday.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MovieRouletteTuesday.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B7D8079CF4BA2B6704A094AC /* RareOutcomeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RareOutcomeTests.swift; sourceTree = "<group>"; };
-		BB96EAF36E1683B551858A92 /* CleanPro.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanPro.swift; sourceTree = "<group>"; };
 		BD793B3392A6E2372202AA06 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		BFC5EEE89669C6899654052B /* wheel-spin.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = "wheel-spin.m4a"; sourceTree = "<group>"; };
 		C46495DB72BC46A3319009BC /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
 		CF892772A8012B1CB98E65B8 /* WheelMathTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WheelMathTests.swift; sourceTree = "<group>"; };
-		D272434F6BBBFB3F562293FC /* RouletteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouletteViewModel.swift; sourceTree = "<group>"; };
 		D45556E0D190C544404C5AB4 /* MoviesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesView.swift; sourceTree = "<group>"; };
 		DE80DAF59B7205B4463F132E /* DebugLaunch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugLaunch.swift; sourceTree = "<group>"; };
 		DFAB6C715F92094EB219D7D3 /* SheetSizing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheetSizing.swift; sourceTree = "<group>"; };
@@ -206,7 +184,6 @@
 		EE53B388FB9EC6C6E521FF12 /* SpinHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinHistoryView.swift; sourceTree = "<group>"; };
 		F19FF5A4CD08C9313DFEBA0C /* MoviePageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviePageView.swift; sourceTree = "<group>"; };
 		F4A496A90EE14BC14A4F906A /* EpisodePollSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodePollSection.swift; sourceTree = "<group>"; };
-		F7C8100F899D15A27E769319 /* SpinFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinFeedback.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -215,6 +192,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F1A46079998982C923A5106B /* MRTCore in Frameworks */,
+				24174D2379DE26689B1065BC /* MRTShared in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -230,6 +208,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E99960B9D1F5B0A2C0A47356 /* MRTCore in Frameworks */,
+				9C426CD571C0BA9EAEE982CA /* MRTShared in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -295,16 +274,11 @@
 				43EBE058D2E1C40C4FAA453D /* HubSpinButton.swift */,
 				F19FF5A4CD08C9313DFEBA0C /* MoviePageView.swift */,
 				31A9FD0A467895EB921C2DB9 /* RevealSheet.swift */,
-				4F717EADE81CE670EACF4589 /* RouletteTaglines.swift */,
 				3D191027304BD1A3ADAA0CC3 /* RouletteView.swift */,
-				D272434F6BBBFB3F562293FC /* RouletteViewModel.swift */,
 				6C688245CAD9652F3B85E2EB /* RulesSheet.swift */,
 				910226E8C518E795A6FDD73C /* SettingsSheet.swift */,
 				1A78AC385DA90899EE063668 /* ShareCard.swift */,
-				F7C8100F899D15A27E769319 /* SpinFeedback.swift */,
 				EE53B388FB9EC6C6E521FF12 /* SpinHistoryView.swift */,
-				24AC3D169F91BF9F5641AF29 /* SpinMotionAnimation.swift */,
-				0CE8F9DDF791B61A2BADFBA6 /* WheelView.swift */,
 			);
 			path = Roulette;
 			sourceTree = "<group>";
@@ -342,22 +316,15 @@
 		7087312EC44A93884277A7AE /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				86131A01751FE62686E80C33 /* AppCatalog.swift */,
 				AA4E0D4BBCA956D405439F42 /* Appearance.swift */,
 				54C16BE2C569E84C3613C990 /* AppleEpisodeLinks.swift */,
-				9E25ECBF52E92B2653E19F04 /* AppRouter.swift */,
-				0EC78ED88091FA572AD20406 /* AppSettings.swift */,
 				5C9D0A7685F09A8A7B79AAED /* ArtworkImage.swift */,
 				9260DAC1F69FCBC65DE8899D /* ArtworkLoader.swift */,
-				861F94CB60FA3E429E13B19C /* Brand.swift */,
-				BB96EAF36E1683B551858A92 /* CleanPro.swift */,
-				A150C7D509637343B85ECD76 /* Color+Hex.swift */,
 				DE80DAF59B7205B4463F132E /* DebugLaunch.swift */,
 				7CE15704D05827C746AD662F /* LaunchSplashView.swift */,
 				2A42CD0BB872834C6AEFBE57 /* NewEpisodeAlerts.swift */,
 				1321078DE95E06A1D4F7A4ED /* PersonalRatingsStore.swift */,
 				DFAB6C715F92094EB219D7D3 /* SheetSizing.swift */,
-				401B3C8A76DF49FF80A52500 /* SpinHistoryStore.swift */,
 				582F0301105672642F32122D /* StarRatingView.swift */,
 				09B0C5460E510564FB287D8C /* SuggestMovieSheet.swift */,
 				7D0A07A06B2C39EB1AEBB959 /* WidgetBridge.swift */,
@@ -459,6 +426,7 @@
 			name = MovieRouletteTuesday;
 			packageProductDependencies = (
 				ED0E9CC97AF08AE14FD24B9E /* MRTCore */,
+				F87A9360B58846AE2E60F79F /* MRTShared */,
 			);
 			productName = MovieRouletteTuesday;
 			productReference = B6CDB6E5D160E013280D3C68 /* MovieRouletteTuesday.app */;
@@ -497,6 +465,7 @@
 			name = MovieRouletteTuesdayWidgetExtension;
 			packageProductDependencies = (
 				0A8AC3C32DC6FA0D5E24A278 /* MRTCore */,
+				D53C0F6450E158D2B33EC98E /* MRTShared */,
 			);
 			productName = MovieRouletteTuesdayWidgetExtension;
 			productReference = 4C47665D1BA4105DF9684DC4 /* MovieRouletteTuesdayWidgetExtension.appex */;
@@ -585,7 +554,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E856973DA9F14A7D68262752 /* Color+Hex.swift in Sources */,
 				111D597F056E32F4CB793C00 /* MovieRouletteTuesdayWidgetBundle.swift in Sources */,
 				DEDE6FC13E9E2F735C8AD074 /* SpinOfTheDayWidget.swift in Sources */,
 			);
@@ -638,32 +606,20 @@
 				48479A50C21555128DD1A03C /* HubSpinButton.swift in Sources */,
 				0EE3B2F20A96B59E993A8311 /* MoviePageView.swift in Sources */,
 				D60363C9EC2F7F2584B58F34 /* RevealSheet.swift in Sources */,
-				5D2B0ADDDC9F26BA839B9D06 /* RouletteTaglines.swift in Sources */,
 				30FEF5FC931536C76A87B2B4 /* RouletteView.swift in Sources */,
-				3A9ADD3AE3696D238D5DBD43 /* RouletteViewModel.swift in Sources */,
 				08A17D71F2A53665966EDA80 /* RulesSheet.swift in Sources */,
 				1BD7BEC2B3C9AC0AFACA5527 /* SettingsSheet.swift in Sources */,
 				4438C4FA34EF01A00C3C02F7 /* ShareCard.swift in Sources */,
-				5836D8C8967D83D7A3B8E4E7 /* SpinFeedback.swift in Sources */,
 				060530164D7E2B9209549CC8 /* SpinHistoryView.swift in Sources */,
-				9CDB44AA9D7B3238F01D2C69 /* SpinMotionAnimation.swift in Sources */,
-				A3A11A2F193484BDDA6499BF /* WheelView.swift in Sources */,
-				70ADD36EA0BDEB4D41FD9682 /* AppCatalog.swift in Sources */,
 				C86B0E834A47BAACE983F0DC /* Appearance.swift in Sources */,
 				086F144875AA660BA8A40202 /* AppleEpisodeLinks.swift in Sources */,
-				1123EEBD6B6C22414DAF4CFB /* AppRouter.swift in Sources */,
-				64D354FF208027EF2D0F7203 /* AppSettings.swift in Sources */,
 				45AA58EE7E51F514DACF8E6E /* ArtworkImage.swift in Sources */,
 				8131ADAAF38796C6C8661C1F /* ArtworkLoader.swift in Sources */,
-				F7868260C9915C7C10B0E91B /* Brand.swift in Sources */,
-				B55DDB7B80271A422423D7B2 /* CleanPro.swift in Sources */,
-				11EC08503AF367BF11EFCE7C /* Color+Hex.swift in Sources */,
 				817A894066A0021704D28E08 /* DebugLaunch.swift in Sources */,
 				32E30C48DEAA93D45361EFD9 /* LaunchSplashView.swift in Sources */,
 				4C8E1F4AECDD48962B025295 /* NewEpisodeAlerts.swift in Sources */,
 				972BF3D6480C9B32876FDD7A /* PersonalRatingsStore.swift in Sources */,
 				F62B8E5A9200EF2B5D0D9F2A /* SheetSizing.swift in Sources */,
-				18B810447E2CFF13C16CECC3 /* SpinHistoryStore.swift in Sources */,
 				D48AFAE50BF5C5C2542A93BD /* StarRatingView.swift in Sources */,
 				0A639418B6C9BB403C64A0F2 /* SuggestMovieSheet.swift in Sources */,
 				A90CF49AA2F52CA0E39F7528 /* WidgetBridge.swift in Sources */,
@@ -1014,10 +970,20 @@
 			package = 3B7E3F4A9A14D25F339F89E7 /* XCLocalSwiftPackageReference "MRTKit" */;
 			productName = MRTCore;
 		};
+		D53C0F6450E158D2B33EC98E /* MRTShared */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3B7E3F4A9A14D25F339F89E7 /* XCLocalSwiftPackageReference "MRTKit" */;
+			productName = MRTShared;
+		};
 		ED0E9CC97AF08AE14FD24B9E /* MRTCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 3B7E3F4A9A14D25F339F89E7 /* XCLocalSwiftPackageReference "MRTKit" */;
 			productName = MRTCore;
+		};
+		F87A9360B58846AE2E60F79F /* MRTShared */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3B7E3F4A9A14D25F339F89E7 /* XCLocalSwiftPackageReference "MRTKit" */;
+			productName = MRTShared;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

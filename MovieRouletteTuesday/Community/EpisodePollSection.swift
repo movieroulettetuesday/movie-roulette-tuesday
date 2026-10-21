@@ -1,5 +1,6 @@
 import SwiftUI
 import MRTCore
+import MRTShared
 
 /// Anonymous listener poll for one episode (Episode detail). Results appear
 /// after you vote, or right away if you can't vote (not signed into iCloud).

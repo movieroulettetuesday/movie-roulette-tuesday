@@ -2,6 +2,7 @@ import MessageUI
 import SwiftUI
 import UIKit
 import MRTCore
+import MRTShared
 
 /// "Suggest a Movie": one sheet. The primary action, Send, saves a `Suggestion`
 /// record to the CloudKit public database (anonymous, create-only for

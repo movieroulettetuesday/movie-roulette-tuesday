@@ -2,6 +2,7 @@
 import SwiftUI
 import UIKit
 import MRTCore
+import MRTShared
 
 /// DEBUG-only launch arguments for simulator smoke tests (compiled out of
 /// Release): `-MRTOrientation landscape|portrait` asks the window scene for

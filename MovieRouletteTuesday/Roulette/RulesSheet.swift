@@ -1,5 +1,6 @@
 import SwiftUI
 import MRTCore
+import MRTShared
 
 struct RulesSheet: View {
     @Environment(\.dismiss) private var dismiss

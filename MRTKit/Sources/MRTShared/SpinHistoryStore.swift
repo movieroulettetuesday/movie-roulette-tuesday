@@ -9,20 +9,20 @@ import MRTCore
 /// spins survive as counts in `archive`, so stats stay exact.
 @MainActor
 @Observable
-final class SpinHistoryStore {
+public final class SpinHistoryStore {
     /// Recent detailed spins, chronological (oldest first).
-    private(set) var results: [SpinResult] = []
+    public private(set) var results: [SpinResult] = []
     /// Counts for spins older than the detailed window.
-    private(set) var archive: SpinHistoryArchive = .empty
+    public private(set) var archive: SpinHistoryArchive = .empty
     /// Cached; recomputed only when the log changes (it's read per row/sort).
-    private(set) var stats = SpinStats(history: [])
-    private(set) var lastError: String?
+    public private(set) var stats = SpinStats(history: [])
+    public private(set) var lastError: String?
 
     private let fileStore: SpinHistoryFileStore?
     private let detailLimit: Int
 
     /// Pass `nil` for an in-memory store (previews, UI tests).
-    init(
+    public init(
         fileStore: SpinHistoryFileStore? = try? SpinHistoryFileStore.applicationSupport(),
         detailLimit: Int = SpinHistoryLog.defaultDetailLimit
     ) {
@@ -33,18 +33,18 @@ final class SpinHistoryStore {
 
     /// The app's one persistent store. Shared with App Intents (they run in
     /// the app process), so a Siri spin lands in the same history the UI shows.
-    static let shared = SpinHistoryStore()
+    public static let shared = SpinHistoryStore()
 
-    var totalSpins: Int { stats.totalSpins }
+    public var totalSpins: Int { stats.totalSpins }
 
-    func record(_ result: SpinResult) {
+    public func record(_ result: SpinResult) {
         var log = SpinHistoryLog(results: results, archive: archive)
         log.append(result, detailLimit: detailLimit)
         apply(log)
         persist()
     }
 
-    func clear() {
+    public func clear() {
         apply(SpinHistoryLog())
         persist()
     }

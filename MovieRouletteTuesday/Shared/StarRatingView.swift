@@ -1,5 +1,6 @@
 import SwiftUI
 import MRTCore
+import MRTShared
 
 /// 0.5…5 stars in half-star steps (values are half-stars, 1...10).
 /// Tap a star's left half for ½, its right half for the whole star, or drag

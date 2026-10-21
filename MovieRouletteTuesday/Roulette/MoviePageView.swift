@@ -1,5 +1,6 @@
 import SwiftUI
 import MRTCore
+import MRTShared
 
 /// Movie detail — catalog facts, linked episodes, local spin count.
 struct MoviePageView: View {

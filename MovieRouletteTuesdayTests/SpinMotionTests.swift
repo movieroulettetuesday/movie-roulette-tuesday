@@ -1,6 +1,7 @@
 import XCTest
 @testable import MovieRouletteTuesday
 import MRTCore
+import MRTShared
 
 /// The spin is timed to Walter's recording: speed follows the click rate,
 /// crossings land on clicks, the wheel stops on the final thunk, and where it

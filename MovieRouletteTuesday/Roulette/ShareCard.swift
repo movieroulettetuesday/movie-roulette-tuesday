@@ -1,5 +1,6 @@
 import SwiftUI
 import MRTCore
+import MRTShared
 
 /// Branded result card, rendered to an image with `ImageRenderer` and shared
 /// via `ShareLink`. Fixed 4:5 layout (1080×1350 px at scale 3).

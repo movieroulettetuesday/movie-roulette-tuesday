@@ -1,6 +1,7 @@
 import Foundation
 import Observation
 import MRTCore
+import MRTShared
 
 /// Loads the Buzzsprout RSS feed, caches it under Application Support, and
 /// exposes episodes to the Episodes tab + reveal sheet.

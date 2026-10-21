@@ -1,6 +1,8 @@
 import AVFoundation
 import QuartzCore
+#if os(iOS)
 import UIKit
+#endif
 import MRTCore
 
 /// Spin sound + crossing haptics.
@@ -14,47 +16,56 @@ import MRTCore
 /// Ring/Silent switch and mixes with whatever else is playing.
 ///
 /// Haptics: a selection tick for each boundary crossing, on the main actor.
+/// tvOS has no haptics: `haptics` and `crossing()` are no-ops there.
 @MainActor
-final class SpinFeedback {
+public final class SpinFeedback {
     private let audio = SpinAudio()
+    #if os(iOS)
     private var selection: UISelectionFeedbackGenerator?
+    #endif
+
+    public init() {}
 
     /// Call right before a spin. With sound off, the audio session is never touched.
-    func prepare(sound: Bool, haptics: Bool) {
+    public func prepare(sound: Bool, haptics: Bool) {
         if sound { audio.prepare() }
+        #if os(iOS)
         if haptics {
             if selection == nil { selection = UISelectionFeedbackGenerator() }
             selection?.prepare()
         }
+        #endif
     }
 
     /// Starts the spin clip. `startedAt` is the spin's start (`CACurrentMediaTime`),
     /// so a late start (queue hop, session activation) seeks to stay in sync.
-    func startClip(startedAt: CFTimeInterval) {
+    public func startClip(startedAt: CFTimeInterval) {
         audio.play(startedAt: startedAt)
     }
 
     /// Fades out (or cuts) the clip: spin interrupted, view gone, app backgrounded.
-    func stopClip(fade: Bool = true, duration: TimeInterval = SpinAudio.fadeDuration) {
+    public func stopClip(fade: Bool = true, duration: TimeInterval = SpinAudio.fadeDuration) {
         audio.stop(fade: fade, duration: duration)
     }
 
     /// One selection haptic (a boundary crossing).
-    func crossing() {
+    public func crossing() {
+        #if os(iOS)
         guard let selection else { return }
         selection.selectionChanged()
         selection.prepare()
+        #endif
     }
 }
 
 /// Owns the audio session activation and one prepared player for the clip.
 /// Thread safety: all mutable state is touched only on `queue` (serial), which
 /// is why the class can be `@unchecked Sendable`.
-final class SpinAudio: @unchecked Sendable {
+public final class SpinAudio: @unchecked Sendable {
     private enum SessionState { case inactive, activating, active }
 
-    static let fadeDuration: TimeInterval = 0.15
-    static let volume: Float = 0.9
+    public static let fadeDuration: TimeInterval = 0.15
+    public static let volume: Float = 0.9
 
     private let queue = DispatchQueue(label: "com.movieroulettetuesday.spin-audio", qos: .userInteractive)
     private var player: AVAudioPlayer?
@@ -66,7 +77,7 @@ final class SpinAudio: @unchecked Sendable {
     private var generation = 0
     private var observers: [NSObjectProtocol] = []
 
-    init() {
+    public init() {
         let center = NotificationCenter.default
         observers.append(center.addObserver(
             forName: AVAudioSession.interruptionNotification, object: nil, queue: nil
@@ -98,7 +109,7 @@ final class SpinAudio: @unchecked Sendable {
     }
 
     /// Configure + activate the session once and prepare the player, all off main.
-    func prepare() {
+    public func prepare() {
         queue.async { [self] in
             activateSessionIfNeeded()
             loadPlayerIfNeeded()
@@ -106,7 +117,7 @@ final class SpinAudio: @unchecked Sendable {
     }
 
     /// Plays the whole clip once, from the position matching `startedAt`.
-    func play(startedAt: CFTimeInterval) {
+    public func play(startedAt: CFTimeInterval) {
         queue.async { [self] in
             // Never on the main thread (Debug builds trap if this regresses).
             dispatchPrecondition(condition: .onQueue(queue))
@@ -122,7 +133,7 @@ final class SpinAudio: @unchecked Sendable {
     }
 
     /// Fades the clip out (`fade`) or stops it at once.
-    func stop(fade: Bool, duration: TimeInterval = SpinAudio.fadeDuration) {
+    public func stop(fade: Bool, duration: TimeInterval = SpinAudio.fadeDuration) {
         queue.async { [self] in
             dispatchPrecondition(condition: .onQueue(queue))
             pendingStart = nil
@@ -172,6 +183,7 @@ final class SpinAudio: @unchecked Sendable {
             }
         }
         session = .activating
+        #if os(iOS)
         if #available(iOS 27.0, *) {
             audioSession.activate(options: []) { [self] activated, _ in
                 queue.async { self.sessionActivated(activated) }
@@ -180,6 +192,10 @@ final class SpinAudio: @unchecked Sendable {
             // iOS 17–26: synchronous API, but on this background queue.
             sessionActivated((try? audioSession.setActive(true)) != nil)
         }
+        #else
+        // tvOS: the synchronous API, on this background queue.
+        sessionActivated((try? audioSession.setActive(true)) != nil)
+        #endif
     }
 
     private func sessionActivated(_ activated: Bool) {
@@ -205,8 +221,8 @@ final class SpinAudio: @unchecked Sendable {
 
 #if DEBUG
 /// `MRT-AUDIO` lines for the audit (clip started, on which thread).
-enum DebugAudioLog {
-    static func clipStarted(offset: TimeInterval) {
+public enum DebugAudioLog {
+    public static func clipStarted(offset: TimeInterval) {
         let line = String(format: "MRT-AUDIO clip start offset=%.3f main=%@\n",
                           offset, Thread.isMainThread ? "YES" : "NO")
         FileHandle.standardError.write(Data(line.utf8))

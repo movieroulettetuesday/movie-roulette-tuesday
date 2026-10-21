@@ -6,9 +6,9 @@ import MRTCore
 /// notification taps). ContentView routes `pendingURL` exactly like `onOpenURL`.
 @MainActor
 @Observable
-final class AppRouter {
-    static let shared = AppRouter()
-    var pendingURL: URL?
+public final class AppRouter {
+    public static let shared = AppRouter()
+    public var pendingURL: URL?
     private init() {}
 
     func open(_ link: DeepLink) { pendingURL = link.url }

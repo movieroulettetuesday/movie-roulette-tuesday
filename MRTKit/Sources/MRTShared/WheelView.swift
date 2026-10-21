@@ -5,19 +5,26 @@ import MRTCore
 /// rim, its shadow and the film-badge hub are static layers, so a spin only
 /// re-composites one rotating layer. Slice angles come from `WheelGeometry`,
 /// the same value used to compute the winner.
-struct WheelView: View {
-    let categories: [RouletteCategory]
-    let geometry: WheelGeometry
+public struct WheelView: View {
+    public let categories: [RouletteCategory]
+    public let geometry: WheelGeometry
     /// Degrees; applied to the face only (render-only transform, no relayout).
-    var rotation: Double = 0
+    public var rotation: Double = 0
     /// Static extra rotation while a stopped spin decelerates (see SpinStopPlan).
-    var stopOffset: Double = 0
+    public var stopOffset: Double = 0
 
     @Environment(\.colorScheme) private var scheme
 
-    static func rimWidth(for diameter: CGFloat) -> CGFloat { max(6, diameter * 0.022) }
+    public init(categories: [RouletteCategory], geometry: WheelGeometry, rotation: Double = 0, stopOffset: Double = 0) {
+        self.categories = categories
+        self.geometry = geometry
+        self.rotation = rotation
+        self.stopOffset = stopOffset
+    }
 
-    var body: some View {
+    public static func rimWidth(for diameter: CGFloat) -> CGFloat { max(6, diameter * 0.022) }
+
+    public var body: some View {
         GeometryReader { proxy in
             let diameter = min(proxy.size.width, proxy.size.height)
             let rim = Self.rimWidth(for: diameter)
@@ -146,8 +153,10 @@ private struct WheelFace: View, Equatable {
 }
 
 /// Fixed arrow at 12 o'clock, pointing down into the wheel (rounded corners).
-struct WheelPointer: Shape {
-    func path(in rect: CGRect) -> Path {
+public struct WheelPointer: Shape {
+    public init() {}
+
+    public func path(in rect: CGRect) -> Path {
         var path = Path()
         path.move(to: CGPoint(x: rect.minX, y: rect.minY))
         path.addLine(to: CGPoint(x: rect.maxX, y: rect.minY))

@@ -1,5 +1,6 @@
 import SwiftUI
 import MRTCore
+import MRTShared
 
 struct RouletteView: View {
     @Bindable var model: RouletteViewModel
