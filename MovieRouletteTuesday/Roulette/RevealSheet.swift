@@ -139,12 +139,6 @@ struct RevealSheet: View {
                 .font(.headline)
                 .foregroundStyle(.secondary)
 
-            if movie.isInfamous {
-                Label("Infamous", systemImage: "flame.fill")
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.orange)
-            }
-
             Label(episodeText, systemImage: "mic.fill")
                 .font(.subheadline)
                 .multilineTextAlignment(.center)
@@ -206,7 +200,7 @@ struct RevealSheet: View {
                 reveal: .init(
                     id: UUID(),
                     movie: Movie(id: "the-room-2003", title: "The Room", year: 2003, genre: "Drama",
-                                 categories: ["cat-cult-classics"], episodeIds: ["sample-ep-6"], isInfamous: true),
+                                 categories: ["cat-cult-classics"], episodeIds: ["sample-ep-6"]),
                     category: RouletteCategory(id: "cat-cult", name: "Cult", colorHex: "#7B2CBF"),
                     spinCount: 1
                 ),

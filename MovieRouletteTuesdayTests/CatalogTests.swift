@@ -33,7 +33,6 @@ final class CatalogTests: XCTestCase {
         XCTAssertEqual(movie.categories, [])
         XCTAssertEqual(movie.episodeIds, [])
         XCTAssertNil(movie.episodeTitle)
-        XCTAssertFalse(movie.isInfamous)
     }
 
     func testRoundTripsThroughJSON() throws {
@@ -44,7 +43,7 @@ final class CatalogTests: XCTestCase {
             movies: [Movie(id: "m", title: "M", year: 1999, genre: "Drama", categories: ["c"],
                            episodeIds: ["Buzzsprout-1"], episodeTitle: "M",
                            posterURL: URL(string: "https://example.com/p.jpg"),
-                           isInfamous: true, hostRating: 4.5)]
+                           hostRating: 4.5)]
         )
         XCTAssertEqual(try MovieCatalog.decode(from: JSONEncoder().encode(catalog)), catalog)
         XCTAssertEqual(catalog.validationIssues(), [])

@@ -50,14 +50,14 @@ final class RareOutcomeTests: XCTestCase {
         let landed = RouletteCategory(id: "c1", name: "C1", colorHex: "#000000", movieIds: ["a"])
         let other = RouletteCategory(id: "c2", name: "C2", colorHex: "#FFFFFF", movieIds: ["bad"])
         let a = Movie(id: "a", title: "A", year: 2000, genre: "G", categories: ["c1"])
-        let bad = Movie(id: "bad", title: "Bad", year: 2003, genre: "G", categories: ["c2"], isInfamous: true)
+        let bad = Movie(id: "bad", title: "Bad", year: 2003, genre: "G", categories: ["c2"])
         var rng = SeededRandomNumberGenerator(seed: 1)
         // A movie outside the landed category is shown under its own category.
         let onlyBad = MovieCatalog(categories: [landed, other], movies: [bad])
         let pick = RareOutcomeRoller.jackpotPick(in: onlyBad, landed: landed, using: &rng)
         XCTAssertEqual(pick?.movie.id, "bad")
         XCTAssertEqual(pick?.category.id, "c2")
-        // 1.0.1: unflagged movies are jackpot candidates too.
+        // 1.0.1: every movie is a jackpot candidate.
         let onlyA = MovieCatalog(categories: [landed, other], movies: [a])
         let pickA = RareOutcomeRoller.jackpotPick(in: onlyA, landed: landed, using: &rng)
         XCTAssertEqual(pickA?.movie.id, "a")
@@ -66,12 +66,11 @@ final class RareOutcomeTests: XCTestCase {
         XCTAssertNil(RareOutcomeRoller.jackpotPick(in: empty, landed: landed, using: &rng))
     }
 
-    func testJackpotAvailableWithoutFlaggedMovies() {
+    func testJackpotAvailableForAnyCatalogMovie() {
         let landed = RouletteCategory(id: "c1", name: "C1", colorHex: "#000000", movieIds: ["a"])
         let catalog = MovieCatalog(categories: [landed], movies: [
             Movie(id: "a", title: "A", year: 2000, genre: "G", categories: ["c1"]),
         ])
-        XCTAssertTrue(RareOutcomeRoller.infamousMovies(in: catalog).isEmpty)
         XCTAssertFalse(RareOutcomeRoller.jackpotCandidates(in: catalog).isEmpty)
         let alwaysJackpot = RareOutcomePolicy(isEnabled: true, forcedRespinChance: 0, infamousJackpotChance: 1)
         var rng = SeededRandomNumberGenerator(seed: 3)
@@ -100,8 +99,8 @@ final class RareOutcomeTests: XCTestCase {
 }
 
 final class InfamousSelectionTests: XCTestCase {
-    private func movies(_ count: Int, flagged: Set<Int> = []) -> [Movie] {
-        (0..<count).map { Movie(id: "m\($0)", title: "M\($0)", year: 2000, genre: "G", isInfamous: flagged.contains($0)) }
+    private func movies(_ count: Int) -> [Movie] {
+        (0..<count).map { Movie(id: "m\($0)", title: "M\($0)", year: 2000, genre: "G") }
     }
 
     func testWeightingOrder() {
@@ -133,20 +132,33 @@ final class InfamousSelectionTests: XCTestCase {
         }
     }
 
-    func testFlaggedMovieGetsTopWeightAndIsIncluded() {
-        let m = movies(3, flagged: [2])
+    func testWeightIsPurelyListenerRating() {
+        let m = movies(3)
         let w = InfamousSelection.weights(for: m, averages: ["m0": 0.5, "m1": 3, "m2": 5])
-        XCTAssertEqual(w, [5, 2.5, 5])
-        XCTAssertEqual(InfamousSelection.flaggedWeight, w.max())
+        XCTAssertEqual(w, [5, 2.5, 0.5])
+        XCTAssertEqual(InfamousSelection.maxWeight, 5)
         let landed = RouletteCategory(id: "c", name: "C", colorHex: "#000000")
         let catalog = MovieCatalog(categories: [landed], movies: m)
-        XCTAssertTrue(RareOutcomeRoller.jackpotCandidates(in: catalog).contains(m[2]))
+        XCTAssertEqual(RareOutcomeRoller.jackpotCandidates(in: catalog), m)
+    }
+
+    /// 1.0.1: a legacy `"isInfamous": true` in the catalog JSON is ignored, so
+    /// a 5-star flagged movie weighs 0.5 (not 5.0) and an unrated one 2.5.
+    func testLegacyInfamousFlagInCatalogIsIgnored() async throws {
+        let json = """
+        {"categories":[{"id":"c","name":"C","colorHex":"#123456","movieIds":["a","b"]}],
+         "movies":[{"id":"a","title":"A","year":1999,"genre":"Drama","isInfamous":true},
+                   {"id":"b","title":"B","year":2000,"genre":"Drama","isInfamous":true}]}
+        """
+        let catalog = try await DataCatalogSource(data: Data(json.utf8)).loadCatalog()
+        XCTAssertEqual(InfamousSelection.weights(for: catalog.movies, averages: ["a": 5]), [0.5, 2.5])
+        XCTAssertEqual(InfamousSelection.probabilities(for: catalog.movies, averages: ["a": 5]), [0.5 / 3, 2.5 / 3])
     }
 
     /// Test vectors (also in infamous-selection.md for the Android port).
     func testProbabilityVectors() {
-        func p(_ avgs: [Double?], flagged: Set<Int> = []) -> [Double] {
-            let m = movies(avgs.count, flagged: flagged)
+        func p(_ avgs: [Double?]) -> [Double] {
+            let m = movies(avgs.count)
             var a: [String: Double] = [:]
             for (i, v) in avgs.enumerated() { if let v { a["m\(i)"] = v } }
             return InfamousSelection.probabilities(for: m, averages: a)
@@ -159,7 +171,7 @@ final class InfamousSelectionTests: XCTestCase {
         eq(p([1, 3, 5, nil]), [0.45, 0.25, 0.05, 0.25])
         eq(p([nil, nil, nil, nil]), [0.25, 0.25, 0.25, 0.25])
         eq(p([0.5, 2.5, 4.5]), [5 / 9.0, 3 / 9.0, 1 / 9.0])
-        eq(p([5, 2, nil], flagged: [0]), [5 / 11.0, 3.5 / 11.0, 2.5 / 11.0])
+        eq(p([5, 2, nil]), [0.5 / 6.5, 3.5 / 6.5, 2.5 / 6.5])
     }
 
     func testSeededDistributionMatchesWeights() {
@@ -210,7 +222,7 @@ final class InfamousSelectionTests: XCTestCase {
         let odd: [Double] = [.nan, .infinity, -.infinity, -1, 0, 0.5, 3, 5, 9]
         for _ in 0..<500 {
             let count = Int.random(in: 1...20, using: &gen)
-            let m = movies(count, flagged: Bool.random(using: &gen) ? [0] : [])
+            let m = movies(count)
             var averages: [String: Double] = [:]
             for movie in m where Bool.random(using: &gen) { averages[movie.id] = odd.randomElement(using: &gen)! }
             let pick = InfamousSelection.pick(from: m, averages: averages, using: &gen)

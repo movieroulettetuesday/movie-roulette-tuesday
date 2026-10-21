@@ -70,14 +70,8 @@ public enum RareOutcomeRoller {
         return outcome(unitValue: unit, policy: policy, infamousAvailable: infamousAvailable, allowRespin: allowRespin)
     }
 
-    /// Movies flagged `isInfamous` in the catalog (legacy flag; still decoded and
-    /// honoured as top weight by `InfamousSelection`).
-    public static func infamousMovies(in catalog: MovieCatalog) -> [Movie] {
-        catalog.movies.filter(\.isInfamous)
-    }
-
     /// Everything a jackpot can land on: every catalog movie (the jackpot has
-    /// never been limited by category). Flagged movies are always included.
+    /// never been limited by category).
     public static func jackpotCandidates(in catalog: MovieCatalog) -> [Movie] {
         catalog.movies
     }
@@ -109,7 +103,8 @@ public enum RareOutcomeRoller {
 ///
 ///     rated (avg clamped to 0.5...5):  weight = 5.5 - avg   (0.5 ... 5.0)
 ///     unrated (no / invalid average):  weight = 5.5 - 3.0 = 2.5
-///     isInfamous == true:              weight = 5.0 (top weight, ignores rating)
+///
+/// There are no per-movie flags: a legacy `isInfamous` catalog key is ignored.
 ///
 ///     P(movie) = weight / sum(weights)
 ///
@@ -131,18 +126,17 @@ public enum InfamousSelection {
 
     /// 2.5: the weight of a 3-star average.
     public static var unratedWeight: Double { weight(forAverageStars: unratedStars) }
-    /// 5.0: the weight of the lowest possible (half-star) average.
-    public static var flaggedWeight: Double { weight(forAverageStars: minStars) }
+    /// 5.0: the weight of the lowest possible (half-star) average (the maximum weight).
+    public static var maxWeight: Double { weight(forAverageStars: minStars) }
 
     /// Always > 0 and finite.
-    public static func weight(averageStars: Double?, isInfamous: Bool = false) -> Double {
-        if isInfamous { return flaggedWeight }
+    public static func weight(averageStars: Double?) -> Double {
         guard let averageStars, averageStars.isFinite else { return unratedWeight }
         return weight(forAverageStars: averageStars)
     }
 
     public static func weight(for movie: Movie, averages: [String: Double]) -> Double {
-        weight(averageStars: averages[movie.id], isInfamous: movie.isInfamous)
+        weight(averageStars: averages[movie.id])
     }
 
     public static func weights(for movies: [Movie], averages: [String: Double]) -> [Double] {

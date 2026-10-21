@@ -74,7 +74,7 @@ Current categories:
 | `episodeIds` | [string] | Buzzsprout RSS `<guid>`s of the episodes that discussed it, e.g. `Buzzsprout-19913482`. This links the episode page to the movie. |
 | `episodeTitle` | string? | RSS episode title, shown when offline. |
 | `posterURL` | string? | Usually `null`; the app looks artwork up itself. |
-| `isInfamous` | bool | Optional. Since 1.0.1 every movie can come up in the rare "Infamous jackpot" (weighted toward low listener ratings); `true` gives the movie the top jackpot weight. |
+| `isInfamous` | bool | Legacy, ignored since 1.0.1 (safe to leave in). The rare "Infamous jackpot" picks any catalog movie, weighted only by listener rating (unrated 2.5, rated 5.5 − average). |
 | `hostRating` | number? | Usually `null`. |
 
 ## Adding a new episode's movie
