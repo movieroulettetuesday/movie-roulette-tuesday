@@ -1,5 +1,6 @@
 import XCTest
 @testable import MovieRouletteTuesday
+import MRTCore
 
 final class AppearancePreferenceTests: XCTestCase {
     func testDefaultAndStoredValueMapping() {

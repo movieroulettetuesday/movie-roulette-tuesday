@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import MRTCore
 
 /// Observable wrapper around the local personal-ratings JSON (Application
 /// Support). Never leaves the device.

@@ -2,6 +2,7 @@ import BackgroundTasks
 import Foundation
 import UIKit
 import UserNotifications
+import MRTCore
 
 /// Optional "New-episode alert" (Settings > New Episodes, off by default).
 ///

@@ -1,4 +1,5 @@
 import SwiftUI
+import MRTCore
 
 struct ContentView: View {
     let roulette: RouletteViewModel

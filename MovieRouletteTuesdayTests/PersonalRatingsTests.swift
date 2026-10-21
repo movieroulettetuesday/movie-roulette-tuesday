@@ -1,5 +1,6 @@
 import XCTest
 @testable import MovieRouletteTuesday
+import MRTCore
 
 final class PersonalRatingsTests: XCTestCase {
     private let catalog = MovieCatalog(categories: [], movies: [

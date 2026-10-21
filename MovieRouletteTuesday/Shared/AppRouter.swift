@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import MRTCore
 
 /// Hand-off for navigation requested from outside a view (App Intents,
 /// notification taps). ContentView routes `pendingURL` exactly like `onOpenURL`.

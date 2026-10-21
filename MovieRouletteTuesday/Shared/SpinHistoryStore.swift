@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import MRTCore
 
 /// Observable, app-side wrapper around the JSON spin log. Spin counts and
 /// "has been spun" are derived from the log via `stats`, never stored on Movie.

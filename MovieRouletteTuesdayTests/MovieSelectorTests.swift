@@ -1,5 +1,6 @@
 import XCTest
 @testable import MovieRouletteTuesday
+import MRTCore
 
 final class MovieSelectorTests: XCTestCase {
     private let category = RouletteCategory(id: "cat", name: "Cat", colorHex: "#FF0000", movieIds: ["a", "b", "ghost"])

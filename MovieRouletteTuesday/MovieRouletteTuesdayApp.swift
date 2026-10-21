@@ -1,6 +1,7 @@
 import SwiftUI
 import UIKit
 import UserNotifications
+import MRTCore
 
 @main
 struct MovieRouletteTuesdayApp: App {

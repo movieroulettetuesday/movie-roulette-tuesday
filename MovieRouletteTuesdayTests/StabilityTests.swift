@@ -1,5 +1,6 @@
 import XCTest
 @testable import MovieRouletteTuesday
+import MRTCore
 
 /// Edge cases found in the stability audit: empty inputs, zero votes,
 /// corrupted files, duplicate ids, and the spin-history cap.

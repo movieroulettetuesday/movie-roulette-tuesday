@@ -1,4 +1,5 @@
 import SwiftUI
+import MRTCore
 
 /// Lightweight one-shot confetti: ~60 rectangles drawn in a Canvas with
 /// positions computed analytically from elapsed time (no per-particle state

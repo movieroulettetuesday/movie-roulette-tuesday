@@ -56,7 +56,7 @@ public enum CategoryPalette {
     }
 
     /// FNV-1a: stable across launches and devices (unlike `hashValue`).
-    static func stableIndex(_ id: String, count: Int) -> Int {
+    public static func stableIndex(_ id: String, count: Int) -> Int {
         guard count > 0 else { return 0 }
         var hash: UInt64 = 0xcbf2_9ce4_8422_2325
         for byte in id.utf8 {

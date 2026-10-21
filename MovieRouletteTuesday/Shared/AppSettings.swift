@@ -1,4 +1,5 @@
 import Foundation
+import MRTCore
 
 /// `@AppStorage` keys (Settings sheet) plus defaults for non-view code.
 enum AppSettings {

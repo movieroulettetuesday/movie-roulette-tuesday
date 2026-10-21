@@ -1,5 +1,6 @@
 import XCTest
 @testable import MovieRouletteTuesday
+import MRTCore
 
 final class CommunityTests: XCTestCase {
     func testSHA256KnownVectors() {

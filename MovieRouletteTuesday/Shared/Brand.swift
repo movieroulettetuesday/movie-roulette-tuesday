@@ -1,4 +1,5 @@
 import SwiftUI
+import MRTCore
 
 enum Brand {
     // Fixed brand values sampled from the show logo. Identical in light and

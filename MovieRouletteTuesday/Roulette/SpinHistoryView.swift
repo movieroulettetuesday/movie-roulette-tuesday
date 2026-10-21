@@ -1,4 +1,5 @@
 import SwiftUI
+import MRTCore
 
 /// Local spin log, newest first.
 struct SpinHistoryView: View {

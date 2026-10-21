@@ -1,4 +1,5 @@
 import SwiftUI
+import MRTCore
 
 /// Gear in the Roulette toolbar.
 struct SettingsSheet: View {

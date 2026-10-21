@@ -1,5 +1,6 @@
 import XCTest
 @testable import MovieRouletteTuesday
+import MRTCore
 
 final class ArtworkTests: XCTestCase {
     private let showArt = URL(string: "https://storage.buzzsprout.com/0ivqancdb8l9ww2mlieeag1x8bdr?.jpg")!

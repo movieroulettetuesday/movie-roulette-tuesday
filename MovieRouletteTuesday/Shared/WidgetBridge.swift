@@ -1,5 +1,6 @@
 import Foundation
 import WidgetKit
+import MRTCore
 
 /// Pushes the latest episode and last spin to the App Group so the home-screen
 /// widget can show them. If the App Group isn't available (for example, no

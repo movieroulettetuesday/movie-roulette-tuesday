@@ -1,5 +1,6 @@
 import AppIntents
 import SwiftUI
+import MRTCore
 
 /// "Hey Siri, spin Movie Roulette": a real spin (same geometry, rare outcomes
 /// and movie selector as the wheel, via `QuickSpin`), recorded to the same

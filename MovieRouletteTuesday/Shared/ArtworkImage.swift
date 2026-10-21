@@ -1,4 +1,5 @@
 import SwiftUI
+import MRTCore
 
 /// Square podcast artwork that tries `urls` in order (episode art, then show
 /// art) and shows a placeholder until one loads or when none does. Decodes

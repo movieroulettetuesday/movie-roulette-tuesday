@@ -1,4 +1,5 @@
 import Foundation
+import MRTCore
 
 /// Rotating subtitle / theme flavor for the Roulette header.
 enum RouletteTaglines {

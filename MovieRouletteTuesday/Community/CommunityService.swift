@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import MRTCore
 
 /// App-side state for anonymous polls + listener ratings. Talks to any
 /// `CommunityStore` (CloudKit in the app, in-memory in previews), keeps a

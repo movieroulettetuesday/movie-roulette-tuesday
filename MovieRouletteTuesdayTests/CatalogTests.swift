@@ -1,5 +1,6 @@
 import XCTest
 @testable import MovieRouletteTuesday
+import MRTCore
 
 final class CatalogTests: XCTestCase {
     /// Bundled catalog (`movies.json` in the app target).

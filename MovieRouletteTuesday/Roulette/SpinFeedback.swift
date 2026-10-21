@@ -1,6 +1,7 @@
 import AVFoundation
 import QuartzCore
 import UIKit
+import MRTCore
 
 /// Spin sound + crossing haptics.
 ///

@@ -1,4 +1,5 @@
 import SwiftUI
+import MRTCore
 
 extension View {
     /// iPad: present sheets as form sheets (iPadOS 18+ `presentationSizing`).

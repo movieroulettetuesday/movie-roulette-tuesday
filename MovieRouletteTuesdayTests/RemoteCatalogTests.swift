@@ -1,5 +1,6 @@
 import XCTest
 @testable import MovieRouletteTuesday
+import MRTCore
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif

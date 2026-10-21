@@ -1,5 +1,6 @@
 import ImageIO
 import UIKit
+import MRTCore
 
 /// Loads podcast artwork (app only; the widget never loads images).
 ///

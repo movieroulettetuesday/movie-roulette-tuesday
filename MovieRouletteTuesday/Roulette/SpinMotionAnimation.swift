@@ -1,4 +1,5 @@
 import SwiftUI
+import MRTCore
 
 /// Drives the wheel along a `SpinMotion` (the timeline of the recorded spin
 /// sound): progress at each frame comes from the plan, so slice boundaries

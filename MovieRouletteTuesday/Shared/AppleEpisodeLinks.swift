@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import MRTCore
 
 /// Cached GUID -> Apple Podcasts episode map from the public iTunes Lookup API
 /// (`AppleEpisodeLookup`). Only the show's public Apple ID is sent. Episode

@@ -1,5 +1,6 @@
 import XCTest
 @testable import MovieRouletteTuesday
+import MRTCore
 
 final class AdaptiveLayoutTests: XCTestCase {
     private func fits(_ d: Double, slotHeight h: Double, hintHeight: Double = 0,

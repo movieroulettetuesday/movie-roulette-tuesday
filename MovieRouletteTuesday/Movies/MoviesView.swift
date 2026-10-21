@@ -1,4 +1,5 @@
 import SwiftUI
+import MRTCore
 
 struct MoviesView: View {
     let catalog: MovieCatalog?

@@ -1,5 +1,6 @@
 import XCTest
 @testable import MovieRouletteTuesday
+import MRTCore
 
 /// The storyboard badge and the SwiftUI cover's first frame must agree exactly,
 /// and the curves must start at the launch frame and end at the real screen.

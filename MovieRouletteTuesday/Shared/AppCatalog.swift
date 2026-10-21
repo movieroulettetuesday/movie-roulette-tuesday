@@ -1,4 +1,5 @@
 import Foundation
+import MRTCore
 
 /// App wiring for the movie list: show the cached remote copy (or the bundled
 /// `movies.json`) at once, then refresh from GitHub in the background.

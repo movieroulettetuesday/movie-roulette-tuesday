@@ -1,5 +1,6 @@
 import XCTest
 @testable import MovieRouletteTuesday
+import MRTCore
 
 final class ShowLinksTests: XCTestCase {
     private let lookupJSON = """

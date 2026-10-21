@@ -1,4 +1,5 @@
 import SwiftUI
+import MRTCore
 
 /// Bottom sheet shown after the wheel stops.
 struct RevealSheet: View {

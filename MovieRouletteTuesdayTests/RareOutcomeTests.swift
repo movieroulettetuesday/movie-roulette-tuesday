@@ -1,5 +1,6 @@
 import XCTest
 @testable import MovieRouletteTuesday
+import MRTCore
 
 final class RareOutcomeTests: XCTestCase {
     private let policy = RareOutcomePolicy.default

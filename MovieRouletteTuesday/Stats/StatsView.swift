@@ -1,4 +1,5 @@
 import SwiftUI
+import MRTCore
 
 struct StatsView: View {
     let history: SpinHistoryStore

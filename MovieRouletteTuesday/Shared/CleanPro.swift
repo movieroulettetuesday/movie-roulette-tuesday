@@ -1,9 +1,10 @@
 import SwiftUI
+import MRTCore
 
 /// "Clean Pro" design language: barely tinted gradient backgrounds, cards
 /// with one layered soft shadow per container, large titles, and the wheel
 /// hub as the spin button (teal->peach glow ring). Colors come from `CleanProColors` / `CategoryPalette`
-/// (RouletteCore) so the share card and widget match.
+/// (MRTCore) so the share card and widget match.
 enum CleanPro {
     static let cardRadius: CGFloat = 18
     static let spacing: CGFloat = 20
