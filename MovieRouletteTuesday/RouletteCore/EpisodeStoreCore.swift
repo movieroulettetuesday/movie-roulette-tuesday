@@ -153,15 +153,26 @@ public enum StatsCalculator {
                 genreHits[genre, default: 0] += 1
             }
         }
+        let movies = ranked(movieHits), categories = ranked(categoryHits)
         return Snapshot(
             totalSpins: stats.totalSpins,
             distinctMovies: stats.distinctMoviesSpun,
-            mostSpunMovie: movieHits.max(by: { $0.value < $1.value }).map { CountedID(id: $0.key, count: $0.value) },
-            mostSpunCategory: categoryHits.max(by: { $0.value < $1.value }).map { CountedID(id: $0.key, count: $0.value) },
-            categoryBreakdown: categoryHits.sorted { $0.value > $1.value }.map { CountedID(id: $0.key, count: $0.value) },
-            genreBreakdown: genreHits.sorted { $0.value > $1.value }.map { CountedGenre(genre: $0.key, count: $0.value) },
+            mostSpunMovie: movies.first.map { CountedID(id: $0.key, count: $0.count) },
+            mostSpunCategory: categories.first.map { CountedID(id: $0.key, count: $0.count) },
+            categoryBreakdown: categories.map { CountedID(id: $0.key, count: $0.count) },
+            genreBreakdown: ranked(genreHits).map { CountedGenre(genre: $0.key, count: $0.count) },
             recent: Array(history.suffix(max(0, recentLimit)).reversed())
         )
+    }
+
+    /// Deterministic order for counts (Dictionary order changes every launch):
+    /// count descending, then key (id or genre) ascending by plain Unicode code points.
+    /// `mostSpun*` is the first element of this order.
+    public static func ranked(_ counts: [String: Int]) -> [(key: String, count: Int)] {
+        counts.map { (key: $0.key, count: $0.value) }.sorted { a, b in
+            if a.count != b.count { return a.count > b.count }
+            return a.key.unicodeScalars.lexicographicallyPrecedes(b.key.unicodeScalars)
+        }
     }
 }
 
