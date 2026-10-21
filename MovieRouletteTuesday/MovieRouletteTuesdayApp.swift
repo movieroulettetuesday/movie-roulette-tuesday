@@ -7,7 +7,7 @@ struct MovieRouletteTuesdayApp: App {
     @State private var episodes = EpisodeStore()
     @State private var roulette: RouletteViewModel
     @State private var personal = PersonalRatingsStore()
-    @State private var community = CommunityService.makeDefault()
+    @State private var community: CommunityService
     /// Cold-launch opening: created once per process, so it never replays when
     /// the app returns from the background.
     @State private var splash: SplashState
@@ -16,10 +16,13 @@ struct MovieRouletteTuesdayApp: App {
         let history = SpinHistoryStore.shared
         UNUserNotificationCenter.current().delegate = NotificationRouter.shared
         _episodes = State(initialValue: EpisodeStore())
+        let community = CommunityService.makeDefault()
+        _community = State(initialValue: community)
         _roulette = State(initialValue: RouletteViewModel(
             catalogSource: AppCatalog.localSource(),
             catalogRefresher: AppCatalog.refresher(),
-            history: history
+            history: history,
+            listenerAverages: { [weak community] in community?.listenerAverages ?? [:] }
         ))
         #if DEBUG
         _splash = State(initialValue: SplashState(

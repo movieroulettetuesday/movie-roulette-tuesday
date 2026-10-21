@@ -162,6 +162,10 @@ final class CommunityService {
 
     // MARK: Listener ratings
 
+    /// Cached listener averages in stars (movie id -> average), for the
+    /// infamous jackpot weighting. Only movies loaded this session; no fetch.
+    var listenerAverages: [String: Double] { ratingAggregates.compactMapValues(\.average) }
+
     /// Half-stars this device shared for the movie.
     func myListenerRating(movieId: String) -> Int? { listenerRatings[movieId]?.value }
 
