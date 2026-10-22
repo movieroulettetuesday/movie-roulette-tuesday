@@ -1,7 +1,8 @@
 import XCTest
 
 /// Apple TV Roulette, driven with the Siri Remote: default focus, Select and
-/// Play/Pause spins, the in-tab result, Menu back to the wheel.
+/// Play/Pause spins, the in-tab result, Menu back to the wheel, and the remote
+/// during a spin (Play/Pause stops, swipes do nothing, Menu cancels).
 /// Any "-MRT…" launch argument keeps the app on the bundled movie list (offline, deterministic).
 final class TVRouletteUITests: XCTestCase {
     /// A spin lasts ~7 s (the recorded clip); a rare forced re-spin adds one more.
@@ -22,6 +23,11 @@ final class TVRouletteUITests: XCTestCase {
     private func waitForFocus(_ element: XCUIElement, timeout: TimeInterval = 10) -> Bool {
         let focused = NSPredicate(format: "exists == true AND hasFocus == true")
         return XCTWaiter().wait(for: [expectation(for: focused, evaluatedWith: element)], timeout: timeout) == .completed
+    }
+
+    private func waitForSpinning(timeout: TimeInterval = 5) -> Bool {
+        let spinning = NSPredicate(format: "label == %@", "Spinning…")
+        return XCTWaiter().wait(for: [expectation(for: spinning, evaluatedWith: spin)], timeout: timeout) == .completed
     }
 
     private func attachScreenshot(_ name: String) {
@@ -66,5 +72,38 @@ final class TVRouletteUITests: XCTestCase {
         XCTAssertTrue(spinAgain.waitForExistence(timeout: spinTimeout), "second result")
         XCTAssertTrue(waitForFocus(spinAgain))
         _ = first  // titles may repeat (random); the reappearing result is the check
+    }
+
+    func test4PlayPauseStopsSpinEarly() {
+        XCTAssertTrue(waitForFocus(spin, timeout: 20))
+        remote.press(.select)
+        XCTAssertTrue(waitForSpinning(), "Select starts a spin")
+        let pressed = Date()
+        remote.press(.playPause)  // = Stop while spinning
+        XCTAssertTrue(spinAgain.waitForExistence(timeout: spinTimeout), "a stopped spin still shows its result")
+        // A full spin is ~7 s; a stopped one settles in ~1 s. (A rare forced
+        // re-spin after the stop adds ~9 s: rerun once if this trips.)
+        XCTAssertLessThan(Date().timeIntervalSince(pressed), 5, "Play/Pause stopped the spin early")
+        XCTAssertTrue(waitForFocus(spinAgain))
+    }
+
+    func test5SwipesDoNothingAndMenuCancelsSpin() {
+        XCTAssertTrue(waitForFocus(spin, timeout: 20))
+        remote.press(.select)
+        XCTAssertTrue(waitForSpinning(), "Select starts a spin")
+        remote.press(.up)
+        remote.press(.right)
+        remote.press(.left)
+        XCTAssertTrue(waitForFocus(spin, timeout: 2), "swipes during a spin leave focus on Spin")
+        XCTAssertEqual(spin.label, "Spinning…", "still spinning on the Roulette tab")
+
+        remote.press(.menu)  // = cancel the spin
+        let idle = NSPredicate(format: "label == %@", "Spin")
+        XCTAssertEqual(XCTWaiter().wait(for: [expectation(for: idle, evaluatedWith: spin)], timeout: 5), .completed,
+                       "Menu cancels the spin")
+        XCTAssertTrue(waitForFocus(spin), "back on the wheel home with Spin focused")
+        XCTAssertFalse(spinAgain.waitForExistence(timeout: 10), "a cancelled spin shows no result")
+        XCTAssertFalse(app.descendants(matching: .any)["tv.lastLanded"].exists, "a cancelled spin is not recorded")
+        XCTAssertEqual(app.state, .runningForeground, "Menu during a spin does not leave the app")
     }
 }
