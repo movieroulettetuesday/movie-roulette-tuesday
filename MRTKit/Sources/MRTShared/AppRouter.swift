@@ -11,5 +11,5 @@ public final class AppRouter {
     public var pendingURL: URL?
     private init() {}
 
-    func open(_ link: DeepLink) { pendingURL = link.url }
+    public func open(_ link: DeepLink) { pendingURL = link.url }
 }
