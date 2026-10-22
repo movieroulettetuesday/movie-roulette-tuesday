@@ -7,6 +7,12 @@ public enum SpinOfTheDay {
         public let movie: Movie
         public let category: RouletteCategory?
         public let dayKey: String
+
+        public init(movie: Movie, category: RouletteCategory?, dayKey: String) {
+            self.movie = movie
+            self.category = category
+            self.dayKey = dayKey
+        }
     }
 
     /// "2026-10-08" in the given calendar's time zone.
