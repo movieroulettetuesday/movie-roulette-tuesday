@@ -106,6 +106,8 @@ public final class RouletteViewModel {
     /// Finishes the spin if SwiftUI never delivers the animation completion
     /// (e.g. the wheel was off-screen), so the wheel can't get stuck "spinning".
     @ObservationIgnored private var watchdogTask: Task<Void, Never>?
+    /// Set by `cancelSpin()`: the spin in flight ends with no result.
+    @ObservationIgnored private var cancelRequested = false
     /// The single pending automatic re-spin (never more than one).
     @ObservationIgnored private var forcedRespinTask: Task<Void, Never>?
     /// DEBUG stress runs: very short spins (unless `stressRealTiming`), no forced-respin pause.
@@ -136,6 +138,9 @@ public final class RouletteViewModel {
 
     /// Tap-to-stop is available: spinning, not already stopping, not a stress run.
     public var canStop: Bool { isSpinning && spinIsStoppable && !isStopping }
+
+    /// A spin (or a pending forced re-spin) can be called off: tvOS Menu.
+    public var canCancel: Bool { isSpinning || isAwaitingForcedRespin }
 
     public var canSpin: Bool {
         catalog != nil && !isSpinning && reveal == nil && !isAwaitingForcedRespin
@@ -233,6 +238,7 @@ public final class RouletteViewModel {
         }
         applyPendingCatalogIfIdle()
         guard canSpin else { return }
+        cancelRequested = false
         spinToken &+= 1
         let token = spinToken
         let start = rotation
@@ -332,6 +338,26 @@ public final class RouletteViewModel {
         }
     }
 
+    /// tvOS Menu during a spin: the spin is called off. The wheel slows to a
+    /// stop as for `stopEarly()` (or, if it can't be stopped any more, runs
+    /// out), then nothing is revealed or recorded and the last result stays.
+    /// A pending forced re-spin is cancelled. iOS never calls this.
+    public func cancelSpin() {
+        if isAwaitingForcedRespin {
+            forcedRespinTask?.cancel()
+            forcedRespinTask = nil
+            isAwaitingForcedRespin = false
+            rareBanner = nil
+            notice = nil
+            applyPendingCatalogIfIdle()
+            return
+        }
+        guard isSpinning else { return }
+        cancelRequested = true
+        notice = nil
+        if canStop { stopEarly() } else { stopFeedback() }
+    }
+
     public static let stopLead = 0.03
     public static let stressSpinDuration = 0.25
     public static let watchdogGrace = 1.5
@@ -423,6 +449,10 @@ public final class RouletteViewModel {
         // short stress spins end early, so fade the clip.
         if stressMode && !stressRealTiming { feedback.stopClip(fade: true) }
         rareBanner = nil
+        if cancelRequested {
+            cancelRequested = false
+            return
+        }
         guard let catalog else { return }
 
         // The winner comes purely from the final angle, using the same geometry the wheel is drawn with.
