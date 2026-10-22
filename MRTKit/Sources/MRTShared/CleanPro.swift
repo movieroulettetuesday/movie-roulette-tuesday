@@ -106,8 +106,13 @@ extension View {
     /// Lists and Forms: hide the default grouped background and show the
     /// Clean Pro gradient (rows keep the matching card fill).
     public func cleanProListScreen() -> some View {
+        #if os(iOS)
         self.scrollContentBackground(.hidden)
             .background { CleanProBackground() }
+        #else
+        // tvOS has no scrollContentBackground; lists there draw no grouped background.
+        self.background { CleanProBackground() }
+        #endif
     }
 }
 
