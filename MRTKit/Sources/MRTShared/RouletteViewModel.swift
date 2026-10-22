@@ -41,6 +41,14 @@ public final class RouletteViewModel {
         public let spinCount: Int
         /// Rare "Infamous jackpot" outcome: special reveal styling.
         public var isJackpot = false
+
+        public init(id: UUID, movie: Movie, category: RouletteCategory, spinCount: Int, isJackpot: Bool = false) {
+            self.id = id
+            self.movie = movie
+            self.category = category
+            self.spinCount = spinCount
+            self.isJackpot = isJackpot
+        }
     }
 
     /// The spin follows the recorded spin sound (`SpinMotion`): the wheel
