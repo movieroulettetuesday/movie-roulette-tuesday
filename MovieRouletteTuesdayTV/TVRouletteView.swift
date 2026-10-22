@@ -14,7 +14,9 @@ struct TVRouletteView: View {
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.scenePhase) private var scenePhase
-    @State private var tagline = RouletteTaglines.lines[7]  // "No take-backsies" (mockup 01)
+    /// Rotates through all nine taglines, as on iOS: a random one at launch,
+    /// a new one on every spin and after every result.
+    @State private var tagline = RouletteTaglines.random()
     @FocusState private var focus: Control?
 
     enum Control: Hashable { case spin, spinAgain, moviePage }
@@ -41,6 +43,9 @@ struct TVRouletteView: View {
         .onExitCommand(perform: exitAction)
         .onChange(of: model.reveal) { _, reveal in
             focus = reveal == nil ? Control.spin : Control.spinAgain
+        }
+        .onChange(of: model.revealCount) { _, _ in
+            tagline = RouletteTaglines.random(excluding: tagline)
         }
         .task(id: reduceMotion) { model.reduceMotion = reduceMotion }
         .onDisappear { model.stopFeedback() }
