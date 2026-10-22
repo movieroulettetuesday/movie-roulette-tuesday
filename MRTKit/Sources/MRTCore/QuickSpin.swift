@@ -21,6 +21,7 @@ public enum QuickSpin {
         history: [SpinResult],
         rareOutcomes: RareOutcomePolicy,
         selector: MovieSelector = MovieSelector(),
+        listenerAverages: [String: Double] = [:],
         using rng: inout G
     ) -> Outcome? {
         guard !catalog.categories.isEmpty else { return nil }
@@ -33,13 +34,13 @@ public enum QuickSpin {
             let landed = catalog.categories[index]
             let outcome = RareOutcomeRoller.roll(
                 policy: rareOutcomes,
-                infamousAvailable: !RareOutcomeRoller.infamousMovies(in: catalog).isEmpty,
+                infamousAvailable: !RareOutcomeRoller.jackpotCandidates(in: catalog).isEmpty,
                 allowRespin: attempt == 0,
                 using: &rng
             )
             if outcome == .forcedRespin { forced = true; continue }
             if outcome == .infamousJackpot,
-               let pick = RareOutcomeRoller.jackpotPick(in: catalog, landed: landed, using: &rng) {
+               let pick = RareOutcomeRoller.jackpotPick(in: catalog, landed: landed, listenerAverages: listenerAverages, using: &rng) {
                 return Outcome(movie: pick.movie, category: pick.category, landed: landed, isJackpot: true, wasForcedRespin: forced)
             }
             guard let movie = selector.selectMovie(from: landed, in: catalog, history: history, using: &rng) else { return nil }

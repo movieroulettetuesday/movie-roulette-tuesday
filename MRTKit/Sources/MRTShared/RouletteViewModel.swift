@@ -124,6 +124,9 @@ public final class RouletteViewModel {
     @ObservationIgnored private var stressRealTiming = false
     private let settings: UserDefaults
     private let sideEffects: RouletteSideEffects
+    /// Cached listener averages (movie id -> stars) for the jackpot weighting.
+    /// Read synchronously at spin time; never fetches.
+    private let listenerAverages: @MainActor () -> [String: Double]
 
     public init(
         catalogSource: any MovieCatalogSource,
@@ -132,7 +135,8 @@ public final class RouletteViewModel {
         selector: MovieSelector = MovieSelector(),
         rng: AnyRandomNumberGenerator = .system,
         settings: UserDefaults = .standard,
-        sideEffects: RouletteSideEffects = .none
+        sideEffects: RouletteSideEffects = .none,
+        listenerAverages: @escaping @MainActor () -> [String: Double] = { [:] }
     ) {
         self.catalogSource = catalogSource
         self.catalogRefresher = catalogRefresher
@@ -141,6 +145,7 @@ public final class RouletteViewModel {
         self.rng = rng
         self.settings = settings
         self.sideEffects = sideEffects
+        self.listenerAverages = listenerAverages
         self.feedback = SpinFeedback()
     }
 
@@ -473,7 +478,7 @@ public final class RouletteViewModel {
         let policy = RareOutcomePolicy(isEnabled: true)
         let outcome = RareOutcomeRoller.roll(
             policy: policy,
-            infamousAvailable: !RareOutcomeRoller.infamousMovies(in: catalog).isEmpty,
+            infamousAvailable: !RareOutcomeRoller.jackpotCandidates(in: catalog).isEmpty,
             allowRespin: !wasForcedRespin,
             using: &rng
         )
@@ -498,7 +503,9 @@ public final class RouletteViewModel {
         var isJackpot = false
         let movie: Movie
         if outcome == .infamousJackpot,
-           let pick = RareOutcomeRoller.jackpotPick(in: catalog, landed: landed, using: &rng) {
+           let pick = RareOutcomeRoller.jackpotPick(
+               in: catalog, landed: landed, listenerAverages: listenerAverages(), using: &rng
+           ) {
             movie = pick.movie
             category = pick.category
             isJackpot = true

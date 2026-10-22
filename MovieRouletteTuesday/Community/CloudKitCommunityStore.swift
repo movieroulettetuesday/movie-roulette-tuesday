@@ -18,6 +18,12 @@ actor CloudKitCommunityStore: CommunityStore {
     /// Cap on records read per poll/movie (pages of 200). Plenty for a podcast audience.
     static let maxRecords = 2_000
     static let pageSize = 200
+    /// Bulk read (all listener ratings at launch): `movieId IN <chunk>` queries.
+    /// CloudKit rejects IN lists over 250 values and is flaky well before that,
+    /// so stay at 100 ids per query (the catalog has ~180 movies -> 2 queries).
+    static let bulkChunkSize = 100
+    /// Cap on records read per bulk chunk (pages of `pageSize`).
+    static let maxBulkRecordsPerChunk = 5_000
     /// Per-request / whole-operation timeouts (CloudKit's defaults are much longer).
     static let requestTimeout: TimeInterval = 20
     static let resourceTimeout: TimeInterval = 45
@@ -27,11 +33,11 @@ actor CloudKitCommunityStore: CommunityStore {
     private var database: CKDatabase { container.publicCloudDatabase }
     private var cachedUserRecordName: String?
 
-    private static func configuration() -> CKOperation.Configuration {
+    private static func configuration(qualityOfService: QualityOfService = .userInitiated) -> CKOperation.Configuration {
         let config = CKOperation.Configuration()
         config.timeoutIntervalForRequest = requestTimeout
         config.timeoutIntervalForResource = resourceTimeout
-        config.qualityOfService = .userInitiated
+        config.qualityOfService = qualityOfService
         return config
     }
 
@@ -103,6 +109,32 @@ actor CloudKitCommunityStore: CommunityStore {
             if let half = Self.resolvedHalfStars(values) { ratings[name] = half }
         }
         return ratings
+    }
+
+    /// Every listener rating for `movieIds`, read-only and anonymous:
+    /// `ListenerRating WHERE movieId IN <≤100 ids>` per chunk, paged with a
+    /// cursor, desiredKeys movieId/halfStars/stars only. Uses the same
+    /// QUERYABLE `movieId` index as `fetchRatings` (no recordName/`___recordID`
+    /// index, no sort). All-or-nothing: any chunk failing throws.
+    func fetchAllRatings(movieIds: [String]) async throws -> [String: ListenerRatingEntry] {
+        let ids = Array(Set(movieIds)).sorted()
+        var out: [String: ListenerRatingEntry] = [:]
+        for start in stride(from: 0, to: ids.count, by: Self.bulkChunkSize) {
+            try Task.checkCancellation()
+            let chunk = Array(ids[start..<min(start + Self.bulkChunkSize, ids.count)])
+            let wanted = Set(chunk)
+            let rows = try await allRecordValues(
+                recordType: CommunityRecordNames.ratingRecordType, filter: .oneOf(field: "movieId", values: chunk),
+                valueKeys: ["movieId", "halfStars", "stars"],
+                maxRecords: Self.maxBulkRecordsPerChunk, qualityOfService: .utility
+            )
+            for (name, values) in rows {
+                guard case .string(let movieId)? = values["movieId"], wanted.contains(movieId),
+                      let half = Self.resolvedHalfStars(values) else { continue }
+                out[name] = ListenerRatingEntry(movieId: movieId, halfStars: half)
+            }
+        }
+        return out
     }
 
     /// `halfStars` (new builds) or legacy `stars` × 2.
@@ -251,11 +283,33 @@ actor CloudKitCommunityStore: CommunityStore {
     private func allRecordValues(
         recordType: String, field: String, equals value: String, valueKeys: [String]
     ) async throws -> [(String, [String: FieldValue])] {
-        let maxRecords = Self.maxRecords
+        try await allRecordValues(
+            recordType: recordType, filter: .equals(field: field, value: value), valueKeys: valueKeys,
+            maxRecords: Self.maxRecords, qualityOfService: .userInitiated
+        )
+    }
+
+    /// Query filters on QUERYABLE fields only (Sendable; the NSPredicate is built inside the operation).
+    private enum QueryFilter: Sendable {
+        case equals(field: String, value: String)
+        case oneOf(field: String, values: [String])
+
+        var predicate: NSPredicate {
+            switch self {
+            case .equals(let field, let value): return NSPredicate(format: "%K == %@", field, value)
+            case .oneOf(let field, let values): return NSPredicate(format: "%K IN %@", field, values)
+            }
+        }
+    }
+
+    private func allRecordValues(
+        recordType: String, filter: QueryFilter, valueKeys: [String],
+        maxRecords: Int, qualityOfService: QualityOfService
+    ) async throws -> [(String, [String: FieldValue])] {
         let pageSize = Self.pageSize
         do {
-            return try await database.configuredWith(configuration: Self.configuration()) { db in
-                let query = CKQuery(recordType: recordType, predicate: NSPredicate(format: "%K == %@", field, value))
+            return try await database.configuredWith(configuration: Self.configuration(qualityOfService: qualityOfService)) { db in
+                let query = CKQuery(recordType: recordType, predicate: filter.predicate)
                 var out: [(String, [String: FieldValue])] = []
                 do {
                     var page = try await db.records(matching: query, desiredKeys: valueKeys, resultsLimit: pageSize)

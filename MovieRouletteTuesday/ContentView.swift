@@ -13,6 +13,7 @@ struct ContentView: View {
     @State private var pendingEpisodeGUID: String?
     /// Cold-launch opening; a deep link or widget tap finishes it at once.
     @Environment(SplashState.self) private var splash: SplashState?
+    @Environment(CommunityService.self) private var community
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -56,6 +57,9 @@ struct ContentView: View {
             // Load the catalog here, not only in RouletteView: a cold-launch deep link
             // (or a Movies-first launch) may never show the Roulette tab.
             await roulette.load()
+            // All listener ratings in one read, for the infamous jackpot weighting
+            // (silent; cached values are used until it lands).
+            Task { await community.refreshAllListenerRatings(movieIds: roulette.catalog?.movies.map(\.id) ?? []) }
             // Then (in the background, short timeout) check GitHub for a newer movie list.
             await roulette.refreshRemoteCatalog()
         }
@@ -80,6 +84,8 @@ struct ContentView: View {
             // Pull-to-refresh (and other episode fetches) also re-check the movie list,
             // so a new episode's movie shows up with it. Throttled in the model.
             Task { await roulette.refreshRemoteCatalog() }
+            // Listener ratings too (throttled in CommunityService).
+            Task { await community.refreshAllListenerRatings(movieIds: roulette.catalog?.movies.map(\.id) ?? []) }
             // Episodes already in the app never trigger a new-episode alert later.
             if NewEpisodeAlerts.isEnabled { NewEpisodeAlerts.markSeen(episodes.episodes) }
         }

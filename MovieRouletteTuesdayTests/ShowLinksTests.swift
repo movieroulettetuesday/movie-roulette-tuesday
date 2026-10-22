@@ -176,6 +176,30 @@ final class InAppSuggestionTests: XCTestCase {
         XCTAssertEqual(try XCTUnwrap(mail.mailtoURL).scheme, "mailto")
     }
 
+    /// 1.0.1: with a credit and no note the body must not read "Why: From: <name>".
+    func testEmptyNoteWithCreditHasNoWhyLine() {
+        let mail = InAppSuggestion(title: "Tremors", note: "  ", creditName: " Laura from Ohio ").asEmail
+        XCTAssertFalse(mail.body.contains("Why:"))
+        XCTAssertFalse(mail.body.contains("Why: From:"))
+        XCTAssertEqual(mail.body, [
+            "Hi MRT Crew,", "", "I’d love to hear you cover:", "",
+            "Movie: Tremors", "From: Laura from Ohio",
+            "", "Thanks for the show!", "", "Sent from the Movie Roulette Tuesday app",
+        ].joined(separator: "\n"))
+    }
+
+    func testNoteAndCreditAreSeparateLines() {
+        let mail = InAppSuggestion(title: "Tremors", category: "Cult", note: "Graboids.", creditName: "Laura").asEmail
+        XCTAssertEqual(mail.why, "Graboids.")
+        XCTAssertEqual(mail.credit, "Laura")
+        XCTAssertTrue(mail.body.contains("Movie: Tremors\nWhy: Graboids.\nFrom: Laura\nCategory: Cult\n"))
+        // No credit: no From line; no note and no credit: neither line.
+        XCTAssertFalse(InAppSuggestion(title: "T", note: "n").asEmail.body.contains("From:"))
+        let bare = InAppSuggestion(title: "T").asEmail.body
+        XCTAssertFalse(bare.contains("Why:") || bare.contains("From:"))
+        XCTAssertNil(InAppSuggestion(title: "T", creditName: "   ").asEmail.credit)
+    }
+
     func testRateLimitOnePerTenMinutes() {
         let t0 = Date(timeIntervalSinceReferenceDate: 1_000_000)
         var limit = SuggestionRateLimit()

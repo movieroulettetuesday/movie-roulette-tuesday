@@ -36,6 +36,16 @@ Record name: `suggestion-<UUID>` (always a new record). Grants: **CREATE to `_ic
 
 **Reading suggestions:** CloudKit Console → container → **Production** → Records → Public Database → type `Suggestion` → query, sort by created date.
 
+## Queries the app runs (all read-only, `_world` READ, no sign-in)
+
+| Query | Index used | Since |
+|-------|------------|-------|
+| `PollVote WHERE pollId == <id>` | `pollId` QUERYABLE | 1.0 |
+| `ListenerRating WHERE movieId == <id>` (movie page) | `movieId` QUERYABLE | 1.0 |
+| `ListenerRating WHERE movieId IN <≤100 catalog ids>` (launch bulk read for the infamous jackpot weighting; ~2 queries for 180 movies, cursor-paged 200/page, desiredKeys `movieId`,`halfStars`,`stars`) | `movieId` QUERYABLE (same index) | 1.0.1 |
+
+No query uses `NSPredicate(value: true)` (that would need `___recordID` QUERYABLE in Production) or any sort, so 1.0.1 needs **no schema change and no new index**.
+
 ## Public-database grants (already in the `.ckdb`)
 
 - `GRANT READ TO "_world"` — anyone can read results (no iCloud sign-in required).

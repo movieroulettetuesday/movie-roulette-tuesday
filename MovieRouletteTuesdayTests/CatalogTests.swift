@@ -35,7 +35,6 @@ final class CatalogTests: XCTestCase {
         XCTAssertEqual(movie.categories, [])
         XCTAssertEqual(movie.episodeIds, [])
         XCTAssertNil(movie.episodeTitle)
-        XCTAssertFalse(movie.isInfamous)
     }
 
     func testRoundTripsThroughJSON() throws {
@@ -46,7 +45,7 @@ final class CatalogTests: XCTestCase {
             movies: [Movie(id: "m", title: "M", year: 1999, genre: "Drama", categories: ["c"],
                            episodeIds: ["Buzzsprout-1"], episodeTitle: "M",
                            posterURL: URL(string: "https://example.com/p.jpg"),
-                           isInfamous: true, hostRating: 4.5)]
+                           hostRating: 4.5)]
         )
         XCTAssertEqual(try MovieCatalog.decode(from: JSONEncoder().encode(catalog)), catalog)
         XCTAssertEqual(catalog.validationIssues(), [])
@@ -174,6 +173,41 @@ final class CatalogTests: XCTestCase {
         XCTAssertEqual(snap.mostSpunMovie?.count, 2)
         XCTAssertEqual(snap.mostSpunCategory?.id, "a")
         XCTAssertEqual(snap.genreBreakdown.first?.genre, "Horror")
+    }
+
+    /// 1.0.1: ties sort by count descending, then id / genre ascending, so the
+    /// "Most spun" cards and equal bars never change between launches.
+    func testStatsTiesAreDeterministic() {
+        let catalog = MovieCatalog(
+            categories: ["c", "a", "b"].map { RouletteCategory(id: $0, name: $0.uppercased(), colorHex: "#111111") },
+            movies: [
+                Movie(id: "m2", title: "Two", year: 2001, genre: "Horror", categories: ["b"]),
+                Movie(id: "m1", title: "One", year: 2000, genre: "Comedy", categories: ["a"]),
+                Movie(id: "m3", title: "Three", year: 2002, genre: "Drama", categories: ["c"]),
+                Movie(id: "m0", title: "Zero", year: 1999, genre: "Action", categories: ["c"]),
+            ]
+        )
+        // m2, m1, m3: 2 each (tie); m0: 1. Categories b 2, a 2, c 3. Genres Horror 2, Comedy 2, Drama 2, Action 1.
+        let history = ["m2:b", "m3:c", "m1:a", "m2:b", "m3:c", "m1:a", "m0:c"].map {
+            let p = $0.split(separator: ":").map(String.init)
+            return SpinResult(movieId: p[0], categoryId: p[1])
+        }
+        // An archived tie on top of the detailed history: still deterministic.
+        let archive = SpinHistoryArchive(totalSpins: 2, movieCounts: ["m0": 1, "zz": 1], categoryCounts: ["a": 1, "b": 1])
+        for _ in 0..<20 {
+            let snap = StatsCalculator.snapshot(history: history, catalog: catalog)
+            XCTAssertEqual(snap.mostSpunMovie, CountedID(id: "m1", count: 2))
+            XCTAssertEqual(snap.mostSpunCategory, CountedID(id: "c", count: 3))
+            XCTAssertEqual(snap.categoryBreakdown, [CountedID(id: "c", count: 3), CountedID(id: "a", count: 2), CountedID(id: "b", count: 2)])
+            XCTAssertEqual(snap.genreBreakdown, [CountedGenre(genre: "Comedy", count: 2), CountedGenre(genre: "Drama", count: 2),
+                                                 CountedGenre(genre: "Horror", count: 2), CountedGenre(genre: "Action", count: 1)])
+            let withArchive = StatsCalculator.snapshot(history: history, catalog: catalog, archive: archive)
+            XCTAssertEqual(withArchive.mostSpunMovie, CountedID(id: "m0", count: 2))
+            XCTAssertEqual(withArchive.categoryBreakdown.map(\.id), ["a", "b", "c"])
+        }
+        // Plain code-point order: uppercase before lowercase, shorter prefix first.
+        XCTAssertEqual(StatsCalculator.ranked(["b": 1, "B": 1, "a": 2, "ab": 1]).map(\.key), ["a", "B", "ab", "b"])
+        XCTAssertNil(StatsCalculator.snapshot(history: [], catalog: catalog).mostSpunMovie)
     }
 
     func testEveryBundledCategoryHasAThemeColor() async throws {

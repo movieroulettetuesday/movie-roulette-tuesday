@@ -38,6 +38,13 @@ final class CommunityService {
     /// Set after rate limiting / quota errors; while active, cached results
     /// are shown instead of calling the service (no retry loops).
     @ObservationIgnored private var backoff = CommunityBackoff()
+    /// Bulk listener-ratings read (launch / episode refresh): throttle + in-flight guard.
+    @ObservationIgnored private var lastBulkRatingsRefresh: Date?
+    @ObservationIgnored private var bulkRatingsInFlight = false
+    /// When each movie's aggregate was last published by the per-movie path;
+    /// a bulk result that started earlier never overwrites it.
+    @ObservationIgnored private var ratingPublishedAt: [String: Date] = [:]
+    static let bulkRatingsMinInterval: TimeInterval = 5 * 60
 
     private static let votedPollsKey = "community.votedPolls"
     /// Whole stars (before half-stars); migrated once to `listenerHalfStarsKey`.
@@ -60,6 +67,8 @@ final class CommunityService {
             }
             if !legacy.isEmpty { save(listenerRatings, Self.listenerHalfStarsKey) }
         }
+        // Last known listener aggregates, so the first spin is weighted offline.
+        ratingAggregates = ListenerRatingsSnapshot.load(from: defaults)?.aggregates ?? [:]
     }
 
     // MARK: Account
@@ -164,6 +173,10 @@ final class CommunityService {
 
     // MARK: Listener ratings
 
+    /// Cached listener averages in stars (movie id -> average), for the
+    /// infamous jackpot weighting. Only movies loaded this session; no fetch.
+    var listenerAverages: [String: Double] { ratingAggregates.compactMapValues(\.average) }
+
     /// Half-stars this device shared for the movie.
     func myListenerRating(movieId: String) -> Int? { listenerRatings[movieId]?.value }
 
@@ -224,6 +237,41 @@ final class CommunityService {
     private func publishRating(_ movieId: String, ratings: [String: Int]) {
         let merged = CommunityMerge.merging(ratings, own: Self.own(listenerRatings[movieId]))
         ratingAggregates[movieId] = RatingAggregate.from(halfStars: merged.values)
+        ratingPublishedAt[movieId] = Date()
+        saveRatingsSnapshot()
+    }
+
+    /// Reads every listener rating for `movieIds` in one bulk query (off the
+    /// main actor, in the store) and updates `ratingAggregates` here on the
+    /// main actor. Never blocks the UI and fails silently: on any error the
+    /// cached aggregates stay as they are (the back-off window is still honoured).
+    /// Throttled to once per `bulkRatingsMinInterval` unless `force`.
+    func refreshAllListenerRatings(movieIds: [String], force: Bool = false, now: Date = Date()) async {
+        guard !movieIds.isEmpty, !bulkRatingsInFlight, !backoff.isBlocked(now: now) else { return }
+        if !force, let last = lastBulkRatingsRefresh, now.timeIntervalSince(last) < Self.bulkRatingsMinInterval { return }
+        bulkRatingsInFlight = true
+        defer { bulkRatingsInFlight = false }
+        lastBulkRatingsRefresh = now
+        let started = Date()
+        var own: [String: ListenerRatingEntry] = [:]
+        for (movieId, submission) in listenerRatings where !submission.recordName.isEmpty {
+            own[submission.recordName] = ListenerRatingEntry(movieId: movieId, halfStars: submission.value)
+        }
+        let fetched: [String: RatingAggregate]?
+        do {
+            fetched = try await ListenerRatingsSync.fetchAggregates(store: store, movieIds: movieIds, own: own)
+        } catch {
+            _ = handle(error) // back-off bookkeeping only; nothing is shown
+            fetched = nil
+        }
+        guard let fetched else { return }
+        let newer = Set(ratingPublishedAt.filter { $0.value >= started }.keys)
+        ratingAggregates = ListenerRatingsSync.applying(fetched, to: ratingAggregates, skipping: newer.union(busy))
+        saveRatingsSnapshot()
+    }
+
+    private func saveRatingsSnapshot() {
+        ListenerRatingsSnapshot(aggregates: ratingAggregates).save(to: defaults)
     }
 
     // MARK: Suggestions (in-app backup to email)

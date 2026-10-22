@@ -59,7 +59,6 @@ public struct Movie: Codable, Hashable, Identifiable, Sendable {
     /// Offline-friendly title of the primary episode that discussed this film.
     public var episodeTitle: String?
     public var posterURL: URL?
-    public var isInfamous: Bool
     public var hostRating: Double?
     /// TMDB movie id (future "Where to stream"; no UI yet). Optional, so
     /// catalogs without it still decode.
@@ -77,7 +76,6 @@ public struct Movie: Codable, Hashable, Identifiable, Sendable {
         episodeIds: [String] = [],
         episodeTitle: String? = nil,
         posterURL: URL? = nil,
-        isInfamous: Bool = false,
         hostRating: Double? = nil,
         tmdbId: Int? = nil,
         streaming: StreamingInfo? = nil
@@ -90,14 +88,13 @@ public struct Movie: Codable, Hashable, Identifiable, Sendable {
         self.episodeIds = episodeIds
         self.episodeTitle = episodeTitle
         self.posterURL = posterURL
-        self.isInfamous = isInfamous
         self.hostRating = hostRating
         self.tmdbId = tmdbId
         self.streaming = streaming
     }
 
     enum CodingKeys: String, CodingKey {
-        case id, title, year, genre, categories, episodeIds, episodeTitle, posterURL, isInfamous, hostRating
+        case id, title, year, genre, categories, episodeIds, episodeTitle, posterURL, hostRating
         case tmdbId, streaming
     }
 
@@ -111,7 +108,8 @@ public struct Movie: Codable, Hashable, Identifiable, Sendable {
         episodeIds = try c.decodeIfPresent([String].self, forKey: .episodeIds) ?? []
         episodeTitle = try c.decodeIfPresent(String.self, forKey: .episodeTitle)
         posterURL = try c.decodeIfPresent(URL.self, forKey: .posterURL)
-        isInfamous = try c.decodeIfPresent(Bool.self, forKey: .isInfamous) ?? false
+        // A legacy `isInfamous` key (still present in movies.json) is ignored:
+        // since 1.0.1 the jackpot is weighted only by listener ratings.
         hostRating = try c.decodeIfPresent(Double.self, forKey: .hostRating)
         // New optional fields never fail the catalog: a malformed value reads as nil.
         tmdbId = (try? c.decodeIfPresent(Int.self, forKey: .tmdbId)) ?? nil

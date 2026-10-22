@@ -207,3 +207,182 @@ final class HalfStarCommunityTests: XCTestCase {
         XCTAssertEqual(saved.map(\.title), ["Tremors"])
     }
 }
+
+// MARK: - 1.0.1 bulk listener ratings (no CloudKit: in-memory + scripted stores)
+
+/// Scripted `CommunityStore` for the bulk read: returns `bulk` or throws `error`,
+/// and counts calls. Everything else is unused here.
+private actor ScriptedRatingsStore: CommunityStore {
+    var bulk: [String: ListenerRatingEntry] = [:]
+    var error: Error?
+    private(set) var bulkCalls = 0
+    private(set) var requestedIds: [[String]] = []
+
+    init(bulk: [String: ListenerRatingEntry] = [:], error: Error? = nil) {
+        self.bulk = bulk
+        self.error = error
+    }
+
+    func fetchAllRatings(movieIds: [String]) async throws -> [String: ListenerRatingEntry] {
+        bulkCalls += 1
+        requestedIds.append(movieIds)
+        if let error { throw error }
+        return bulk
+    }
+
+    func accountStatus() async -> CommunityAccountStatus { .noAccount }
+    func submitVote(pollId: String, option: String) async throws -> String { throw CommunityError.notSignedIn }
+    func fetchVotes(pollId: String) async throws -> [String: String] { [:] }
+    func myVote(pollId: String) async throws -> String? { nil }
+    func submitRating(movieId: String, halfStars: Int) async throws -> String { throw CommunityError.notSignedIn }
+    func fetchRatings(movieId: String) async throws -> [String: Int] {
+        bulk.filter { $0.value.movieId == movieId }.mapValues(\.halfStars)
+    }
+    func myRating(movieId: String) async throws -> Int? { nil }
+    func submitSuggestion(_ suggestion: InAppSuggestion, appVersion: String) async throws { throw CommunityError.notSignedIn }
+}
+
+final class ListenerRatingsSyncTests: XCTestCase {
+    private func entry(_ movie: String, _ half: Int) -> ListenerRatingEntry {
+        ListenerRatingEntry(movieId: movie, halfStars: half)
+    }
+
+    func testAggregationFromRawRecords() {
+        let records = [
+            "r1": entry("the-room", 1), "r2": entry("the-room", 2), "r3": entry("the-room", 3),
+            "r4": entry("jaws", 10), "r5": entry("jaws", 9),
+            "r6": entry("not-requested", 5),
+        ]
+        let out = ListenerRatingsSync.aggregates(records: records, movieIds: ["the-room", "jaws", "unrated"])
+        XCTAssertEqual(Set(out.keys), ["the-room", "jaws", "unrated"])
+        XCTAssertEqual(out["the-room"], RatingAggregate.from(halfStars: [1, 2, 3]))
+        XCTAssertEqual(out["the-room"]?.average, 1)
+        XCTAssertEqual(out["jaws"]?.average, 4.75)
+        XCTAssertEqual(out["jaws"]?.count, 2)
+        XCTAssertEqual(out["unrated"], RatingAggregate.from(halfStars: []))
+        XCTAssertNil(out["unrated"]?.average)
+        XCTAssertNil(out["not-requested"])
+    }
+
+    func testOwnRecordIsMergedByRecordNameLikeThePerMoviePath() {
+        let records = ["mine": entry("m", 2), "other": entry("m", 8)]
+        // Re-rated locally: replaces the stale server copy (same record name), never double-counts.
+        let replaced = ListenerRatingsSync.aggregates(records: records, own: ["mine": entry("m", 10)], movieIds: ["m"])
+        XCTAssertEqual(replaced["m"], RatingAggregate.from(halfStars: CommunityMerge.merging(["mine": 2, "other": 8], own: ("mine", 10)).values))
+        XCTAssertEqual(replaced["m"]?.count, 2)
+        XCTAssertEqual(replaced["m"]?.average, 4.5)
+        // Just saved, not yet visible to the query: added.
+        let added = ListenerRatingsSync.aggregates(records: ["other": entry("m", 8)], own: ["mine": entry("m", 4)], movieIds: ["m"])
+        XCTAssertEqual(added["m"]?.count, 2)
+        XCTAssertEqual(added["m"]?.average, 3)
+    }
+
+    func testBulkMatchesPerMoviePathOnTheSameStore() async throws {
+        let store = InMemoryCommunityStore(currentUser: nil)
+        await store.seedRatings(movieId: "legacy", stars: [1, 2, 5])          // old builds: stars × 2
+        await store.seedHalfStarRatings(movieId: "half", halfStars: [1, 4, 7, 10])
+        await store.seedHalfStarRatings(movieId: "elsewhere", halfStars: [3])
+        let ids = ["legacy", "half", "none"]
+        let bulk = try await ListenerRatingsSync.fetchAggregates(store: store, movieIds: ids + ["half"])
+        XCTAssertEqual(Set(bulk.keys), Set(ids))
+        for id in ids {
+            let perMovie = RatingAggregate.from(halfStars: try await store.fetchRatings(movieId: id).values)
+            XCTAssertEqual(bulk[id], perMovie, id)
+        }
+        XCTAssertEqual(bulk["legacy"]?.average, 8.0 / 3.0)
+    }
+
+    func testFetchSkipsStoreForNoMoviesAndDedupesIds() async throws {
+        let store = ScriptedRatingsStore(bulk: ["r": entry("a", 6)])
+        let none = try await ListenerRatingsSync.fetchAggregates(store: store, movieIds: [])
+        XCTAssertTrue(none.isEmpty)
+        let calls0 = await store.bulkCalls
+        XCTAssertEqual(calls0, 0)
+        _ = try await ListenerRatingsSync.fetchAggregates(store: store, movieIds: ["b", "a", "a"])
+        let requested = await store.requestedIds
+        XCTAssertEqual(requested, [["a", "b"]])
+    }
+
+    func testFailureFallsBackToCachedAggregates() async {
+        let cached = ["a": RatingAggregate.from(halfStars: [2]), "b": RatingAggregate.from(halfStars: [9])]
+        let store = ScriptedRatingsStore(error: CommunityError.offline)
+        var fetched: [String: RatingAggregate]?
+        do {
+            fetched = try await ListenerRatingsSync.fetchAggregates(store: store, movieIds: ["a", "b"])
+            XCTFail("expected the store error")
+        } catch {
+            XCTAssertEqual(error as? CommunityError, .offline)
+        }
+        XCTAssertEqual(ListenerRatingsSync.applying(fetched, to: cached), cached)
+        // And the cache keeps feeding the jackpot weighting.
+        let snapshot = ListenerRatingsSnapshot(aggregates: ListenerRatingsSync.applying(fetched, to: cached))
+        XCTAssertEqual(snapshot.averages, ["a": 1, "b": 4.5])
+    }
+
+    func testApplyingUpdatesButKeepsNewerPerMovieData() {
+        let current = [
+            "a": RatingAggregate.from(halfStars: [2]),
+            "b": RatingAggregate.from(halfStars: [9]),
+            "c": RatingAggregate.from(halfStars: [5]),
+        ]
+        let fetched = ["a": RatingAggregate.from(halfStars: [4, 6]), "b": RatingAggregate.from(halfStars: [1])]
+        let out = ListenerRatingsSync.applying(fetched, to: current, skipping: ["b"])
+        XCTAssertEqual(out["a"], fetched["a"])
+        XCTAssertEqual(out["b"], current["b"], "per-movie data newer than the bulk read wins")
+        XCTAssertEqual(out["c"], current["c"], "movies missing from the bulk result keep their value")
+    }
+
+    func testSnapshotEncodeDecodeRoundTrip() throws {
+        let aggregates = [
+            "a": RatingAggregate.from(halfStars: [1, 2, 10]),
+            "b": RatingAggregate.from(halfStars: []),
+        ]
+        let date = Date(timeIntervalSince1970: 1_792_000_000)
+        let snapshot = ListenerRatingsSnapshot(aggregates: aggregates, updatedAt: date)
+        let data = try XCTUnwrap(snapshot.encoded())
+        let decoded = try XCTUnwrap(ListenerRatingsSnapshot.decode(data))
+        XCTAssertEqual(decoded, snapshot)
+        XCTAssertEqual(decoded.aggregates, aggregates)
+        XCTAssertEqual(decoded.averages, ["a": 13.0 / 6.0])
+        XCTAssertEqual(decoded.updatedAt, date)
+    }
+
+    func testSnapshotRejectsGarbageAndBadEntries() throws {
+        XCTAssertNil(ListenerRatingsSnapshot.decode(Data("not json".utf8)))
+        XCTAssertNil(ListenerRatingsSnapshot.decode(Data(#"{"version":99,"updatedAt":0,"movies":{}}"#.utf8)))
+        let json = #"""
+        {"version":1,"updatedAt":0,"movies":{
+          "ok":{"count":2,"average":3,"histogram":[0,0,2,0,0]},
+          "nan":{"count":1,"average":9,"histogram":[0,0,0,0,1]},
+          "badHist":{"count":2,"average":3,"histogram":[1,1]},
+          "negative":{"count":-1,"histogram":[0,0,0,0,0]},
+          "empty":{"count":0,"histogram":[0,0,0,0,0]}
+        }}
+        """#
+        let snapshot = try XCTUnwrap(ListenerRatingsSnapshot.decode(Data(json.utf8)))
+        XCTAssertEqual(Set(snapshot.aggregates.keys), ["ok", "empty"])
+        XCTAssertEqual(snapshot.averages, ["ok": 3])
+    }
+
+    func testSnapshotUserDefaultsPersistence() throws {
+        let suite = "mrt-tests-listener-snapshot-\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        XCTAssertNil(ListenerRatingsSnapshot.load(from: defaults), "no cache yet")
+        let snapshot = ListenerRatingsSnapshot(aggregates: ["a": RatingAggregate.from(halfStars: [3])])
+        snapshot.save(to: defaults)
+        XCTAssertEqual(ListenerRatingsSnapshot.load(from: defaults)?.averages, ["a": 1.5])
+        defaults.set(Data("corrupt".utf8), forKey: ListenerRatingsSnapshot.defaultsKey)
+        XCTAssertNil(ListenerRatingsSnapshot.load(from: defaults), "corrupt cache reads as no cache")
+    }
+
+    func testCachedAveragesDriveTheJackpotWeighting() throws {
+        let snapshot = ListenerRatingsSnapshot(aggregates: [
+            "low": RatingAggregate.from(halfStars: [2]),   // 1 star
+            "high": RatingAggregate.from(halfStars: [10]), // 5 stars
+        ])
+        let decoded = try XCTUnwrap(ListenerRatingsSnapshot.decode(try XCTUnwrap(snapshot.encoded())))
+        let movies = ["low", "high", "unrated"].map { Movie(id: $0, title: $0, year: 2000, genre: "G") }
+        XCTAssertEqual(InfamousSelection.weights(for: movies, averages: decoded.averages), [4.5, 0.5, 2.5])
+    }
+}

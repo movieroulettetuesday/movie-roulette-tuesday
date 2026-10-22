@@ -184,11 +184,6 @@ struct MoviePageView: View {
                     .font(.headline)
                     .foregroundStyle(.secondary)
                     .textSelection(.enabled)
-                if movie.isInfamous {
-                    Label("Infamous", systemImage: "flame.fill")
-                        .font(.subheadline)
-                        .foregroundStyle(.orange)
-                }
                 if spinCount > 0 {
                     Text(spinCount == 1 ? "Spun 1 time" : "Spun \(spinCount) times")
                         .font(.subheadline)

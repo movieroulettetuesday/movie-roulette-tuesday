@@ -338,6 +338,10 @@ public protocol CommunityStore: Sendable {
     /// recordName -> half-stars for every listener rating of the movie
     /// (legacy records without `halfStars` read as stars × 2).
     func fetchRatings(movieId: String) async throws -> [String: Int]
+    /// recordName -> (movie, half-stars) for every listener rating of the given
+    /// movies, in one bulk read (1.0.1, infamous weighting). Read-only, anonymous,
+    /// readable without iCloud sign-in. Same half-star resolution as `fetchRatings`.
+    func fetchAllRatings(movieIds: [String]) async throws -> [String: ListenerRatingEntry]
     /// This user's rating in half-stars.
     func myRating(movieId: String) async throws -> Int?
     /// Creates one `Suggestion` record (create-only; listeners can't read them).
@@ -440,6 +444,15 @@ public actor InMemoryCommunityStore: CommunityStore {
         ratings.filter { $0.value.movieId == movieId }.compactMapValues(\.resolvedHalfStars)
     }
 
+    public func fetchAllRatings(movieIds: [String]) async throws -> [String: ListenerRatingEntry] {
+        let wanted = Set(movieIds)
+        var out: [String: ListenerRatingEntry] = [:]
+        for (name, record) in ratings where wanted.contains(record.movieId) {
+            if let half = record.resolvedHalfStars { out[name] = ListenerRatingEntry(movieId: record.movieId, halfStars: half) }
+        }
+        return out
+    }
+
     public func submitSuggestion(_ suggestion: InAppSuggestion, appVersion: String) async throws {
         guard currentUser != nil else { throw CommunityError.notSignedIn }
         suggestions.append(suggestion)
@@ -448,5 +461,137 @@ public actor InMemoryCommunityStore: CommunityStore {
     public func myRating(movieId: String) async throws -> Int? {
         guard let user = currentUser else { return nil }
         return ratings[CommunityRecordNames.rating(movieId: movieId, userRecordName: user)]?.resolvedHalfStars
+    }
+}
+
+// MARK: - Bulk listener ratings (1.0.1: infamous jackpot weighting)
+
+/// One `ListenerRating` record from a bulk read: the movie and its resolved
+/// half-stars (1...10; legacy records already converted from stars × 2).
+public struct ListenerRatingEntry: Codable, Equatable, Sendable {
+    public var movieId: String
+    public var halfStars: Int
+
+    public init(movieId: String, halfStars: Int) {
+        self.movieId = movieId
+        self.halfStars = halfStars
+    }
+}
+
+/// Pure helpers for the launch-time bulk read of all listener ratings.
+public enum ListenerRatingsSync {
+    /// Per-movie aggregates from raw bulk records, with exactly the per-movie
+    /// path's math: this device's own just-saved records are merged by record
+    /// name (`CommunityMerge`), then `RatingAggregate.from(halfStars:)`.
+    /// Every id in `movieIds` gets an entry (an empty aggregate when nobody has
+    /// rated it); records for other movies are ignored.
+    public static func aggregates(
+        records: [String: ListenerRatingEntry],
+        own: [String: ListenerRatingEntry] = [:],
+        movieIds: [String]
+    ) -> [String: RatingAggregate] {
+        let wanted = Set(movieIds)
+        var merged = records
+        for (name, entry) in own where !name.isEmpty { merged[name] = entry }
+        var halfStarsByMovie: [String: [Int]] = [:]
+        for entry in merged.values where wanted.contains(entry.movieId) {
+            halfStarsByMovie[entry.movieId, default: []].append(entry.halfStars)
+        }
+        var out: [String: RatingAggregate] = [:]
+        for id in wanted { out[id] = RatingAggregate.from(halfStars: halfStarsByMovie[id] ?? []) }
+        return out
+    }
+
+    /// Bulk read + aggregation. Runs wherever the caller's store runs (the
+    /// CloudKit store is an actor, so never on the main actor). Throws the
+    /// store's error unchanged; callers keep their cached values on failure.
+    public static func fetchAggregates(
+        store: any CommunityStore,
+        movieIds: [String],
+        own: [String: ListenerRatingEntry] = [:]
+    ) async throws -> [String: RatingAggregate] {
+        let ids = Array(Set(movieIds)).sorted()
+        guard !ids.isEmpty else { return [:] }
+        let records = try await store.fetchAllRatings(movieIds: ids)
+        return aggregates(records: records, own: own, movieIds: ids)
+    }
+
+    /// `current` updated with `fetched`, except movies in `skipping` (ones
+    /// whose per-movie data is newer than the bulk read, or busy). Movies not
+    /// in `fetched` keep their current value. `fetched == nil` (the read
+    /// failed) returns `current` unchanged: fall back to whatever is cached.
+    public static func applying(
+        _ fetched: [String: RatingAggregate]?,
+        to current: [String: RatingAggregate],
+        skipping: Set<String> = []
+    ) -> [String: RatingAggregate] {
+        guard let fetched else { return current }
+        var out = current
+        for (id, aggregate) in fetched where !skipping.contains(id) { out[id] = aggregate }
+        return out
+    }
+}
+
+/// Small on-device cache of listener aggregates (UserDefaults), so the first
+/// spin after launch and the Siri spin can weight the infamous jackpot offline.
+/// Holds only public, anonymous aggregates (count / average / histogram per movie id).
+public struct ListenerRatingsSnapshot: Codable, Equatable, Sendable {
+    public static let defaultsKey = "community.listenerRatingsSnapshot"
+    public static let currentVersion = 1
+
+    public struct Entry: Codable, Equatable, Sendable {
+        public var count: Int
+        public var average: Double?
+        public var histogram: [Int]
+
+        public init(_ aggregate: RatingAggregate) {
+            count = aggregate.count
+            average = aggregate.average
+            histogram = aggregate.histogram
+        }
+
+        /// nil for anything that couldn't have come from `RatingAggregate.from`.
+        var aggregate: RatingAggregate? {
+            guard count >= 0, histogram.count == 5, histogram.allSatisfy({ $0 >= 0 }),
+                  histogram.reduce(0, +) == count else { return nil }
+            if let average {
+                guard count > 0, average.isFinite, average >= 0.5, average <= 5 else { return nil }
+            } else if count != 0 {
+                return nil
+            }
+            return RatingAggregate(count: count, average: average, histogram: histogram)
+        }
+    }
+
+    public var version: Int
+    public var updatedAt: Date
+    public var movies: [String: Entry]
+
+    public init(aggregates: [String: RatingAggregate], updatedAt: Date = Date()) {
+        version = Self.currentVersion
+        self.updatedAt = updatedAt
+        movies = aggregates.mapValues(Entry.init)
+    }
+
+    /// Valid entries only.
+    public var aggregates: [String: RatingAggregate] { movies.compactMapValues(\.aggregate) }
+    /// Movie id -> average stars, for `InfamousSelection`.
+    public var averages: [String: Double] { aggregates.compactMapValues(\.average) }
+
+    public func encoded() -> Data? { try? JSONEncoder().encode(self) }
+
+    /// nil for garbage or an unknown version (treated as "no cache").
+    public static func decode(_ data: Data) -> ListenerRatingsSnapshot? {
+        guard let snapshot = try? JSONDecoder().decode(ListenerRatingsSnapshot.self, from: data),
+              snapshot.version == currentVersion else { return nil }
+        return snapshot
+    }
+
+    public static func load(from defaults: UserDefaults, key: String = defaultsKey) -> ListenerRatingsSnapshot? {
+        defaults.data(forKey: key).flatMap(decode)
+    }
+
+    public func save(to defaults: UserDefaults, key: String = ListenerRatingsSnapshot.defaultsKey) {
+        if let data = encoded() { defaults.set(data, forKey: key) }
     }
 }

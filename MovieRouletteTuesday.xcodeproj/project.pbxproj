@@ -35,6 +35,7 @@
 		4438C4FA34EF01A00C3C02F7 /* ShareCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A78AC385DA90899EE063668 /* ShareCard.swift */; };
 		45AA58EE7E51F514DACF8E6E /* ArtworkImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9D0A7685F09A8A7B79AAED /* ArtworkImage.swift */; };
 		465783CB9E4F7B4CF82FB465 /* TVRouletteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBA45AC56C7B2E47E806538A /* TVRouletteView.swift */; };
+		A1C0DE0000000000000000B1 /* RevealSheetTitleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0DE0000000000000000F1 /* RevealSheetTitleTests.swift */; };
 		46F005EF5CF8E96212B3C7DC /* StabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8598FC5574D9C0227CBC509C /* StabilityTests.swift */; };
 		48479A50C21555128DD1A03C /* HubSpinButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EBE058D2E1C40C4FAA453D /* HubSpinButton.swift */; };
 		4B125919D8979A200BD95548 /* QuickSpinTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 384E9A73BF374E767DFADDC5 /* QuickSpinTests.swift */; };
@@ -171,6 +172,7 @@
 		7CE15704D05827C746AD662F /* LaunchSplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchSplashView.swift; sourceTree = "<group>"; };
 		7D0A07A06B2C39EB1AEBB959 /* WidgetBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBridge.swift; sourceTree = "<group>"; };
 		85398768919AA8673807FA76 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A1C0DE0000000000000000F1 /* RevealSheetTitleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RevealSheetTitleTests.swift; sourceTree = "<group>"; };
 		8598FC5574D9C0227CBC509C /* StabilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StabilityTests.swift; sourceTree = "<group>"; };
 		89981D55DC937AB6C2C9A029 /* CatalogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogTests.swift; sourceTree = "<group>"; };
 		8A37804115A7A51647DE324B /* ListenCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListenCard.swift; sourceTree = "<group>"; };
@@ -396,6 +398,7 @@
 				967CD961E57CAD6F61F9B1F4 /* SpinHistoryRoutingTests.swift */,
 				754A3F0184E8B91219550B4B /* SpinMotionTests.swift */,
 				9B37ABE5A15E0050A18B79C3 /* SpinTicksTests.swift */,
+				A1C0DE0000000000000000F1 /* RevealSheetTitleTests.swift */,
 				8598FC5574D9C0227CBC509C /* StabilityTests.swift */,
 				CF892772A8012B1CB98E65B8 /* WheelMathTests.swift */,
 				0AF27295B306776F31F4CB7F /* WidgetSupportTests.swift */,
@@ -712,6 +715,7 @@
 				3144B5CB7EF7678B191C09ED /* SpinHistoryRoutingTests.swift in Sources */,
 				B8634279B7D8F06C3C145743 /* SpinMotionTests.swift in Sources */,
 				D551906545F70846A3F93645 /* SpinTicksTests.swift in Sources */,
+				A1C0DE0000000000000000B1 /* RevealSheetTitleTests.swift in Sources */,
 				46F005EF5CF8E96212B3C7DC /* StabilityTests.swift in Sources */,
 				EEC084A6488074D0C6FAF648 /* WheelMathTests.swift in Sources */,
 				DCBD3FAC55E75E68D82975E3 /* WidgetSupportTests.swift in Sources */,
@@ -844,7 +848,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = MovieRouletteTuesday/MovieRouletteTuesday.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MovieRouletteTuesday/Info.plist;
@@ -858,7 +862,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.movieroulettetuesday.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -876,7 +880,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = MovieRouletteTuesday/MovieRouletteTuesday.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MovieRouletteTuesday/Info.plist;
@@ -890,7 +894,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.movieroulettetuesday.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -932,7 +936,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = MovieRouletteTuesdayWidget/MovieRouletteTuesdayWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MovieRouletteTuesdayWidget/Info.plist;
@@ -943,7 +947,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.movieroulettetuesday.app.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1094,7 +1098,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1102,7 +1106,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.movieroulettetuesday.app.tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1117,7 +1121,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1125,7 +1129,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.movieroulettetuesday.app.tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1140,7 +1144,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = MovieRouletteTuesdayWidget/MovieRouletteTuesdayWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MovieRouletteTuesdayWidget/Info.plist;
@@ -1151,7 +1155,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.movieroulettetuesday.app.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

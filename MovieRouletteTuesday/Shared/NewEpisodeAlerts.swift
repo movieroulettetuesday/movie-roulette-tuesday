@@ -109,16 +109,43 @@ enum NewEpisodeAlerts {
 }
 
 /// Routes a tapped new-episode notification to that episode's page.
+///
+/// Uses the completion-handler delegate variants, not the `async` ones: the
+/// compiler thunk for a nonisolated `async` `didReceive` calls UIKit's
+/// completion handler on a background thread, which crashed 1.0 (10) with an
+/// NSAssertionHandler abort when a banner was tapped. Routing and the
+/// completion handler now always run on the main actor.
 final class NotificationRouter: NSObject, UNUserNotificationCenterDelegate, Sendable {
     static let shared = NotificationRouter()
 
-    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse,
+                                withCompletionHandler completionHandler: @escaping () -> Void) {
         let guid = response.notification.request.content.userInfo[NewEpisodeAlerts.guidUserInfoKey] as? String
-        guard let guid else { return }
-        await MainActor.run { AppRouter.shared.open(.episode(guid: guid)) }
+        handleTap(episodeGUID: guid, completion: completionHandler)
     }
 
-    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
-        [.banner, .list, .sound]
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification,
+                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler([.banner, .list, .sound])
     }
+
+    /// Opens the episode (if any) and then calls `completion`, both on the main
+    /// thread, whatever thread this is called from.
+    func handleTap(episodeGUID guid: String?, completion: @escaping () -> Void) {
+        let finish = UncheckedCompletion(completion)
+        let work: @Sendable () -> Void = {
+            MainActor.assumeIsolated {
+                if let guid { AppRouter.shared.open(.episode(guid: guid)) }
+            }
+            finish.call()
+        }
+        if Thread.isMainThread { work() } else { DispatchQueue.main.async(execute: work) }
+    }
+}
+
+/// UIKit's completion handlers are not annotated `@Sendable`; this only carries
+/// one to the main queue, where it is called exactly once.
+private struct UncheckedCompletion: @unchecked Sendable {
+    let call: () -> Void
+    init(_ call: @escaping () -> Void) { self.call = call }
 }

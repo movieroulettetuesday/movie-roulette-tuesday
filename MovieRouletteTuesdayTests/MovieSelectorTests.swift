@@ -11,7 +11,7 @@ final class MovieSelectorTests: XCTestCase {
             Movie(id: "b", title: "B", year: 2000, genre: "G", categories: ["cat"]),
             // Only tagged on the movie side; still a candidate.
             Movie(id: "c", title: "C", year: 2000, genre: "G", categories: ["cat"]),
-            Movie(id: "d", title: "D", year: 2000, genre: "G", categories: ["cat"], isInfamous: true),
+            Movie(id: "d", title: "D", year: 2000, genre: "G", categories: ["cat"]),
             Movie(id: "z", title: "Z", year: 2000, genre: "G", categories: ["other"])
         ]
     )
@@ -29,7 +29,8 @@ final class MovieSelectorTests: XCTestCase {
         let a = catalog.movie(withId: "a")!
         let d = catalog.movie(withId: "d")!
         XCTAssertEqual(selector.weight(for: a, history: []), 1)
-        XCTAssertEqual(selector.weight(for: d, history: []), 1.25)
+        // 1.0.1: no infamous boost; every movie starts at weight 1.
+        XCTAssertEqual(selector.weight(for: d, history: []), 1)
         XCTAssertEqual(selector.weight(for: a, history: history("a")), 0.1, accuracy: 1e-12)
         // Two spins ago, window 5: 0.1 + 0.9 * 1/5
         XCTAssertEqual(selector.weight(for: a, history: history("a", "b")), 0.28, accuracy: 1e-12)
@@ -38,8 +39,7 @@ final class MovieSelectorTests: XCTestCase {
         XCTAssertEqual(selector.weight(for: a, history: history("a", "b", "b", "b", "b", "b")), 1)
         // The most recent occurrence wins.
         XCTAssertEqual(selector.weight(for: a, history: history("a", "b", "a")), 0.1, accuracy: 1e-12)
-        // Infamous and recent combine multiplicatively.
-        XCTAssertEqual(selector.weight(for: d, history: history("d")), 0.125, accuracy: 1e-12)
+        XCTAssertEqual(selector.weight(for: d, history: history("d")), 0.1, accuracy: 1e-12)
     }
 
     func testRecencyMultiplierShape() {
@@ -86,20 +86,19 @@ final class MovieSelectorTests: XCTestCase {
         XCTAssertNotEqual(run(seed: 1234), run(seed: 4321))
     }
 
-    func testRecentlySpunMovieIsPickedLessOftenAndInfamousMoreOften() {
+    func testRecentlySpunMovieIsPickedLessOften() {
         var rng = SeededRandomNumberGenerator(seed: 8)
-        let log = history("a") // weights: a 0.1, b 1, c 1, d 1.25 (total 3.35)
+        let log = history("a") // weights: a 0.1, b 1, c 1, d 1 (total 3.1)
         var counts: [String: Int] = [:]
         for _ in 0..<20_000 {
             counts[selector.selectMovie(from: category, in: catalog, history: log, using: &rng)!.id, default: 0] += 1
         }
         let a = counts["a", default: 0], b = counts["b", default: 0], c = counts["c", default: 0], d = counts["d", default: 0]
-        // Expected ~597 / 5970 / 5970 / 7463.
-        XCTAssertTrue((400...800).contains(a), "a=\(a)")
-        XCTAssertTrue((5500...6450).contains(b), "b=\(b)")
-        XCTAssertTrue((5500...6450).contains(c), "c=\(c)")
-        XCTAssertTrue((7000...7950).contains(d), "d=\(d)")
-        XCTAssertGreaterThan(d, max(b, c))
+        // Expected ~645 / 6452 / 6452 / 6452.
+        XCTAssertTrue((450...850).contains(a), "a=\(a)")
+        for (id, n) in [("b", b), ("c", c), ("d", d)] {
+            XCTAssertTrue((6000...6900).contains(n), "\(id)=\(n)")
+        }
     }
 
     func testOnlyRecentCandidateIsStillSelectable() {
