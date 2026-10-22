@@ -29,9 +29,6 @@ struct RevealSheet: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: CleanPro.spacing) {
-                    if reveal.isJackpot {
-                        jackpotBanner
-                    }
                     summaryCard
                     VStack(spacing: 12) {
                         // Same bordered family as Share / Movie Page (no SPIN pill anywhere
@@ -83,6 +80,12 @@ struct RevealSheet: View {
             }
             .navigationTitle(reveal.isJackpot ? "Infamous Jackpot" : "Tonight’s Movie")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                // Jackpot: the gold banner *is* the bar title (navigationTitle stays for the back button / VoiceOver).
+                if reveal.isJackpot {
+                    ToolbarItem(placement: .principal) { jackpotBanner }
+                }
+            }
         }
         .onAppear {
             // ImageRenderer must run on the main actor; the card is small and local-only.
