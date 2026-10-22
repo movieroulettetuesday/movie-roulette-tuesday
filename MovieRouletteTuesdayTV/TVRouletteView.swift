@@ -6,9 +6,11 @@ import MRTShared
 ///
 /// Remote: Select on the focused pill spins (home) or spins again (result);
 /// Play/Pause does the same from anywhere on this tab; Menu on the result goes
-/// back to the wheel (on the home layout Menu keeps its system meaning).
-/// The wheel is decorative and never focusable. Spins run to completion
-/// (Stop on TV needs its own mockup and approval).
+/// back to the wheel (on the idle home layout Menu keeps its system meaning).
+/// During a spin (Matthew, Oct 21): Play/Pause stops it early (the result
+/// still comes, as with the iOS hub Stop), swipes do nothing (focus stays on
+/// the Spin pill), and Menu cancels the spin and goes back to the wheel home
+/// with no result. The wheel is decorative and never focusable.
 struct TVRouletteView: View {
     let model: RouletteViewModel
 
@@ -43,6 +45,13 @@ struct TVRouletteView: View {
         .onExitCommand(perform: exitAction)
         .onChange(of: model.reveal) { _, reveal in
             focus = reveal == nil ? Control.spin : Control.spinAgain
+        }
+        .onChange(of: focus) { _, newFocus in
+            // Swipes do nothing during a spin: focus stays on the Spin pill.
+            if isSpinLocked && newFocus != .spin { focus = .spin }
+        }
+        .onChange(of: isSpinLocked) { _, locked in
+            if locked { focus = .spin }
         }
         .onChange(of: model.revealCount) { _, _ in
             tagline = RouletteTaglines.random(excluding: tagline)
@@ -253,15 +262,34 @@ struct TVRouletteView: View {
 
     // MARK: Actions
 
-    /// Menu: only handled on the result (back to the wheel); otherwise nil so
-    /// the system behavior (tab bar, then Home) is unchanged.
-    private var exitAction: (() -> Void)? {
-        model.reveal != nil ? { backToWheel() } : nil
+    /// A spin is in flight (or a forced re-spin is pending) on the home layout.
+    private var isSpinLocked: Bool {
+        model.reveal == nil && model.canCancel
     }
 
-    /// Play/Pause: spin from home, spin again from the result.
+    /// Menu: during a spin, cancel it (back to the wheel home, no result); on
+    /// the result, back to the wheel; otherwise nil so the system behavior
+    /// (tab bar, then Home) is unchanged.
+    private var exitAction: (() -> Void)? {
+        if model.canCancel { return { cancelSpin() } }
+        return model.reveal != nil ? { backToWheel() } : nil
+    }
+
+    /// Play/Pause: stop a spin early, spin from home, spin again from the result.
     private func primaryAction() {
-        if model.reveal != nil { spinAgain() } else { spinFromUser() }
+        if model.isSpinning {
+            model.stopEarly()
+        } else if model.reveal != nil {
+            spinAgain()
+        } else {
+            spinFromUser()
+        }
+    }
+
+    /// Menu during a spin: no result; the wheel home stays with Spin focused.
+    private func cancelSpin() {
+        model.cancelSpin()
+        focus = .spin
     }
 
     private func spinFromUser() {
