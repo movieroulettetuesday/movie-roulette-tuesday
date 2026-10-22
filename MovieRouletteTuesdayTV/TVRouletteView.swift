@@ -41,6 +41,12 @@ struct TVRouletteView: View {
                     .transition(.scale.combined(with: .opacity))
             }
         }
+        // tvOS puts the initial focus on the tab bar; .defaultFocus alone does
+        // not move it into the tab, so Spin takes focus once the wheel is loaded.
+        .onAppear { if model.loadState == .loaded { focusPrimarySoon() } }
+        .onChange(of: model.loadState) { _, state in
+            if state == .loaded { focusPrimarySoon() }
+        }
         .onPlayPauseCommand(perform: primaryAction)
         .onExitCommand(perform: exitAction)
         .onChange(of: model.reveal) { _, reveal in
@@ -283,6 +289,15 @@ struct TVRouletteView: View {
             spinAgain()
         } else {
             spinFromUser()
+        }
+    }
+
+    /// Focus Spin (home) or Spin Again (result) on the next turn, once the
+    /// loaded layout is in the hierarchy.
+    private func focusPrimarySoon() {
+        Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(150))
+            focus = model.reveal == nil ? Control.spin : Control.spinAgain
         }
     }
 
