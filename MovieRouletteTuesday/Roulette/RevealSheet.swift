@@ -173,6 +173,9 @@ struct RevealSheet: View {
         }
     }
 
+    /// Transparent margin around the flattened jackpot banner (see `jackpotBanner`).
+    static let jackpotBannerRasterHeadroom = CGSize(width: 16, height: 4)
+
     private var jackpotBanner: some View {
         Text("Infamous Jackpot")
             .font(.headline.weight(.black))
@@ -182,6 +185,15 @@ struct RevealSheet: View {
             .padding(.horizontal, 16)
             .padding(.vertical, 8)
             .background(Brand.jackpotGold, in: Capsule())
+            // iOS 26+ hosts bar items in the scroll-edge pocket, which runs SwiftUI content
+            // through a vibrant color matrix keyed to the bar's (light) appearance: on the
+            // iPhone light sheet the gold came out brown (118,78,0), about 2:1 behind the ink.
+            // Drawing the banner flattened keeps it out of that filter, so it stays brand gold.
+            // The flattened layer is sized in screen points, and the iPhone's inset sheet is
+            // drawn scaled down (~0.96), so give it clear headroom or it crops the capsule.
+            .padding(.horizontal, Self.jackpotBannerRasterHeadroom.width)
+            .padding(.vertical, Self.jackpotBannerRasterHeadroom.height)
+            .drawingGroup()
             .accessibilityLabel("Infamous jackpot")
     }
 
