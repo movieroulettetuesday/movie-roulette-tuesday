@@ -134,8 +134,10 @@ struct RevealSheet: View {
                 .font(.largeTitle.bold())
                 .foregroundStyle(reveal.isJackpot ? Brand.jackpotGold : .primary)
                 .multilineTextAlignment(.center)
-                .lineLimit(3)
-                .minimumScaleFactor(0.6)
+                // iPhone (0.65 detent): long titles shrink onto two lines so Share and
+                // Movie page stay on screen; the iPad's large sheet has room for three.
+                .lineLimit(presenterIsRegularWidth ? 3 : 2)
+                .minimumScaleFactor(0.5)
 
             // verbatim: avoid locale grouping ("1,988").
             Text(verbatim: catalog?.subtitle(for: movie) ?? "\(movie.year) · \(movie.genre)")

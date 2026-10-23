@@ -52,6 +52,7 @@
 		4438C4FA34EF01A00C3C02F7 /* ShareCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A78AC385DA90899EE063668 /* ShareCard.swift */; };
 		45AA58EE7E51F514DACF8E6E /* ArtworkImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9D0A7685F09A8A7B79AAED /* ArtworkImage.swift */; };
 		A1C0DE0000000000000000B1 /* RevealSheetTitleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0DE0000000000000000F1 /* RevealSheetTitleTests.swift */; };
+		A1C0DE0000000000000000B2 /* RevealSheetLayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0DE0000000000000000F2 /* RevealSheetLayoutTests.swift */; };
 		46F005EF5CF8E96212B3C7DC /* StabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8598FC5574D9C0227CBC509C /* StabilityTests.swift */; };
 		48479A50C21555128DD1A03C /* HubSpinButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EBE058D2E1C40C4FAA453D /* HubSpinButton.swift */; };
 		4B125919D8979A200BD95548 /* QuickSpinTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 384E9A73BF374E767DFADDC5 /* QuickSpinTests.swift */; };
@@ -243,6 +244,7 @@
 		7ED9098D80A653FD5D81D475 /* SpinHistoryLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinHistoryLog.swift; sourceTree = "<group>"; };
 		85398768919AA8673807FA76 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A1C0DE0000000000000000F1 /* RevealSheetTitleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RevealSheetTitleTests.swift; sourceTree = "<group>"; };
+		A1C0DE0000000000000000F2 /* RevealSheetLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RevealSheetLayoutTests.swift; sourceTree = "<group>"; };
 		8598FC5574D9C0227CBC509C /* StabilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StabilityTests.swift; sourceTree = "<group>"; };
 		86131A01751FE62686E80C33 /* AppCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCatalog.swift; sourceTree = "<group>"; };
 		861F94CB60FA3E429E13B19C /* Brand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Brand.swift; sourceTree = "<group>"; };
@@ -513,6 +515,7 @@
 				754A3F0184E8B91219550B4B /* SpinMotionTests.swift */,
 				9B37ABE5A15E0050A18B79C3 /* SpinTicksTests.swift */,
 				A1C0DE0000000000000000F1 /* RevealSheetTitleTests.swift */,
+				A1C0DE0000000000000000F2 /* RevealSheetLayoutTests.swift */,
 				8598FC5574D9C0227CBC509C /* StabilityTests.swift */,
 				CF892772A8012B1CB98E65B8 /* WheelMathTests.swift */,
 				0AF27295B306776F31F4CB7F /* WidgetSupportTests.swift */,
@@ -761,6 +764,7 @@
 				B8634279B7D8F06C3C145743 /* SpinMotionTests.swift in Sources */,
 				D551906545F70846A3F93645 /* SpinTicksTests.swift in Sources */,
 				A1C0DE0000000000000000B1 /* RevealSheetTitleTests.swift in Sources */,
+				A1C0DE0000000000000000B2 /* RevealSheetLayoutTests.swift in Sources */,
 				46F005EF5CF8E96212B3C7DC /* StabilityTests.swift in Sources */,
 				EEC084A6488074D0C6FAF648 /* WheelMathTests.swift in Sources */,
 				DCBD3FAC55E75E68D82975E3 /* WidgetSupportTests.swift in Sources */,
