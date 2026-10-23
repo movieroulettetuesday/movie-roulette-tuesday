@@ -103,6 +103,61 @@ final class RevealSheetTitleTests: XCTestCase {
         }
     }
 
+    /// iOS 26+ puts bar items in the scroll-edge pocket, which adds a `vibrantColorMatrix`
+    /// filter to SwiftUI bar content, tuned for the bar's appearance. The sheet's dark override
+    /// doesn't reach the bar, so on the iPhone's 0.65-detent sheet in light mode the gold
+    /// rendered as (118,78,0). `drawHierarchy` doesn't apply that filter and a plain window
+    /// doesn't get it, so present the real sheet and check the bar's layer tree.
+    func testJackpotBannerIsNotRunThroughBarVibrancy() throws {
+        for style in [UIUserInterfaceStyle.light, .dark] {
+            let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+            let window = UIWindow(windowScene: scene)
+            window.frame = CGRect(x: 0, y: 0, width: 402, height: 874)   // iPhone 18 Pro, points
+            window.overrideUserInterfaceStyle = style
+            let jackpot = reveal(jackpot: true)
+            let root = Color.clear.sheet(isPresented: .constant(true)) {
+                RevealSheet(reveal: jackpot, catalog: nil, onSpinAgain: {})
+                    .environment(PersonalRatingsStore(fileStore: nil))
+                    .environment(SpinHistoryStore(fileStore: nil))
+                    .environment(CommunityService.preview())
+            }
+            let host = UIHostingController(rootView: root)
+            host.traitOverrides.horizontalSizeClass = .compact   // iPhone sheet on the iPad suite too
+            window.rootViewController = host
+            window.makeKeyAndVisible()
+            defer { host.dismiss(animated: false); window.isHidden = true }
+            var bar: UINavigationBar?
+            for _ in 0..<80 where bar?.topItem?.titleView == nil {
+                RunLoop.main.run(until: Date().addingTimeInterval(0.05))
+                if let sheet = host.presentedViewController, !sheet.isBeingPresented {
+                    bar = Self.first(UINavigationBar.self, in: sheet.view)
+                }
+            }
+            RunLoop.main.run(until: Date().addingTimeInterval(0.5))
+            let titleView = try XCTUnwrap(bar?.topItem?.titleView, "principal item hosts the banner (style \(style.rawValue))")
+            XCTAssertEqual(Self.vibrancyFilteredLayers(in: titleView.layer), 0,
+                           "banner keeps its own colors under the bar (style \(style.rawValue))")
+            // The flattened layer is sized in screen points while the iPhone sheet is drawn
+            // scaled down, so without headroom it crops the capsule's trailing and bottom edges.
+            let headroom = RevealSheet.jackpotBannerRasterHeadroom
+            let capsule = titleView.bounds.insetBy(dx: headroom.width, dy: headroom.height)
+            let drawn = Self.flattenedLayers(in: titleView.layer).map { $0.convert($0.bounds, to: titleView.layer) }
+            XCTAssertFalse(drawn.isEmpty, "banner is drawn flattened (style \(style.rawValue))")
+            XCTAssertTrue(drawn.contains { $0.insetBy(dx: -0.5, dy: -0.5).contains(capsule) },
+                          "flattened banner \(drawn) covers the capsule \(capsule) (style \(style.rawValue))")
+        }
+    }
+
+    private static func flattenedLayers(in layer: CALayer) -> [CALayer] {
+        let own = String(describing: type(of: layer)).contains("RBDrawingLayer") ? [layer] : []
+        return own + (layer.sublayers ?? []).flatMap { flattenedLayers(in: $0) }
+    }
+
+    private static func vibrancyFilteredLayers(in layer: CALayer) -> Int {
+        let own = (layer.filters ?? []).contains { String(describing: $0).contains("vibrantColorMatrix") } ? 1 : 0
+        return own + (layer.sublayers ?? []).reduce(0) { $0 + vibrancyFilteredLayers(in: $1) }
+    }
+
     func testJackpotBannerTextIsReadable() {
         // Ink on gold, independent of the bar's scheme (WCAG AA for text).
         XCTAssertGreaterThanOrEqual(contrastRatio(Self.ink, Self.gold), 4.5)
