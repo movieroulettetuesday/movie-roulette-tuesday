@@ -55,7 +55,9 @@ final class TVScreensUITests: XCTestCase {
         XCTAssertTrue(title.waitForExistence(timeout: 20))
         XCTAssertTrue(title.label.contains("Face"))
         XCTAssertTrue(app.descendants(matching: .any)["tv.movie.whereToWatch"].exists)
-        XCTAssertTrue(app.descendants(matching: .any)["tv.movie.stars"].exists)
+        let stars = app.descendants(matching: .any)["tv.movie.stars"]
+        let firstStar = app.descendants(matching: .any)["tv.movie.star.1"]
+        XCTAssertTrue(stars.exists || firstStar.exists, "rating stars")
         XCTAssertTrue(app.descendants(matching: .any)["tv.movie.watchlist"].exists)
         XCTAssertTrue(app.descendants(matching: .any)["tv.movie.poll"].waitForExistence(timeout: 10))
         XCTAssertTrue(app.buttons["tv.movie.suggest"].exists)

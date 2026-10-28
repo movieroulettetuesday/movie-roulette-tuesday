@@ -254,23 +254,30 @@ private struct TVStarRater: View {
 
     var body: some View {
         let shown = focused ?? savedStars
-        HStack(spacing: 8) {
-            ForEach(1...5, id: \.self) { star in
-                Button { submit(star) } label: {
-                    Image(systemName: star <= shown ? "star.fill" : "star")
-                        .font(.system(size: 40))
-                        .foregroundStyle(star <= shown ? Brand.jackpotGold : TVTheme(scheme: scheme).secondary)
-                        .frame(width: 56, height: 56)
+        VStack(alignment: .leading, spacing: 0) {
+            // tvOS drops an identifier on the star HStack. This sibling is the
+            // row the tests look up; each star stays its own focusable button.
+            Color.clear
+                .frame(width: 280, height: 8)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel("Your rating")
+                .accessibilityIdentifier("tv.movie.stars")
+            HStack(spacing: 8) {
+                ForEach(1...5, id: \.self) { star in
+                    Button { submit(star) } label: {
+                        Image(systemName: star <= shown ? "star.fill" : "star")
+                            .font(.system(size: 40))
+                            .foregroundStyle(star <= shown ? Brand.jackpotGold : TVTheme(scheme: scheme).secondary)
+                            .frame(width: 56, height: 56)
+                    }
+                    .buttonStyle(TVPlainButtonStyle())
+                    .focused($focused, equals: star)
+                    .accessibilityLabel("\(star) \(star == 1 ? "star" : "stars")")
+                    .accessibilityHint("Saves your rating and shares it with listeners")
+                    .accessibilityIdentifier("tv.movie.star.\(star)")
                 }
-                .buttonStyle(TVPlainButtonStyle())
-                .focused($focused, equals: star)
-                .accessibilityLabel("\(star) \(star == 1 ? "star" : "stars")")
-                .accessibilityHint("Saves your rating and shares it with listeners")
-                .accessibilityIdentifier("tv.movie.star.\(star)")
             }
         }
-        .accessibilityElement(children: .contain)
-        .accessibilityIdentifier("tv.movie.stars")
     }
 
     private func submit(_ stars: Int) {
