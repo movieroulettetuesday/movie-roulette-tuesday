@@ -43,7 +43,7 @@ The TV app writes the snapshot when episodes or the catalog load (`TopShelfBridg
 **Static** (asset catalog, `App Icon & Top Shelf Image`):
 
 - Top Shelf Image: 1920×720 and 3840×1440
-- Top Shelf Image Wide: 2320×720 and 4640×1440 (Apple TV 4K; the 1920-wide art centered in the extra margin)
+- Top Shelf Image Wide: 2320×720 and 4640×1440 (Apple TV 4K; the same brand composition at the wider size)
 - Layered app icon: Small 400×240 (@2x 800×480) and Large 1280×768, Front / Middle / Back
 
 The extension returns nil only when it has no snapshot and the RSS fetch fails. tvOS then shows the static image.
@@ -58,9 +58,11 @@ The extension returns nil only when it has no snapshot and the RSS fetch fails. 
 
 Inset images are 1920×720 @1x and 3840×1440 @2x, the same frame as the approved mock. Sectioned fallback uses a poster shape for a catalog `posterURL` and a square shape for episode or show art.
 
-## Placeholder art
+## Brand art
 
-The layered icon and both Top Shelf images are **placeholders**. They say TODO / LATEST EPISODE / PLACEHOLDER ART. They are not the Passengers poster from the mock (that artwork is not in the repo). Replace them before submission. The Top Shelf images are fully opaque bitmaps (`actool` rejects any alpha on those slots). The back icon layer is fully opaque too. Front and Middle stay transparent so the parallax stack has depth.
+The layered icon and both static Top Shelf images are the final brand art from approved mockup 14 (teal gradient, peach film reel, and pointer highlight). They replace the earlier placeholders that said TODO / LATEST EPISODE / PLACEHOLDER ART. The dynamic shelf still draws the latest-episode banner from the App Group snapshot or the RSS feed; these catalog images are only the fallback and the App Store slot.
+
+The Top Shelf images are fully opaque RGB bitmaps (`actool` rejects any alpha on those slots). The Back icon layer is fully opaque RGB too. Front and Middle keep an alpha channel so the parallax stack has depth.
 
 ## What a Mac still has to verify
 
@@ -77,7 +79,7 @@ This repo was checked with the Foundation tests (`TopShelfTests`: latest episode
    - `TVTopShelfAction(url:)`
    - `TVTopShelfInsetContent(items:)` and `TVTopShelfSectionedContent(sections:)`
    - `imageShape` `.poster` / `.square` on the sectioned item
-5. On a simulator or Apple TV, focus the app in the top row of the Home Screen. The shelf should show the latest episode, not the static TODO image, after the extension can read the feed or the app has launched once.
+5. On a simulator or Apple TV, focus the app in the top row of the Home Screen. The shelf should show the latest episode, not the static brand image, after the extension can read the feed or the app has launched once.
 6. Click the shelf. The app should open that episode (`mrt://episode/…`).
 7. If `TVTopShelfInsetContent.imageSize` is not 1920×720, change `TopShelf.insetSize1x` / `insetSize2x`. The layout scales with those sizes.
-8. Replace the placeholder icon and Top Shelf images, then archive once and confirm `actool` accepts the layered icon (opaque back layer).
+8. Archive once and confirm `actool` accepts the layered icon (opaque Back layer) and the opaque Top Shelf images. The catalog already has the final brand art.
