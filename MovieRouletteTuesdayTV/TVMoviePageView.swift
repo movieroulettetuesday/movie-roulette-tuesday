@@ -123,6 +123,7 @@ struct TVMoviePageView: View {
             }
         }
         .padding(.top, 8)
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("tv.movie.whereToWatch")
         .onChange(of: providerFocus) { _, id in
             guard let id, let provider = providers.first(where: { $0.id == id }) else { return }
