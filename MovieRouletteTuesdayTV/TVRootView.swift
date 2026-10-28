@@ -54,10 +54,12 @@ struct TVRootView: View {
             await episodes.load()
             await community.refreshAccountStatus()
             if tab == .episodes { episodes.markViewed() }
+            publishShelf()
         }
         .onChange(of: roulette.catalog?.movies.count) { _, _ in
             let ids = roulette.catalog?.movies.map(\.id) ?? []
             Task { await community.refreshAllListenerRatings(movieIds: ids) }
+            publishShelf()
         }
         .onChange(of: tab) { _, new in
             if new == .episodes { episodes.markViewed() }
@@ -65,6 +67,7 @@ struct TVRootView: View {
         .onChange(of: episodes.episodes.count) { _, _ in
             if tab == .episodes, pages.isEmpty { episodes.markViewed() }
         }
+        .onChange(of: episodes.lastFetchedAt) { _, _ in publishShelf() }
     }
 
     private var tabs: some View {
@@ -169,6 +172,9 @@ struct TVRootView: View {
         if !pages.isEmpty { pages.removeLast() }
     }
 
+    /// Top Shelf select arrives here as `mrt://episode/<guid>` (movie links too).
+    /// An episode link replaces the stack with that episode page. The page
+    /// waits on `episodes.load()` when the feed isn't in memory yet.
     private func open(_ url: URL) {
         guard let link = DeepLink(url: url) else { return }
         showsSuggest = false
@@ -179,6 +185,14 @@ struct TVRootView: View {
             pages = [.episode(guid)]
         }
         AppRouter.shared.pendingURL = nil
+    }
+
+    private func publishShelf() {
+        TopShelfBridge.publish(
+            episodes: episodes.episodes,
+            catalog: roulette.catalog,
+            showArtwork: episodes.showArtworkURL
+        )
     }
 
     private static func tab(from args: [String]) -> Tab {

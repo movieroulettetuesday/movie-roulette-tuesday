@@ -8,9 +8,11 @@ import MRTShared
 /// archive, no iCloud). tvOS may purge Application Support; the caches can refetch.
 /// Appearance follows the system Light/Dark setting.
 ///
-/// Top Shelf (latest episode) is not in this target. It needs its own extension,
-/// `com.movieroulettetuesday.app.topshelf`, plus the layered icon and Top Shelf
-/// art. Deep links (`mrt://movie/…`, `mrt://episode/…`) are already handled.
+/// Top Shelf (latest episode) is the `MovieRouletteTuesdayTopShelf` extension,
+/// bundle id `com.movieroulettetuesday.app.topshelf`. This target writes the
+/// episode into the App Group; the extension draws the banner and selects
+/// `mrt://episode/<guid>`. Static shelf art in the asset catalog is the
+/// fallback until that snapshot exists. Deep links are handled in `TVRootView`.
 ///
 /// Siri: App Intents exist on tvOS, but the iOS spin intent records
 /// `SpinHistoryStore.shared` (the iPhone file, with an archive). A TV shortcut

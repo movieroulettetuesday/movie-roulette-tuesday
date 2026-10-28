@@ -1,5 +1,5 @@
 // swift-tools-version:5.10
-// MRTKit: code shared by the iOS app, its widget, and the tvOS app.
+// MRTKit: code shared by the iOS app, its widget, the tvOS app, and the Top Shelf extension.
 //   MRTCore   - Foundation-only logic (formerly MovieRouletteTuesday/RouletteCore). Also builds on Linux.
 //   MRTShared - SwiftUI/AVFoundation code shared by iOS and tvOS: stores, wheel drawing, spin audio,
 //               the Roulette view model. Apple platforms only.
@@ -26,6 +26,7 @@ let package = Package(
     targets: [
         .target(name: "MRTCore", swiftSettings: approachableConcurrency),
         .target(name: "MRTShared", dependencies: ["MRTCore"], swiftSettings: approachableConcurrency),
+        .testTarget(name: "MRTCoreTests", dependencies: ["MRTCore"], swiftSettings: approachableConcurrency),
     ],
     swiftLanguageVersions: [.v5]
 )

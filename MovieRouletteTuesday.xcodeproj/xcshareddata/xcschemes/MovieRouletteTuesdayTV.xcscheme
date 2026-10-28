@@ -20,6 +20,20 @@
                ReferencedContainer = "container:MovieRouletteTuesday.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "B0E100000000000000000031"
+               BuildableName = "MovieRouletteTuesdayTopShelf.appex"
+               BlueprintName = "MovieRouletteTuesdayTopShelf"
+               ReferencedContainer = "container:MovieRouletteTuesday.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
