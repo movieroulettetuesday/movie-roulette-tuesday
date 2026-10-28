@@ -76,7 +76,7 @@ final class TVScreensUITests: XCTestCase {
         XCTAssertTrue(waitForFocus(settings), "Settings has focus")
         remote.press(.select)
         XCTAssertTrue(app.descendants(matching: .any)["tv.screen.settings"].waitForExistence(timeout: 10))
-        XCTAssertTrue(app.buttons["tv.settings.spinSound"].exists)
+        XCTAssertTrue(app.descendants(matching: .any)["tv.settings.spinSound"].exists)
         XCTAssertTrue(app.buttons["tv.settings.apple"].exists)
         XCTAssertTrue(app.buttons["tv.settings.spotify"].exists)
         XCTAssertTrue(app.buttons["tv.settings.suggest"].exists)

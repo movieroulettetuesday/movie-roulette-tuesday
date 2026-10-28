@@ -269,6 +269,7 @@ private struct TVStarRater: View {
                 .accessibilityIdentifier("tv.movie.star.\(star)")
             }
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("tv.movie.stars")
     }
 
