@@ -111,6 +111,7 @@
 		B0E100000000000000000011 /* TopShelfContentProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E100000000000000000001 /* TopShelfContentProvider.swift */; };
 		B0E100000000000000000012 /* TopShelfBannerRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E100000000000000000002 /* TopShelfBannerRenderer.swift */; };
 		B0E100000000000000000013 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = B0E100000000000000000005 /* PrivacyInfo.xcprivacy */; };
+		F7A1C0DE0000000000000002 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F7A1C0DE0000000000000001 /* PrivacyInfo.xcprivacy */; };
 		B0E100000000000000000014 /* MovieRouletteTuesdayTopShelf.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B0E100000000000000000006 /* MovieRouletteTuesdayTopShelf.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B0E100000000000000000015 /* TopShelfBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E100000000000000000007 /* TopShelfBridge.swift */; };
 		B0E100000000000000000016 /* TopShelfTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E100000000000000000008 /* TopShelfTests.swift */; };
@@ -274,6 +275,7 @@
 		B0E100000000000000000003 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B0E100000000000000000004 /* MovieRouletteTuesdayTopShelf.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MovieRouletteTuesdayTopShelf.entitlements; sourceTree = "<group>"; };
 		B0E100000000000000000005 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		F7A1C0DE0000000000000001 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		B0E100000000000000000006 /* MovieRouletteTuesdayTopShelf.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MovieRouletteTuesdayTopShelf.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0E100000000000000000007 /* TopShelfBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopShelfBridge.swift; sourceTree = "<group>"; };
 		B0E100000000000000000008 /* TopShelfTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TopShelfTests.swift; path = MRTKit/Tests/MRTCoreTests/TopShelfTests.swift; sourceTree = SOURCE_ROOT; };
@@ -498,6 +500,7 @@
 				E20000000000000000000009 /* TVProviderLink.swift */,
 				E2000000000000000000000A /* Info.plist */,
 				E2000000000000000000000B /* MovieRouletteTuesdayTV.entitlements */,
+				F7A1C0DE0000000000000001 /* PrivacyInfo.xcprivacy */,
 				63BFC0EAA94FC6B03CC60197 /* TVApp.swift */,
 				27AFD1B19A67578C7F3972D4 /* TVRootView.swift */,
 				BBA45AC56C7B2E47E806538A /* TVRouletteView.swift */,
@@ -781,6 +784,7 @@
 			files = (
 				E10000000000000000000019 /* polls.json in Resources */,
 				163678659FE30E9306D67A12 /* Assets.xcassets in Resources */,
+				F7A1C0DE0000000000000002 /* PrivacyInfo.xcprivacy in Resources */,
 				27217BF4BBDAA83EF82D2B64 /* movies.json in Resources */,
 				3E729DC191713021C593E6E0 /* wheel-spin.m4a in Resources */,
 			);
