@@ -20,7 +20,8 @@ struct TVBackground: View {
 
 enum TVFormat {
     /// Newest episode in the last three weeks (the row "NEW" badge and the tab dot).
-    static let recentEpisodeWindow: TimeInterval = 21 * 24 * 60 * 60
+    /// Same window as `TopShelf.recentEpisodeWindow`.
+    static let recentEpisodeWindow: TimeInterval = TopShelf.recentEpisodeWindow
 
     static func newestIsRecent(_ episodes: [PodcastEpisode], now: Date = Date()) -> Bool {
         guard let newest = episodes.max(by: { ($0.pubDate ?? .distantPast) < ($1.pubDate ?? .distantPast) }),
@@ -38,12 +39,7 @@ enum TVFormat {
     }
 
     static func runtime(_ seconds: TimeInterval?) -> String? {
-        guard let seconds, seconds > 0, seconds.isFinite else { return nil }
-        let total = Int(seconds.rounded())
-        let hours = total / 3600
-        let minutes = (total % 3600) / 60
-        if hours > 0 { return minutes == 0 ? "\(hours) hr" : "\(hours) hr \(minutes) min" }
-        return "\(max(minutes, 1)) min"
+        TopShelfCopy.runtime(seconds)
     }
 
     static func mediumDate(_ date: Date) -> String {

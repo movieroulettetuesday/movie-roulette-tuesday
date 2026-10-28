@@ -8,7 +8,7 @@ Unzip, open `MovieRouletteTuesday.xcodeproj`, select an iPhone simulator, Run.
 
 The project uses automatic signing. To build under your own Apple Developer team, change the Team once:
 
-1. **Signing Team (both targets).** Project → Signing & Capabilities → pick your Team for **MovieRouletteTuesday** and **MovieRouletteTuesdayWidgetExtension**. The App Group `group.com.movieroulettetuesday.app` is already in both entitlements; Xcode registers it for your team. Until that's done the widget still works but only shows Spin of the Day (no latest episode / last spin).
+1. **Signing Team.** Project → Signing & Capabilities → pick your Team for **MovieRouletteTuesday**, **MovieRouletteTuesdayWidgetExtension**, **MovieRouletteTuesdayTV**, and **MovieRouletteTuesdayTopShelf**. The App Group `group.com.movieroulettetuesday.app` is already in those entitlements; Xcode registers it for your team. Until that's done the iOS widget still works but only shows Spin of the Day, and Apple TV Top Shelf stays on the static placeholder image.
 2. **iCloud container.** The app target already has the CloudKit entitlements (`iCloud.com.movieroulettetuesday.app`). If Xcode asks you to enable the iCloud container under Signing & Capabilities → iCloud → CloudKit, accept. The widget does **not** need iCloud.
 3. **CloudKit schema (before App Store).** Open [CloudKit Console](https://icloud.developer.apple.com) → your team → container `iCloud.com.movieroulettetuesday.app` → Development → Schema → **Import** `CloudKit/MovieRouletteTuesday.ckdb` (or create record types `PollVote` and `ListenerRating` by hand; mark `pollId` and `movieId` **Queryable**). Then **Deploy Schema Changes → Promote to Production**. Until the schema exists the app still runs — polls and listener ratings simply show empty / “couldn't load”. Details in `CloudKit/SCHEMA.md`.
 
@@ -20,6 +20,7 @@ This app collects no personal data. No accounts, no analytics, no third-party se
 - **Anonymous iCloud (optional):** poll votes, listener star ratings and in-app movie suggestions go to the CloudKit **public** database. Records store only a poll/movie id and an option or star count (a suggestion stores the title, optional category and note, and an optional credit name you type). Your iCloud user record ID is hashed into the record name so re-voting overwrites instead of duplicating — it is never written to a field. Reading results does not require iCloud sign-in; writing does (you'll see “Sign in to iCloud in Settings to vote”).
 - **Public reads only (no user data sent):** the RSS feed (Episodes tab and the optional new-episode check), Apple's iTunes Lookup API (`itunes.apple.com/lookup?id=1666123849&entity=podcastEpisode`, to link the exact Apple Podcasts episode; only the show's public ID is sent; cached in Caches), and the Listen / Follow the Show links, which open in the other app or the browser.
 - **New-episode alert (off by default):** a `BGAppRefreshTask` re-reads the public RSS feed and posts a *local* notification. No push server, no device token. Notification permission is requested only when you turn it on; the "last seen" marker stays in UserDefaults.
+- **Apple TV Top Shelf:** the extension re-reads that same public RSS feed when its cached episode is older than six hours, so the shelf can show the latest episode before the app is opened. No user data is sent.
 - **Suggest a movie:** one sheet. **Send** saves an anonymous `Suggestion` record to the CloudKit public database (create-only; needs iCloud). **Send by email instead** builds an email in Mail (or your mail app via `mailto:`) to theMrtPodcast@gmail.com; the app never sends it, you do. No mail app? It copies the address.
 - **Siri / Shortcuts:** "Spin Movie Roulette" runs in the app process and writes only to the on-device spin history.
 
@@ -32,12 +33,14 @@ This app collects no personal data. No accounts, no analytics, no third-party se
 - **Movies** — search/sort/filter (category, watchlist, watched, rated by me, haven't spun yet). Per-movie Your Take (1–5 stars + Want to Watch / Watched) and anonymous Listener Rating.
 - **Stats** — this-device spin overview + Your Ratings (count, average, top-rated by you; you-vs-hosts only where `hostRating` exists).
 - **Widget** — Spin of the Day (+ latest episode / last spin once the App Group is signed).
+- **Apple TV Top Shelf** — latest episode. Select opens `mrt://episode/<guid>` in the TV app. See [MovieRouletteTuesdayTopShelf/TOPSHELF.md](MovieRouletteTuesdayTopShelf/TOPSHELF.md).
 
 ## Project layout
 
 - `MovieRouletteTuesday/` — app (SwiftUI, iOS 17+, no third-party deps). Shared code lives in the local package `MRTKit/`: `MRTCore` (pure logic, Foundation only, also compiles on Linux for unit tests) and `MRTShared` (stores, wheel drawing, spin audio and the Roulette view model, shared with the tvOS app).
 - `MovieRouletteTuesdayWidget/` — WidgetKit extension (App Group).
-- `MovieRouletteTuesdayTV/` — Apple TV app (tvOS 17+, scheme `MovieRouletteTuesdayTV`), in progress: phase 1 has the Roulette tab only; the other tabs are placeholders.
+- `MovieRouletteTuesdayTV/` — Apple TV app (tvOS 17+, scheme `MovieRouletteTuesdayTV`): Roulette, Episodes, Movies, Stats, Settings. Writes the latest episode into the App Group for Top Shelf.
+- `MovieRouletteTuesdayTopShelf/` — tvOS Top Shelf extension (`com.movieroulettetuesday.app.topshelf`). Dynamic latest-episode banner; static shelf images in the TV asset catalog are the fallback.
 - `MovieRouletteTuesdayTests/` — XCTest (imports `MRTCore` / `MRTShared`).
 - `CloudKit/` — `.ckdb` schema + `SCHEMA.md`.
 - Project files: add new source files through Xcode (File → New / Add Files) so they join the right targets (app, widget, tests).
