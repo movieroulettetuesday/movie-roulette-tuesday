@@ -162,4 +162,19 @@ final class HalfStarMappingTests: XCTestCase {
         XCTAssertEqual(s.topRated.last?.halfStars, 7)
         XCTAssertEqual(r.status(for: "a"), .watched, "rating implies watched")
     }
+
+    /// Apple TV stores ratings in UserDefaults (Application Support can be purged).
+    @MainActor
+    func testUserDefaultsRoundTrip() throws {
+        let suite = "tv-ratings-\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let store = PersonalRatingsStore(fileStore: nil, defaults: defaults)
+        store.setHalfStars(8, for: "a")
+        store.setStatus(.wantToWatch, for: "b")
+        let again = PersonalRatingsStore(fileStore: nil, defaults: defaults)
+        XCTAssertEqual(again.halfStars(for: "a"), 8)
+        XCTAssertEqual(again.status(for: "b"), .wantToWatch)
+        XCTAssertEqual(again.status(for: "a"), .watched)
+    }
 }

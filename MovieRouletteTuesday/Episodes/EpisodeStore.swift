@@ -120,14 +120,26 @@ final class EpisodeStore {
             case .notConnectedToInternet, .networkConnectionLost, .dataNotAllowed, .internationalRoamingOff:
                 return "You’re offline. Showing saved episodes."
             case .timedOut:
+                #if os(tvOS)
+                return "Loading episodes took too long. Select Try again."
+                #else
                 return "Loading episodes took too long. Pull down to try again."
+                #endif
             case .cannotFindHost, .cannotConnectToHost, .dnsLookupFailed:
+                #if os(tvOS)
+                return "Couldn’t load episodes. Select Try again."
+                #else
                 return "Couldn’t load episodes. Pull down to try again."
+                #endif
             default:
                 break
             }
         }
+        #if os(tvOS)
+        if error is RSSFeedError { return "Couldn’t read the episode list. Select Try again." }
+        #else
         if error is RSSFeedError { return "Couldn’t read the episode list. Pull down to try again." }
+        #endif
         return error.localizedDescription
     }
 
@@ -144,6 +156,8 @@ final class EpisodeStore {
             // First launch: don't badge the entire back catalog.
             setLastViewed(NewEpisodeBadge.initialBaseline(episodes: unique))
         }
+        #if os(iOS)
         WidgetBridge.publishLatestEpisode(from: unique)
+        #endif
     }
 }

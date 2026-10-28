@@ -7,9 +7,19 @@ import MRTCore
 ///
 /// The detailed log is capped (`SpinHistoryLog.defaultDetailLimit`); older
 /// spins survive as counts in `archive`, so stats stay exact.
+///
+/// Apple TV passes `defaults` and `keepsArchive: false`. tvOS can purge
+/// Application Support, and the TV stats screen keeps only the last
+/// `tvDetailLimit` spins (no archive, no iCloud). iOS keeps the file store
+/// and the archive; leave `defaults` nil there.
 @MainActor
 @Observable
 public final class SpinHistoryStore {
+    /// Spins kept on Apple TV. Older ones are dropped, not archived.
+    public static let tvDetailLimit = 100
+    /// UserDefaults key for the TV log. Not used by iOS.
+    public static let tvDefaultsKey = "tv.spinHistory"
+
     /// Recent detailed spins, chronological (oldest first).
     public private(set) var results: [SpinResult] = []
     /// Counts for spins older than the detailed window.
@@ -20,14 +30,26 @@ public final class SpinHistoryStore {
 
     private let fileStore: SpinHistoryFileStore?
     private let detailLimit: Int
+    /// When set, the log is JSON in UserDefaults and `fileStore` is ignored.
+    private let defaults: UserDefaults?
+    private let defaultsKey: String
+    /// False on Apple TV: overflow is discarded so the total never exceeds `detailLimit`.
+    private let keepsArchive: Bool
 
-    /// Pass `nil` for an in-memory store (previews, UI tests).
+    /// Pass `fileStore: nil` for an in-memory store (previews, UI tests).
+    /// Pass `defaults` (and `keepsArchive: false`) for the Apple TV log.
     public init(
         fileStore: SpinHistoryFileStore? = try? SpinHistoryFileStore.applicationSupport(),
-        detailLimit: Int = SpinHistoryLog.defaultDetailLimit
+        detailLimit: Int = SpinHistoryLog.defaultDetailLimit,
+        defaults: UserDefaults? = nil,
+        defaultsKey: String = SpinHistoryStore.tvDefaultsKey,
+        keepsArchive: Bool = true
     ) {
-        self.fileStore = fileStore
+        self.fileStore = defaults == nil ? fileStore : nil
         self.detailLimit = detailLimit
+        self.defaults = defaults
+        self.defaultsKey = defaultsKey
+        self.keepsArchive = keepsArchive
         load()
     }
 
@@ -38,8 +60,9 @@ public final class SpinHistoryStore {
     public var totalSpins: Int { stats.totalSpins }
 
     public func record(_ result: SpinResult) {
-        var log = SpinHistoryLog(results: results, archive: archive)
+        var log = SpinHistoryLog(results: results, archive: keepsArchive ? archive : .empty)
         log.append(result, detailLimit: detailLimit)
+        if !keepsArchive { log.archive = .empty }
         apply(log)
         persist()
     }
@@ -56,6 +79,22 @@ public final class SpinHistoryStore {
     }
 
     private func load() {
+        if let defaults {
+            guard let data = defaults.data(forKey: defaultsKey) else { return }
+            do {
+                var log = try JSONDecoder().decode(SpinHistoryLog.self, from: data)
+                let loadedCount = log.results.count
+                let loadedArchive = log.archive
+                log.compact(detailLimit: detailLimit)
+                if !keepsArchive { log.archive = .empty }
+                apply(log)
+                if log.results.count != loadedCount || log.archive != loadedArchive { persist() }
+            } catch {
+                defaults.removeObject(forKey: defaultsKey)
+                lastError = "Spin history couldn't be read, so it was reset."
+            }
+            return
+        }
         guard let fileStore else { return }
         do {
             var log = try fileStore.loadLog()
@@ -74,9 +113,19 @@ public final class SpinHistoryStore {
     }
 
     private func persist() {
+        let log = SpinHistoryLog(results: results, archive: archive)
+        if let defaults {
+            do {
+                defaults.set(try JSONEncoder().encode(log), forKey: defaultsKey)
+                lastError = nil
+            } catch {
+                lastError = "Couldn’t save spin history: \(error.localizedDescription)"
+            }
+            return
+        }
         guard let fileStore else { return }
         do {
-            try fileStore.saveLog(SpinHistoryLog(results: results, archive: archive))
+            try fileStore.saveLog(log)
             lastError = nil
         } catch {
             lastError = "Couldn’t save spin history: \(error.localizedDescription)"

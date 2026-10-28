@@ -38,7 +38,7 @@ public enum RSSFeedError: Error, LocalizedError, Equatable {
 ///
 /// Handles the Buzzsprout fields we need: title, guid, pubDate, link,
 /// description / itunes:summary, itunes:season, itunes:episode, itunes:episodeType,
-/// itunes:image (per item and per channel).
+/// itunes:duration, itunes:image (per item and per channel).
 public enum RSSFeedParser {
     /// The longest of the candidate show-notes texts (description, content:encoded,
     /// itunes:summary), so a truncated itunes:summary never wins.
@@ -64,6 +64,24 @@ public enum RSSFeedParser {
 
     /// RFC 822 pubDate, tolerating the common variants seen in the wild
     /// (no weekday, no seconds, named zones like "GMT"/"EST"). Unparseable -> nil.
+    /// `itunes:duration` as seconds. Accepts a whole number of seconds, `m:ss`,
+    /// or `h:mm:ss`. Empty or unparseable -> nil.
+    public static func parseDuration(_ raw: String) -> TimeInterval? {
+        let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+        let parts = trimmed.split(separator: ":")
+        if parts.count == 1 {
+            guard let seconds = TimeInterval(trimmed), seconds >= 0, seconds.isFinite else { return nil }
+            return seconds
+        }
+        guard parts.count == 2 || parts.count == 3 else { return nil }
+        let numbers = parts.map { Double($0.trimmingCharacters(in: .whitespaces)) }
+        guard numbers.allSatisfy({ $0 != nil && $0! >= 0 && $0!.isFinite }) else { return nil }
+        let values = numbers.compactMap { $0 }
+        if values.count == 2 { return values[0] * 60 + values[1] }
+        return values[0] * 3600 + values[1] * 60 + values[2]
+    }
+
     public static func parseDate(_ raw: String) -> Date? {
         let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return nil }
@@ -122,6 +140,7 @@ private final class FeedDelegate: NSObject, XMLParserDelegate {
     private var itemEpisodeType = ""
     private var itemImage = ""
     private var itemHTML = ""
+    private var itemDuration = ""
     private var inItem = false
 
     func parser(
@@ -138,7 +157,7 @@ private final class FeedDelegate: NSObject, XMLParserDelegate {
             inItem = true
             itemTitle = ""; itemGUID = ""; itemLink = ""; itemPubDate = ""
             itemDescription = ""; itemSeason = ""; itemEpisode = ""; itemEpisodeType = ""
-            itemImage = ""; itemHTML = ""; itemSummary = ""
+            itemImage = ""; itemHTML = ""; itemSummary = ""; itemDuration = ""
         }
         // itunes:image carries the URL in an attribute (`href`); RSS <image> has none.
         if name == "image", let href = attributeDict["href"] ?? attributeDict["HREF"] {
@@ -187,6 +206,7 @@ private final class FeedDelegate: NSObject, XMLParserDelegate {
             case "episode":
                 if Int(value) != nil { itemEpisode = value }
             case "episodetype": itemEpisodeType = value
+            case "duration": if itemDuration.isEmpty { itemDuration = value }
             case "item":
                 let guid = itemGUID.isEmpty ? itemLink : itemGUID
                 if !guid.isEmpty, !itemTitle.isEmpty {
@@ -202,7 +222,8 @@ private final class FeedDelegate: NSObject, XMLParserDelegate {
                             [itemDescription, itemHTML, itemSummary].map { ShowNotes.strippingFanMail(stripHTML($0)) }
                         ),
                         imageURL: ArtworkResolver.usableURL(itemImage),
-                        fanMailURL: ShowNotes.fanMailURL(inHTML: itemHTML)
+                        fanMailURL: ShowNotes.fanMailURL(inHTML: itemHTML),
+                        duration: RSSFeedParser.parseDuration(itemDuration)
                     ))
                 }
                 inItem = false
