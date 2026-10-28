@@ -75,7 +75,6 @@ struct TVRootView: View {
             TVEpisodesView(store: episodes, catalog: roulette.catalog) { episode in
                 pages.append(.episode(episode.guid))
             }
-            .modifier(TVBadge(count: episodeBadgeCount))
             .tabItem { Text("Episodes") }
             .tag(Tab.episodes)
             TVMoviesView(
@@ -97,6 +96,11 @@ struct TVRootView: View {
             )
             .tabItem { Text("Stats") }
             .tag(Tab.stats)
+        }
+        .overlay(alignment: .top) {
+            if episodeBadgeCount > 0 {
+                TVEpisodesTabDot()
+            }
         }
     }
 

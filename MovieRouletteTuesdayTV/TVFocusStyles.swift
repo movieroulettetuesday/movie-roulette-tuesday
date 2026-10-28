@@ -126,10 +126,29 @@ struct TVCategoryChip: View {
     }
 }
 
-/// Hides a tab badge when the count is zero (`.badge(0)` can still draw a dot).
-struct TVBadge: ViewModifier {
-    let count: Int
-    func body(content: Content) -> some View {
-        if count > 0 { content.badge(count) } else { content }
+/// Teal dot on the Episodes tab (mockup). tvOS has no `.badge(_:)`, so this is
+/// drawn over the system tab bar. The four titles mirror the tab order and stay
+/// invisible; only the dot shows.
+struct TVEpisodesTabDot: View {
+    var body: some View {
+        HStack(spacing: 52) {
+            Text("Roulette").hidden()
+            Text("Episodes")
+                .hidden()
+                .overlay(alignment: .topTrailing) {
+                    Circle()
+                        .fill(Brand.teal)
+                        .frame(width: 16, height: 16)
+                        .offset(x: 10, y: -4)
+                }
+            Text("Movies").hidden()
+            Text("Stats").hidden()
+        }
+        .font(.system(size: 38, weight: .semibold))
+        .padding(.top, 38)
+        .allowsHitTesting(false)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("New episode")
+        .accessibilityIdentifier("tv.episodes.tabDot")
     }
 }

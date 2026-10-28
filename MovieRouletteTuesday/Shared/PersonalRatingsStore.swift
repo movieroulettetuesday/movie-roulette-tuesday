@@ -9,7 +9,8 @@ import MRTShared
 @Observable
 final class PersonalRatingsStore {
     /// UserDefaults key for ratings on Apple TV. Not used by iOS.
-    static let tvDefaultsKey = "tv.personalRatings"
+    /// `nonisolated` so it can be a default argument (the type is `@MainActor`).
+    nonisolated static let tvDefaultsKey = "tv.personalRatings"
 
     private(set) var ratings = PersonalRatings()
     private(set) var lastError: String?

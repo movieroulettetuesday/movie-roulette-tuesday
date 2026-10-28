@@ -5,6 +5,7 @@ import XCTest
 /// so the test doesn't have to walk the tab bar. `-MRTUITest` keeps the bundled catalog.
 final class TVScreensUITests: XCTestCase {
     private var app: XCUIApplication!
+    private var remote: XCUIRemote { XCUIRemote.shared }
 
     override func setUpWithError() throws {
         continueAfterFailure = false
@@ -15,6 +16,11 @@ final class TVScreensUITests: XCTestCase {
     private func launch(_ extra: [String] = []) {
         app.launchArguments += extra
         app.launch()
+    }
+
+    private func waitForFocus(_ element: XCUIElement, timeout: TimeInterval = 10) -> Bool {
+        let focused = NSPredicate(format: "exists == true AND hasFocus == true")
+        return XCTWaiter().wait(for: [expectation(for: focused, evaluatedWith: element)], timeout: timeout) == .completed
     }
 
     private func attach(_ name: String) {
@@ -64,7 +70,11 @@ final class TVScreensUITests: XCTestCase {
         let settings = app.buttons["tv.stats.settings"]
         XCTAssertTrue(settings.waitForExistence(timeout: 20))
         XCTAssertTrue(app.staticTexts["Stats"].exists)
-        settings.tap()
+        if !waitForFocus(settings, timeout: 8) {
+            remote.press(.down) // leave the tab bar for the Stats content
+        }
+        XCTAssertTrue(waitForFocus(settings), "Settings has focus")
+        remote.press(.select)
         XCTAssertTrue(app.descendants(matching: .any)["tv.screen.settings"].waitForExistence(timeout: 10))
         XCTAssertTrue(app.buttons["tv.settings.spinSound"].exists)
         XCTAssertTrue(app.buttons["tv.settings.apple"].exists)

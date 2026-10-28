@@ -48,6 +48,11 @@ struct TVEpisodesView: View {
         }
     }
 
+    private var loadingEpisodes: some View {
+        TVStatusView(title: "Loading episodes…", systemImage: "mic", message: nil)
+            .accessibilityIdentifier("tv.episodes.loading")
+    }
+
     private var seasonLine: String {
         if let season = episodes.first?.season { return "Season \(season) · Newest first" }
         return "Newest first"
@@ -56,9 +61,10 @@ struct TVEpisodesView: View {
     @ViewBuilder
     private var content: some View {
         switch store.loadState {
-        case .idle, .loading where episodes.isEmpty:
-            TVStatusView(title: "Loading episodes…", systemImage: "mic", message: nil)
-                .accessibilityIdentifier("tv.episodes.loading")
+        case .idle:
+            loadingEpisodes
+        case .loading where episodes.isEmpty:
+            loadingEpisodes
         case .failed(let message) where episodes.isEmpty:
             TVStatusView(
                 title: "Couldn’t Load Episodes",

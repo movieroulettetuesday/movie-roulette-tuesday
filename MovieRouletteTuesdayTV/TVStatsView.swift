@@ -12,6 +12,7 @@ struct TVStatsView: View {
 
     @Environment(\.colorScheme) private var scheme
     @Environment(PersonalRatingsStore.self) private var personal
+    @FocusState private var settingsFocused: Bool
 
     private var theme: TVTheme { TVTheme(scheme: scheme) }
     private var snap: StatsCalculator.Snapshot {
@@ -36,6 +37,7 @@ struct TVStatsView: View {
                         .font(.system(size: 32, weight: .semibold))
                 }
                 .buttonStyle(TVPillButtonStyle(primary: false, width: 320, height: 84, fontSize: 32))
+                .focused($settingsFocused)
                 .accessibilityIdentifier("tv.stats.settings")
             }
             if snap.totalSpins == 0 && mine.ratedCount == 0 && mine.watchlistCount == 0 {
@@ -63,6 +65,8 @@ struct TVStatsView: View {
         .padding(.top, 12)
         .padding(.bottom, 16)
         .accessibilityIdentifier("tv.screen.stats")
+        .defaultFocus($settingsFocused, true)
+        .onAppear { TVFocus.soon { settingsFocused = true } }
     }
 
     private var left: some View {

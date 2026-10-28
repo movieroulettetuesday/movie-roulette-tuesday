@@ -16,9 +16,10 @@ import MRTCore
 @Observable
 public final class SpinHistoryStore {
     /// Spins kept on Apple TV. Older ones are dropped, not archived.
-    public static let tvDetailLimit = 100
+    /// `nonisolated` so it can be a default argument (the type is `@MainActor`).
+    public nonisolated static let tvDetailLimit = 100
     /// UserDefaults key for the TV log. Not used by iOS.
-    public static let tvDefaultsKey = "tv.spinHistory"
+    public nonisolated static let tvDefaultsKey = "tv.spinHistory"
 
     /// Recent detailed spins, chronological (oldest first).
     public private(set) var results: [SpinResult] = []
