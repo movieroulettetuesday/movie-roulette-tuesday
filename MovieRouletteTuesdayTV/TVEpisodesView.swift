@@ -28,6 +28,7 @@ struct TVEpisodesView: View {
         .padding(.horizontal, 80)
         .padding(.top, 12)
         .padding(.bottom, 24)
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("tv.screen.episodes")
         .onChange(of: focusedGUID) { _, guid in
             if let guid { previewGUID = guid }

@@ -34,6 +34,7 @@ struct TVSettingsView: View {
         .padding(.horizontal, 80)
         .padding(.top, 28)
         .padding(.bottom, 20)
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("tv.screen.settings")
         .defaultFocus($soundFocused, true)
         .onExitCommand(perform: onBack)

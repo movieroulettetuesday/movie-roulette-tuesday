@@ -64,6 +64,7 @@ struct TVStatsView: View {
         .padding(.horizontal, 80)
         .padding(.top, 12)
         .padding(.bottom, 16)
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("tv.screen.stats")
         .defaultFocus($settingsFocused, true)
         .onAppear { TVFocus.soon { settingsFocused = true } }

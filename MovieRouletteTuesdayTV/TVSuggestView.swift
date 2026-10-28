@@ -28,6 +28,7 @@ struct TVSuggestView: View {
             .background(RoundedRectangle(cornerRadius: 40, style: .continuous).fill(theme.card))
             .padding(.horizontal, 160)
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("tv.screen.suggest")
         .defaultFocus($doneFocused, true)
         .onAppear {

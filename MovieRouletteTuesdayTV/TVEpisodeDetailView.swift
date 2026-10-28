@@ -45,6 +45,7 @@ struct TVEpisodeDetailView: View {
         .padding(.horizontal, 80)
         .padding(.top, 36)
         .padding(.bottom, 28)
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("tv.screen.episode")
         .defaultFocus($focus, .listen)
         .onAppear { focus = .listen }

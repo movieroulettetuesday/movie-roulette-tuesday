@@ -58,6 +58,7 @@ struct TVMoviesView: View {
         .padding(.horizontal, 80)
         .padding(.top, 12)
         .padding(.bottom, 8)
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("tv.screen.movies")
     }
 
@@ -87,6 +88,7 @@ struct TVMoviesView: View {
                 TextField("Search \(catalog?.movies.count ?? 0) movies", text: $query)
                     .font(.system(size: 34, weight: .medium))
                     .focused($searchFocused)
+                    .accessibilityIdentifier("tv.movies.search")
             }
             .foregroundStyle(searchFocused ? theme.ink : theme.text)
             .padding(.horizontal, 28)
@@ -94,7 +96,6 @@ struct TVMoviesView: View {
             .background(Capsule().fill(searchFocused ? Color.white : theme.field))
             .overlay(Capsule().strokeBorder(theme.teal.opacity(searchFocused ? 0.95 : 0), lineWidth: 4))
             .shadow(color: theme.teal.opacity(searchFocused ? 0.65 : 0), radius: searchFocused ? 20 : 0)
-            .accessibilityIdentifier("tv.movies.search")
 
             Menu {
                 ForEach(Sort.allCases) { option in

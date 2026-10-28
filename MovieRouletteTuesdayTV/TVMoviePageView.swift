@@ -46,6 +46,7 @@ struct TVMoviePageView: View {
         .padding(.horizontal, 80)
         .padding(.top, 28)
         .padding(.bottom, 24)
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("tv.screen.movie")
         .defaultFocus($providerFocus, providers.first?.id)
         .onExitCommand(perform: onBack)

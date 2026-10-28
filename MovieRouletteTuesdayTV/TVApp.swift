@@ -25,6 +25,12 @@ struct MovieRouletteTuesdayTVApp: App {
     @State private var community: CommunityService
 
     init() {
+        // UI tests share the simulator's UserDefaults. A spin from an earlier
+        // test would otherwise show up as "Last landed on" after a cancelled spin.
+        if ProcessInfo.processInfo.arguments.contains("-MRTUITest") {
+            UserDefaults.standard.removeObject(forKey: SpinHistoryStore.tvDefaultsKey)
+            UserDefaults.standard.removeObject(forKey: PersonalRatingsStore.tvDefaultsKey)
+        }
         let history = SpinHistoryStore(
             fileStore: nil,
             detailLimit: SpinHistoryStore.tvDetailLimit,
