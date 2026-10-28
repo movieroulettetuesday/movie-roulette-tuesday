@@ -188,6 +188,7 @@ struct TVMoviePageView: View {
         .padding(24)
         .frame(maxWidth: .infinity, minHeight: 180, alignment: .leading)
         .background(RoundedRectangle(cornerRadius: 28, style: .continuous).fill(theme.card))
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("tv.movie.yourRating")
     }
 
@@ -347,6 +348,7 @@ private struct TVPollCard: View {
         }
         .padding(24)
         .background(RoundedRectangle(cornerRadius: 28, style: .continuous).fill(theme.card))
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("tv.movie.poll")
     }
 
