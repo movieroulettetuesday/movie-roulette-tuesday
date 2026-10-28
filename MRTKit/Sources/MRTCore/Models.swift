@@ -361,6 +361,8 @@ public struct PodcastEpisode: Codable, Hashable, Identifiable, Sendable {
     /// Buzzsprout "Send us Fan Mail" link from the show-notes HTML. Optional so
     /// older feed caches still decode (as nil).
     public var fanMailURL: URL?
+    /// `itunes:duration` in seconds. Optional so older feed caches still decode.
+    public var duration: TimeInterval?
 
     public init(
         guid: String,
@@ -372,7 +374,8 @@ public struct PodcastEpisode: Codable, Hashable, Identifiable, Sendable {
         episodeType: String? = nil,
         summary: String = "",
         imageURL: URL? = nil,
-        fanMailURL: URL? = nil
+        fanMailURL: URL? = nil,
+        duration: TimeInterval? = nil
     ) {
         self.guid = guid
         self.title = title
@@ -384,6 +387,7 @@ public struct PodcastEpisode: Codable, Hashable, Identifiable, Sendable {
         self.summary = summary
         self.imageURL = imageURL
         self.fanMailURL = fanMailURL
+        self.duration = duration
     }
 
     /// Show notes without Buzzsprout's leading "Send us Fan Mail" line. Applied at

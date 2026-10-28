@@ -231,6 +231,25 @@ final class EmptyFeedRefreshTests: XCTestCase {
         XCTAssertEqual(try EpisodeFeedIO.loadCache(from: cacheURL).episodes.map(\.guid), ["Buzzsprout-9"])
     }
 
+    func testParseDuration() {
+        XCTAssertEqual(RSSFeedParser.parseDuration("4983"), 4983)
+        XCTAssertEqual(RSSFeedParser.parseDuration("1:23:05"), 3600 + 23 * 60 + 5)
+        XCTAssertEqual(RSSFeedParser.parseDuration("23:05"), 23 * 60 + 5)
+        XCTAssertNil(RSSFeedParser.parseDuration(""))
+        XCTAssertNil(RSSFeedParser.parseDuration("nope"))
+        XCTAssertNil(RSSFeedParser.parseDuration("1:2:3:4"))
+    }
+
+    func testParsesItemDuration() throws {
+        let xml = """
+        <?xml version="1.0"?><rss version="2.0"><channel><title>S</title>
+        <item><title>T</title><guid>g</guid><itunes:duration>1:23:00</itunes:duration></item>
+        </channel></rss>
+        """
+        let feed = try RSSFeedParser.parse(data: Data(xml.utf8))
+        XCTAssertEqual(feed.episodes.first?.duration, 4980)
+    }
+
     func testValidatedRejectsEmptyFeed() throws {
         XCTAssertThrowsError(try EpisodeFeedIO.validated(PodcastFeed(title: "Show", episodes: []))) {
             XCTAssertEqual($0 as? RSSFeedError, .noEpisodes)

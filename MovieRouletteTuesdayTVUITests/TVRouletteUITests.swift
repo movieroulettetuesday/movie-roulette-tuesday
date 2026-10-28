@@ -26,7 +26,7 @@ final class TVRouletteUITests: XCTestCase {
     }
 
     private func waitForSpinning(timeout: TimeInterval = 5) -> Bool {
-        let spinning = NSPredicate(format: "label == %@", "Spinning…")
+        let spinning = NSPredicate(format: "label == %@", "Stop")
         return XCTWaiter().wait(for: [expectation(for: spinning, evaluatedWith: spin)], timeout: timeout) == .completed
     }
 
@@ -95,7 +95,8 @@ final class TVRouletteUITests: XCTestCase {
         remote.press(.right)
         remote.press(.left)
         XCTAssertTrue(waitForFocus(spin, timeout: 2), "swipes during a spin leave focus on Spin")
-        XCTAssertEqual(spin.label, "Spinning…", "still spinning on the Roulette tab")
+        XCTAssertEqual(spin.label, "Stop", "the pill is Stop while the wheel is moving")
+        XCTAssertTrue(app.staticTexts["Spinning..."].exists, "spinning status under the pill")
 
         remote.press(.menu)  // = cancel the spin
         let idle = NSPredicate(format: "label == %@", "Spin")

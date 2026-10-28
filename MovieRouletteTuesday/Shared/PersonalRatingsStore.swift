@@ -8,14 +8,39 @@ import MRTShared
 @MainActor
 @Observable
 final class PersonalRatingsStore {
+    /// UserDefaults key for ratings on Apple TV. Not used by iOS.
+    /// `nonisolated` so it can be a default argument (the type is `@MainActor`).
+    nonisolated static let tvDefaultsKey = "tv.personalRatings"
+
     private(set) var ratings = PersonalRatings()
     private(set) var lastError: String?
 
     private let fileStore: PersonalRatingsFileStore?
+    /// When set, ratings are JSON in UserDefaults (Apple TV). `fileStore` is ignored.
+    private let defaults: UserDefaults?
+    private let defaultsKey: String
 
-    /// Pass `nil` for an in-memory store (previews).
-    init(fileStore: PersonalRatingsFileStore? = try? PersonalRatingsFileStore.applicationSupport()) {
-        self.fileStore = fileStore
+    /// Pass `fileStore: nil` for an in-memory store (previews).
+    /// Pass `defaults` for Apple TV, where Application Support can be purged.
+    init(
+        fileStore: PersonalRatingsFileStore? = try? PersonalRatingsFileStore.applicationSupport(),
+        defaults: UserDefaults? = nil,
+        defaultsKey: String = PersonalRatingsStore.tvDefaultsKey
+    ) {
+        self.fileStore = defaults == nil ? fileStore : nil
+        self.defaults = defaults
+        self.defaultsKey = defaultsKey
+        if let defaults {
+            if let data = defaults.data(forKey: defaultsKey) {
+                do {
+                    ratings = try JSONDecoder().decode(PersonalRatings.self, from: data)
+                } catch {
+                    defaults.removeObject(forKey: defaultsKey)
+                    lastError = "Your saved ratings couldn't be read, so they were reset."
+                }
+            }
+            return
+        }
         guard let fileStore else { return }
         do {
             ratings = try fileStore.load()
@@ -51,6 +76,15 @@ final class PersonalRatingsStore {
     }
 
     private func persist() {
+        if let defaults {
+            do {
+                defaults.set(try JSONEncoder().encode(ratings), forKey: defaultsKey)
+                lastError = nil
+            } catch {
+                lastError = "Couldn’t save your ratings: \(error.localizedDescription)"
+            }
+            return
+        }
         guard let fileStore else { return }
         do {
             try fileStore.save(ratings)

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.movieroulettetuesday.app</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>mrt</string>
+			</array>
+		</dict>
+	</array>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>nflx</string>
+		<string>aiv</string>
+		<string>primevideo</string>
+		<string>videos</string>
+		<string>hulu</string>
+		<string>disneyplus</string>
+		<string>youtube</string>
+		<string>spotify</string>
+		<string>podcasts</string>
+		<string>pcast</string>
+	</array>
+</dict>
+</plist>

@@ -209,3 +209,36 @@ final class NotificationHandleTapReproTests: XCTestCase {
         await MainActor.run { AppRouter.shared.pendingURL = nil }
     }
 }
+
+/// Apple TV keeps the last 100 spins in UserDefaults and drops the rest.
+/// The iOS in-memory/file store still archives overflow so totals stay exact.
+@MainActor
+final class TVSpinHistoryStoreTests: XCTestCase {
+    func testTVCapDropsOverflowAndReloads() throws {
+        let suite = "tv-history-\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let store = SpinHistoryStore(fileStore: nil, detailLimit: 3, defaults: defaults, keepsArchive: false)
+        for i in 0..<5 {
+            store.record(SpinResult(movieId: "m\(i)", categoryId: "c"))
+        }
+        XCTAssertEqual(store.results.map(\.movieId), ["m2", "m3", "m4"])
+        XCTAssertEqual(store.archive.totalSpins, 0)
+        XCTAssertEqual(store.totalSpins, 3)
+
+        let reloaded = SpinHistoryStore(fileStore: nil, detailLimit: 3, defaults: defaults, keepsArchive: false)
+        XCTAssertEqual(reloaded.results.map(\.movieId), ["m2", "m3", "m4"])
+        XCTAssertEqual(reloaded.totalSpins, 3)
+        XCTAssertEqual(reloaded.archive.totalSpins, 0)
+    }
+
+    func testInMemoryStoreStillArchivesOverflow() {
+        let store = SpinHistoryStore(fileStore: nil, detailLimit: 2)
+        for i in 0..<4 {
+            store.record(SpinResult(movieId: "m\(i)", categoryId: "c"))
+        }
+        XCTAssertEqual(store.results.count, 2)
+        XCTAssertEqual(store.archive.totalSpins, 2)
+        XCTAssertEqual(store.totalSpins, 4)
+    }
+}
