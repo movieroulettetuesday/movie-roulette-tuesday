@@ -125,10 +125,10 @@ enum TopShelfExtensionContent {
 
     private static func applyImages(_ plan: TopShelfItemModel, to item: TVTopShelfItem) {
         if let url = plan.imageURL {
-            item.setImageURL(url, forTraits: .screenScale1x)
+            item.setImageURL(url, for: .screenScale1x)
         }
         if let url = plan.imageURL2x ?? plan.imageURL {
-            item.setImageURL(url, forTraits: .screenScale2x)
+            item.setImageURL(url, for: .screenScale2x)
         }
     }
 }

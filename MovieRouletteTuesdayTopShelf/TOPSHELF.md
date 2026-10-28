@@ -60,7 +60,7 @@ Inset images are 1920×720 @1x and 3840×1440 @2x, the same frame as the approve
 
 ## Placeholder art
 
-The layered icon and both Top Shelf images are **placeholders**. They say TODO / LATEST EPISODE / PLACEHOLDER ART. They are not the Passengers poster from the mock (that artwork is not in the repo). Replace them before submission. The back icon layer is fully opaque, which is what `actool` requires. Front and Middle are transparent so the parallax stack has depth.
+The layered icon and both Top Shelf images are **placeholders**. They say TODO / LATEST EPISODE / PLACEHOLDER ART. They are not the Passengers poster from the mock (that artwork is not in the repo). Replace them before submission. The Top Shelf images are fully opaque bitmaps (`actool` rejects any alpha on those slots). The back icon layer is fully opaque too. Front and Middle stay transparent so the parallax stack has depth.
 
 ## What a Mac still has to verify
 
@@ -73,7 +73,7 @@ This repo was checked with the Foundation tests (`TopShelfTests`: latest episode
    - `TVTopShelfContentProvider.loadTopShelfContent(completionHandler:)`
    - `TVTopShelfContentProvider.topShelfContentDidChange()`
    - `TVTopShelfItem(identifier:)` and `TVTopShelfSectionedItem(identifier:)`
-   - `setImageURL(_:forTraits:)` with `.screenScale1x` / `.screenScale2x`
+   - `setImageURL(_:for:)` with `.screenScale1x` / `.screenScale2x`
    - `TVTopShelfAction(url:)`
    - `TVTopShelfInsetContent(items:)` and `TVTopShelfSectionedContent(sections:)`
    - `imageShape` `.poster` / `.square` on the sectioned item
