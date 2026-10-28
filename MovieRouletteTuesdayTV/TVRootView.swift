@@ -2,65 +2,198 @@ import SwiftUI
 import MRTCore
 import MRTShared
 
-/// Top tab bar (tvOS renders `TabView` as the mockup's Roulette · Episodes · Movies · Stats bar).
+/// Top tab bar: Roulette · Episodes · Movies · Stats.
+/// Detail screens replace the tab bar (mockups 06, 08, 10). Suggest is a card on top.
 struct TVRootView: View {
     enum Tab: Hashable { case roulette, episodes, movies, stats }
 
-    let roulette: RouletteViewModel
-    @State private var tab: Tab = .roulette
-
-    var body: some View {
-        TabView(selection: $tab) {
-            TVRouletteView(model: roulette)
-                .tabItem { Text("Roulette") }
-                .tag(Tab.roulette)
-            TVPlaceholderView(title: "Episodes")
-                .tabItem { Text("Episodes") }
-                .tag(Tab.episodes)
-            TVPlaceholderView(title: "Movies")
-                .tabItem { Text("Movies") }
-                .tag(Tab.movies)
-            TVPlaceholderView(title: "Stats")
-                .tabItem { Text("Stats") }
-                .tag(Tab.stats)
-        }
-        .task {
-            await roulette.load()
-            await roulette.refreshRemoteCatalog()
-        }
+    enum Page: Hashable {
+        case episode(String)
+        case movie(String, breadcrumb: String)
+        case settings
     }
-}
 
-/// Tabs that are not built yet (they need approved mockups first).
-struct TVPlaceholderView: View {
-    let title: String
+    let roulette: RouletteViewModel
+    let episodes: EpisodeStore
+
+    @Environment(CommunityService.self) private var community
+    @State private var tab: Tab
+    @State private var pages: [Page]
+    @State private var showsSuggest: Bool
+
+    init(roulette: RouletteViewModel, episodes: EpisodeStore) {
+        self.roulette = roulette
+        self.episodes = episodes
+        let args = ProcessInfo.processInfo.arguments
+        _tab = State(initialValue: Self.tab(from: args))
+        _pages = State(initialValue: Self.pages(from: args))
+        _showsSuggest = State(initialValue: args.contains("-MRTShowSuggest"))
+    }
 
     var body: some View {
         ZStack {
             TVBackground()
-            VStack(spacing: 16) {
-                Text(title)
-                    .font(.system(size: 72, weight: .bold))
-                    .foregroundStyle(TVPalette.white)
-                Text("Coming soon to Apple TV")
-                    .font(.system(size: 36))
-                    .foregroundStyle(TVPalette.grey)
+            if showsSuggest {
+                TVSuggestView(url: TVSuggestView.fanMailURL(in: episodes.episodes)) {
+                    showsSuggest = false
+                }
+            } else if let page = pages.last {
+                detail(page)
+            } else {
+                tabs
             }
-            .accessibilityElement(children: .combine)
-            .accessibilityIdentifier("tv.placeholder.\(title.lowercased())")
+        }
+        .onOpenURL(perform: open)
+        .onChange(of: AppRouter.shared.pendingURL) { _, url in
+            if let url { open(url) }
+        }
+        .task {
+            if let url = AppRouter.shared.pendingURL { open(url) }
+            await roulette.load()
+            await roulette.refreshRemoteCatalog()
+            await episodes.load()
+            await community.refreshAccountStatus()
+            if tab == .episodes { episodes.markViewed() }
+        }
+        .onChange(of: roulette.catalog?.movies.count) { _, _ in
+            let ids = roulette.catalog?.movies.map(\.id) ?? []
+            Task { await community.refreshAllListenerRatings(movieIds: ids) }
+        }
+        .onChange(of: tab) { _, new in
+            if new == .episodes { episodes.markViewed() }
+        }
+        .onChange(of: episodes.episodes.count) { _, _ in
+            if tab == .episodes, pages.isEmpty { episodes.markViewed() }
         }
     }
-}
 
-/// The mockups' dark backdrop: the Clean Pro dark gradient plus a faint teal glow top right.
-struct TVBackground: View {
-    var body: some View {
-        ZStack {
-            LinearGradient(colors: CleanProColors.backgroundDark.map { Color(hex: $0) },
-                           startPoint: .top, endPoint: .bottom)
-            RadialGradient(colors: [Brand.tealDark.opacity(0.35), .clear],
-                           center: .topTrailing, startRadius: 0, endRadius: 900)
+    private var tabs: some View {
+        TabView(selection: $tab) {
+            TVRouletteView(model: roulette) { openMovie($0, breadcrumb: "Tonight's Movie") }
+                .tabItem { Text("Roulette") }
+                .tag(Tab.roulette)
+            TVEpisodesView(store: episodes, catalog: roulette.catalog) { episode in
+                pages.append(.episode(episode.guid))
+            }
+            .modifier(TVBadge(count: episodeBadgeCount))
+            .tabItem { Text("Episodes") }
+            .tag(Tab.episodes)
+            TVMoviesView(
+                catalog: roulette.catalog,
+                loadState: roulette.loadState,
+                history: roulette.history,
+                episodesByGUID: episodes.episodesByGUID,
+                showArtworkURL: episodes.showArtworkURL,
+                onOpen: { openMovie($0, breadcrumb: "Movies") },
+                onRetry: { Task { await roulette.load() } }
+            )
+            .tabItem { Text("Movies") }
+            .tag(Tab.movies)
+            TVStatsView(
+                history: roulette.history,
+                catalog: roulette.catalog,
+                onOpenMovie: { openMovie($0, breadcrumb: "Stats") },
+                onSettings: { pages.append(.settings) }
+            )
+            .tabItem { Text("Stats") }
+            .tag(Tab.stats)
         }
-        .ignoresSafeArea()
+    }
+
+    /// Unseen episodes, or 1 while this week's episode is still recent (the tab dot).
+    private var episodeBadgeCount: Int {
+        max(episodes.newEpisodeCount, TVFormat.newestIsRecent(episodes.episodes) ? 1 : 0)
+    }
+
+    @ViewBuilder
+    private func detail(_ page: Page) -> some View {
+        switch page {
+        case .episode(let guid):
+            if let episode = episodes.episode(guid: guid) {
+                TVEpisodeDetailView(
+                    episode: episode,
+                    catalog: roulette.catalog,
+                    showArtworkURL: episodes.showArtworkURL,
+                    showsNew: TVFormat.showsNewBadge(episode, in: episodes.episodes),
+                    onOpenMovie: { openMovie($0, breadcrumb: "Episodes") },
+                    onBack: pop
+                )
+            } else if case .failed(let message) = episodes.loadState, episodes.episodes.isEmpty {
+                TVStatusView(
+                    title: "Episode Not Available",
+                    systemImage: "mic.slash",
+                    message: message,
+                    retryTitle: "Try again",
+                    retry: { Task { await episodes.load(forceNetwork: true) } }
+                )
+            } else {
+                TVStatusView(title: "Loading episode…", systemImage: "mic")
+                    .task { await episodes.load() }
+            }
+        case .movie(let id, let breadcrumb):
+            if let movie = roulette.catalog?.movie(withId: id) {
+                TVMoviePageView(
+                    movie: movie,
+                    catalog: roulette.catalog,
+                    episodesByGUID: episodes.episodesByGUID,
+                    breadcrumb: breadcrumb,
+                    onSuggest: { showsSuggest = true },
+                    onBack: pop
+                )
+            } else if case .failed(let message) = roulette.loadState {
+                TVStatusView(
+                    title: "Movie Not Available",
+                    systemImage: "film",
+                    message: message,
+                    retryTitle: "Try again",
+                    retry: { Task { await roulette.load() } }
+                )
+            } else {
+                TVStatusView(title: "Loading movie…", systemImage: "film")
+                    .task { await roulette.load() }
+            }
+        case .settings:
+            TVSettingsView(onSuggest: { showsSuggest = true }, onBack: pop)
+        }
+    }
+
+    private func openMovie(_ movie: Movie, breadcrumb: String) {
+        pages.append(.movie(movie.id, breadcrumb: breadcrumb))
+    }
+
+    private func pop() {
+        if !pages.isEmpty { pages.removeLast() }
+    }
+
+    private func open(_ url: URL) {
+        guard let link = DeepLink(url: url) else { return }
+        showsSuggest = false
+        switch link {
+        case .movie(let id):
+            pages = [.movie(id, breadcrumb: "Movies")]
+        case .episode(let guid):
+            pages = [.episode(guid)]
+        }
+        AppRouter.shared.pendingURL = nil
+    }
+
+    private static func tab(from args: [String]) -> Tab {
+        guard let index = args.firstIndex(of: "-MRTStartTab"), args.indices.contains(index + 1) else { return .roulette }
+        switch args[index + 1].lowercased() {
+        case "episodes": return .episodes
+        case "movies": return .movies
+        case "stats": return .stats
+        default: return .roulette
+        }
+    }
+
+    private static func pages(from args: [String]) -> [Page] {
+        if let index = args.firstIndex(of: "-MRTOpenMovie"), args.indices.contains(index + 1) {
+            return [.movie(args[index + 1], breadcrumb: "Movies")]
+        }
+        if let index = args.firstIndex(of: "-MRTOpenEpisode"), args.indices.contains(index + 1) {
+            return [.episode(args[index + 1])]
+        }
+        return []
     }
 }

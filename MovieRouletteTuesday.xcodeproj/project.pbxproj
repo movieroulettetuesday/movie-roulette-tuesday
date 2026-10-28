@@ -7,6 +7,25 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E10000000000000000000001 /* TVChrome.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20000000000000000000001 /* TVChrome.swift */; };
+		E10000000000000000000002 /* TVEpisodesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20000000000000000000002 /* TVEpisodesView.swift */; };
+		E10000000000000000000003 /* TVEpisodeDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20000000000000000000003 /* TVEpisodeDetailView.swift */; };
+		E10000000000000000000004 /* TVMoviesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20000000000000000000004 /* TVMoviesView.swift */; };
+		E10000000000000000000005 /* TVMoviePageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20000000000000000000005 /* TVMoviePageView.swift */; };
+		E10000000000000000000006 /* TVStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20000000000000000000006 /* TVStatsView.swift */; };
+		E10000000000000000000007 /* TVSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20000000000000000000007 /* TVSettingsView.swift */; };
+		E10000000000000000000008 /* TVSuggestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20000000000000000000008 /* TVSuggestView.swift */; };
+		E10000000000000000000009 /* TVProviderLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20000000000000000000009 /* TVProviderLink.swift */; };
+		E10000000000000000000011 /* EpisodeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D3DD92B98390366A61EC0CB /* EpisodeStore.swift */; };
+		E10000000000000000000012 /* PersonalRatingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1321078DE95E06A1D4F7A4ED /* PersonalRatingsStore.swift */; };
+		E10000000000000000000013 /* CommunityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63342DA7EFB3459E60213B8E /* CommunityService.swift */; };
+		E10000000000000000000014 /* CloudKitCommunityStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63BB50427E823403D273D553 /* CloudKitCommunityStore.swift */; };
+		E10000000000000000000015 /* AppleEpisodeLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C16BE2C569E84C3613C990 /* AppleEpisodeLinks.swift */; };
+		E10000000000000000000016 /* ArtworkImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9D0A7685F09A8A7B79AAED /* ArtworkImage.swift */; };
+		E10000000000000000000017 /* ArtworkLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9260DAC1F69FCBC65DE8899D /* ArtworkLoader.swift */; };
+		E10000000000000000000018 /* ConfettiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 606D45B78ACF499D53FDEAD9 /* ConfettiView.swift */; };
+		E1000000000000000000000C /* TVScreensUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2000000000000000000000C /* TVScreensUITests.swift */; };
+		E10000000000000000000019 /* polls.json in Resources */ = {isa = PBXBuildFile; fileRef = 8DB13E25EE3F416E5B9585A5 /* polls.json */; };
 		060530164D7E2B9209549CC8 /* SpinHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE53B388FB9EC6C6E521FF12 /* SpinHistoryView.swift */; };
 		086F144875AA660BA8A40202 /* AppleEpisodeLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C16BE2C569E84C3613C990 /* AppleEpisodeLinks.swift */; };
 		0874193F58BD2D04B1B62B7A /* ArtworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1829E1F65466A6B902F7183 /* ArtworkTests.swift */; };
@@ -130,6 +149,18 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		E20000000000000000000001 /* TVChrome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVChrome.swift; sourceTree = "<group>"; };
+		E20000000000000000000002 /* TVEpisodesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVEpisodesView.swift; sourceTree = "<group>"; };
+		E20000000000000000000003 /* TVEpisodeDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVEpisodeDetailView.swift; sourceTree = "<group>"; };
+		E20000000000000000000004 /* TVMoviesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVMoviesView.swift; sourceTree = "<group>"; };
+		E20000000000000000000005 /* TVMoviePageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVMoviePageView.swift; sourceTree = "<group>"; };
+		E20000000000000000000006 /* TVStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVStatsView.swift; sourceTree = "<group>"; };
+		E20000000000000000000007 /* TVSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVSettingsView.swift; sourceTree = "<group>"; };
+		E20000000000000000000008 /* TVSuggestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVSuggestView.swift; sourceTree = "<group>"; };
+		E20000000000000000000009 /* TVProviderLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVProviderLink.swift; sourceTree = "<group>"; };
+		E2000000000000000000000A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E2000000000000000000000B /* MovieRouletteTuesdayTV.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MovieRouletteTuesdayTV.entitlements; sourceTree = "<group>"; };
+		E2000000000000000000000C /* TVScreensUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVScreensUITests.swift; sourceTree = "<group>"; };
 		0573A1DA6C9FAF0B433CD15E /* CommunityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityTests.swift; sourceTree = "<group>"; };
 		065CCF25035FB61DFE034E8C /* SCHEMA.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = SCHEMA.md; sourceTree = "<group>"; };
 		09B0C5460E510564FB287D8C /* SuggestMovieSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestMovieSheet.swift; sourceTree = "<group>"; };
@@ -412,6 +443,17 @@
 		A4A76E22E48E61EC17001DCB /* MovieRouletteTuesdayTV */ = {
 			isa = PBXGroup;
 			children = (
+				E20000000000000000000001 /* TVChrome.swift */,
+				E20000000000000000000002 /* TVEpisodesView.swift */,
+				E20000000000000000000003 /* TVEpisodeDetailView.swift */,
+				E20000000000000000000004 /* TVMoviesView.swift */,
+				E20000000000000000000005 /* TVMoviePageView.swift */,
+				E20000000000000000000006 /* TVStatsView.swift */,
+				E20000000000000000000007 /* TVSettingsView.swift */,
+				E20000000000000000000008 /* TVSuggestView.swift */,
+				E20000000000000000000009 /* TVProviderLink.swift */,
+				E2000000000000000000000A /* Info.plist */,
+				E2000000000000000000000B /* MovieRouletteTuesdayTV.entitlements */,
 				63BFC0EAA94FC6B03CC60197 /* TVApp.swift */,
 				27AFD1B19A67578C7F3972D4 /* TVRootView.swift */,
 				BBA45AC56C7B2E47E806538A /* TVRouletteView.swift */,
@@ -425,6 +467,7 @@
 		A9AC0BCB46E8F057E1CAF264 /* MovieRouletteTuesdayTVUITests */ = {
 			isa = PBXGroup;
 			children = (
+				E2000000000000000000000C /* TVScreensUITests.swift */,
 				CEC803B0E7D8A8A0470F2A74 /* TVRouletteUITests.swift */,
 			);
 			name = MovieRouletteTuesdayTVUITests;
@@ -651,6 +694,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E10000000000000000000019 /* polls.json in Resources */,
 				163678659FE30E9306D67A12 /* Assets.xcassets in Resources */,
 				27217BF4BBDAA83EF82D2B64 /* movies.json in Resources */,
 				3E729DC191713021C593E6E0 /* wheel-spin.m4a in Resources */,
@@ -730,6 +774,23 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E10000000000000000000001 /* TVChrome.swift in Sources */,
+				E10000000000000000000002 /* TVEpisodesView.swift in Sources */,
+				E10000000000000000000003 /* TVEpisodeDetailView.swift in Sources */,
+				E10000000000000000000004 /* TVMoviesView.swift in Sources */,
+				E10000000000000000000005 /* TVMoviePageView.swift in Sources */,
+				E10000000000000000000006 /* TVStatsView.swift in Sources */,
+				E10000000000000000000007 /* TVSettingsView.swift in Sources */,
+				E10000000000000000000008 /* TVSuggestView.swift in Sources */,
+				E10000000000000000000009 /* TVProviderLink.swift in Sources */,
+				E10000000000000000000011 /* EpisodeStore.swift in Sources */,
+				E10000000000000000000012 /* PersonalRatingsStore.swift in Sources */,
+				E10000000000000000000013 /* CommunityService.swift in Sources */,
+				E10000000000000000000014 /* CloudKitCommunityStore.swift in Sources */,
+				E10000000000000000000015 /* AppleEpisodeLinks.swift in Sources */,
+				E10000000000000000000016 /* ArtworkImage.swift in Sources */,
+				E10000000000000000000017 /* ArtworkLoader.swift in Sources */,
+				E10000000000000000000018 /* ConfettiView.swift in Sources */,
 				A3989DB0843D0196BD4695B6 /* TVApp.swift in Sources */,
 				EC475726212F587B9BD9856C /* TVRootView.swift in Sources */,
 				465783CB9E4F7B4CF82FB465 /* TVRouletteView.swift in Sources */,
@@ -741,6 +802,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1000000000000000000000C /* TVScreensUITests.swift in Sources */,
 				14F5A0A9E5E244300E356896 /* TVRouletteUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -913,17 +975,18 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MovieRouletteTuesdayTV/MovieRouletteTuesdayTV.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 11;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MovieRouletteTuesdayTV/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Movie Roulette Tuesday";
-				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.movieroulettetuesday.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
@@ -1074,17 +1137,18 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MovieRouletteTuesdayTV/MovieRouletteTuesdayTV.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 11;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MovieRouletteTuesdayTV/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Movie Roulette Tuesday";
-				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.movieroulettetuesday.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;

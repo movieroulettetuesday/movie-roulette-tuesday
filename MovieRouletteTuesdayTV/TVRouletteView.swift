@@ -13,15 +13,23 @@ import MRTShared
 /// with no result. The wheel is decorative and never focusable.
 struct TVRouletteView: View {
     let model: RouletteViewModel
+    var onOpenMovie: (Movie) -> Void = { _ in }
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.openURL) private var openURL
     /// Rotates through all nine taglines, as on iOS: a random one at launch,
     /// a new one on every spin and after every result.
     @State private var tagline = RouletteTaglines.random()
     @FocusState private var focus: Control?
+    @FocusState private var providerFocus: Int?
+    @State private var providerNote: String?
 
     enum Control: Hashable { case spin, spinAgain, moviePage }
+
+    private var theme: TVTheme { TVTheme(scheme: colorScheme) }
+    private var spinLocked: Bool { model.isSpinning || model.isAwaitingForcedRespin }
 
     /// Mockup sizes (1920×1080 at 1×: mockup px = tvOS points).
     static let homeWheelDiameter: CGFloat = 760
@@ -31,16 +39,25 @@ struct TVRouletteView: View {
         ZStack {
             TVBackground()
             content
+            if model.reveal?.isJackpot == true {
+                ConfettiView(particleCount: 80)
+                    .id(model.reveal?.id)
+                    .allowsHitTesting(false)
+                    .accessibilityHidden(true)
+            }
             if let banner = model.rareBanner {
                 Text(banner)
-                    .font(.system(size: 96, weight: .heavy))
+                    .font(.system(size: 72, weight: .heavy))
                     .foregroundStyle(Brand.ink)
-                    .padding(.horizontal, 60).padding(.vertical, 24)
-                    .background(Capsule().fill(Brand.jackpotGold))
+                    .padding(.horizontal, 48).padding(.vertical, 18)
+                    .background(Capsule().fill(Color(hex: CleanProColors.peach)))
+                    .shadow(color: .black.opacity(0.25), radius: 16, y: 8)
                     .accessibilityIdentifier("tv.rareBanner")
                     .transition(.scale.combined(with: .opacity))
+                    .allowsHitTesting(false)
             }
         }
+        .animation(.spring(duration: 0.35), value: model.rareBanner)
         // tvOS puts the initial focus on the tab bar; .defaultFocus alone does
         // not move it into the tab, so Spin takes focus once the wheel is loaded.
         .onAppear { if model.loadState == .loaded { focusPrimarySoon() } }
@@ -73,17 +90,17 @@ struct TVRouletteView: View {
     private var content: some View {
         switch model.loadState {
         case .loading:
-            ProgressView().scaleEffect(2)
+            TVStatusView(title: "Loading the wheel…", systemImage: "film")
+                .accessibilityIdentifier("tv.roulette.loading")
         case .failed(let message):
-            VStack(spacing: 32) {
-                Text(message)
-                    .font(.system(size: 36))
-                    .foregroundStyle(TVPalette.white)
-                    .multilineTextAlignment(.center)
-                    .frame(maxWidth: 1100)
-                Button("Try again") { Task { await model.load() } }
-                    .buttonStyle(TVPillButtonStyle())
-            }
+            TVStatusView(
+                title: "Couldn’t Load the Wheel",
+                systemImage: "exclamationmark.triangle",
+                message: message,
+                retryTitle: "Try again",
+                retry: { Task { await model.load() } }
+            )
+            .accessibilityIdentifier("tv.roulette.error")
         case .loaded:
             loadedLayout
         }
@@ -114,21 +131,45 @@ struct TVRouletteView: View {
         VStack(alignment: .leading, spacing: 0) {
             Text("Movie Roulette")
                 .font(.system(size: 88, weight: .bold))
-                .foregroundStyle(TVPalette.white)
+                .foregroundStyle(theme.text)
             Text(tagline)
                 .font(.system(size: 40))
-                .foregroundStyle(TVPalette.grey)
+                .foregroundStyle(theme.secondary)
                 .padding(.top, 8)
-            Button(action: spinFromUser) {
-                Text(model.isSpinning || model.isAwaitingForcedRespin ? "Spinning…" : "Spin")
+            Button(action: spinButtonAction) {
+                if spinLocked {
+                    HStack(spacing: 16) {
+                        RoundedRectangle(cornerRadius: 4, style: .continuous)
+                            .fill(TVPalette.ink)
+                            .frame(width: 28, height: 28)
+                            .accessibilityHidden(true)
+                        Text("Stop")
+                    }
+                } else {
+                    Text("Spin")
+                }
             }
             .buttonStyle(TVPillButtonStyle())
             .focused($focus, equals: .spin)
             .accessibilityIdentifier("tv.spin")
-            .accessibilityHint("Spins the wheel")
+            .accessibilityLabel(spinLocked ? "Stop" : "Spin")
+            .accessibilityHint(spinLocked ? "Stops the wheel" : "Spins the wheel")
             .padding(.top, 70)
-            lastLanded
-                .padding(.top, 80)
+            if spinLocked {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Spinning...")
+                        .font(.system(size: 44, weight: .bold))
+                        .foregroundStyle(theme.text)
+                        .accessibilityIdentifier("tv.spinning")
+                    Text("Press Stop, or Play/Pause on the remote")
+                        .font(.system(size: 30))
+                        .foregroundStyle(theme.secondary)
+                }
+                .padding(.top, 36)
+            } else {
+                lastLanded
+                    .padding(.top, 80)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .focusSection()
@@ -142,15 +183,15 @@ struct TVRouletteView: View {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Last landed on")
                     .font(.system(size: 32, weight: .medium))
-                    .foregroundStyle(TVPalette.grey)
+                    .foregroundStyle(theme.secondary)
                 Text(movie.title)
                     .font(.system(size: 52, weight: .bold))
-                    .foregroundStyle(TVPalette.white)
+                    .foregroundStyle(theme.text)
                     .lineLimit(2)
                 HStack(spacing: 24) {
                     Text(String(movie.year))
                         .font(.system(size: 36))
-                        .foregroundStyle(TVPalette.grey)
+                        .foregroundStyle(theme.secondary)
                     if let category = catalog.category(withId: last.categoryId) {
                         TVCategoryChip(category: category)
                     }
@@ -168,12 +209,22 @@ struct TVRouletteView: View {
 
     private func resultColumn(_ reveal: RouletteViewModel.Reveal) -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text(reveal.isJackpot ? "INFAMOUS JACKPOT!" : "THE WHEEL HAS SPOKEN")
-                .font(.system(size: 32, weight: .semibold))
-                .foregroundStyle(reveal.isJackpot ? Brand.jackpotGold : TVPalette.teal)
+            if reveal.isJackpot {
+                Text("INFAMOUS JACKPOT")
+                    .font(.system(size: 32, weight: .heavy))
+                    .foregroundStyle(Brand.ink)
+                    .padding(.horizontal, 22)
+                    .padding(.vertical, 8)
+                    .background(Capsule().fill(Brand.jackpotGold))
+                    .accessibilityIdentifier("tv.jackpotBanner")
+            } else {
+                Text("THE WHEEL HAS SPOKEN")
+                    .font(.system(size: 32, weight: .semibold))
+                    .foregroundStyle(theme.teal)
+            }
             Text(reveal.movie.title)
                 .font(.system(size: 128, weight: .heavy))
-                .foregroundStyle(TVPalette.white)
+                .foregroundStyle(theme.text)
                 .lineLimit(2)
                 .minimumScaleFactor(0.5)
                 .padding(.top, 12)
@@ -181,7 +232,7 @@ struct TVRouletteView: View {
             HStack(spacing: 28) {
                 Text(String(reveal.movie.year))
                     .font(.system(size: 52, weight: .medium))
-                    .foregroundStyle(TVPalette.grey)
+                    .foregroundStyle(theme.secondary)
                 TVCategoryChip(category: reveal.category, text: reveal.category.displayName, size: 34)
             }
             .padding(.top, 20)
@@ -192,10 +243,9 @@ struct TVRouletteView: View {
                     .buttonStyle(TVPillButtonStyle(width: 460, height: 132))
                     .focused($focus, equals: .spinAgain)
                     .accessibilityIdentifier("tv.spinAgain")
-                // Movie Page on TV is phase 3 (needs its mockup); shown, not active yet.
-                Button(action: {}) { Text("Movie Page") }
+                Button { onOpenMovie(reveal.movie) } label: { Text("Movie Page") }
                     .buttonStyle(TVPillButtonStyle(primary: false, width: 420, height: 132))
-                    .disabled(true)
+                    .focused($focus, equals: .moviePage)
                     .accessibilityIdentifier("tv.moviePage")
             }
             .padding(.top, 48)
@@ -211,40 +261,33 @@ struct TVRouletteView: View {
             VStack(alignment: .leading, spacing: 16) {
                 Text("Where to watch")
                     .font(.system(size: 34, weight: .semibold))
-                    .foregroundStyle(TVPalette.grey)
-                HStack(spacing: 24) {
+                    .foregroundStyle(theme.secondary)
+                HStack(spacing: 18) {
                     ForEach(providers, id: \.id) { provider in
-                        Text(provider.name)
-                            .font(.system(size: provider.name.count > 6 ? 24 : 30, weight: .heavy))
-                            .foregroundStyle(TVPalette.white)
-                            .lineLimit(2)
-                            .minimumScaleFactor(0.6)
-                            .multilineTextAlignment(.center)
-                            .padding(8)
-                            .frame(width: 120, height: 120)
-                            .background(RoundedRectangle(cornerRadius: 28, style: .continuous).fill(TVPalette.pill))
-                            .overlay(RoundedRectangle(cornerRadius: 28, style: .continuous)
-                                .strokeBorder(Color.white.opacity(0.2), lineWidth: 2))
+                        TVProviderButton(provider: provider, movie: movie, side: 112) { launch in
+                            providerNote = launch.hint
+                            TVOpen.first(of: launch.urls, with: openURL, failure: "Couldn’t open \(launch.appName).") {
+                                providerNote = $0
+                            }
+                        }
+                        .focused($providerFocus, equals: provider.id)
                     }
                 }
-                .accessibilityElement(children: .combine)
-                // Same streaming-data attribution as the iOS movie page (not in the mockup).
+                Text(providerNote ?? "Select a service to open its app")
+                    .font(.system(size: 24))
+                    .foregroundStyle(theme.secondary)
                 if let footer = WhereToWatchDisplay(movie: movie).footer {
                     Text(footer)
-                        .font(.system(size: 24))
-                        .foregroundStyle(TVPalette.grey)
+                        .font(.system(size: 22))
+                        .foregroundStyle(theme.secondary)
                 }
             }
         }
     }
 
-    /// Display-only tiles: subscription + free providers first, by priority, at most 5.
+    /// Subscription and free providers, by priority, at most 5. Tiles open the provider app.
     static func providers(for movie: Movie) -> [StreamingInfo.Provider] {
-        guard let streaming = movie.streaming else { return [] }
-        var seen = Set<Int>()
-        let ordered = (streaming.stream + streaming.free)
-            .sorted { ($0.priority ?? .max) < ($1.priority ?? .max) }
-        return Array(ordered.filter { seen.insert($0.id).inserted }.prefix(5))
+        TVProviderLaunching.tiles(for: movie, includeRentals: false, limit: 5)
     }
 
     // MARK: Wheel
@@ -256,7 +299,7 @@ struct TVRouletteView: View {
                 .frame(width: diameter, height: diameter)
                 .padding(.top, pointer.height * 0.5)
             WheelPointer()
-                .fill(Color(hex: CleanProColors.pointerDark))
+                .fill(Color(hex: colorScheme == .dark ? CleanProColors.pointerDark : CleanProColors.pointerLight))
                 .frame(width: pointer.width, height: pointer.height)
                 .shadow(color: .black.opacity(0.4), radius: 3, y: 2)
         }
@@ -305,6 +348,18 @@ struct TVRouletteView: View {
     private func cancelSpin() {
         model.cancelSpin()
         focus = .spin
+    }
+
+    /// Select on the pill: spin when idle, stop while the wheel is moving,
+    /// cancel a forced re-spin that's waiting to start.
+    private func spinButtonAction() {
+        if model.isSpinning {
+            model.stopEarly()
+        } else if model.isAwaitingForcedRespin {
+            cancelSpin()
+        } else {
+            spinFromUser()
+        }
     }
 
     private func spinFromUser() {
