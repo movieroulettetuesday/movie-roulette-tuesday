@@ -69,9 +69,11 @@ struct TVMoviePageView: View {
                 .minimumScaleFactor(0.45)
                 .accessibilityIdentifier("tv.movie.title")
             HStack(spacing: 16) {
-                Text("\(movie.year) · \(movie.genre)")
+                // verbatim: avoid locale grouping ("2,014"). Same as the iOS movie page.
+                Text(verbatim: "\(String(movie.year)) · \(movie.genre)")
                     .font(.system(size: 32, weight: .medium))
                     .foregroundStyle(theme.secondary)
+                    .accessibilityIdentifier("tv.movie.yearGenre")
                 ForEach(movie.categories, id: \.self) { id in
                     if let category = catalog?.category(withId: id) {
                         TVCategoryChip(category: category, text: category.displayName, size: 26)

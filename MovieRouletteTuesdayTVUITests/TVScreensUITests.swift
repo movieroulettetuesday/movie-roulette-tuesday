@@ -54,6 +54,9 @@ final class TVScreensUITests: XCTestCase {
         let title = app.descendants(matching: .any)["tv.movie.title"]
         XCTAssertTrue(title.waitForExistence(timeout: 20))
         XCTAssertTrue(title.label.contains("Face"))
+        let yearGenre = app.descendants(matching: .any)["tv.movie.yearGenre"]
+        XCTAssertTrue(yearGenre.waitForExistence(timeout: 5))
+        XCTAssertEqual(yearGenre.label, "1957 · Drama", "year is four digits, not a grouped number like 1,957")
         XCTAssertTrue(app.descendants(matching: .any)["tv.movie.whereToWatch"].exists)
         let stars = app.descendants(matching: .any)["tv.movie.stars"]
         let firstStar = app.descendants(matching: .any)["tv.movie.star.1"]
