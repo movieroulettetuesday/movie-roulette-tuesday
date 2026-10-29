@@ -588,6 +588,31 @@ public enum StreamingCatalog {
         return (info.rent + info.buy).filter { seen.insert($0.id).inserted }
     }
 
+    /// One Paramount+ entry. TMDB lists Premium, Essential, and store channels
+    /// (Amazon, Roku, …) as separate provider ids; the apps show those under a
+    /// single Paramount+ name. The best-priority id is kept (lowest `priority`,
+    /// then the earliest). Every other provider stays, in the same order —
+    /// including other same-brand tiers such as Netflix with ads.
+    public static func collapsingParamountPlusDuplicates(_ providers: [StreamingInfo.Provider]) -> [StreamingInfo.Provider] {
+        let paramount = providers.indices.filter { isParamountPlusService(providers[$0]) }
+        guard let best = paramount.min(by: { lhs, rhs in
+            let left = providers[lhs].priority ?? .max
+            let right = providers[rhs].priority ?? .max
+            return left != right ? left < right : lhs < rhs
+        }) else {
+            return providers
+        }
+        return providers.enumerated().compactMap { index, provider in
+            isParamountPlusService(provider) && index != best ? nil : provider
+        }
+    }
+
+    /// Providers the tvOS tiles label "Paramount+" (legacy id 531, or any name
+    /// containing "paramount"). Keep this in step with `TVProviderLaunching`.
+    private static func isParamountPlusService(_ provider: StreamingInfo.Provider) -> Bool {
+        provider.id == 531 || provider.name.lowercased().contains("paramount")
+    }
+
     /// "Oct 13" from "2026-10-13" (nil when unparseable).
     public static func updatedLabel(_ updated: String?, locale: Locale = Locale(identifier: "en_US")) -> String? {
         guard let updated else { return nil }

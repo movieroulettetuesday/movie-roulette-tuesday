@@ -292,11 +292,14 @@ struct WhereToWatchSection: View {
 
     @ViewBuilder
     private func row(_ title: String, _ providers: [StreamingInfo.Provider], id: String) -> some View {
-        if !providers.isEmpty {
+        let shown = StreamingCatalog.collapsingParamountPlusDuplicates(providers)
+        if !shown.isEmpty {
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
                     Text(title).font(.body.weight(.semibold))
                     Spacer()
+                    // Any Paramount+ tier the user saved still marks the row,
+                    // even though the row shows a single Paramount+ logo.
                     if providers.contains(where: { services.contains($0.id) }) {
                         Text("Your service")
                             .font(.caption.weight(.semibold))
@@ -307,7 +310,7 @@ struct WhereToWatchSection: View {
                 }
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(alignment: .top, spacing: 12) {
-                        ForEach(providers, id: \.id) { p in
+                        ForEach(shown, id: \.id) { p in
                             VStack(spacing: 4) {
                                 ProviderLogo(provider: p, size: 44)
                                 Text(p.name)

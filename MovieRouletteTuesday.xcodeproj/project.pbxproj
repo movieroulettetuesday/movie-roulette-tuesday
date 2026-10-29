@@ -115,6 +115,7 @@
 		B0E100000000000000000014 /* MovieRouletteTuesdayTopShelf.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B0E100000000000000000006 /* MovieRouletteTuesdayTopShelf.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B0E100000000000000000015 /* TopShelfBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E100000000000000000007 /* TopShelfBridge.swift */; };
 		B0E100000000000000000016 /* TopShelfTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E100000000000000000008 /* TopShelfTests.swift */; };
+		B0E100000000000000000019 /* ParamountProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E10000000000000000001A /* ParamountProviderTests.swift */; };
 		B0E100000000000000000017 /* MRTCore in Frameworks */ = {isa = PBXBuildFile; productRef = B0E100000000000000000051 /* MRTCore */; };
 /* End PBXBuildFile section */
 
@@ -279,6 +280,7 @@
 		B0E100000000000000000006 /* MovieRouletteTuesdayTopShelf.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MovieRouletteTuesdayTopShelf.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0E100000000000000000007 /* TopShelfBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopShelfBridge.swift; sourceTree = "<group>"; };
 		B0E100000000000000000008 /* TopShelfTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TopShelfTests.swift; path = MRTKit/Tests/MRTCoreTests/TopShelfTests.swift; sourceTree = SOURCE_ROOT; };
+		B0E10000000000000000001A /* ParamountProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ParamountProviderTests.swift; path = MRTKit/Tests/MRTCoreTests/ParamountProviderTests.swift; sourceTree = SOURCE_ROOT; };
 		B0E10000000000000000000A /* TOPSHELF.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = TOPSHELF.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -482,6 +484,7 @@
 				CF892772A8012B1CB98E65B8 /* WheelMathTests.swift */,
 				0AF27295B306776F31F4CB7F /* WidgetSupportTests.swift */,
 				B0E100000000000000000008 /* TopShelfTests.swift */,
+				B0E10000000000000000001A /* ParamountProviderTests.swift */,
 			);
 			path = MovieRouletteTuesdayTests;
 			sourceTree = "<group>";
@@ -865,6 +868,7 @@
 				EEC084A6488074D0C6FAF648 /* WheelMathTests.swift in Sources */,
 				DCBD3FAC55E75E68D82975E3 /* WidgetSupportTests.swift in Sources */,
 				B0E100000000000000000016 /* TopShelfTests.swift in Sources */,
+				B0E100000000000000000019 /* ParamountProviderTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
