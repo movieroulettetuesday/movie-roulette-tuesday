@@ -22,7 +22,9 @@ enum TVProviderLaunching {
             ? streaming.stream + streaming.free + StreamingCatalog.rentOrBuy(streaming)
             : streaming.stream + streaming.free
         let ordered = groups.sorted { ($0.priority ?? .max) < ($1.priority ?? .max) }
-        return Array(ordered.filter { seen.insert($0.id).inserted }.prefix(limit))
+        let unique = ordered.filter { seen.insert($0.id).inserted }
+        // Premium, Essential, and store channels all draw as "Paramount+".
+        return Array(StreamingCatalog.collapsingParamountPlusDuplicates(unique).prefix(limit))
     }
 
     static func launch(for provider: StreamingInfo.Provider, movie: Movie) -> Launch {
@@ -104,6 +106,7 @@ enum TVProviderLaunching {
         if id == 2 || id == 350 || name.contains("apple") { return .apple }
         if id == 337 || name.contains("disney") { return .disney }
         if id == 15 || name.contains("hulu") { return .hulu }
+        // Same ids as StreamingCatalog.collapsingParamountPlusDuplicates.
         if id == 531 || name.contains("paramount") { return .paramount }
         if id == 386 || id == 387 || name.contains("peacock") { return .peacock }
         if id == 73 || name.contains("tubi") { return .tubi }
