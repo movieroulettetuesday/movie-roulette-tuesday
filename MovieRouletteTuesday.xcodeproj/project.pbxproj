@@ -84,6 +84,9 @@
 		817F4089754952E3F48A856D /* HexColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91AD012D985338EE14AD80C6 /* HexColor.swift */; };
 		84F0C52CC5EFE7838748EBCE /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 0DFB8329CEE9F53C63EAE4F9 /* PrivacyInfo.xcprivacy */; };
 		8576ABD75965E81748EAD792 /* PersonalRatings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F8FC8AEBEFC56517E940BE /* PersonalRatings.swift */; };
+		F0A11A001122334455667702 /* ProviderLaunching.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A11A001122334455667701 /* ProviderLaunching.swift */; };
+		F0A11A001122334455667705 /* ProviderLaunching.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A11A001122334455667701 /* ProviderLaunching.swift */; };
+		F0A11A001122334455667704 /* ProviderLaunchingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A11A001122334455667703 /* ProviderLaunchingTests.swift */; };
 		869E3F42A417B35369FB6225 /* SpinOfTheDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F5580ED9C388D068A4E390 /* SpinOfTheDay.swift */; };
 		88164BE60BF86F34E711E084 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCFD925D61421D9DB20E3B8 /* ContentView.swift */; };
 		88B9ABB78AE4FD6C2DDB8A12 /* ShowLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27373A2FDEDC2AAE19C9E1B6 /* ShowLinks.swift */; };
@@ -259,6 +262,8 @@
 		92E4CFC63F379359666F25D5 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		967CD961E57CAD6F61F9B1F4 /* SpinHistoryRoutingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinHistoryRoutingTests.swift; sourceTree = "<group>"; };
 		96F8FC8AEBEFC56517E940BE /* PersonalRatings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalRatings.swift; sourceTree = "<group>"; };
+		F0A11A001122334455667701 /* ProviderLaunching.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProviderLaunching.swift; sourceTree = "<group>"; };
+		F0A11A001122334455667703 /* ProviderLaunchingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProviderLaunchingTests.swift; sourceTree = "<group>"; };
 		9B37ABE5A15E0050A18B79C3 /* SpinTicksTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinTicksTests.swift; sourceTree = "<group>"; };
 		9E25ECBF52E92B2653E19F04 /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
 		A150C7D509637343B85ECD76 /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
@@ -343,6 +348,7 @@
 				39A79F93434D2E9F5998180F /* MovieSelector.swift */,
 				0783D57C066532E8F7B8B45C /* NewEpisodeBadge.swift */,
 				96F8FC8AEBEFC56517E940BE /* PersonalRatings.swift */,
+				F0A11A001122334455667701 /* ProviderLaunching.swift */,
 				2CB35AA153BB4C3B5CFD1D6F /* QuickSpin.swift */,
 				3F7FC42AE36446B48951BFBB /* RandomGenerators.swift */,
 				CEA13AD9C0CCA6EFE4028EEB /* RareOutcomes.swift */,
@@ -506,6 +512,7 @@
 				E0FA2879C4335C305F845BF8 /* MovieSelectorTests.swift */,
 				789D7D206E7AA3D8A6C8A971 /* PaletteTests.swift */,
 				8C001CB2DEEC27D9D42625A9 /* PersonalRatingsTests.swift */,
+				F0A11A001122334455667703 /* ProviderLaunchingTests.swift */,
 				384E9A73BF374E767DFADDC5 /* QuickSpinTests.swift */,
 				B7D8079CF4BA2B6704A094AC /* RareOutcomeTests.swift */,
 				314659749C1F22CA3377B702 /* RemoteCatalogTests.swift */,
@@ -720,6 +727,7 @@
 				5E98025827AC17AFDFECB424 /* MovieSelector.swift in Sources */,
 				62C4DD3686F8E492C48AD666 /* NewEpisodeBadge.swift in Sources */,
 				F6EA9101B988FFA98711B3F4 /* PersonalRatings.swift in Sources */,
+				F0A11A001122334455667705 /* ProviderLaunching.swift in Sources */,
 				9D1271F11618F0D8014C4AAA /* QuickSpin.swift in Sources */,
 				BB3C7C413D919A606B54A45E /* RandomGenerators.swift in Sources */,
 				AD0EB31C1EDC3E41BA49B7D2 /* RareOutcomes.swift in Sources */,
@@ -755,6 +763,7 @@
 				B493AE402F0DDF09C787E9D6 /* MovieSelectorTests.swift in Sources */,
 				BFB61D70F369A64583F80417 /* PaletteTests.swift in Sources */,
 				77C6CCE6E402D9916D2F6C4D /* PersonalRatingsTests.swift in Sources */,
+				F0A11A001122334455667704 /* ProviderLaunchingTests.swift in Sources */,
 				4B125919D8979A200BD95548 /* QuickSpinTests.swift in Sources */,
 				3D7B4C883B262CC895029351 /* RareOutcomeTests.swift in Sources */,
 				CEB12F7D4DF1865B33DA9A1B /* RemoteCatalogTests.swift in Sources */,
@@ -815,6 +824,7 @@
 				E091018CF8EB07BE6EA85AAC /* MovieSelector.swift in Sources */,
 				345965E3F1772C19A8677AC9 /* NewEpisodeBadge.swift in Sources */,
 				8576ABD75965E81748EAD792 /* PersonalRatings.swift in Sources */,
+				F0A11A001122334455667702 /* ProviderLaunching.swift in Sources */,
 				40A4189E7F12529620963C66 /* QuickSpin.swift in Sources */,
 				8EAEF7097C2608E5BAFBAD05 /* RandomGenerators.swift in Sources */,
 				5AE98E2CDC2D882A361E66E7 /* RareOutcomes.swift in Sources */,
