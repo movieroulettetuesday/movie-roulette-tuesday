@@ -60,7 +60,8 @@
         "return-of-the-living-dead-3-1993",
         "palmer-rockeys-scarlet-warning-666-1982",
         "the-ugly-stepsister-2025",
-        "piranha-ii-the-spawning-1982"
+        "piranha-ii-the-spawning-1982",
+        "prince-of-darkness-1987"
       ]
     },
     {
@@ -103,7 +104,8 @@
         "harlequin-1980",
         "the-alamo-2004",
         "palmer-rockeys-scarlet-warning-666-1982",
-        "piranha-ii-the-spawning-1982"
+        "piranha-ii-the-spawning-1982",
+        "prince-of-darkness-1987"
       ]
     },
     {
@@ -19807,6 +19809,108 @@
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
             "priority": 127
+          }
+        ],
+        "buy": [
+          {
+            "id": 10,
+            "name": "Amazon Video",
+            "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
+            "priority": 9
+          },
+          {
+            "id": 2,
+            "name": "Apple TV Store",
+            "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
+            "priority": 10
+          },
+          {
+            "id": 3,
+            "name": "Google Play Movies",
+            "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
+            "priority": 23
+          },
+          {
+            "id": 192,
+            "name": "YouTube",
+            "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
+            "priority": 24
+          },
+          {
+            "id": 7,
+            "name": "Fandango At Home",
+            "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
+            "priority": 40
+          }
+        ]
+      }
+    },
+    {
+      "id": "prince-of-darkness-1987",
+      "title": "Prince of Darkness",
+      "year": 1987,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror",
+        "cat-cult"
+      ],
+      "episodeIds": [
+        "Buzzsprout-20062540"
+      ],
+      "episodeTitle": "Prince of Darkness",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null,
+      "tmdbId": 8852,
+      "streaming": {
+        "region": "US",
+        "updated": "2026-11-03",
+        "link": "https://www.themoviedb.org/movie/8852-prince-of-darkness/watch?locale=US",
+        "stream": [
+          {
+            "id": 9,
+            "name": "Amazon Prime Video",
+            "logo": "/gMZdpavHmxFNnLpMHwVxfqeux2g.png",
+            "priority": 4
+          },
+          {
+            "id": 2100,
+            "name": "Amazon Prime Video with Ads",
+            "logo": "/tpwTT1FpWqLLhxUfAuDavIXDDfI.png",
+            "priority": 203
+          }
+        ],
+        "free": [],
+        "rent": [
+          {
+            "id": 10,
+            "name": "Amazon Video",
+            "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
+            "priority": 9
+          },
+          {
+            "id": 2,
+            "name": "Apple TV Store",
+            "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
+            "priority": 10
+          },
+          {
+            "id": 3,
+            "name": "Google Play Movies",
+            "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
+            "priority": 23
+          },
+          {
+            "id": 192,
+            "name": "YouTube",
+            "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
+            "priority": 24
+          },
+          {
+            "id": 7,
+            "name": "Fandango At Home",
+            "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
+            "priority": 40
           }
         ],
         "buy": [
