@@ -146,22 +146,28 @@ enum TVFocus {
 }
 
 enum TVOpen {
-    /// Tries each URL until one is accepted (provider app, then a web fallback).
+    /// Opens the first URL only.
+    ///
+    /// `open` reports Cancel and a failed open the same way. Where to Watch
+    /// lists an https search and then a custom scheme. Opening the scheme
+    /// after a refusal leaves Movie Roulette Tuesday even when the person
+    /// chose Cancel.
     static func first(
         of urls: [URL],
         with openURL: OpenURLAction,
         failure: String,
         onFailure: @escaping (String) -> Void
     ) {
-        guard let url = urls.first else { onFailure(failure); return }
-        openURL(url) { accepted in
-            Task { @MainActor in
-                if accepted { return }
-                let rest = Array(urls.dropFirst())
-                if rest.isEmpty { onFailure(failure) }
-                else { first(of: rest, with: openURL, failure: failure, onFailure: onFailure) }
+        ProviderOpenPolicy.openFirst(of: urls, using: { url, finish in
+            openURL(url) { accepted in
+                Task { @MainActor in
+                    finish(accepted)
+                }
             }
-        }
+        }, completion: { result in
+            if case .opened = result { return }
+            onFailure(failure)
+        })
     }
 }
 

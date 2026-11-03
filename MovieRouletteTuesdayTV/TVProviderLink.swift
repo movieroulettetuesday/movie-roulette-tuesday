@@ -2,8 +2,10 @@ import SwiftUI
 import MRTCore
 import MRTShared
 
-/// Where-to-watch tiles try the provider's app, then a search page on the web.
-/// tvOS hands many of these https links to the installed app.
+/// Where-to-watch tiles list an https search, then a custom scheme when we
+/// know one. tvOS hands many of those https links to the installed app.
+/// `TVOpen` opens the first URL only. A refused open, including Cancel, does
+/// not continue on to the scheme.
 enum TVProviderLaunching {
     struct Launch {
         var shortName: String
