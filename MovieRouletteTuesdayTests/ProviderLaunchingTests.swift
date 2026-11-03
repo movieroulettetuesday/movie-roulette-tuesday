@@ -246,7 +246,7 @@ final class ProviderLaunchingTests: XCTestCase {
             opened += 1
         }, completion: { result = $0 })
         XCTAssertEqual(opened, 0)
-        XCTAssertEqual(result, .none)
+        XCTAssertEqual(result, ProviderLaunching.OpenResult.none)
     }
 
     private func expectSingleOpen(_ urls: [URL], declined: URL, label: String) {
