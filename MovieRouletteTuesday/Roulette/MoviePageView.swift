@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// Movie detail — catalog facts, linked episodes, local spin count.
 struct MoviePageView: View {
@@ -182,11 +183,6 @@ struct MoviePageView: View {
                     .font(.headline)
                     .foregroundStyle(.secondary)
                     .textSelection(.enabled)
-                if movie.isInfamous {
-                    Label("Infamous", systemImage: "flame.fill")
-                        .font(.subheadline)
-                        .foregroundStyle(.orange)
-                }
                 if spinCount > 0 {
                     Text(spinCount == 1 ? "Spun 1 time" : "Spun \(spinCount) times")
                         .font(.subheadline)
@@ -260,9 +256,14 @@ struct MoviePageView: View {
 /// provider logos + names, the JustWatch/TMDB attribution with the update
 /// date, and "All options on TMDB". Always shown (see `WhereToWatchDisplay`):
 /// without providers it says "No streaming sources found.".
+/// Each provider chip opens that service's app search when it is installed,
+/// otherwise the service's web search, otherwise the movie's TMDB watch page.
+/// Cancel on the system Open confirmation stays in this app. A refused open
+/// does not try another URL.
 struct WhereToWatchSection: View {
     let movie: Movie
     @AppStorage(MyServices.storageKey) private var myServicesRaw = ""
+    @Environment(\.openURL) private var openURL
 
     private var services: MyServices { MyServices(serialized: myServicesRaw) }
     private var display: WhereToWatchDisplay { WhereToWatchDisplay(movie: movie) }
@@ -295,11 +296,14 @@ struct WhereToWatchSection: View {
 
     @ViewBuilder
     private func row(_ title: String, _ providers: [StreamingInfo.Provider], id: String) -> some View {
-        if !providers.isEmpty {
+        let shown = StreamingCatalog.collapsingParamountPlusDuplicates(providers)
+        if !shown.isEmpty {
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
                     Text(title).font(.body.weight(.semibold))
                     Spacer()
+                    // Any Paramount+ tier the user saved still marks the row,
+                    // even though the row shows a single Paramount+ logo.
                     if providers.contains(where: { services.contains($0.id) }) {
                         Text("Your service")
                             .font(.caption.weight(.semibold))
@@ -310,22 +314,55 @@ struct WhereToWatchSection: View {
                 }
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(alignment: .top, spacing: 12) {
-                        ForEach(providers, id: \.id) { p in
-                            VStack(spacing: 4) {
-                                ProviderLogo(provider: p, size: 44)
-                                Text(p.name)
-                                    .font(.caption2)
-                                    .foregroundStyle(.secondary)
-                                    .lineLimit(2)
-                                    .multilineTextAlignment(.center)
-                                    .frame(width: 64)
-                            }
-                            .accessibilityElement(children: .combine)
+                        ForEach(shown, id: \.id) { p in
+                            providerChip(p, row: id)
                         }
                     }
                 }
             }
             .accessibilityIdentifier("streaming-\(id)")
+        }
+    }
+
+    /// Logo and name. A tappable chip when we have somewhere to send it;
+    /// otherwise the same tile, with no action.
+    @ViewBuilder
+    private func providerChip(_ provider: StreamingInfo.Provider, row: String) -> some View {
+        let destination = ProviderLaunching.destination(for: provider, movie: movie)
+        let tile = VStack(spacing: 4) {
+            ProviderLogo(provider: provider, size: 44)
+            Text(provider.name)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .lineLimit(2)
+                .multilineTextAlignment(.center)
+                .frame(width: 64)
+        }
+        if destination.urls.isEmpty {
+            tile.accessibilityElement(children: .combine)
+        } else {
+            Button {
+                open(destination.attempts { UIApplication.shared.canOpenURL($0) })
+            } label: {
+                tile.contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel(provider.name)
+            .accessibilityHint(destination.hint)
+            .accessibilityIdentifier("streaming-\(row)-\(provider.id)")
+        }
+    }
+
+    /// The first candidate only. `attempts` puts the native app first when
+    /// `canOpenURL` is true and the web page first otherwise. Cancel comes
+    /// back as not accepted, and so does a failed open. Opening the next URL
+    /// on that answer launches the provider through its https universal link.
+    private func open(_ urls: [URL]) {
+        ProviderLaunching.openFirst(of: urls) { url, finish in
+            openURL(url) { accepted in
+                finish(accepted)
+            }
         }
     }
 }

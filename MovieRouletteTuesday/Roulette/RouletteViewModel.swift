@@ -92,6 +92,9 @@ final class RouletteViewModel {
     /// DEBUG stress runs with the real, full-length clip-timed spins.
     @ObservationIgnored private var stressRealTiming = false
     private let settings: UserDefaults
+    /// Cached listener averages (movie id -> stars) for the jackpot weighting.
+    /// Read synchronously at spin time; never fetches.
+    private let listenerAverages: @MainActor () -> [String: Double]
 
     init(
         catalogSource: any MovieCatalogSource,
@@ -99,7 +102,8 @@ final class RouletteViewModel {
         history: SpinHistoryStore,
         selector: MovieSelector = MovieSelector(),
         rng: AnyRandomNumberGenerator = .system,
-        settings: UserDefaults = .standard
+        settings: UserDefaults = .standard,
+        listenerAverages: @escaping @MainActor () -> [String: Double] = { [:] }
     ) {
         self.catalogSource = catalogSource
         self.catalogRefresher = catalogRefresher
@@ -107,6 +111,7 @@ final class RouletteViewModel {
         self.selector = selector
         self.rng = rng
         self.settings = settings
+        self.listenerAverages = listenerAverages
         self.feedback = SpinFeedback()
     }
 
@@ -411,7 +416,7 @@ final class RouletteViewModel {
         let policy = RareOutcomePolicy(isEnabled: true)
         let outcome = RareOutcomeRoller.roll(
             policy: policy,
-            infamousAvailable: !RareOutcomeRoller.infamousMovies(in: catalog).isEmpty,
+            infamousAvailable: !RareOutcomeRoller.jackpotCandidates(in: catalog).isEmpty,
             allowRespin: !wasForcedRespin,
             using: &rng
         )
@@ -436,7 +441,9 @@ final class RouletteViewModel {
         var isJackpot = false
         let movie: Movie
         if outcome == .infamousJackpot,
-           let pick = RareOutcomeRoller.jackpotPick(in: catalog, landed: landed, using: &rng) {
+           let pick = RareOutcomeRoller.jackpotPick(
+               in: catalog, landed: landed, listenerAverages: listenerAverages(), using: &rng
+           ) {
             movie = pick.movie
             category = pick.category
             isJackpot = true

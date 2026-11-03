@@ -112,11 +112,14 @@ public struct MovieSuggestion: Equatable, Sendable {
     public var why: String
     /// nil or empty = no category.
     public var category: String?
+    /// Optional "credit me as" name, on its own `From:` line. nil or empty = none.
+    public var credit: String?
 
-    public init(title: String, why: String = "", category: String? = nil) {
+    public init(title: String, why: String = "", category: String? = nil, credit: String? = nil) {
         self.title = title
         self.why = why
         self.category = category
+        self.credit = credit
     }
 
     private static func clean(_ s: String) -> String {
@@ -132,6 +135,7 @@ public struct MovieSuggestion: Equatable, Sendable {
         var lines = ["Hi MRT Crew,", "", "I’d love to hear you cover:", "", "Movie: \(trimmedTitle)"]
         let why = Self.clean(why)
         if !why.isEmpty { lines.append("Why: \(why)") }
+        if let credit, !Self.clean(credit).isEmpty { lines.append("From: \(Self.clean(credit))") }
         if let category, !Self.clean(category).isEmpty { lines.append("Category: \(Self.clean(category))") }
         lines += ["", "Thanks for the show!", "", "Sent from the Movie Roulette Tuesday app"]
         return lines.joined(separator: "\n")
@@ -206,10 +210,11 @@ public struct InAppSuggestion: Equatable, Sendable {
     }
 
     /// The same pick as an email (for the mail fallbacks).
+    /// The credit is its own `From:` line (never folded into `Why:`), so an
+    /// empty note gives no `Why:` line at all.
     public var asEmail: MovieSuggestion {
-        var why = trimmedNote
-        if !trimmedCreditName.isEmpty { why += (why.isEmpty ? "" : "\n") + "From: \(trimmedCreditName)" }
-        return MovieSuggestion(title: title, why: why, category: trimmedCategory)
+        MovieSuggestion(title: title, why: trimmedNote, category: trimmedCategory,
+                        credit: trimmedCreditName.isEmpty ? nil : trimmedCreditName)
     }
 }
 

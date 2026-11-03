@@ -29,9 +29,6 @@ struct RevealSheet: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: CleanPro.spacing) {
-                    if reveal.isJackpot {
-                        jackpotBanner
-                    }
                     summaryCard
                     VStack(spacing: 12) {
                         // Same bordered family as Share / Movie Page (no SPIN pill anywhere
@@ -83,6 +80,12 @@ struct RevealSheet: View {
             }
             .navigationTitle(reveal.isJackpot ? "Infamous Jackpot" : "Tonight’s Movie")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                // Jackpot: the gold banner *is* the bar title (navigationTitle stays for the back button / VoiceOver).
+                if reveal.isJackpot {
+                    ToolbarItem(placement: .principal) { jackpotBanner }
+                }
+            }
         }
         .onAppear {
             // ImageRenderer must run on the main actor; the card is small and local-only.
@@ -131,19 +134,15 @@ struct RevealSheet: View {
                 .font(.largeTitle.bold())
                 .foregroundStyle(reveal.isJackpot ? Brand.jackpotGold : .primary)
                 .multilineTextAlignment(.center)
-                .lineLimit(3)
-                .minimumScaleFactor(0.6)
+                // iPhone (0.65 detent): long titles shrink onto two lines so Share and
+                // Movie page stay on screen; the iPad's large sheet has room for three.
+                .lineLimit(presenterIsRegularWidth ? 3 : 2)
+                .minimumScaleFactor(0.5)
 
             // verbatim: avoid locale grouping ("1,988").
             Text(verbatim: catalog?.subtitle(for: movie) ?? "\(movie.year) · \(movie.genre)")
                 .font(.headline)
                 .foregroundStyle(.secondary)
-
-            if movie.isInfamous {
-                Label("Infamous", systemImage: "flame.fill")
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.orange)
-            }
 
             Label(episodeText, systemImage: "mic.fill")
                 .font(.subheadline)
@@ -176,6 +175,9 @@ struct RevealSheet: View {
         }
     }
 
+    /// Transparent margin around the flattened jackpot banner (see `jackpotBanner`).
+    static let jackpotBannerRasterHeadroom = CGSize(width: 16, height: 4)
+
     private var jackpotBanner: some View {
         Text("Infamous Jackpot")
             .font(.headline.weight(.black))
@@ -185,6 +187,15 @@ struct RevealSheet: View {
             .padding(.horizontal, 16)
             .padding(.vertical, 8)
             .background(Brand.jackpotGold, in: Capsule())
+            // iOS 26+ hosts bar items in the scroll-edge pocket, which runs SwiftUI content
+            // through a vibrant color matrix keyed to the bar's (light) appearance: on the
+            // iPhone light sheet the gold came out brown (118,78,0), about 2:1 behind the ink.
+            // Drawing the banner flattened keeps it out of that filter, so it stays brand gold.
+            // The flattened layer is sized in screen points, and the iPhone's inset sheet is
+            // drawn scaled down (~0.96), so give it clear headroom or it crops the capsule.
+            .padding(.horizontal, Self.jackpotBannerRasterHeadroom.width)
+            .padding(.vertical, Self.jackpotBannerRasterHeadroom.height)
+            .drawingGroup()
             .accessibilityLabel("Infamous jackpot")
     }
 
@@ -206,7 +217,7 @@ struct RevealSheet: View {
                 reveal: .init(
                     id: UUID(),
                     movie: Movie(id: "the-room-2003", title: "The Room", year: 2003, genre: "Drama",
-                                 categories: ["cat-cult-classics"], episodeIds: ["sample-ep-6"], isInfamous: true),
+                                 categories: ["cat-cult-classics"], episodeIds: ["sample-ep-6"]),
                     category: RouletteCategory(id: "cat-cult", name: "Cult", colorHex: "#7B2CBF"),
                     spinCount: 1
                 ),

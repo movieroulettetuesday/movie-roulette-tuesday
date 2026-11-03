@@ -59,7 +59,6 @@ public struct Movie: Codable, Hashable, Identifiable, Sendable {
     /// Offline-friendly title of the primary episode that discussed this film.
     public var episodeTitle: String?
     public var posterURL: URL?
-    public var isInfamous: Bool
     public var hostRating: Double?
     /// TMDB movie id (future "Where to stream"; no UI yet). Optional, so
     /// catalogs without it still decode.
@@ -77,7 +76,6 @@ public struct Movie: Codable, Hashable, Identifiable, Sendable {
         episodeIds: [String] = [],
         episodeTitle: String? = nil,
         posterURL: URL? = nil,
-        isInfamous: Bool = false,
         hostRating: Double? = nil,
         tmdbId: Int? = nil,
         streaming: StreamingInfo? = nil
@@ -90,14 +88,13 @@ public struct Movie: Codable, Hashable, Identifiable, Sendable {
         self.episodeIds = episodeIds
         self.episodeTitle = episodeTitle
         self.posterURL = posterURL
-        self.isInfamous = isInfamous
         self.hostRating = hostRating
         self.tmdbId = tmdbId
         self.streaming = streaming
     }
 
     enum CodingKeys: String, CodingKey {
-        case id, title, year, genre, categories, episodeIds, episodeTitle, posterURL, isInfamous, hostRating
+        case id, title, year, genre, categories, episodeIds, episodeTitle, posterURL, hostRating
         case tmdbId, streaming
     }
 
@@ -111,7 +108,8 @@ public struct Movie: Codable, Hashable, Identifiable, Sendable {
         episodeIds = try c.decodeIfPresent([String].self, forKey: .episodeIds) ?? []
         episodeTitle = try c.decodeIfPresent(String.self, forKey: .episodeTitle)
         posterURL = try c.decodeIfPresent(URL.self, forKey: .posterURL)
-        isInfamous = try c.decodeIfPresent(Bool.self, forKey: .isInfamous) ?? false
+        // A legacy `isInfamous` key (still present in movies.json) is ignored:
+        // since 1.0.1 the jackpot is weighted only by listener ratings.
         hostRating = try c.decodeIfPresent(Double.self, forKey: .hostRating)
         // New optional fields never fail the catalog: a malformed value reads as nil.
         tmdbId = (try? c.decodeIfPresent(Int.self, forKey: .tmdbId)) ?? nil
@@ -584,6 +582,31 @@ public enum StreamingCatalog {
     public static func rentOrBuy(_ info: StreamingInfo) -> [StreamingInfo.Provider] {
         var seen = Set<Int>()
         return (info.rent + info.buy).filter { seen.insert($0.id).inserted }
+    }
+
+    /// One Paramount+ entry. TMDB lists Premium, Essential, and store channels
+    /// (Amazon, Roku, …) as separate provider ids; the apps show those under a
+    /// single Paramount+ name. The best-priority id is kept (lowest `priority`,
+    /// then the earliest). Every other provider stays, in the same order —
+    /// including other same-brand tiers such as Netflix with ads.
+    public static func collapsingParamountPlusDuplicates(_ providers: [StreamingInfo.Provider]) -> [StreamingInfo.Provider] {
+        let paramount = providers.indices.filter { isParamountPlusService(providers[$0]) }
+        guard let best = paramount.min(by: { lhs, rhs in
+            let left = providers[lhs].priority ?? .max
+            let right = providers[rhs].priority ?? .max
+            return left != right ? left < right : lhs < rhs
+        }) else {
+            return providers
+        }
+        return providers.enumerated().compactMap { index, provider in
+            isParamountPlusService(provider) && index != best ? nil : provider
+        }
+    }
+
+    /// Providers the tiles treat as Paramount+ (legacy id 531, or any name
+    /// containing "paramount"). Keep this in step with `ProviderLaunching`.
+    private static func isParamountPlusService(_ provider: StreamingInfo.Provider) -> Bool {
+        provider.id == 531 || provider.name.lowercased().contains("paramount")
     }
 
     /// "Oct 13" from "2026-10-13" (nil when unparseable).

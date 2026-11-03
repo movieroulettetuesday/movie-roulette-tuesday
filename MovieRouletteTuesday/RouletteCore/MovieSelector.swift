@@ -7,13 +7,10 @@ public struct SelectionPolicy: Equatable, Sendable {
     /// Weight multiplier for the movie from the very last spin. Movies further
     /// back in the window recover linearly toward 1.
     public var mostRecentMultiplier: Double
-    /// Weight multiplier for movies flagged `isInfamous`.
-    public var infamousBoost: Double
 
-    public init(recentWindow: Int = 5, mostRecentMultiplier: Double = 0.1, infamousBoost: Double = 1.25) {
+    public init(recentWindow: Int = 5, mostRecentMultiplier: Double = 0.1) {
         self.recentWindow = max(0, recentWindow)
         self.mostRecentMultiplier = min(max(mostRecentMultiplier, 0), 1)
-        self.infamousBoost = max(infamousBoost, 0)
     }
 
     public static let `default` = SelectionPolicy()
@@ -57,12 +54,10 @@ public struct MovieSelector: Sendable {
 
     /// Relative selection weight for a movie given chronological history (oldest first).
     public func weight(for movie: Movie, history: [SpinResult]) -> Double {
-        var weight = 1.0
-        if movie.isInfamous { weight *= policy.infamousBoost }
         let recent = history.suffix(policy.recentWindow).reversed()
         let spinsAgo = recent.firstIndex(where: { $0.movieId == movie.id })
             .map { recent.distance(from: recent.startIndex, to: $0) + 1 }
-        return weight * recencyMultiplier(spinsAgo: spinsAgo)
+        return recencyMultiplier(spinsAgo: spinsAgo)
     }
 
     public func weightedCandidates(
