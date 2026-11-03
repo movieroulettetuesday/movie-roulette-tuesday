@@ -194,6 +194,72 @@ final class ProviderLaunchingTests: XCTestCase {
         XCTAssertEqual(declared, Set(ProviderLaunching.queriedSchemes))
     }
 
+    /// Cancel and a failed open are the same `false` completion. Either one
+    /// must not open a later URL. With the app installed that later URL is
+    /// the https page, and iOS hands it to the provider app the person just
+    /// refused. With the app missing, Prime's second page can still open Amazon.
+    func testCancelDoesNotOpenAFollowUpURL() {
+        let film = movie("The Matrix")
+        let installed: [(String, Int, String)] = [
+            ("Netflix", 8, "nflx"),
+            ("Amazon Prime Video", 9, "aiv"),
+            ("YouTube", 192, "youtube"),
+        ]
+        for (name, id, scheme) in installed {
+            let urls = ProviderLaunching.destination(for: P(id: id, name: name), movie: film)
+                .attempts { $0.scheme == scheme }
+            XCTAssertGreaterThan(urls.count, 1, name)
+            XCTAssertEqual(urls.first?.scheme, scheme, name)
+            XCTAssertTrue(urls.dropFirst().allSatisfy { $0.scheme == "https" }, name)
+            expectSingleOpen(urls, declined: urls[0], label: name)
+        }
+
+        let primeWeb = ProviderLaunching.destination(for: P(id: 9, name: "Amazon Prime Video"), movie: film)
+            .attempts { _ in false }
+        XCTAssertEqual(primeWeb.map(\.host), ["app.primevideo.com", "www.amazon.com"])
+        expectSingleOpen(primeWeb, declined: primeWeb[0], label: "Prime web")
+
+        let netflixWeb = ProviderLaunching.destination(for: P(id: 8, name: "Netflix"), movie: film)
+            .attempts { _ in false }
+        XCTAssertEqual(netflixWeb.map(\.scheme), ["https"])
+        expectSingleOpen(netflixWeb, declined: netflixWeb[0], label: "Netflix web")
+    }
+
+    func testConfirmedOpenDoesNotOpenAFollowUpURL() {
+        let film = movie("The Matrix")
+        let netflix = ProviderLaunching.destination(for: P(id: 8, name: "Netflix"), movie: film)
+        let urls = netflix.attempts { $0.scheme == "nflx" }
+        var opened: [URL] = []
+        var result: ProviderLaunching.OpenResult?
+        ProviderLaunching.openFirst(of: urls, using: { url, completion in
+            opened.append(url)
+            completion(true)
+        }, completion: { result = $0 })
+        XCTAssertEqual(opened.map(\.scheme), ["nflx"])
+        XCTAssertEqual(result, .opened(urls[0]))
+    }
+
+    func testOpenFirstWithNothingToOpenDoesNotCallTheOpener() {
+        var opened = 0
+        var result: ProviderLaunching.OpenResult?
+        ProviderLaunching.openFirst(of: [], using: { _, _ in
+            opened += 1
+        }, completion: { result = $0 })
+        XCTAssertEqual(opened, 0)
+        XCTAssertEqual(result, ProviderLaunching.OpenResult.none)
+    }
+
+    private func expectSingleOpen(_ urls: [URL], declined: URL, label: String) {
+        var opened: [URL] = []
+        var result: ProviderLaunching.OpenResult?
+        ProviderLaunching.openFirst(of: urls, using: { url, completion in
+            opened.append(url)
+            completion(false)
+        }, completion: { result = $0 })
+        XCTAssertEqual(opened, [declined], label)
+        XCTAssertEqual(result, .declined(declined), label)
+    }
+
     private func queryValue(_ name: String, _ url: URL?) -> String? {
         guard let url else { return nil }
         return URLComponents(url: url, resolvingAgainstBaseURL: false)?
