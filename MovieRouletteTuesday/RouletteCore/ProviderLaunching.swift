@@ -12,6 +12,16 @@ public enum ProviderLaunching {
     /// `LSApplicationQueriesSchemes` — only schemes this type actually builds.
     public static let queriedSchemes = ["aiv", "nflx", "youtube"]
 
+    /// What the system reported for the one URL a tap handed it.
+    ///
+    /// `open` does not say why a URL was refused. Cancel on the system
+    /// Open/Cancel confirmation and a failed open are both `declined`.
+    public enum OpenResult: Equatable, Sendable {
+        case opened(URL)
+        case declined(URL)
+        case none
+    }
+
     public struct Destination: Equatable, Sendable {
         public var urls: [URL]
         public var appName: String
@@ -23,10 +33,34 @@ public enum ProviderLaunching {
         /// First https page (the provider search, or the TMDB watch link).
         public var webURL: URL? { urls.first { ProviderLaunching.isWeb($0) } }
 
-        /// URLs a tap should try. Custom schemes stay only when `canOpen` is true,
-        /// so a missing app falls through to the web page instead of an error.
+        /// Candidates, best first. A custom scheme stays only when `canOpen`
+        /// is true, so a missing app leaves the web page at the front.
+        /// A tap opens the first URL only (`openFirst`). The rest are not a
+        /// fallback: after Cancel they would still launch the provider.
         public func attempts(canOpen: (URL) -> Bool) -> [URL] {
             urls.filter { ProviderLaunching.isWeb($0) || canOpen($0) }
+        }
+    }
+
+    /// Opens the first candidate and stops, whatever the system answers.
+    ///
+    /// `attempts(canOpen:)` already dropped a custom scheme the device cannot
+    /// open, so the first URL is the native app when it is installed and the
+    /// web page otherwise. A refused open must not continue. The next URL is
+    /// an https universal link, or another store page, and the system can
+    /// hand that to an installed app. That second launch is how Cancel was
+    /// leaving Movie Roulette Tuesday.
+    public static func openFirst(
+        of urls: [URL],
+        using openURL: (URL, @escaping (Bool) -> Void) -> Void,
+        completion: @escaping (OpenResult) -> Void = { _ in }
+    ) {
+        guard let url = urls.first else {
+            completion(.none)
+            return
+        }
+        openURL(url) { accepted in
+            completion(accepted ? .opened(url) : .declined(url))
         }
     }
 

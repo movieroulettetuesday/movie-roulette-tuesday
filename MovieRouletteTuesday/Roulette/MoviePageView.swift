@@ -258,6 +258,8 @@ struct MoviePageView: View {
 /// without providers it says "No streaming sources found.".
 /// Each provider chip opens that service's app search when it is installed,
 /// otherwise the service's web search, otherwise the movie's TMDB watch page.
+/// Cancel on the system Open confirmation stays in this app. A refused open
+/// does not try another URL.
 struct WhereToWatchSection: View {
     let movie: Movie
     @AppStorage(MyServices.storageKey) private var myServicesRaw = ""
@@ -352,12 +354,15 @@ struct WhereToWatchSection: View {
         }
     }
 
-    /// First URL that opens wins. Nothing is shown when every candidate fails.
+    /// The first candidate only. `attempts` puts the native app first when
+    /// `canOpenURL` is true and the web page first otherwise. Cancel comes
+    /// back as not accepted, and so does a failed open. Opening the next URL
+    /// on that answer launches the provider through its https universal link.
     private func open(_ urls: [URL]) {
-        guard let url = urls.first else { return }
-        openURL(url) { accepted in
-            if accepted { return }
-            open(Array(urls.dropFirst()))
+        ProviderLaunching.openFirst(of: urls) { url, finish in
+            openURL(url) { accepted in
+                finish(accepted)
+            }
         }
     }
 }
