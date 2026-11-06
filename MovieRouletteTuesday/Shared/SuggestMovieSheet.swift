@@ -101,17 +101,17 @@ struct SuggestMovieSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
+                    Button { dismiss() } label: {
+                        Label("Cancel", systemImage: "xmark")
+                    }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    if sending {
-                        ProgressView()
-                    } else {
-                        Button("Send", action: send)
-                            .fontWeight(.semibold)
-                            .disabled(!draft.isValid)
-                            .accessibilityIdentifier("suggest-send")
+                    Button(action: send) {
+                        Label(sending ? "Sending" : "Send", systemImage: "paperplane.fill")
                     }
+                    .fontWeight(.semibold)
+                    .disabled(!draft.isValid || sending)
+                    .accessibilityIdentifier("suggest-send")
                 }
             }
             .sheet(isPresented: $showsComposer) {
