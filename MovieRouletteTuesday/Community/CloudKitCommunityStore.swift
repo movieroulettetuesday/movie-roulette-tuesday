@@ -150,6 +150,29 @@ actor CloudKitCommunityStore: CommunityStore {
         return values.flatMap(Self.resolvedHalfStars)
     }
 
+    /// Deletes this user's `ListenerRating`. Does not write `stars`, `halfStars`, or 0.
+    /// `unknownItem` (already gone) succeeds. A refused delete is returned to the
+    /// caller; the record is left unchanged so an old client cannot read a missing
+    /// integer as zero. The checked-in schema's `_creator` WRITE is what CloudKit
+    /// uses to allow that delete. This target does not change security roles.
+    @discardableResult
+    func deleteRating(movieId: String) async throws -> String {
+        let name = CommunityRecordNames.rating(movieId: movieId, userRecordName: try await userRecordName())
+        let recordID = CKRecord.ID(recordName: name)
+        do {
+            try await database.configuredWith(configuration: Self.configuration()) { db in
+                do {
+                    try await db.deleteRecord(withID: recordID)
+                } catch let error as CKError where error.code == .unknownItem {
+                    return
+                }
+            }
+        } catch {
+            throw Self.communityError(for: error)
+        }
+        return name
+    }
+
     // MARK: Suggestions
 
     /// One new `Suggestion` record with a random name (never overwrites).

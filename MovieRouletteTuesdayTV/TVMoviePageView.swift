@@ -281,7 +281,27 @@ private struct TVStarRater: View {
                     .accessibilityIdentifier("tv.movie.star.\(star)")
                 }
             }
+            // Sibling of the stars, not inside the identifier-only spacer.
+            // Select on the remote runs the button. There is no `.tap()` here.
+            if personal.halfStars(for: movieId) != nil {
+                Button(action: clear) {
+                    Text(RatingClearAction.title)
+                        .font(.system(size: 28, weight: .bold))
+                }
+                .buttonStyle(TVPillButtonStyle(primary: false, width: 320, height: 72, fontSize: 28))
+                .padding(.top, 16)
+                .accessibilityLabel(RatingClearAction.accessibilityLabel)
+                .accessibilityHint(RatingClearAction.accessibilityHint)
+                .accessibilityIdentifier(RatingClearAction.tvAccessibilityIdentifier)
+            }
         }
+    }
+
+    /// `savedStars == 0` above is only the empty star row. This stores nil, not 0.
+    private func clear() {
+        personal.setHalfStars(nil, for: movieId)
+        onNote("Rating cleared")
+        Task { await community.withdrawListenerRating(movieId: movieId) }
     }
 
     private func submit(_ stars: Int) {

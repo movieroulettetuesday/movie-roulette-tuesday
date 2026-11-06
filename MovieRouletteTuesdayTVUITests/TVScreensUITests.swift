@@ -61,6 +61,7 @@ final class TVScreensUITests: XCTestCase {
         let stars = app.descendants(matching: .any)["tv.movie.stars"]
         let firstStar = app.descendants(matching: .any)["tv.movie.star.1"]
         XCTAssertTrue(stars.exists || firstStar.exists, "rating stars")
+        XCTAssertFalse(app.buttons["tv.movie.clearRating"].exists, "an unrated movie has no Clear rating button and is not a zero")
         XCTAssertTrue(app.descendants(matching: .any)["tv.movie.watchlist"].exists)
         XCTAssertTrue(app.descendants(matching: .any)["tv.movie.poll"].waitForExistence(timeout: 10))
         XCTAssertTrue(app.buttons["tv.movie.suggest"].exists)
@@ -68,6 +69,17 @@ final class TVScreensUITests: XCTestCase {
         XCTAssertFalse(app.staticTexts["Roulette"].exists && app.buttons["tv.spin"].exists,
                        "the movie page hides the Roulette tab")
         attach("tv-movie-page")
+    }
+
+    func testClearRatingButtonIsPresentForASavedHalfStarRating() {
+        launch([
+            "-MRTOpenMovie", "a-face-in-the-crowd-1957",
+            "-MRTSeedRating", "a-face-in-the-crowd-1957", "7",
+        ])
+        let clear = app.buttons["tv.movie.clearRating"]
+        XCTAssertTrue(clear.waitForExistence(timeout: 20), "Clear rating is a button, not a tap target")
+        XCTAssertEqual(clear.label, "Clear rating")
+        attach("tv-clear-rating")
     }
 
     func testStatsOpensSettings() {

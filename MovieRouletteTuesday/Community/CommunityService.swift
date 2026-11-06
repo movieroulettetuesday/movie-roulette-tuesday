@@ -27,6 +27,17 @@ final class CommunityService {
     private var votedPolls: [String: LocalSubmission<String>] = [:]
     /// movieId -> half-stars (1...10) this device submitted to the listener average.
     private var listenerRatings: [String: LocalSubmission<Int>] = [:]
+    /// A cleared listener rating. Kept until iCloud has dropped the record so a
+    /// stale query or a relaunch cannot put the old stars back.
+    private struct Withdrawal: Codable, Equatable {
+        var recordName: String
+        var deleteSucceeded: Bool
+    }
+    private var withdrawals: [String: Withdrawal] = [:]
+    /// Bumped on submit and withdraw. An older in-flight save or delete checks
+    /// this before it touches local state, and a stale delete puts a newer
+    /// rating back on the server.
+    private var ratingGeneration: [String: Int] = [:]
 
     let pollOverrides: PollOverrides?
 
@@ -49,7 +60,12 @@ final class CommunityService {
     private static let votedPollsKey = "community.votedPolls"
     /// Whole stars (before half-stars); migrated once to `listenerHalfStarsKey`.
     private static let listenerRatingsKey = "community.listenerRatings"
+    /// JSON object, movie id -> `{ "value": Int, "recordName": String }` (that key order).
+    /// Half-stars are 1...10. Clear removes the movie id. It does not store 0.
     private static let listenerHalfStarsKey = "community.listenerHalfStars"
+    /// JSON object, movie id -> `{ "recordName": String, "deleteSucceeded": Bool }`
+    /// (that key order). Local only, until the CloudKit record is gone. Not a server field.
+    private static let withdrawalsKey = "community.withdrawnListenerRatings"
 
     init(store: any CommunityStore, defaults: UserDefaults = .standard, bundle: Bundle = .main) {
         self.store = store
@@ -67,6 +83,7 @@ final class CommunityService {
             }
             if !legacy.isEmpty { save(listenerRatings, Self.listenerHalfStarsKey) }
         }
+        withdrawals = Self.load(Self.withdrawalsKey, from: defaults) ?? [:]
         // Last known listener aggregates, so the first spin is weighted offline.
         ratingAggregates = ListenerRatingsSnapshot.load(from: defaults)?.aggregates ?? [:]
     }
@@ -182,8 +199,10 @@ final class CommunityService {
 
     func loadRating(movieId: String, force: Bool = false) async {
         await refreshAccountStatus()
-        if accountStatus.canWrite, listenerRatings[movieId] == nil,
-           let half = try? await store.myRating(movieId: movieId) {
+        if listenerRatings[movieId] == nil, withdrawals[movieId] != nil {
+            await retryWithdrawal(movieId: movieId)
+        } else if accountStatus.canWrite, listenerRatings[movieId] == nil,
+                  let half = try? await store.myRating(movieId: movieId) {
             listenerRatings[movieId] = LocalSubmission(value: half, recordName: "")
             save(listenerRatings, Self.listenerHalfStarsKey)
         }
@@ -201,7 +220,11 @@ final class CommunityService {
         do {
             let ratings = try await store.fetchRatings(movieId: movieId)
             ratingCache.insert(ratings, for: movieId)
-            errors[movieId] = nil
+            // A failed withdraw keeps its message until the server record is gone.
+            // A successful fetch of everyone else's ratings is not that.
+            if withdrawals[movieId]?.deleteSucceeded ?? true {
+                errors[movieId] = nil
+            }
             publishRating(movieId, ratings: ratings)
         } catch {
             guard let message = handle(error) else { return }
@@ -220,9 +243,17 @@ final class CommunityService {
             errors[movieId] = accountMessage ?? CommunityError.notSignedIn.localizedDescription
             return
         }
+        let generation = bumpRatingGeneration(movieId)
+        // A new rating replaces a clear. Drop the tombstone before the save
+        // so a refresh doesn't strip this record.
+        if withdrawals[movieId] != nil {
+            withdrawals[movieId] = nil
+            saveWithdrawals()
+        }
         defer { busy.remove(movieId) }
         do {
             let name = try await store.submitRating(movieId: movieId, halfStars: halfStars)
+            guard ratingGeneration[movieId] == generation else { return }
             listenerRatings[movieId] = LocalSubmission(value: halfStars, recordName: name)
             save(listenerRatings, Self.listenerHalfStarsKey)
             errors[movieId] = nil
@@ -231,13 +262,107 @@ final class CommunityService {
             if let message = handle(error) { errors[movieId] = message }
             return
         }
+        guard ratingGeneration[movieId] == generation else { return }
         await loadRating(movieId: movieId, force: true)
     }
 
+    /// Removes the shared listener rating for `movieId` and keeps it from
+    /// coming back on the next launch or the next iCloud fetch. Personal
+    /// watched / watchlist state is not touched here.
+    func withdrawListenerRating(movieId: String) async {
+        let generation = bumpRatingGeneration(movieId)
+        let previous = listenerRatings[movieId]
+        let hadShared = previous != nil || withdrawals[movieId] != nil
+        listenerRatings[movieId] = nil
+        save(listenerRatings, Self.listenerHalfStarsKey)
+        var withdrawal = withdrawals[movieId] ?? Withdrawal(recordName: "", deleteSucceeded: false)
+        if let known = previous?.recordName, !known.isEmpty { withdrawal.recordName = known }
+        withdrawals[movieId] = withdrawal
+        saveWithdrawals()
+        if let cached = ratingCache.staleValue(for: movieId) {
+            publishRating(movieId, ratings: cached)
+        }
+        await refreshAccountStatus()
+        guard ratingGeneration[movieId] == generation else { return }
+        guard accountStatus.canWrite else {
+            if hadShared {
+                errors[movieId] = accountMessage ?? CommunityError.notSignedIn.localizedDescription
+            }
+            return
+        }
+        if let blocked = backoffMessage() {
+            errors[movieId] = blocked
+            return
+        }
+        do {
+            let name = try await store.deleteRating(movieId: movieId)
+            guard ratingGeneration[movieId] == generation else {
+                await restoreServerRatingIfNewer(movieId: movieId)
+                return
+            }
+            withdrawals[movieId] = Withdrawal(recordName: name, deleteSucceeded: true)
+            saveWithdrawals()
+            errors[movieId] = nil
+            ratingCache.invalidate(movieId)
+        } catch {
+            guard ratingGeneration[movieId] == generation else { return }
+            if hadShared, let message = handle(error) { errors[movieId] = message }
+            return
+        }
+        guard ratingGeneration[movieId] == generation else { return }
+        await loadRating(movieId: movieId, force: true)
+    }
+
+    /// Finish a clear that couldn't reach iCloud last time. A successful delete
+    /// plus a fetch that no longer contains the record drops the tombstone.
+    private func retryWithdrawal(movieId: String) async {
+        guard accountStatus.canWrite, listenerRatings[movieId] == nil, var withdrawal = withdrawals[movieId] else { return }
+        if !withdrawal.deleteSucceeded {
+            if let name = try? await store.deleteRating(movieId: movieId), listenerRatings[movieId] == nil {
+                withdrawal.recordName = name
+                withdrawal.deleteSucceeded = true
+                withdrawals[movieId] = withdrawal
+                saveWithdrawals()
+            } else if listenerRatings[movieId] != nil {
+                await restoreServerRatingIfNewer(movieId: movieId)
+            }
+        }
+    }
+
+    /// A delete that finished after the user rated again would wipe the new
+    /// stars. Write the current rating back when that happens.
+    private func restoreServerRatingIfNewer(movieId: String) async {
+        guard let current = listenerRatings[movieId] else { return }
+        withdrawals[movieId] = nil
+        saveWithdrawals()
+        if let name = try? await store.submitRating(movieId: movieId, halfStars: current.value) {
+            listenerRatings[movieId] = LocalSubmission(value: current.value, recordName: name)
+            save(listenerRatings, Self.listenerHalfStarsKey)
+        }
+    }
+
+    private func bumpRatingGeneration(_ movieId: String) -> Int {
+        let next = (ratingGeneration[movieId] ?? 0) + 1
+        ratingGeneration[movieId] = next
+        return next
+    }
+
+    private func saveWithdrawals() {
+        save(withdrawals, Self.withdrawalsKey)
+    }
+
     private func publishRating(_ movieId: String, ratings: [String: Int]) {
-        let merged = CommunityMerge.merging(ratings, own: Self.own(listenerRatings[movieId]))
+        let removed = withdrawals[movieId]?.recordName ?? ""
+        let stripped = CommunityMerge.removing(ratings, recordNames: [removed])
+        let merged = CommunityMerge.merging(stripped, own: Self.own(listenerRatings[movieId]))
         ratingAggregates[movieId] = RatingAggregate.from(halfStars: merged.values)
         ratingPublishedAt[movieId] = Date()
+        if let withdrawal = withdrawals[movieId], withdrawal.deleteSucceeded,
+           !withdrawal.recordName.isEmpty, ratings[withdrawal.recordName] == nil,
+           listenerRatings[movieId] == nil {
+            withdrawals[movieId] = nil
+            saveWithdrawals()
+        }
         saveRatingsSnapshot()
     }
 
@@ -258,8 +383,11 @@ final class CommunityService {
             own[submission.recordName] = ListenerRatingEntry(movieId: movieId, halfStars: submission.value)
         }
         let fetched: [String: RatingAggregate]?
+        let removed = Set(withdrawals.values.map(\.recordName))
         do {
-            fetched = try await ListenerRatingsSync.fetchAggregates(store: store, movieIds: movieIds, own: own)
+            fetched = try await ListenerRatingsSync.fetchAggregates(
+                store: store, movieIds: movieIds, own: own, removedRecordNames: removed
+            )
         } catch {
             _ = handle(error) // back-off bookkeeping only; nothing is shown
             fetched = nil
@@ -338,7 +466,11 @@ extension CommunityService {
         if info.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1" || info.arguments.contains("-MRTMockCommunity") {
             return preview()
         }
+        #if canImport(CloudKit)
         return CommunityService(store: CloudKitCommunityStore())
+        #else
+        return preview()
+        #endif
     }
 
     /// In-memory store seeded with a few fake listeners (previews/simulator).

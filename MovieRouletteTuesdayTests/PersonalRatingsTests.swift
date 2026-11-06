@@ -163,18 +163,126 @@ final class HalfStarMappingTests: XCTestCase {
         XCTAssertEqual(r.status(for: "a"), .watched, "rating implies watched")
     }
 
+    func testClearRatingKeepsStatusAndDropsOutOfTheAverage() {
+        var r = PersonalRatings()
+        let t0 = Date(timeIntervalSinceReferenceDate: 10)
+        let t1 = Date(timeIntervalSinceReferenceDate: 20)
+        r.setHalfStars(8, for: "a", now: t0)          // 4 stars
+        r.setHalfStars(1, for: "b", now: t0)          // half a star still rates
+        r.setStatus(.wantToWatch, for: "c", now: t0)
+        r.setHalfStars(nil, for: "b", now: t1)
+        XCTAssertNil(r.halfStars(for: "b"))
+        XCTAssertNil(r.rating(for: "b"))
+        XCTAssertEqual(r.status(for: "b"), .watched, "clear does not change watched")
+        XCTAssertEqual(r.entry(for: "b")?.updatedAt, t1)
+        XCTAssertEqual(r.halfStars(for: "a"), 8, "another movie's half-star rating stays")
+        XCTAssertEqual(r.status(for: "c"), .wantToWatch)
+        XCTAssertEqual(r.watchlist, ["c"])
+        XCTAssertEqual(r.watched, ["a", "b"])
+        let summary = PersonalRatingsSummary(ratings: r, catalog: nil)
+        XCTAssertEqual(summary.ratedCount, 1)
+        XCTAssertEqual(summary.averageStars!, 4, accuracy: 1e-12)
+        XCTAssertEqual(summary.topRated.map(\.movieId), ["a"])
+        XCTAssertNil(PersonalRatingsSummary(ratings: {
+            var cleared = PersonalRatings()
+            cleared.setHalfStars(8, for: "a", now: t0)
+            cleared.setHalfStars(nil, for: "a", now: t1)
+            return cleared
+        }(), catalog: nil).averageStars, "an unrated movie is not a zero in the average")
+        let movies = [
+            Movie(id: "a", title: "Alpha", year: 2000, genre: "G"),
+            Movie(id: "b", title: "Bravo", year: 2001, genre: "G"),
+            Movie(id: "c", title: "Charlie", year: 2002, genre: "G"),
+        ]
+        let stats = SpinStats(history: [SpinResult(movieId: "b", categoryId: "x")])
+        XCTAssertEqual(MovieListFilter.rated.apply(to: movies, ratings: r, spinStats: stats).map(\.id), ["a"])
+        XCTAssertEqual(MovieListFilter.watched.apply(to: movies, ratings: r, spinStats: stats).map(\.id), ["a", "b"])
+        XCTAssertEqual(MovieListFilter.watchlist.apply(to: movies, ratings: r, spinStats: stats).map(\.id), ["c"])
+        XCTAssertEqual(stats.spinCount(forMovie: "b"), 1, "clear does not touch spin history")
+    }
+
+    func testClearedRatingSurvivesReloadAndIgnoresLeftoverStars() throws {
+        let resurrect = #"{"entries":{"a":{"halfStars":null,"rating":5,"status":"watched","updatedAt":0},"b":{"halfStars":0,"rating":4,"status":"wantToWatch","updatedAt":0},"c":{"halfStars":"nope","rating":3,"status":"watched","updatedAt":0}}}"#
+        let decoded = try JSONDecoder().decode(PersonalRatings.self, from: Data(resurrect.utf8))
+        XCTAssertNil(decoded.halfStars(for: "a"), "null halfStars wins over a leftover whole-star rating")
+        XCTAssertNil(decoded.rating(for: "a"))
+        XCTAssertEqual(decoded.status(for: "a"), .watched)
+        XCTAssertNil(decoded.halfStars(for: "b"), "0 is unrated, not a rated zero")
+        XCTAssertEqual(decoded.status(for: "b"), .wantToWatch)
+        XCTAssertEqual(decoded.halfStars(for: "c"), 6, "a non-numeric halfStars still reads the legacy stars")
+
+        var live = PersonalRatings()
+        live.setHalfStars(7, for: "a", now: Date(timeIntervalSinceReferenceDate: 1))
+        live.setStatus(.wantToWatch, for: "b", now: Date(timeIntervalSinceReferenceDate: 1))
+        live.setHalfStars(nil, for: "a", now: Date(timeIntervalSinceReferenceDate: 2))
+        let data = try JSONEncoder().encode(live)
+        let json = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
+        let a = try XCTUnwrap((json["entries"] as? [String: Any])?["a"] as? [String: Any])
+        XCTAssertTrue(a["halfStars"] is NSNull)
+        XCTAssertNil(a["rating"], "the old whole-star field is omitted so it cannot come back")
+        XCTAssertEqual(a["status"] as? String, "watched")
+        let back = try JSONDecoder().decode(PersonalRatings.self, from: data)
+        XCTAssertNil(back.halfStars(for: "a"))
+        XCTAssertEqual(back.status(for: "a"), .watched)
+        XCTAssertEqual(back.status(for: "b"), .wantToWatch)
+
+        let url = FileManager.default.temporaryDirectory
+            .appendingPathComponent(UUID().uuidString).appendingPathComponent("personal-ratings.json")
+        let file = PersonalRatingsFileStore(fileURL: url)
+        try file.save(live)
+        let reloaded = try file.load()
+        XCTAssertNil(reloaded.halfStars(for: "a"))
+        XCTAssertEqual(reloaded.status(for: "a"), .watched)
+        XCTAssertEqual(reloaded.halfStars(for: "b"), nil)
+        XCTAssertEqual(reloaded.status(for: "b"), .wantToWatch)
+        try? FileManager.default.removeItem(at: url.deletingLastPathComponent())
+    }
+
+    func testStoreClearSurvivesRelaunch() async {
+        let url = FileManager.default.temporaryDirectory
+            .appendingPathComponent(UUID().uuidString).appendingPathComponent("personal-ratings.json")
+        await MainActor.run {
+            let first = PersonalRatingsStore(fileStore: PersonalRatingsFileStore(fileURL: url))
+            first.setHalfStars(7, for: "a")
+            first.setStatus(.wantToWatch, for: "b")
+            first.setHalfStars(nil, for: "a")
+            let second = PersonalRatingsStore(fileStore: PersonalRatingsFileStore(fileURL: url))
+            XCTAssertNil(second.halfStars(for: "a"))
+            XCTAssertNil(second.rating(for: "a"))
+            XCTAssertEqual(second.status(for: "a"), .watched)
+            XCTAssertEqual(second.status(for: "b"), .wantToWatch)
+            XCTAssertNil(second.halfStars(for: "b"))
+        }
+        try? FileManager.default.removeItem(at: url.deletingLastPathComponent())
+    }
+
+    func testClearRatingCopyIsStable() {
+        XCTAssertEqual(RatingClearAction.title, "Clear rating")
+        XCTAssertEqual(RatingClearAction.accessibilityLabel, "Clear rating")
+        XCTAssertEqual(RatingClearAction.accessibilityIdentifier, "clear-rating")
+        XCTAssertEqual(RatingClearAction.tvAccessibilityIdentifier, "tv.movie.clearRating")
+        XCTAssertTrue(RatingClearAction.accessibilityHint.contains("Watched"))
+        XCTAssertFalse(RatingClearAction.accessibilityHint.contains("zero"))
+    }
+
     /// Apple TV stores ratings in UserDefaults (Application Support can be purged).
-    @MainActor
-    func testUserDefaultsRoundTrip() throws {
+    func testUserDefaultsRoundTripAndClear() async {
         let suite = "tv-ratings-\(UUID().uuidString)"
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        let defaults = UserDefaults(suiteName: suite)!
         defer { defaults.removePersistentDomain(forName: suite) }
-        let store = PersonalRatingsStore(fileStore: nil, defaults: defaults)
-        store.setHalfStars(8, for: "a")
-        store.setStatus(.wantToWatch, for: "b")
-        let again = PersonalRatingsStore(fileStore: nil, defaults: defaults)
-        XCTAssertEqual(again.halfStars(for: "a"), 8)
-        XCTAssertEqual(again.status(for: "b"), .wantToWatch)
-        XCTAssertEqual(again.status(for: "a"), .watched)
+        await MainActor.run {
+            let store = PersonalRatingsStore(fileStore: nil, defaults: defaults)
+            store.setHalfStars(8, for: "a")
+            store.setStatus(.wantToWatch, for: "b")
+            store.setHalfStars(7, for: "c")
+            store.setHalfStars(nil, for: "c")
+            let again = PersonalRatingsStore(fileStore: nil, defaults: defaults)
+            XCTAssertEqual(again.halfStars(for: "a"), 8)
+            XCTAssertEqual(again.status(for: "b"), .wantToWatch)
+            XCTAssertEqual(again.status(for: "a"), .watched)
+            XCTAssertNil(again.halfStars(for: "c"))
+            XCTAssertNil(again.rating(for: "c"))
+            XCTAssertEqual(again.status(for: "c"), .watched)
+        }
     }
 }
