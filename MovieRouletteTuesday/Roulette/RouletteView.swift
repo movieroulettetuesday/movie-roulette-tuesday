@@ -196,6 +196,11 @@ struct RouletteView: View {
                 isRegularWidth: isRegularWidth,
                 hintHeight: Double(hintHeight)
             ))
+            // Recomputed from this slot every layout pass. A fold resizes the
+            // window and, on iOS 27.1+, activates a division region; older
+            // systems and an inactive hinge contribute no rects, so the shift
+            // stays zero and the wheel stays centered.
+            let shift = hingeShift(in: slot, diameter: diameter)
             // Centered in the slot: equal room above the pointer and below the
             // hint (the wheel's soft shadow uses the gap above the hint).
             VStack(spacing: CGFloat(RouletteLayout.hintSpacing)) {
@@ -210,6 +215,7 @@ struct RouletteView: View {
                         }
                     }
             }
+                .offset(x: shift.width, y: shift.height)
                 .frame(width: slot.size.width, height: slot.size.height)
                 #if DEBUG
                 .task(id: Int(diameter)) {
@@ -217,6 +223,46 @@ struct RouletteView: View {
                 }
                 #endif
         }
+    }
+
+    /// Hub translation for the active hinge, in this slot's top-left coordinates.
+    /// `.offset` does not flip in right-to-left layouts, so the region frames
+    /// are requested unmirrored (`layoutDirectionBehavior: .fixed`) to match it.
+    /// tvOS has no fold; this query stays on iOS even though the symbol also
+    /// exists for tvOS 27.1. The shared math is a no-op when given no rects.
+    private func hingeShift(in slot: GeometryProxy, diameter: CGFloat) -> CGSize {
+        let divisions = activeHingeDivisions(in: slot)
+        guard !divisions.isEmpty else { return .zero }
+        let slotWidth = Double(slot.size.width)
+        let slotHeight = Double(slot.size.height)
+        let wheelDiameter = Double(diameter)
+        let hint = Double(hintHeight)
+        let offset = RouletteLayout.hingeClearanceOffset(
+            hub: RouletteLayout.hubFrame(slotWidth: slotWidth, slotHeight: slotHeight,
+                                         diameter: wheelDiameter, hintHeight: hint),
+            wheel: RouletteLayout.wheelFrame(slotWidth: slotWidth, slotHeight: slotHeight,
+                                             diameter: wheelDiameter, hintHeight: hint),
+            slot: LayoutRect(x: 0, y: 0, width: slotWidth, height: slotHeight),
+            divisions: divisions
+        )
+        return CGSize(width: offset.x, height: offset.y)
+    }
+
+    private func activeHingeDivisions(in slot: GeometryProxy) -> [LayoutRect] {
+        #if os(iOS)
+        guard #available(iOS 27.1, *) else { return [] }
+        return slot.reservedRegions(kind: .division, layoutDirectionBehavior: .fixed).map { region in
+            let frame = region.frame
+            return LayoutRect(
+                x: Double(frame.origin.x),
+                y: Double(frame.origin.y),
+                width: Double(frame.size.width),
+                height: Double(frame.size.height)
+            )
+        }
+        #else
+        return []
+        #endif
     }
 
     private var header: some View {
@@ -243,7 +289,7 @@ struct RouletteView: View {
     /// the hub spin button over its centre as a separate "Spin" button.
     private func wheel(diameter: CGFloat) -> some View {
         let pointer = RouletteLayout.pointerSize(forDiameter: Double(diameter))
-        let hubSize = diameter * 0.23
+        let hubSize = diameter * CGFloat(RouletteLayout.hubDiameterFraction)
         return ZStack(alignment: .top) {
             wheelArt(diameter: diameter, pointer: pointer)
             // Same square as the wheel face, so the button sits exactly on the hub.
