@@ -58,7 +58,11 @@ final class CommunityService {
     private static let votedPollsKey = "community.votedPolls"
     /// Whole stars (before half-stars); migrated once to `listenerHalfStarsKey`.
     private static let listenerRatingsKey = "community.listenerRatings"
+    /// JSON object, movie id -> `{ "value": Int, "recordName": String }` (that key order).
+    /// Half-stars are 1...10. Clear removes the movie id. It does not store 0.
     private static let listenerHalfStarsKey = "community.listenerHalfStars"
+    /// JSON object, movie id -> `{ "recordName": String, "deleteSucceeded": Bool }`
+    /// (that key order). Local only, until the CloudKit record is gone. Not a server field.
     private static let withdrawalsKey = "community.withdrawnListenerRatings"
 
     init(store: any CommunityStore, defaults: UserDefaults = .standard, bundle: Bundle = .main) {
