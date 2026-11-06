@@ -23,6 +23,8 @@ Record name: `vote-<pollId>-<sha256(userRecordName + pollId)>`.
 
 Record name: `rating-<movieId>-<sha256(userRecordName + "rating:" + movieId)>`.
 
+Clearing a rating deletes that record (`GRANT WRITE TO "_creator"` includes delete). A missing record is success. If delete is refused, the app rewrites the record with `movieId` only and no `stars` / `halfStars`. Readers skip a record that has neither field. A clear is never stored as 0, so it stays out of averages and the histogram.
+
 ### `Suggestion` (added Oct 2026)
 | Field        | Type   | Notes |
 |--------------|--------|-------|

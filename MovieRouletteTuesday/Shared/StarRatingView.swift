@@ -4,6 +4,7 @@ import SwiftUI
 /// Tap a star's left half for ½, its right half for the whole star, or drag
 /// across the row; tapping the current value again clears it. VoiceOver:
 /// swipe up/down adjusts by ½ star. Read-only when `onChange` is nil.
+/// When a rating is set, Clear rating removes it. The lowest star is still ½.
 struct StarRatingView: View {
     let halfStars: Int?
     var font: Font = .title3
@@ -16,8 +17,28 @@ struct StarRatingView: View {
     @State private var dragMoved = false
 
     private var shown: Int? { dragValue ?? halfStars }
+    private var canClear: Bool { onChange != nil && halfStars != nil }
 
     var body: some View {
+        VStack(alignment: .trailing, spacing: 6) {
+            starRow
+            if canClear {
+                Button(RatingClearAction.title) {
+                    onChange?(nil)
+                }
+                .buttonStyle(.bordered)
+                .font(.subheadline)
+                .accessibilityLabel(RatingClearAction.accessibilityLabel)
+                .accessibilityHint(RatingClearAction.accessibilityHint)
+                .accessibilityIdentifier(RatingClearAction.accessibilityIdentifier)
+            }
+        }
+        // The row identifier lives on the caller. Containment has to be set
+        // before that identifier or the Clear button is hidden from UI tests.
+        .accessibilityElement(children: .contain)
+    }
+
+    private var starRow: some View {
         HStack(spacing: 4) {
             ForEach(1...5, id: \.self) { star in
                 starImage(fill: HalfStars.fill(star: star, halfStars: shown))

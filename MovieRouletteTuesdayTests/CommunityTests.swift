@@ -384,4 +384,163 @@ final class ListenerRatingsSyncTests: XCTestCase {
         let movies = ["low", "high", "unrated"].map { Movie(id: $0, title: $0, year: 2000, genre: "G") }
         XCTAssertEqual(InfamousSelection.weights(for: movies, averages: decoded.averages), [4.5, 0.5, 2.5])
     }
+
+    func testWithdrawnRecordIsLeftOutOfTheAverageAndHistogram() {
+        let stale = ["mine": 8, "other": 4]
+        let stripped = CommunityMerge.removing(stale, recordNames: ["mine"])
+        XCTAssertEqual(stripped, ["other": 4])
+        let aggregate = RatingAggregate.from(halfStars: stripped.values)
+        XCTAssertEqual(aggregate, RatingAggregate.from(halfStars: [0, 4]), "a cleared rating is omitted, not stored as zero")
+        XCTAssertEqual(aggregate.count, 1)
+        XCTAssertEqual(aggregate.average!, 2, accuracy: 1e-12)
+        XCTAssertEqual(aggregate.histogram, [0, 1, 0, 0, 0])
+        XCTAssertEqual(aggregate.histogram.reduce(0, +), aggregate.count)
+        XCTAssertNil(RatingAggregate.from(halfStars: [0]).average)
+        XCTAssertEqual(RatingAggregate.from(halfStars: [0]).histogram, [0, 0, 0, 0, 0])
+        let bulk = ListenerRatingsSync.aggregates(
+            records: [
+                "mine": ListenerRatingEntry(movieId: "m", halfStars: 8),
+                "other": ListenerRatingEntry(movieId: "m", halfStars: 4),
+            ],
+            removedRecordNames: ["mine"],
+            movieIds: ["m"]
+        )
+        XCTAssertEqual(bulk["m"], aggregate)
+    }
+}
+
+final class DeleteListenerRatingTests: XCTestCase {
+    func testDeleteRatingIsIdempotentAndNotAZero() async throws {
+        let store = InMemoryCommunityStore(currentUser: "u")
+        await store.seedHalfStarRatings(movieId: "m", halfStars: [4])
+        let name = try await store.submitRating(movieId: "m", halfStars: 8)
+        let deleted = try await store.deleteRating(movieId: "m")
+        XCTAssertEqual(deleted, name)
+        let mine = try await store.myRating(movieId: "m")
+        XCTAssertNil(mine)
+        let fetched = try await store.fetchRatings(movieId: "m")
+        XCTAssertNil(fetched[name])
+        let aggregate = RatingAggregate.from(halfStars: fetched.values)
+        XCTAssertEqual(aggregate.count, 1)
+        XCTAssertEqual(aggregate.average!, 2, accuracy: 1e-12)
+        let deletedAgain = try await store.deleteRating(movieId: "m")
+        XCTAssertEqual(deletedAgain, name, "deleting twice still succeeds")
+        let signedOut = InMemoryCommunityStore(currentUser: nil)
+        do {
+            _ = try await signedOut.deleteRating(movieId: "m")
+            XCTFail("expected notSignedIn")
+        } catch {
+            XCTAssertEqual(error as? CommunityError, .notSignedIn)
+        }
+    }
+}
+
+/// Fetch keeps returning a deleted rating until the test flushes it, the way a
+/// public CloudKit query can. `myRating` follows the direct record read.
+private actor StaleQueryRatingStore: CommunityStore {
+    var saved: Int?
+    var queryMine: Int?
+    var failDeletes = false
+    let recordName = "rating-m-user"
+    let otherHalfStars = 4
+
+    func setFailDeletes(_ fail: Bool) { failDeletes = fail }
+    func flushQuery() { queryMine = nil }
+
+    func accountStatus() async -> CommunityAccountStatus { .available }
+    func submitVote(pollId: String, option: String) async throws -> String { throw CommunityError.notSetUp }
+    func fetchVotes(pollId: String) async throws -> [String: String] { [:] }
+    func myVote(pollId: String) async throws -> String? { nil }
+
+    func submitRating(movieId: String, halfStars: Int) async throws -> String {
+        guard HalfStars.range.contains(halfStars) else { throw CommunityError.invalidStars }
+        saved = halfStars
+        queryMine = halfStars
+        return recordName
+    }
+
+    func deleteRating(movieId: String) async throws -> String {
+        if failDeletes { throw CommunityError.offline }
+        saved = nil
+        return recordName
+    }
+
+    func fetchRatings(movieId: String) async throws -> [String: Int] {
+        var out: [String: Int] = ["other": otherHalfStars]
+        if let queryMine { out[recordName] = queryMine }
+        return out
+    }
+
+    func fetchAllRatings(movieIds: [String]) async throws -> [String: ListenerRatingEntry] {
+        guard movieIds.contains("m") else { return [:] }
+        var out = ["other": ListenerRatingEntry(movieId: "m", halfStars: otherHalfStars)]
+        if let queryMine { out[recordName] = ListenerRatingEntry(movieId: "m", halfStars: queryMine) }
+        return out
+    }
+
+    func myRating(movieId: String) async throws -> Int? { saved }
+    func submitSuggestion(_ suggestion: InAppSuggestion, appVersion: String) async throws { throw CommunityError.notSetUp }
+}
+
+@MainActor
+final class ClearListenerRatingSyncTests: XCTestCase {
+    private var suite = ""
+
+    private func makeService(store: StaleQueryRatingStore) throws -> CommunityService {
+        suite = "mrt-clear-\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defaults.removePersistentDomain(forName: suite)
+        return CommunityService(store: store, defaults: defaults)
+    }
+
+    override func tearDown() async throws {
+        UserDefaults(suiteName: suite)?.removePersistentDomain(forName: suite)
+        try await super.tearDown()
+    }
+
+    func testClearSurvivesRelaunchAndAStaleQuery() async throws {
+        let store = StaleQueryRatingStore()
+        let service = try makeService(store: store)
+        await service.submitListenerRating(movieId: "m", halfStars: 8)
+        XCTAssertEqual(service.myListenerRating(movieId: "m"), 8)
+        XCTAssertEqual(service.ratingAggregates["m"]?.count, 2)
+        XCTAssertEqual(service.ratingAggregates["m"]?.average ?? -1, 3, accuracy: 1e-12)
+
+        await store.setFailDeletes(true)
+        await service.withdrawListenerRating(movieId: "m")
+        XCTAssertNil(service.myListenerRating(movieId: "m"))
+        let stillOnServer = try await store.myRating(movieId: "m")
+        XCTAssertEqual(stillOnServer, 8, "the server copy is still there")
+        XCTAssertEqual(service.ratingAggregates["m"]?.count, 1)
+        XCTAssertEqual(service.ratingAggregates["m"]?.average ?? -1, 2, accuracy: 1e-12)
+        XCTAssertNotNil(service.errors["m"])
+
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        let relaunched = CommunityService(store: store, defaults: defaults)
+        await relaunched.loadRating(movieId: "m", force: true)
+        XCTAssertNil(relaunched.myListenerRating(movieId: "m"), "iCloud must not restore a cleared rating")
+        let stillThere = try await store.myRating(movieId: "m")
+        XCTAssertEqual(stillThere, 8)
+        XCTAssertEqual(relaunched.ratingAggregates["m"]?.count, 1)
+        XCTAssertEqual(relaunched.ratingAggregates["m"]?.average ?? -1, 2, accuracy: 1e-12)
+        XCTAssertNotEqual(relaunched.ratingAggregates["m"]?.average, 0)
+
+        await relaunched.refreshAllListenerRatings(movieIds: ["m"], force: true)
+        XCTAssertEqual(relaunched.ratingAggregates["m"]?.count, 1)
+        XCTAssertEqual(relaunched.ratingAggregates["m"]?.average ?? -1, 2, accuracy: 1e-12)
+
+        await store.setFailDeletes(false)
+        await store.flushQuery()
+        await relaunched.loadRating(movieId: "m", force: true)
+        XCTAssertNil(relaunched.myListenerRating(movieId: "m"))
+        let gone = try await store.myRating(movieId: "m")
+        XCTAssertNil(gone)
+        XCTAssertEqual(relaunched.ratingAggregates["m"]?.count, 1)
+        XCTAssertEqual(relaunched.ratingAggregates["m"]?.average ?? -1, 2, accuracy: 1e-12)
+
+        await relaunched.submitListenerRating(movieId: "m", halfStars: 1)
+        XCTAssertEqual(relaunched.myListenerRating(movieId: "m"), 1, "half a star still saves")
+        XCTAssertEqual(relaunched.ratingAggregates["m"]?.count, 2)
+        XCTAssertEqual(relaunched.ratingAggregates["m"]?.average ?? -1, 1.25, accuracy: 1e-12)
+    }
 }

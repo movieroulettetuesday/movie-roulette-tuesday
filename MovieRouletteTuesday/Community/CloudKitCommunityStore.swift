@@ -148,6 +148,33 @@ actor CloudKitCommunityStore: CommunityStore {
         return values.flatMap(Self.resolvedHalfStars)
     }
 
+    /// Removes this user's `ListenerRating`. `_creator` WRITE covers the delete.
+    /// A record that is already gone succeeds. If delete is refused, the same
+    /// write path clears `stars` and `halfStars` instead of storing 0, which
+    /// readers skip. The record name is returned either way so a stale query
+    /// can be stripped until CloudKit catches up.
+    @discardableResult
+    func deleteRating(movieId: String) async throws -> String {
+        let name = CommunityRecordNames.rating(movieId: movieId, userRecordName: try await userRecordName())
+        let recordID = CKRecord.ID(recordName: name)
+        do {
+            try await database.configuredWith(configuration: Self.configuration()) { db in
+                do {
+                    try await db.deleteRecord(withID: recordID)
+                } catch let error as CKError where error.code == .unknownItem {
+                    return
+                } catch let error as CKError where error.code == .permissionFailure {
+                    let record = CKRecord(recordType: CommunityRecordNames.ratingRecordType, recordID: recordID)
+                    record["movieId"] = movieId
+                    try await Self.save(record, in: db, policy: .allKeys)
+                }
+            }
+        } catch {
+            throw Self.communityError(for: error)
+        }
+        return name
+    }
+
     // MARK: Suggestions
 
     /// One new `Suggestion` record with a random name (never overwrites).
