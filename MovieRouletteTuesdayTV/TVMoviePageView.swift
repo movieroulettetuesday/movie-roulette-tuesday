@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 import MRTCore
 import MRTShared
 
@@ -172,6 +173,18 @@ struct TVMoviePageView: View {
         .padding(24)
         .frame(maxWidth: .infinity, minHeight: 180, alignment: .leading)
         .background(RoundedRectangle(cornerRadius: 28, style: .continuous).fill(theme.card))
+        // Measured on Apple TV 4K: the focused provider (Prime Video) is
+        // {{160,421},{118,118}}. The star row starts at x=712, inside
+        // yourRating {{682,600.5},{502,299}}. Those x ranges do not overlap,
+        // and this card is the only thing under x=160, and it is not a button.
+        // Down from that provider therefore stays put. The guide fills this
+        // card and sends that Down to star 1. Up from the stars still hits the
+        // provider that actually sits above them.
+        .background {
+            TVRatingFocusGuide(targetIdentifier: "tv.movie.star.1")
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .accessibilityHidden(true)
+        }
         .accessibilityElement(children: .combine)
         .accessibilityIdentifier("tv.movie.listenerAverage")
     }
@@ -404,5 +417,73 @@ private struct TVPollCard: View {
         }
         .buttonStyle(TVRowButtonStyle())
         .accessibilityIdentifier("tv.poll.\(row.option.id)")
+    }
+}
+
+/// Invisible region under the left Where to Watch tiles. Pressing Down there
+/// moves to the first rating star. The tiles and the stars stay where they are.
+private struct TVRatingFocusGuide: UIViewRepresentable {
+    var targetIdentifier: String
+
+    func makeUIView(context: Context) -> TVRatingFocusGuideView {
+        let view = TVRatingFocusGuideView()
+        view.targetIdentifier = targetIdentifier
+        return view
+    }
+
+    func updateUIView(_ uiView: TVRatingFocusGuideView, context: Context) {
+        uiView.targetIdentifier = targetIdentifier
+        uiView.pointGuide()
+    }
+}
+
+private final class TVRatingFocusGuideView: UIView {
+    var targetIdentifier = ""
+    private let guide = UIFocusGuide()
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        isUserInteractionEnabled = false
+        isAccessibilityElement = false
+        backgroundColor = .clear
+        addLayoutGuide(guide)
+        NSLayoutConstraint.activate([
+            guide.leadingAnchor.constraint(equalTo: leadingAnchor),
+            guide.trailingAnchor.constraint(equalTo: trailingAnchor),
+            guide.topAnchor.constraint(equalTo: topAnchor),
+            guide.bottomAnchor.constraint(equalTo: bottomAnchor),
+        ])
+    }
+
+    required init?(coder: NSCoder) { nil }
+
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        pointGuide()
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        pointGuide()
+    }
+
+    func pointGuide() {
+        guard !targetIdentifier.isEmpty, let root = window else {
+            guide.isEnabled = false
+            return
+        }
+        let match = root.view(withAccessibilityIdentifier: targetIdentifier)
+        guide.preferredFocusEnvironments = match.map { [$0] } ?? []
+        guide.isEnabled = match != nil
+    }
+}
+
+private extension UIView {
+    func view(withAccessibilityIdentifier identifier: String) -> UIView? {
+        if accessibilityIdentifier == identifier { return self }
+        for subview in subviews {
+            if let found = subview.view(withAccessibilityIdentifier: identifier) { return found }
+        }
+        return nil
     }
 }

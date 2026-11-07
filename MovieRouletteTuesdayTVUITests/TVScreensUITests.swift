@@ -96,9 +96,33 @@ final class TVScreensUITests: XCTestCase {
         XCTAssertEqual(clear.label, "Clear rating")
         let firstStar = app.buttons["tv.movie.star.1"]
         XCTAssertTrue(firstStar.waitForExistence(timeout: 5))
-        focusDown(firstStar)
+        // Prime Video is the default focus at x≈160. The stars start at x≈712.
+        // Down from that tile has no button beneath it. The listener-card focus
+        // guide is that column, and one Down must land on star 1.
+        guard let provider = waitForFocusedProvider() else {
+            failFocus("No provider was focused before navigating to the rating")
+            return
+        }
         remote.press(.down)
-        XCTAssertTrue(waitForFocus(clear, timeout: 2), "Down from star 1 focuses Clear rating")
+        guard waitForFocus(firstStar, timeout: 2) else {
+            failFocus("Down from \(provider.identifier) \(provider.frame) did not focus star 1 \(firstStar.frame). The guide covers the listener card under the left tiles.")
+            return
+        }
+        remote.press(.up)
+        guard waitForFocusedProvider(timeout: 2) != nil else {
+            failFocus("Up from star 1 did not return to a Where to Watch provider")
+            return
+        }
+        remote.press(.down)
+        guard waitForFocus(firstStar, timeout: 2) else {
+            failFocus("Down from the provider row did not return to star 1")
+            return
+        }
+        remote.press(.down)
+        guard waitForFocus(clear, timeout: 2) else {
+            failFocus("Down from star 1 \(firstStar.frame) did not focus Clear rating \(clear.frame)")
+            return
+        }
         remote.press(.select)
         XCTAssertEqual(waitForStars("Not rated"), "Not rated")
         XCTAssertFalse(app.buttons["tv.movie.clearRating"].exists)
@@ -114,7 +138,15 @@ final class TVScreensUITests: XCTestCase {
 
         let oneStar = app.buttons["tv.movie.star.1"]
         XCTAssertTrue(oneStar.waitForExistence(timeout: 10))
-        focusDown(oneStar)
+        guard waitForFocusedProvider() != nil else {
+            failFocus("Relaunch did not focus a provider")
+            return
+        }
+        remote.press(.down)
+        guard waitForFocus(oneStar, timeout: 2) else {
+            failFocus("Down after relaunch did not focus star 1 \(oneStar.frame)")
+            return
+        }
         remote.press(.select)
         XCTAssertEqual(waitForStars("1 of 5 stars"), "1 of 5 stars")
         XCTAssertTrue(app.buttons["tv.movie.clearRating"].waitForExistence(timeout: 5))
@@ -128,15 +160,51 @@ final class TVScreensUITests: XCTestCase {
         return stars.value as? String ?? ""
     }
 
-    /// Down only. Right/Left stays in Where to Watch and never enters the rating
-    /// focus section, whose next item under the stars is Clear rating.
-    private func focusDown(_ element: XCUIElement) {
-        if waitForFocus(element, timeout: 1) { return }
-        for _ in 0..<12 {
-            remote.press(.down)
-            if waitForFocus(element, timeout: 0.8) { return }
+    private func waitForFocusedProvider(timeout: TimeInterval = 8) -> XCUIElement? {
+        let deadline = Date().addingTimeInterval(timeout)
+        while Date() < deadline {
+            if let provider = focusedProvider() { return provider }
+            RunLoop.current.run(until: Date().addingTimeInterval(0.2))
         }
-        XCTAssertTrue(element.hasFocus, "Down never focused \(element.identifier)")
+        return focusedProvider()
+    }
+
+    private func focusedProvider() -> XCUIElement? {
+        let providers = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", "tv.provider."))
+        for index in 0..<providers.count {
+            let button = providers.element(boundBy: index)
+            if button.exists, button.hasFocus { return button }
+        }
+        return nil
+    }
+
+    private func failFocus(_ message: String) {
+        let shot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        shot.name = "tv-focus-fail"
+        shot.lifetime = .keepAlways
+        add(shot)
+        let body = message + "\n" + focusDump() + "\n\n" + app.debugDescription
+        let text = XCTAttachment(data: Data(body.utf8), uniformTypeIdentifier: "public.plain-text")
+        text.name = "tv-focus-ax"
+        text.lifetime = .keepAlways
+        add(text)
+        XCTFail(message + "\n" + focusDump())
+    }
+
+    private func focusDump() -> String {
+        var lines: [String] = []
+        let providers = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", "tv.provider."))
+        for index in 0..<providers.count {
+            let button = providers.element(boundBy: index)
+            if button.exists {
+                lines.append("\(button.identifier) \(button.label) focus=\(button.hasFocus) frame=\(button.frame)")
+            }
+        }
+        for id in ["tv.movie.star.1", "tv.movie.clearRating", "tv.movie.yourRating", "tv.movie.listenerAverage"] {
+            let element = app.descendants(matching: .any)[id]
+            lines.append("\(id) exists=\(element.exists) focus=\(element.hasFocus) frame=\(element.exists ? String(describing: element.frame) : "nil")")
+        }
+        return lines.joined(separator: "\n")
     }
 
     func testStatsOpensSettings() {
