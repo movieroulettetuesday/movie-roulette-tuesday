@@ -96,16 +96,15 @@ final class TVScreensUITests: XCTestCase {
         XCTAssertEqual(clear.label, "Clear rating")
         let firstStar = app.buttons["tv.movie.star.1"]
         XCTAssertTrue(firstStar.waitForExistence(timeout: 5))
-        // Prime Video is the default focus at x≈160. The stars start at x≈712.
-        // Down from that tile has no button beneath it. The listener-card focus
-        // guide is that column, and one Down must land on star 1.
+        // Your Rating is the left card, so star 1 shares x with the initial
+        // provider. One Down must move. One Up must come back.
         guard let provider = waitForFocusedProvider() else {
             failFocus("No provider was focused before navigating to the rating")
             return
         }
         remote.press(.down)
         guard waitForFocus(firstStar, timeout: 2) else {
-            failFocus("Down from \(provider.identifier) \(provider.frame) did not focus star 1 \(firstStar.frame). The guide covers the listener card under the left tiles.")
+            failFocus("Down from \(provider.identifier) \(provider.frame) did not focus star 1 \(firstStar.frame). Star 1 must overlap that tile's x range.")
             return
         }
         remote.press(.up)
