@@ -117,6 +117,7 @@
 		B0E100000000000000000016 /* TopShelfTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E100000000000000000008 /* TopShelfTests.swift */; };
 		B0E100000000000000000019 /* ParamountProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E10000000000000000001A /* ParamountProviderTests.swift */; };
 		C0A0CE0000000000000000B1 /* ProviderOpenPolicyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A0CE0000000000000000A1 /* ProviderOpenPolicyTests.swift */; };
+		F0A11A0011223344556677B1 /* ProviderLaunchingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A11A0011223344556677A1 /* ProviderLaunchingTests.swift */; };
 		B0E100000000000000000017 /* MRTCore in Frameworks */ = {isa = PBXBuildFile; productRef = B0E100000000000000000051 /* MRTCore */; };
 		C1EA11000000000000000002 /* ClearRatingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EA11000000000000000001 /* ClearRatingUITests.swift */; };
 /* End PBXBuildFile section */
@@ -293,6 +294,7 @@
 		B0E100000000000000000008 /* TopShelfTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TopShelfTests.swift; path = MRTKit/Tests/MRTCoreTests/TopShelfTests.swift; sourceTree = SOURCE_ROOT; };
 		B0E10000000000000000001A /* ParamountProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ParamountProviderTests.swift; path = MRTKit/Tests/MRTCoreTests/ParamountProviderTests.swift; sourceTree = SOURCE_ROOT; };
 		C0A0CE0000000000000000A1 /* ProviderOpenPolicyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProviderOpenPolicyTests.swift; path = MRTKit/Tests/MRTCoreTests/ProviderOpenPolicyTests.swift; sourceTree = SOURCE_ROOT; };
+		F0A11A0011223344556677A1 /* ProviderLaunchingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProviderLaunchingTests.swift; path = MRTKit/Tests/MRTCoreTests/ProviderLaunchingTests.swift; sourceTree = SOURCE_ROOT; };
 		B0E10000000000000000000A /* TOPSHELF.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = TOPSHELF.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -506,6 +508,7 @@
 				B0E100000000000000000008 /* TopShelfTests.swift */,
 				B0E10000000000000000001A /* ParamountProviderTests.swift */,
 				C0A0CE0000000000000000A1 /* ProviderOpenPolicyTests.swift */,
+				F0A11A0011223344556677A1 /* ProviderLaunchingTests.swift */,
 			);
 			path = MovieRouletteTuesdayTests;
 			sourceTree = "<group>";
@@ -930,6 +933,7 @@
 				B0E100000000000000000016 /* TopShelfTests.swift in Sources */,
 				B0E100000000000000000019 /* ParamountProviderTests.swift in Sources */,
 				C0A0CE0000000000000000B1 /* ProviderOpenPolicyTests.swift in Sources */,
+				F0A11A0011223344556677B1 /* ProviderLaunchingTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
