@@ -289,14 +289,18 @@ private struct TVStarRater: View {
                 Button(action: clear) {
                     Text(RatingClearAction.title)
                         .font(.system(size: 28, weight: .bold))
+                        .frame(maxWidth: .infinity, minHeight: 66, alignment: .leading)
                 }
-                .buttonStyle(TVPillButtonStyle(primary: false, width: 320, height: 72, fontSize: 28))
-                .padding(.top, 16)
+                .buttonStyle(TVRowButtonStyle())
+                .padding(.top, 12)
                 .accessibilityLabel(RatingClearAction.accessibilityLabel)
                 .accessibilityHint(RatingClearAction.accessibilityHint)
                 .accessibilityIdentifier(RatingClearAction.tvAccessibilityIdentifier)
             }
         }
+        // Stars and Clear rating are one vertical focus group. Down from a star
+        // lands on Clear. A fixed-width pill was skipped by the focus engine.
+        .focusSection()
     }
 
     /// `savedStars == 0` above is only the empty star row. This stores nil, not 0.

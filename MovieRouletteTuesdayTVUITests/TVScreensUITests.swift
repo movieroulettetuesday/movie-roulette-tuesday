@@ -94,7 +94,11 @@ final class TVScreensUITests: XCTestCase {
         let clear = app.buttons["tv.movie.clearRating"]
         XCTAssertTrue(clear.waitForExistence(timeout: 5))
         XCTAssertEqual(clear.label, "Clear rating")
-        focus(clear)
+        let firstStar = app.buttons["tv.movie.star.1"]
+        XCTAssertTrue(firstStar.waitForExistence(timeout: 5))
+        focusDown(firstStar)
+        remote.press(.down)
+        XCTAssertTrue(waitForFocus(clear, timeout: 2), "Down from star 1 focuses Clear rating")
         remote.press(.select)
         XCTAssertEqual(waitForStars("Not rated"), "Not rated")
         XCTAssertFalse(app.buttons["tv.movie.clearRating"].exists)
@@ -110,7 +114,7 @@ final class TVScreensUITests: XCTestCase {
 
         let oneStar = app.buttons["tv.movie.star.1"]
         XCTAssertTrue(oneStar.waitForExistence(timeout: 10))
-        focus(oneStar)
+        focusDown(oneStar)
         remote.press(.select)
         XCTAssertEqual(waitForStars("1 of 5 stars"), "1 of 5 stars")
         XCTAssertTrue(app.buttons["tv.movie.clearRating"].waitForExistence(timeout: 5))
@@ -124,14 +128,15 @@ final class TVScreensUITests: XCTestCase {
         return stars.value as? String ?? ""
     }
 
-    private func focus(_ element: XCUIElement) {
+    /// Down only. Right/Left stays in Where to Watch and never enters the rating
+    /// focus section, whose next item under the stars is Clear rating.
+    private func focusDown(_ element: XCUIElement) {
         if waitForFocus(element, timeout: 1) { return }
-        let moves: [XCUIRemote.Button] = [.down, .right, .down, .left]
-        for step in 0..<40 {
-            remote.press(moves[step % moves.count])
-            if waitForFocus(element, timeout: 0.5) { return }
+        for _ in 0..<12 {
+            remote.press(.down)
+            if waitForFocus(element, timeout: 0.8) { return }
         }
-        XCTAssertTrue(element.hasFocus, "Select needs focus on \(element.identifier)")
+        XCTAssertTrue(element.hasFocus, "Down never focused \(element.identifier)")
     }
 
     func testStatsOpensSettings() {
