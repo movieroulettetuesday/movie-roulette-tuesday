@@ -261,10 +261,12 @@ private struct TVStarRater: View {
         VStack(alignment: .leading, spacing: 0) {
             // tvOS drops an identifier on the star HStack. This sibling is the
             // row the tests look up; each star stays its own focusable button.
+            let savedHalf = personal.halfStars(for: movieId)
             Color.clear
                 .frame(width: 280, height: 8)
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel("Your rating")
+                .accessibilityValue(savedHalf.map { "\(HalfStars.label($0)) of 5 stars" } ?? "Not rated")
                 .accessibilityIdentifier("tv.movie.stars")
             HStack(spacing: 8) {
                 ForEach(1...5, id: \.self) { star in

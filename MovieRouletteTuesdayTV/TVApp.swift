@@ -62,7 +62,11 @@ struct MovieRouletteTuesdayTVApp: App {
               let half = Int(args[index + 2]),
               HalfStars.clamped(half) != nil else { return }
         var ratings = PersonalRatings()
-        ratings.setHalfStars(half, for: args[index + 1], now: Date(timeIntervalSinceReferenceDate: 0))
+        let movieId = args[index + 1]
+        ratings.setHalfStars(half, for: movieId, now: Date(timeIntervalSinceReferenceDate: 0))
+        if let watch = args.firstIndex(of: "-MRTSeedWatchlist"), args.indices.contains(watch + 1) {
+            ratings.setStatus(.wantToWatch, for: args[watch + 1], now: Date(timeIntervalSinceReferenceDate: 1))
+        }
         guard let data = try? JSONEncoder().encode(ratings) else { return }
         UserDefaults.standard.set(data, forKey: PersonalRatingsStore.tvDefaultsKey)
     }

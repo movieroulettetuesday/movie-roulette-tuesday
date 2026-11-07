@@ -162,6 +162,7 @@ struct MoviePageView: View {
                 Text("Watched").tag(WatchStatus?.some(.watched))
             }
             .pickerStyle(.segmented)
+            .accessibilityIdentifier("movie-status")
         }
     }
 

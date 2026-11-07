@@ -268,9 +268,9 @@ final class HalfStarMappingTests: XCTestCase {
     /// Apple TV stores ratings in UserDefaults (Application Support can be purged).
     func testUserDefaultsRoundTripAndClear() async {
         let suite = "tv-ratings-\(UUID().uuidString)"
-        let defaults = UserDefaults(suiteName: suite)!
-        defer { defaults.removePersistentDomain(forName: suite) }
         await MainActor.run {
+            let defaults = UserDefaults(suiteName: suite)!
+            defer { defaults.removePersistentDomain(forName: suite) }
             let store = PersonalRatingsStore(fileStore: nil, defaults: defaults)
             store.setHalfStars(8, for: "a")
             store.setStatus(.wantToWatch, for: "b")

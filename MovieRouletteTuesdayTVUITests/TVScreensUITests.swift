@@ -71,15 +71,67 @@ final class TVScreensUITests: XCTestCase {
         attach("tv-movie-page")
     }
 
-    func testClearRatingButtonIsPresentForASavedHalfStarRating() {
-        launch([
-            "-MRTOpenMovie", "a-face-in-the-crowd-1957",
-            "-MRTSeedRating", "a-face-in-the-crowd-1957", "7",
-        ])
+    func testClearHalfStarAndThreePointFiveWithRemoteSelect() {
+        clearSeeded(halfStars: 1, shown: "0.5 of 5 stars")
+        clearSeeded(halfStars: 7, shown: "3.5 of 5 stars")
+    }
+
+    /// Focus and Select. The second launch omits `-MRTUITest`, so the wipe and
+    /// seed do not run and the cleared rating has to still be gone.
+    private func clearSeeded(halfStars: Int, shown: String) {
+        let movie = "a-face-in-the-crowd-1957"
+        app.launchArguments = [
+            "-MRTUITest", "-MRTOpenMovie", movie,
+            "-MRTSeedRating", movie, "\(halfStars)",
+            "-MRTSeedWatchlist", movie,
+        ]
+        app.launch()
+        let stars = app.descendants(matching: .any)["tv.movie.stars"]
+        XCTAssertTrue(stars.waitForExistence(timeout: 20))
+        XCTAssertEqual(stars.value as? String, shown)
+        let watchlist = app.descendants(matching: .any)["tv.movie.watchlist"]
+        XCTAssertEqual(watchlist.value as? String, "On")
         let clear = app.buttons["tv.movie.clearRating"]
-        XCTAssertTrue(clear.waitForExistence(timeout: 20), "Clear rating is a button, not a tap target")
+        XCTAssertTrue(clear.waitForExistence(timeout: 5))
         XCTAssertEqual(clear.label, "Clear rating")
-        attach("tv-clear-rating")
+        focus(clear)
+        remote.press(.select)
+        XCTAssertEqual(waitForStars("Not rated"), "Not rated")
+        XCTAssertFalse(app.buttons["tv.movie.clearRating"].exists)
+        XCTAssertEqual(app.descendants(matching: .any)["tv.movie.watchlist"].value as? String, "On")
+        attach("tv-clear-\(halfStars)")
+
+        app.terminate()
+        app.launchArguments = ["-MRTOpenMovie", movie]
+        app.launch()
+        XCTAssertEqual(waitForStars("Not rated"), "Not rated")
+        XCTAssertFalse(app.buttons["tv.movie.clearRating"].exists)
+        XCTAssertEqual(app.descendants(matching: .any)["tv.movie.watchlist"].value as? String, "On")
+
+        let oneStar = app.buttons["tv.movie.star.1"]
+        XCTAssertTrue(oneStar.waitForExistence(timeout: 10))
+        focus(oneStar)
+        remote.press(.select)
+        XCTAssertEqual(waitForStars("1 of 5 stars"), "1 of 5 stars")
+        XCTAssertTrue(app.buttons["tv.movie.clearRating"].waitForExistence(timeout: 5))
+        app.terminate()
+    }
+
+    private func waitForStars(_ expected: String) -> String {
+        let stars = app.descendants(matching: .any)["tv.movie.stars"]
+        let matched = NSPredicate(format: "value == %@", expected)
+        _ = XCTWaiter().wait(for: [XCTNSPredicateExpectation(predicate: matched, object: stars)], timeout: 5)
+        return stars.value as? String ?? ""
+    }
+
+    private func focus(_ element: XCUIElement) {
+        if waitForFocus(element, timeout: 1) { return }
+        let moves: [XCUIRemote.Button] = [.down, .right, .down, .left]
+        for step in 0..<40 {
+            remote.press(moves[step % moves.count])
+            if waitForFocus(element, timeout: 0.5) { return }
+        }
+        XCTAssertTrue(element.hasFocus, "Select needs focus on \(element.identifier)")
     }
 
     func testStatsOpensSettings() {

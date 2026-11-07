@@ -8,13 +8,17 @@ import MRTShared
 struct MovieRouletteTuesdayApp: App {
     @State private var episodes = EpisodeStore()
     @State private var roulette: RouletteViewModel
-    @State private var personal = PersonalRatingsStore()
+    @State private var personal: PersonalRatingsStore
     @State private var community: CommunityService
     /// Cold-launch opening: created once per process, so it never replays when
     /// the app returns from the background.
     @State private var splash: SplashState
 
     init() {
+        #if DEBUG
+        UITestRatingSeed.applyIfRequested()
+        #endif
+        _personal = State(initialValue: PersonalRatingsStore())
         let history = SpinHistoryStore.shared
         UNUserNotificationCenter.current().delegate = NotificationRouter.shared
         _episodes = State(initialValue: EpisodeStore())

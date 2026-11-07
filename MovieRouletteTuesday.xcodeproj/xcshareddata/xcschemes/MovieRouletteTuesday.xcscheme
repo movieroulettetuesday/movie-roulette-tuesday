@@ -40,6 +40,17 @@
                ReferencedContainer = "container:MovieRouletteTuesday.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C1EA11000000000000000007"
+               BuildableName = "MovieRouletteTuesdayUITests.xctest"
+               BlueprintName = "MovieRouletteTuesdayUITests"
+               ReferencedContainer = "container:MovieRouletteTuesday.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
