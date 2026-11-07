@@ -22,7 +22,9 @@ struct RulesSheet: View {
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") { dismiss() }
+                    Button { dismiss() } label: {
+                        Label("Done", systemImage: "checkmark")
+                    }
                 }
             }
         }

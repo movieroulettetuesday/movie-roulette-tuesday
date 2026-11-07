@@ -51,6 +51,12 @@ public struct RouletteLayout: Equatable, Sendable {
         min(360, max(240, sane(width) * 0.3))
     }
 
+    /// Hub disc as a fraction of the wheel diameter. Shared with the drawn hub
+    /// and the spin button so hinge clearance matches the control.
+    public static let hubDiameterFraction = 0.23
+    /// Glow ring drawn `hubSize + 10` around the spin button (`HubSpinButton`).
+    public static let hubRingOutset = 10.0
+
     /// Pointer (arrow) size for a wheel, scaled with it (28x34 pt at the old ~290 pt iPhone wheel).
     public static func pointerSize(forDiameter diameter: Double) -> (width: Double, height: Double) {
         let w = min(max(sane(diameter) * 0.085, 28), 56)
@@ -91,6 +97,195 @@ public struct RouletteLayout: Equatable, Sendable {
     }
 
     private static func sane(_ v: Double) -> Double { v.isFinite ? max(0, v) : 0 }
+
+    /// Square that must stay off an active hinge: the hub disc plus its glow ring,
+    /// in the wheel slot's coordinates (origin at the slot's top-left).
+    public static func hubFrame(slotWidth: Double, slotHeight: Double,
+                                diameter: Double, hintHeight: Double) -> LayoutRect {
+        let placed = placedWheel(slotWidth: slotWidth, slotHeight: slotHeight,
+                                 diameter: diameter, hintHeight: hintHeight)
+        let side = placed.diameter * hubDiameterFraction + hubRingOutset
+        let centerY = placed.stackTop + placed.pointerHeight / 2 + placed.diameter / 2
+        return LayoutRect(x: placed.centerX - side / 2, y: centerY - side / 2, width: side, height: side)
+    }
+
+    /// The wheel view (face, rim, pointer), not the hint under it.
+    public static func wheelFrame(slotWidth: Double, slotHeight: Double,
+                                  diameter: Double, hintHeight: Double) -> LayoutRect {
+        let placed = placedWheel(slotWidth: slotWidth, slotHeight: slotHeight,
+                                 diameter: diameter, hintHeight: hintHeight)
+        return LayoutRect(x: placed.centerX - placed.diameter / 2, y: placed.stackTop,
+                          width: placed.diameter, height: placed.wheelHeight)
+    }
+
+    /// Moves the centered wheel so its hub misses every active division rectangle.
+    ///
+    /// `divisions` are in the same top-left coordinates as `hub` and `wheel`
+    /// (the wheel slot). An empty list — no hinge, or the hinge is inactive —
+    /// returns `.zero`, which is the iPhone, iPad, and fully-open layout.
+    /// The result is a pure function of the current slot, so a fold during a
+    /// spin is just the next layout pass. A second call on the shifted hub
+    /// returns `.zero`: the wheel does not walk across repeated passes.
+    public static func hingeClearanceOffset(hub: LayoutRect, wheel: LayoutRect,
+                                             slot: LayoutRect, divisions: [LayoutRect]) -> LayoutOffset {
+        guard slot.width > 0, slot.height > 0, hub.isUsable, wheel.isUsable else { return .zero }
+        let bands = divisions.filter(\.isUsable).sorted {
+            if $0.y != $1.y { return $0.y < $1.y }
+            return $0.x < $1.x
+        }
+        guard !bands.isEmpty else { return .zero }
+        var dx = 0.0
+        var dy = 0.0
+        for _ in 0..<bands.count {
+            var moved = false
+            for band in bands {
+                let placedHub = hub.offsetBy(dx: dx, dy: dy)
+                let before = bands.reduce(0) { $0 + (placedHub.intersects($1) ? 1 : 0) }
+                let step = separation(
+                    hub: placedHub,
+                    wheel: wheel.offsetBy(dx: dx, dy: dy),
+                    slot: slot,
+                    band: band
+                )
+                guard step != .zero else { continue }
+                let afterHub = hub.offsetBy(dx: dx + step.x, dy: dy + step.y)
+                let after = bands.reduce(0) { $0 + (afterHub.intersects($1) ? 1 : 0) }
+                // Reject a step that would slide the hub back onto another band.
+                guard after < before else { continue }
+                dx += step.x
+                dy += step.y
+                moved = true
+            }
+            if !moved { break }
+        }
+        guard dx.isFinite, dy.isFinite else { return .zero }
+        return LayoutOffset(x: dx, y: dy)
+    }
+
+    private struct PlacedWheel {
+        var centerX: Double
+        var stackTop: Double
+        var diameter: Double
+        var pointerHeight: Double
+        var wheelHeight: Double
+    }
+
+    /// Same centering as `RouletteView`'s wheel slot: the wheel and the hint
+    /// under it are centered in the slot, and the hub sits in the middle of the face.
+    private static func placedWheel(slotWidth: Double, slotHeight: Double,
+                                    diameter: Double, hintHeight: Double) -> PlacedWheel {
+        let slotW = sane(slotWidth), slotH = sane(slotHeight)
+        let d = sane(diameter)
+        let hint = sane(hintHeight)
+        let pointer = pointerSize(forDiameter: d)
+        let wheelHeight = wheelFrameHeight(forDiameter: d)
+        let stackHeight = wheelHeight + (hint > 0 ? hint + hintSpacing : 0)
+        return PlacedWheel(
+            centerX: slotW / 2,
+            stackTop: (slotH - stackHeight) / 2,
+            diameter: d,
+            pointerHeight: pointer.height,
+            wheelHeight: wheelHeight
+        )
+    }
+
+    /// One band. A band that is at least as tall as it is wide is a vertical
+    /// hinge (book fold); otherwise it runs horizontally (tabletop fold).
+    private static func separation(hub: LayoutRect, wheel: LayoutRect,
+                                   slot: LayoutRect, band: LayoutRect) -> LayoutOffset {
+        guard hub.intersects(band) else { return .zero }
+        if band.width <= band.height {
+            return LayoutOffset(x: axisShift(hub: hub, wheel: wheel, slot: slot, band: band, horizontal: true), y: 0)
+        }
+        return LayoutOffset(x: 0, y: axisShift(hub: hub, wheel: wheel, slot: slot, band: band, horizontal: false))
+    }
+
+    private static func axisShift(hub: LayoutRect, wheel: LayoutRect, slot: LayoutRect,
+                                  band: LayoutRect, horizontal: Bool) -> Double {
+        let hubMin = horizontal ? hub.minX : hub.minY
+        let hubMax = horizontal ? hub.maxX : hub.maxY
+        let bandMin = horizontal ? band.minX : band.minY
+        let bandMax = horizontal ? band.maxX : band.maxY
+        let slotMin = horizontal ? slot.minX : slot.minY
+        let slotMax = horizontal ? slot.maxX : slot.maxY
+        let towardNegative = bandMin - hubMax
+        let towardPositive = bandMax - hubMin
+        let negativePane = bandMin - slotMin
+        let positivePane = slotMax - bandMax
+        let preferNegative = negativePane > positivePane
+        let ordered = preferNegative ? [towardNegative, towardPositive] : [towardPositive, towardNegative]
+
+        func fits(_ delta: Double, keeping container: LayoutRect) -> Bool {
+            let moved = horizontal ? container.offsetBy(dx: delta, dy: 0) : container.offsetBy(dx: 0, dy: delta)
+            let movedHub = horizontal ? hub.offsetBy(dx: delta, dy: 0) : hub.offsetBy(dx: 0, dy: delta)
+            return !movedHub.intersects(band) && contains(slot, moved) && contains(slot, movedHub)
+        }
+        for delta in ordered where fits(delta, keeping: wheel) {
+            return delta
+        }
+        func hubClears(_ delta: Double) -> Bool {
+            let movedHub = horizontal ? hub.offsetBy(dx: delta, dy: 0) : hub.offsetBy(dx: 0, dy: delta)
+            return !movedHub.intersects(band) && contains(slot, movedHub)
+        }
+        for delta in ordered where hubClears(delta) {
+            return delta
+        }
+        let roomNegative = slotMin - hubMin
+        let roomPositive = slotMax - hubMax
+        return preferNegative ? roomNegative : roomPositive
+    }
+
+    private static func contains(_ slot: LayoutRect, _ rect: LayoutRect) -> Bool {
+        rect.minX >= slot.minX - 0.5 && rect.maxX <= slot.maxX + 0.5
+            && rect.minY >= slot.minY - 0.5 && rect.maxY <= slot.maxY + 0.5
+    }
+}
+
+/// A rectangle in a view's top-left coordinates. Foundation-only so the hinge
+/// decision can run in unit tests without SwiftUI.
+public struct LayoutRect: Equatable, Sendable {
+    public var x: Double
+    public var y: Double
+    public var width: Double
+    public var height: Double
+
+    public init(x: Double, y: Double, width: Double, height: Double) {
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+    }
+
+    public var minX: Double { x }
+    public var minY: Double { y }
+    public var maxX: Double { x + width }
+    public var maxY: Double { y + height }
+
+    public var isUsable: Bool {
+        x.isFinite && y.isFinite && width.isFinite && height.isFinite && width >= 0 && height >= 0
+    }
+
+    /// Edge contact does not count: a hub that ends exactly on the band is clear.
+    public func intersects(_ other: LayoutRect) -> Bool {
+        minX < other.maxX && maxX > other.minX && minY < other.maxY && maxY > other.minY
+    }
+
+    public func offsetBy(dx: Double, dy: Double) -> LayoutRect {
+        LayoutRect(x: x + dx, y: y + dy, width: width, height: height)
+    }
+}
+
+/// Translation, in points, applied to the wheel slot's contents.
+public struct LayoutOffset: Equatable, Sendable {
+    public var x: Double
+    public var y: Double
+
+    public init(x: Double, y: Double) {
+        self.x = x
+        self.y = y
+    }
+
+    public static let zero = LayoutOffset(x: 0, y: 0)
 }
 
 /// Columns for the Stats tab card grid (regular width only; compact uses a List).
