@@ -33,7 +33,7 @@ final class ClearRatingUITests: XCTestCase {
         XCTAssertFalse(app.buttons["clear-rating"].exists)
         assertWatchedStaysSelected()
 
-        tapStars(at: 0.05)
+        rate(step: 1)
         XCTAssertEqual(waitForRatingValue("0.5 of 5 stars"), "0.5 of 5 stars")
         XCTAssertTrue(app.buttons["clear-rating"].waitForExistence(timeout: 5))
         app.buttons["clear-rating"].tap()
@@ -41,7 +41,7 @@ final class ClearRatingUITests: XCTestCase {
 
         launchPersistedMovie()
         XCTAssertEqual(ratingValue(), "Not rated")
-        tapStars(at: 0.65)
+        rate(step: 7)
         XCTAssertEqual(waitForRatingValue("3.5 of 5 stars"), "3.5 of 5 stars")
 
         launchMovies()
@@ -105,10 +105,13 @@ final class ClearRatingUITests: XCTestCase {
         return spin.exists ? spin.label : nil
     }
 
-    private func tapStars(at fraction: CGFloat) {
-        let stars = ratingElement()
-        XCTAssertTrue(stars.waitForExistence(timeout: 5))
-        stars.coordinate(withNormalizedOffset: CGVector(dx: fraction, dy: 0.5)).tap()
+    /// Taps the half-step button. `coordinate(withNormalizedOffset:)` is not used:
+    /// on a 3x iPhone the accessibility frame of this row is about one third of
+    /// its point size, so a 5% coordinate lands off the stars.
+    private func rate(step: Int) {
+        let button = app.buttons["rating-step-\(step)"]
+        XCTAssertTrue(button.waitForExistence(timeout: 5), "half-step \(step)")
+        button.tap()
     }
 
     private func search(_ title: String) {
