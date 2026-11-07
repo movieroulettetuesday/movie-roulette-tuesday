@@ -152,10 +152,18 @@
 		FB0FD6EBAA9B10D8E2075F4D /* EpisodeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91E7375277A2F9348A5E32BD /* EpisodeLabel.swift */; };
 		FD62B08430047DD4D1992E12 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 92E4CFC63F379359666F25D5 /* LaunchScreen.storyboard */; };
 		FF7032EF47F3F19DBE59319E /* SpinStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78CEEBB929C5F26CF4177FE1 /* SpinStats.swift */; };
+		C1EA11000000000000000002 /* ClearRatingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EA11000000000000000001 /* ClearRatingUITests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		11809352A555BC659DD7F622 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 98F54143AB4E86B28C3AFEE0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 29C7B681C8D62CBAC94D51C0;
+			remoteInfo = MovieRouletteTuesday;
+		};
+		C1EA11000000000000000009 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 98F54143AB4E86B28C3AFEE0 /* Project object */;
 			proxyType = 1;
@@ -293,6 +301,8 @@
 		DE80DAF59B7205B4463F132E /* DebugLaunch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugLaunch.swift; sourceTree = "<group>"; };
 		DFAB6C715F92094EB219D7D3 /* SheetSizing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheetSizing.swift; sourceTree = "<group>"; };
 		E02A90D9643568EA39115CFB /* MovieRouletteTuesdayTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MovieRouletteTuesdayTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C1EA11000000000000000001 /* ClearRatingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearRatingUITests.swift; sourceTree = "<group>"; };
+		C1EA11000000000000000003 /* MovieRouletteTuesdayUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MovieRouletteTuesdayUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0FA2879C4335C305F845BF8 /* MovieSelectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieSelectorTests.swift; sourceTree = "<group>"; };
 		E1829E1F65466A6B902F7183 /* ArtworkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtworkTests.swift; sourceTree = "<group>"; };
 		E1C6E0217EF54248CFDE0D42 /* RSSFeedParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSSFeedParserTests.swift; sourceTree = "<group>"; };
@@ -317,6 +327,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		86218FCF4B4153B0362BD560 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C1EA11000000000000000005 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -419,6 +436,7 @@
 				B6CDB6E5D160E013280D3C68 /* MovieRouletteTuesday.app */,
 				4C47665D1BA4105DF9684DC4 /* MovieRouletteTuesdayWidgetExtension.appex */,
 				E02A90D9643568EA39115CFB /* MovieRouletteTuesdayTests.xctest */,
+				C1EA11000000000000000003 /* MovieRouletteTuesdayUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -533,12 +551,21 @@
 			path = MovieRouletteTuesdayTests;
 			sourceTree = "<group>";
 		};
+		C1EA1100000000000000000D /* MovieRouletteTuesdayUITests */ = {
+			isa = PBXGroup;
+			children = (
+				C1EA11000000000000000001 /* ClearRatingUITests.swift */,
+			);
+			path = MovieRouletteTuesdayUITests;
+			sourceTree = "<group>";
+		};
 		ADCF10F76EBF2A74473E9DC4 = {
 			isa = PBXGroup;
 			children = (
 				6F98916CD850D454BF47F10E /* MovieRouletteTuesday */,
 				4DAFA329EA98A4B4FC953D2A /* MovieRouletteTuesdayWidget */,
 				881F03B52209C743175B2D8A /* MovieRouletteTuesdayTests */,
+				C1EA1100000000000000000D /* MovieRouletteTuesdayUITests */,
 				FDBCBD0C3752F92E1102FE92 /* CloudKit */,
 				5151B46607EBC8890D8DFCC2 /* Products */,
 			);
@@ -619,6 +646,24 @@
 			productReference = E02A90D9643568EA39115CFB /* MovieRouletteTuesdayTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		C1EA11000000000000000007 /* MovieRouletteTuesdayUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C1EA1100000000000000000A /* Build configuration list for PBXNativeTarget "MovieRouletteTuesdayUITests" */;
+			buildPhases = (
+				C1EA11000000000000000004 /* Sources */,
+				C1EA11000000000000000005 /* Frameworks */,
+				C1EA11000000000000000006 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C1EA11000000000000000008 /* PBXTargetDependency */,
+			);
+			name = MovieRouletteTuesdayUITests;
+			productName = MovieRouletteTuesdayUITests;
+			productReference = C1EA11000000000000000003 /* MovieRouletteTuesdayUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		A5A0AA9F4FB5BC8D9254438A /* MovieRouletteTuesdayWidgetExtension */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0F2F9B54D12A43C3DA590081 /* Build configuration list for PBXNativeTarget "MovieRouletteTuesdayWidgetExtension" */;
@@ -653,6 +698,10 @@
 						CreatedOnToolsVersion = 16.0;
 						TestTargetID = 29C7B681C8D62CBAC94D51C0;
 					};
+					C1EA11000000000000000007 = {
+						CreatedOnToolsVersion = 16.0;
+						TestTargetID = 29C7B681C8D62CBAC94D51C0;
+					};
 					A5A0AA9F4FB5BC8D9254438A = {
 						CreatedOnToolsVersion = 16.0;
 					};
@@ -674,6 +723,7 @@
 				29C7B681C8D62CBAC94D51C0 /* MovieRouletteTuesday */,
 				A5A0AA9F4FB5BC8D9254438A /* MovieRouletteTuesdayWidgetExtension */,
 				7EC8F98B7A265120217712DE /* MovieRouletteTuesdayTests */,
+				C1EA11000000000000000007 /* MovieRouletteTuesdayUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -706,6 +756,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				4052E03879AABA4D453C76A9 /* feed-snippet.xml in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C1EA11000000000000000006 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -868,6 +925,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C1EA11000000000000000004 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C1EA11000000000000000002 /* ClearRatingUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -875,6 +940,11 @@
 			isa = PBXTargetDependency;
 			target = A5A0AA9F4FB5BC8D9254438A /* MovieRouletteTuesdayWidgetExtension */;
 			targetProxy = E4E12A57622824EF09A3BD10 /* PBXContainerItemProxy */;
+		};
+		C1EA11000000000000000008 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 29C7B681C8D62CBAC94D51C0 /* MovieRouletteTuesday */;
+			targetProxy = C1EA11000000000000000009 /* PBXContainerItemProxy */;
 		};
 		AC56FEA34320AF0CEBFE18E6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -884,6 +954,42 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		C1EA1100000000000000000B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 11;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.movieroulettetuesday.app.uitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = MovieRouletteTuesday;
+			};
+			name = Debug;
+		};
+		C1EA1100000000000000000C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 11;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.movieroulettetuesday.app.uitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = MovieRouletteTuesday;
+			};
+			name = Release;
+		};
 		23FB2CAEB38545C3793097DD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1183,6 +1289,15 @@
 			buildConfigurations = (
 				3CF6A4F2E05B3AAE7E2CBFEE /* Debug */,
 				23FB2CAEB38545C3793097DD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C1EA1100000000000000000A /* Build configuration list for PBXNativeTarget "MovieRouletteTuesdayUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C1EA1100000000000000000B /* Debug */,
+				C1EA1100000000000000000C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
