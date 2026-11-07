@@ -27,7 +27,7 @@ Existing iPhone and iPad layout tests in `AdaptiveLayoutTests` must still pass.
 
 ## Duo simulator
 
-Xcode 27.1 iPhone Duo simulator. iPhone stays portrait-only; do not treat a missing landscape layout as a failure. Repeat the iPad poses (portrait and landscape) on an iPad simulator so the split view and side-by-side wheel are unchanged when no hinge is reported.
+Xcode 27.1 or later, iPhone Duo simulator. An installed SDK and Duo runtime (27.2 on the Mac used for this gate) satisfy the archive-SDK line above. They do not by themselves prove the poses. `simctl` has no fold controls. Device Hub can drive the simulator window only when that Mac has granted assistive access; without it, fold and unfold have to be done in the Simulator UI and checked there. iPhone stays portrait-only; do not treat a missing landscape layout as a failure. Repeat the iPad poses (portrait and landscape) on an iPad simulator so the split view and side-by-side wheel are unchanged when no hinge is reported.
 
 Poses: **closed**, **fully open**, **partially folded**.
 
@@ -39,6 +39,12 @@ Poses: **closed**, **fully open**, **partially folded**.
 - [ ] Episodes list and an episode page (Listen links) on both displays.
 - [ ] Sheets on the outer display, where bars are vertical: House Rules **Done**, Settings **Done**, Spin History **Clear** and **Done**, Suggest a Movie **Cancel** and **Send**. Each shows an icon. While a suggestion is sending, the trailing control reads **Sending** with the paper-plane icon and is disabled (not a bare spinner).
 - [ ] Reveal sheet: partial detent then large on a compact presenter; large on a regular presenter. iPhone portrait and iPad portrait/landscape still match the pre-Duo sheet behavior when the OS reports no division region.
+
+## Clear rating, now on this branch
+
+`main` `18282834d20bf19537b41ba832ed69c5d3db90d0` (clear-rating, PR 15) is merged here. No Duo file overlapped that work. The Clear rating control stays the content button from that PR: title and VoiceOver label `Clear rating`, identifier `clear-rating`, half-step buttons `rating-step-1` through `rating-step-10`. It is not a toolbar item.
+
+On this SHA, also run `MovieRouletteTuesdayUITests/ClearRatingUITests` on the installed simulator runtime. PR 15's sample destination says `OS=27.0`; use the runtime `xcrun simctl list devices available` shows (27.2 where that is what is installed).
 
 ## Out of scope for this build
 
