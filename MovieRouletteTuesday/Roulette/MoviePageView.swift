@@ -137,11 +137,17 @@ struct MoviePageView: View {
                 Text("Your rating")
                 Spacer()
                 StarRatingView(halfStars: myRating, tint: .orange) { half in
+                    // Watched, watchlist, and spin history stay as they are.
                     personal.setHalfStars(half, for: movie.id)
-                    if autoShareRatings, let half {
-                        Task { await community.submitListenerRating(movieId: movie.id, halfStars: half) }
+                    if let half {
+                        if autoShareRatings {
+                            Task { await community.submitListenerRating(movieId: movie.id, halfStars: half) }
+                        }
+                    } else {
+                        Task { await community.withdrawListenerRating(movieId: movie.id) }
                     }
                 }
+                .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("my-rating-stars")
             }
             if let myRating {
@@ -155,6 +161,7 @@ struct MoviePageView: View {
                 Text("Watched").tag(WatchStatus?.some(.watched))
             }
             .pickerStyle(.segmented)
+            .accessibilityIdentifier("movie-status")
         }
     }
 

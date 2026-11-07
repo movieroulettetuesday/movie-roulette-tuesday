@@ -81,6 +81,18 @@ public enum HalfStars {
     }
 }
 
+/// Visible control that removes a star rating. Unrated is the absence of a
+/// rating, never a stored zero. The button does not change watched status,
+/// the watchlist, or spin history.
+public enum RatingClearAction {
+    public static let title = "Clear rating"
+    public static let accessibilityLabel = "Clear rating"
+    public static let accessibilityHint = "Removes your star rating. Watched status and watchlist are not changed."
+    public static let accessibilityIdentifier = "clear-rating"
+    /// Same action on the Apple TV movie page, with the tvOS identifier prefix.
+    public static let tvAccessibilityIdentifier = "tv.movie.clearRating"
+}
+
 /// Your own take on one movie. Stored only on this device.
 public struct PersonalMovieEntry: Codable, Equatable, Sendable {
     /// 1...10 half-stars, or nil when unrated.
@@ -114,21 +126,41 @@ public struct PersonalMovieEntry: Codable, Equatable, Sendable {
     /// out-of-range or wrongly typed rating, or a missing date never fails
     /// the whole file. Files from before half-stars only have `rating`
     /// (whole stars), read as stars × 2.
+    ///
+    /// A present `halfStars` key is authoritative, including JSON null and 0.
+    /// Those mean unrated and must not fall back to a leftover `rating`, or a
+    /// cleared movie would come back as rated after the next launch.
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
-        halfStars = HalfStars.resolved(
-            halfStars: (try? c.decodeIfPresent(Int.self, forKey: .halfStars)) ?? nil,
-            legacyStars: (try? c.decodeIfPresent(Int.self, forKey: .rating)) ?? nil
-        )
+        halfStars = Self.decodedHalfStars(from: c)
         status = ((try? c.decodeIfPresent(String.self, forKey: .status)) ?? nil).flatMap(WatchStatus.init(rawValue:))
         updatedAt = ((try? c.decodeIfPresent(Date.self, forKey: .updatedAt)) ?? nil) ?? .distantPast
     }
 
-    /// Writes both `halfStars` and the rounded `rating`, so a downgrade still reads it.
+    private static func decodedHalfStars(from c: KeyedDecodingContainer<CodingKeys>) -> Int? {
+        let legacy = (try? c.decodeIfPresent(Int.self, forKey: .rating)) ?? nil
+        guard c.contains(.halfStars) else { return HalfStars.fromLegacyStars(legacy) }
+        do {
+            let raw = try c.decodeIfPresent(Int.self, forKey: .halfStars)
+            return HalfStars.clamped(raw)
+        } catch {
+            // Wrong type (not null and not an int): keep the legacy stars
+            // rather than throwing away a readable rating.
+            return HalfStars.fromLegacyStars(legacy)
+        }
+    }
+
+    /// While rated, writes `halfStars` and the rounded `rating` so a downgrade
+    /// still reads it. A clear writes `halfStars: null` and omits `rating`, so
+    /// the old whole-star value cannot resurrect the rating.
     public func encode(to encoder: Encoder) throws {
         var c = encoder.container(keyedBy: CodingKeys.self)
-        try c.encodeIfPresent(halfStars, forKey: .halfStars)
-        try c.encodeIfPresent(rating, forKey: .rating)
+        if let halfStars {
+            try c.encode(halfStars, forKey: .halfStars)
+            try c.encode(HalfStars.roundedStars(halfStars), forKey: .rating)
+        } else {
+            try c.encodeNil(forKey: .halfStars)
+        }
         try c.encodeIfPresent(status, forKey: .status)
         try c.encode(updatedAt, forKey: .updatedAt)
     }

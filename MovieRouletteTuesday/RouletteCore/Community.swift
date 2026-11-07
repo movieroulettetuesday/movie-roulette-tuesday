@@ -335,6 +335,11 @@ public protocol CommunityStore: Sendable {
     /// 1...10; the legacy `stars` field gets the rounded value). Returns the record name.
     @discardableResult
     func submitRating(movieId: String, halfStars: Int) async throws -> String
+    /// Deletes this user's listener rating. Returns the record name.
+    /// A missing record still succeeds. Nothing is written as zero: unrated
+    /// means the record is gone, so averages skip the movie instead of scoring it 0.
+    @discardableResult
+    func deleteRating(movieId: String) async throws -> String
     /// recordName -> half-stars for every listener rating of the movie
     /// (legacy records without `halfStars` read as stars × 2).
     func fetchRatings(movieId: String) async throws -> [String: Int]
@@ -348,6 +353,14 @@ public protocol CommunityStore: Sendable {
     func submitSuggestion(_ suggestion: InAppSuggestion, appVersion: String) async throws
 }
 
+extension CommunityStore {
+    /// Stores that don't support withdrawing a rating fail closed (the clear
+    /// stays local and is retried). In-memory and CloudKit stores override this.
+    public func deleteRating(movieId: String) async throws -> String {
+        throw CommunityError.notSetUp
+    }
+}
+
 /// Merges this device's own just-saved record into fetched results. Public-DB
 /// queries are eventually consistent, so a vote saved a moment ago may be
 /// missing (or show its old value); keyed by record name, it's never double-counted.
@@ -356,6 +369,17 @@ public enum CommunityMerge {
         guard let own else { return fetched }
         var merged = fetched
         merged[own.recordName] = own.value
+        return merged
+    }
+
+    /// Drops records the user withdrew. A public-database query can keep
+    /// returning a deleted record for a while; the tombstone keeps that stale
+    /// copy out of the average so the clear is not undone by sync.
+    public static func removing<V>(_ fetched: [String: V], recordNames: Set<String>) -> [String: V] {
+        let names = recordNames.filter { !$0.isEmpty }
+        guard !names.isEmpty else { return fetched }
+        var merged = fetched
+        for name in names { merged.removeValue(forKey: name) }
         return merged
     }
 }
@@ -462,6 +486,14 @@ public actor InMemoryCommunityStore: CommunityStore {
         guard let user = currentUser else { return nil }
         return ratings[CommunityRecordNames.rating(movieId: movieId, userRecordName: user)]?.resolvedHalfStars
     }
+
+    @discardableResult
+    public func deleteRating(movieId: String) async throws -> String {
+        guard let user = currentUser else { throw CommunityError.notSignedIn }
+        let name = CommunityRecordNames.rating(movieId: movieId, userRecordName: user)
+        ratings[name] = nil
+        return name
+    }
 }
 
 // MARK: - Bulk listener ratings (1.0.1: infamous jackpot weighting)
@@ -488,10 +520,11 @@ public enum ListenerRatingsSync {
     public static func aggregates(
         records: [String: ListenerRatingEntry],
         own: [String: ListenerRatingEntry] = [:],
+        removedRecordNames: Set<String> = [],
         movieIds: [String]
     ) -> [String: RatingAggregate] {
         let wanted = Set(movieIds)
-        var merged = records
+        var merged = CommunityMerge.removing(records, recordNames: removedRecordNames)
         for (name, entry) in own where !name.isEmpty { merged[name] = entry }
         var halfStarsByMovie: [String: [Int]] = [:]
         for entry in merged.values where wanted.contains(entry.movieId) {
@@ -508,12 +541,13 @@ public enum ListenerRatingsSync {
     public static func fetchAggregates(
         store: any CommunityStore,
         movieIds: [String],
-        own: [String: ListenerRatingEntry] = [:]
+        own: [String: ListenerRatingEntry] = [:],
+        removedRecordNames: Set<String> = []
     ) async throws -> [String: RatingAggregate] {
         let ids = Array(Set(movieIds)).sorted()
         guard !ids.isEmpty else { return [:] }
         let records = try await store.fetchAllRatings(movieIds: ids)
-        return aggregates(records: records, own: own, movieIds: ids)
+        return aggregates(records: records, own: own, removedRecordNames: removedRecordNames, movieIds: ids)
     }
 
     /// `current` updated with `fetched`, except movies in `skipping` (ones
