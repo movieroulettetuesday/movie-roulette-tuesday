@@ -44,7 +44,15 @@ struct ListenerRatingSection: View {
             }
 
             if canWrite {
-                if let myRating, myRating != shared {
+                if myRating == nil, shared != nil {
+                    Button(RatingClearAction.title) {
+                        Task { await community.withdrawListenerRating(movieId: movieId) }
+                    }
+                    .disabled(isBusy)
+                    .accessibilityLabel(RatingClearAction.accessibilityLabel)
+                    .accessibilityHint(RatingClearAction.accessibilityHint)
+                    .accessibilityIdentifier(RatingClearAction.accessibilityIdentifier)
+                } else if let myRating, myRating != shared {
                     Button {
                         Task { await community.submitListenerRating(movieId: movieId, halfStars: myRating) }
                     } label: {

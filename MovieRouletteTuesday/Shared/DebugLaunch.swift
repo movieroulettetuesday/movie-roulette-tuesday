@@ -103,4 +103,48 @@ enum DebugScroll {
         FileHandle.standardError.write(Data((line + "\n").utf8))
     }
 }
+
+/// DEBUG-only ratings fixture for UI tests. `-MRTUITest` deletes the on-device
+/// ratings file. `-MRTSeedRating <movieId> <halfStars>` writes 1...10 (never 0).
+/// `-MRTSeedWatchlist <movieId>` sets Want to watch after that, so a rating on
+/// the same id is kept and the status becomes the watchlist. Leave both flags
+/// off on a later launch to read what Clear rating saved.
+enum UITestRatingSeed {
+    static func applyIfRequested() {
+        let args = ProcessInfo.processInfo.arguments
+        let ratingsArgs = values(after: "-MRTSeedRating", in: args)
+        let watchlist = values(after: "-MRTSeedWatchlist", in: args)
+        let reset = args.contains("-MRTUITest")
+        guard reset || !ratingsArgs.isEmpty || !watchlist.isEmpty else { return }
+        guard let file = try? PersonalRatingsFileStore.applicationSupport() else { return }
+        if reset {
+            try? FileManager.default.removeItem(at: file.fileURL)
+        }
+        var ratings = (try? file.load()) ?? PersonalRatings()
+        var index = 0
+        while index + 1 < ratingsArgs.count {
+            let movieId = ratingsArgs[index]
+            if let half = Int(ratingsArgs[index + 1]), HalfStars.clamped(half) != nil {
+                ratings.setHalfStars(half, for: movieId, now: Date(timeIntervalSinceReferenceDate: 0))
+            }
+            index += 2
+        }
+        let seededAt = Date(timeIntervalSinceReferenceDate: 1)
+        for movieId in watchlist {
+            ratings.setStatus(.wantToWatch, for: movieId, now: seededAt)
+        }
+        try? file.save(ratings)
+    }
+
+    private static func values(after flag: String, in args: [String]) -> [String] {
+        guard let start = args.firstIndex(of: flag) else { return [] }
+        var out: [String] = []
+        var index = args.index(after: start)
+        while index < args.endIndex, !args[index].hasPrefix("-") {
+            out.append(args[index])
+            index = args.index(after: index)
+        }
+        return out
+    }
+}
 #endif
