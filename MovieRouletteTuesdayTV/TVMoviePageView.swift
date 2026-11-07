@@ -87,9 +87,15 @@ struct TVMoviePageView: View {
                     .lineLimit(2)
             }
             whereToWatch
+            // Your Rating is on the left, under the first Where to Watch tile.
+            // Measured frames: Prime Video is x=160–278, and the right-hand
+            // rating card started at x=682, so Down from the initial focus had
+            // no button beneath it. The listener card that used to occupy
+            // x=160 is not focusable. Swapping the cards puts star 1 in that
+            // column. Up from the star returns to that same tile.
             HStack(alignment: .top, spacing: 20) {
-                listenerCard
                 ratingCard
+                listenerCard
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -261,10 +267,12 @@ private struct TVStarRater: View {
         VStack(alignment: .leading, spacing: 0) {
             // tvOS drops an identifier on the star HStack. This sibling is the
             // row the tests look up; each star stays its own focusable button.
+            let savedHalf = personal.halfStars(for: movieId)
             Color.clear
                 .frame(width: 280, height: 8)
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel("Your rating")
+                .accessibilityValue(savedHalf.map { "\(HalfStars.label($0)) of 5 stars" } ?? "Not rated")
                 .accessibilityIdentifier("tv.movie.stars")
             HStack(spacing: 8) {
                 ForEach(1...5, id: \.self) { star in
@@ -281,7 +289,31 @@ private struct TVStarRater: View {
                     .accessibilityIdentifier("tv.movie.star.\(star)")
                 }
             }
+            // Sibling of the stars, not inside the identifier-only spacer.
+            // Select on the remote runs the button. There is no `.tap()` here.
+            if personal.halfStars(for: movieId) != nil {
+                Button(action: clear) {
+                    Text(RatingClearAction.title)
+                        .font(.system(size: 28, weight: .bold))
+                        .frame(maxWidth: .infinity, minHeight: 66, alignment: .leading)
+                }
+                .buttonStyle(TVRowButtonStyle())
+                .padding(.top, 12)
+                .accessibilityLabel(RatingClearAction.accessibilityLabel)
+                .accessibilityHint(RatingClearAction.accessibilityHint)
+                .accessibilityIdentifier(RatingClearAction.tvAccessibilityIdentifier)
+            }
         }
+        // Stars and Clear rating are one vertical focus group. Down from a star
+        // lands on Clear. A fixed-width pill was skipped by the focus engine.
+        .focusSection()
+    }
+
+    /// `savedStars == 0` above is only the empty star row. This stores nil, not 0.
+    private func clear() {
+        personal.setHalfStars(nil, for: movieId)
+        onNote("Rating cleared")
+        Task { await community.withdrawListenerRating(movieId: movieId) }
     }
 
     private func submit(_ stars: Int) {

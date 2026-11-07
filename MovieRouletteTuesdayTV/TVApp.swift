@@ -32,6 +32,7 @@ struct MovieRouletteTuesdayTVApp: App {
         if ProcessInfo.processInfo.arguments.contains("-MRTUITest") {
             UserDefaults.standard.removeObject(forKey: SpinHistoryStore.tvDefaultsKey)
             UserDefaults.standard.removeObject(forKey: PersonalRatingsStore.tvDefaultsKey)
+            Self.seedUITestRatingIfRequested()
         }
         let history = SpinHistoryStore(
             fileStore: nil,
@@ -50,6 +51,24 @@ struct MovieRouletteTuesdayTVApp: App {
             sideEffects: .none,
             listenerAverages: { [weak community] in community?.listenerAverages ?? [:] }
         ))
+    }
+
+    /// `-MRTSeedRating <movieId> <halfStars>` after the UI-test wipe.
+    /// Half-stars are 1...10. Zero and null are not written.
+    private static func seedUITestRatingIfRequested() {
+        let args = ProcessInfo.processInfo.arguments
+        guard let index = args.firstIndex(of: "-MRTSeedRating"),
+              args.indices.contains(index + 2),
+              let half = Int(args[index + 2]),
+              HalfStars.clamped(half) != nil else { return }
+        var ratings = PersonalRatings()
+        let movieId = args[index + 1]
+        ratings.setHalfStars(half, for: movieId, now: Date(timeIntervalSinceReferenceDate: 0))
+        if let watch = args.firstIndex(of: "-MRTSeedWatchlist"), args.indices.contains(watch + 1) {
+            ratings.setStatus(.wantToWatch, for: args[watch + 1], now: Date(timeIntervalSinceReferenceDate: 1))
+        }
+        guard let data = try? JSONEncoder().encode(ratings) else { return }
+        UserDefaults.standard.set(data, forKey: PersonalRatingsStore.tvDefaultsKey)
     }
 
     var body: some Scene {
