@@ -607,8 +607,9 @@ public enum StreamingCatalog {
         }
     }
 
-    /// Providers the tvOS tiles label "Paramount+" (legacy id 531, or any name
-    /// containing "paramount"). Keep this in step with `TVProviderLaunching`.
+    /// Providers the tiles treat as Paramount+ (legacy id 531, or any name
+    /// containing "paramount"). Keep this in step with `ProviderLaunching`
+    /// and `TVProviderLaunching`.
     private static func isParamountPlusService(_ provider: StreamingInfo.Provider) -> Bool {
         provider.id == 531 || provider.name.lowercased().contains("paramount")
     }

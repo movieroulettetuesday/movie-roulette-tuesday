@@ -117,6 +117,7 @@
 		B0E100000000000000000016 /* TopShelfTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E100000000000000000008 /* TopShelfTests.swift */; };
 		B0E100000000000000000019 /* ParamountProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E10000000000000000001A /* ParamountProviderTests.swift */; };
 		C0A0CE0000000000000000B1 /* ProviderOpenPolicyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A0CE0000000000000000A1 /* ProviderOpenPolicyTests.swift */; };
+		F0A11A0011223344556677B1 /* ProviderLaunchingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A11A0011223344556677A1 /* ProviderLaunchingTests.swift */; };
 		B0E100000000000000000017 /* MRTCore in Frameworks */ = {isa = PBXBuildFile; productRef = B0E100000000000000000051 /* MRTCore */; };
 		C1EA11000000000000000002 /* ClearRatingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EA11000000000000000001 /* ClearRatingUITests.swift */; };
 /* End PBXBuildFile section */
@@ -293,6 +294,7 @@
 		B0E100000000000000000008 /* TopShelfTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TopShelfTests.swift; path = MRTKit/Tests/MRTCoreTests/TopShelfTests.swift; sourceTree = SOURCE_ROOT; };
 		B0E10000000000000000001A /* ParamountProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ParamountProviderTests.swift; path = MRTKit/Tests/MRTCoreTests/ParamountProviderTests.swift; sourceTree = SOURCE_ROOT; };
 		C0A0CE0000000000000000A1 /* ProviderOpenPolicyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProviderOpenPolicyTests.swift; path = MRTKit/Tests/MRTCoreTests/ProviderOpenPolicyTests.swift; sourceTree = SOURCE_ROOT; };
+		F0A11A0011223344556677A1 /* ProviderLaunchingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProviderLaunchingTests.swift; path = MRTKit/Tests/MRTCoreTests/ProviderLaunchingTests.swift; sourceTree = SOURCE_ROOT; };
 		B0E10000000000000000000A /* TOPSHELF.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = TOPSHELF.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -506,6 +508,7 @@
 				B0E100000000000000000008 /* TopShelfTests.swift */,
 				B0E10000000000000000001A /* ParamountProviderTests.swift */,
 				C0A0CE0000000000000000A1 /* ProviderOpenPolicyTests.swift */,
+				F0A11A0011223344556677A1 /* ProviderLaunchingTests.swift */,
 			);
 			path = MovieRouletteTuesdayTests;
 			sourceTree = "<group>";
@@ -930,6 +933,7 @@
 				B0E100000000000000000016 /* TopShelfTests.swift in Sources */,
 				B0E100000000000000000019 /* ParamountProviderTests.swift in Sources */,
 				C0A0CE0000000000000000B1 /* ProviderOpenPolicyTests.swift in Sources */,
+				F0A11A0011223344556677B1 /* ProviderLaunchingTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1065,10 +1069,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 12;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.movieroulettetuesday.app.uitests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1083,10 +1087,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 12;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.movieroulettetuesday.app.uitests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1101,9 +1105,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 13;
 				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.movieroulettetuesday.app.tvuitests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
@@ -1119,9 +1123,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 13;
 				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.movieroulettetuesday.app.tvuitests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
@@ -1141,7 +1145,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = MovieRouletteTuesday/MovieRouletteTuesday.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 12;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MovieRouletteTuesday/Info.plist;
@@ -1155,7 +1159,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.movieroulettetuesday.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1173,7 +1177,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = MovieRouletteTuesday/MovieRouletteTuesday.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 12;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MovieRouletteTuesday/Info.plist;
@@ -1187,7 +1191,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.movieroulettetuesday.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1205,7 +1209,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = MovieRouletteTuesdayTV/MovieRouletteTuesdayTV.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 13;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MovieRouletteTuesdayTV/Info.plist;
@@ -1214,7 +1218,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.movieroulettetuesday.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
@@ -1231,7 +1235,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = MovieRouletteTuesdayWidget/MovieRouletteTuesdayWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 12;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MovieRouletteTuesdayWidget/Info.plist;
@@ -1242,7 +1246,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.movieroulettetuesday.app.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1368,7 +1372,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = MovieRouletteTuesdayTV/MovieRouletteTuesdayTV.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 13;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MovieRouletteTuesdayTV/Info.plist;
@@ -1377,7 +1381,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.movieroulettetuesday.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
@@ -1395,7 +1399,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 12;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1403,7 +1407,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.movieroulettetuesday.app.tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1418,7 +1422,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 12;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1426,7 +1430,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.movieroulettetuesday.app.tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1442,7 +1446,7 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_ENTITLEMENTS = MovieRouletteTuesdayTopShelf/MovieRouletteTuesdayTopShelf.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 13;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MovieRouletteTuesdayTopShelf/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Movie Roulette Tuesday";
@@ -1452,7 +1456,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.movieroulettetuesday.app.topshelf;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
@@ -1471,7 +1475,7 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_ENTITLEMENTS = MovieRouletteTuesdayTopShelf/MovieRouletteTuesdayTopShelf.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 13;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MovieRouletteTuesdayTopShelf/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Movie Roulette Tuesday";
@@ -1481,7 +1485,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.movieroulettetuesday.app.topshelf;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
@@ -1500,7 +1504,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = MovieRouletteTuesdayWidget/MovieRouletteTuesdayWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 12;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MovieRouletteTuesdayWidget/Info.plist;
@@ -1511,7 +1515,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.movieroulettetuesday.app.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

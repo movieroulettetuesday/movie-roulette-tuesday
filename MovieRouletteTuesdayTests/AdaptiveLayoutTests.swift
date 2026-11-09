@@ -153,6 +153,151 @@ final class AdaptiveLayoutTests: XCTestCase {
         }
     }
 
+    func testNoActiveHingeLeavesTheWheelWhereItWas() {
+        let slot = LayoutRect(x: 0, y: 0, width: 402, height: 700)
+        let hub = RouletteLayout.hubFrame(slotWidth: 402, slotHeight: 700, diameter: 382, hintHeight: 18)
+        let wheel = RouletteLayout.wheelFrame(slotWidth: 402, slotHeight: 700, diameter: 382, hintHeight: 18)
+        XCTAssertEqual(
+            RouletteLayout.hingeClearanceOffset(hub: hub, wheel: wheel, slot: slot, divisions: []),
+            .zero
+        )
+        let missing = LayoutRect(x: .nan, y: 0, width: 40, height: 700)
+        XCTAssertEqual(
+            RouletteLayout.hingeClearanceOffset(hub: hub, wheel: wheel, slot: slot, divisions: [missing]),
+            .zero
+        )
+        XCTAssertEqual(
+            RouletteLayout.hingeClearanceOffset(hub: hub, wheel: wheel, slot: LayoutRect(x: 0, y: 0, width: 0, height: 700), divisions: [slot]),
+            .zero
+        )
+    }
+
+    func testVerticalHingeMovesTheHubOntoTheLargerSide() {
+        let slot = LayoutRect(x: 0, y: 0, width: 800, height: 1_000)
+        let hub = RouletteLayout.hubFrame(slotWidth: 800, slotHeight: 1_000, diameter: 400, hintHeight: 18)
+        let wheel = RouletteLayout.wheelFrame(slotWidth: 800, slotHeight: 1_000, diameter: 400, hintHeight: 18)
+        // Right of center, overlapping the hub, with more room on the left.
+        let band = LayoutRect(x: 420, y: -10, width: 30, height: 1_200)
+        XCTAssertTrue(hub.intersects(band))
+        let shift = RouletteLayout.hingeClearanceOffset(hub: hub, wheel: wheel, slot: slot, divisions: [band])
+        XCTAssertEqual(shift.y, 0, accuracy: 0.001)
+        XCTAssertEqual(shift.x, band.minX - hub.maxX, accuracy: 0.001)
+        XCTAssertLessThan(shift.x, 0)
+        let moved = hub.offsetBy(dx: shift.x, dy: shift.y)
+        XCTAssertFalse(moved.intersects(band))
+        XCTAssertGreaterThanOrEqual(moved.minX, slot.minX - 0.5)
+        XCTAssertLessThanOrEqual(moved.maxX, slot.maxX + 0.5)
+        let wheelMoved = wheel.offsetBy(dx: shift.x, dy: shift.y)
+        XCTAssertGreaterThanOrEqual(wheelMoved.minX, slot.minX - 0.5)
+        XCTAssertLessThanOrEqual(wheelMoved.maxX, slot.maxX + 0.5)
+        XCTAssertEqual(
+            RouletteLayout.hingeClearanceOffset(hub: moved, wheel: wheelMoved, slot: slot, divisions: [band]),
+            .zero,
+            "a later layout pass must not walk the wheel again"
+        )
+    }
+
+    func testEqualPanesPreferThePositiveSide() {
+        let slot = LayoutRect(x: 0, y: 0, width: 800, height: 1_000)
+        let hub = RouletteLayout.hubFrame(slotWidth: 800, slotHeight: 1_000, diameter: 400, hintHeight: 18)
+        let wheel = RouletteLayout.wheelFrame(slotWidth: 800, slotHeight: 1_000, diameter: 400, hintHeight: 18)
+        let band = LayoutRect(x: 390, y: 0, width: 20, height: 1_000)
+        let left = band.minX - slot.minX
+        let right = slot.maxX - band.maxX
+        XCTAssertEqual(left, right, accuracy: 0.001)
+        XCTAssertTrue(hub.intersects(band))
+        let shift = RouletteLayout.hingeClearanceOffset(hub: hub, wheel: wheel, slot: slot, divisions: [band])
+        XCTAssertEqual(shift.x, band.maxX - hub.minX, accuracy: 0.001)
+        XCTAssertEqual(shift.y, 0, accuracy: 0.001)
+        XCTAssertFalse(hub.offsetBy(dx: shift.x, dy: 0).intersects(band))
+    }
+
+    func testHorizontalHingeMovesVertically() {
+        let slot = LayoutRect(x: 0, y: 0, width: 800, height: 1_000)
+        let hub = RouletteLayout.hubFrame(slotWidth: 800, slotHeight: 1_000, diameter: 400, hintHeight: 18)
+        let wheel = RouletteLayout.wheelFrame(slotWidth: 800, slotHeight: 1_000, diameter: 400, hintHeight: 18)
+        let band = LayoutRect(x: 0, y: hub.y + hub.height / 2, width: 800, height: 28)
+        XCTAssertTrue(hub.intersects(band))
+        XCTAssertGreaterThan(band.minY - slot.minY, slot.maxY - band.maxY)
+        let shift = RouletteLayout.hingeClearanceOffset(hub: hub, wheel: wheel, slot: slot, divisions: [band])
+        XCTAssertEqual(shift.x, 0, accuracy: 0.001)
+        XCTAssertEqual(shift.y, band.minY - hub.maxY, accuracy: 0.001)
+        XCTAssertFalse(hub.offsetBy(dx: 0, dy: shift.y).intersects(band))
+    }
+
+    func testFoldAndUnfoldIsJustTheCurrentDivisionList() {
+        let slot = LayoutRect(x: 0, y: 0, width: 800, height: 1_000)
+        let hub = RouletteLayout.hubFrame(slotWidth: 800, slotHeight: 1_000, diameter: 400, hintHeight: 18)
+        let wheel = RouletteLayout.wheelFrame(slotWidth: 800, slotHeight: 1_000, diameter: 400, hintHeight: 18)
+        let open = RouletteLayout.hingeClearanceOffset(hub: hub, wheel: wheel, slot: slot, divisions: [])
+        XCTAssertEqual(open, .zero)
+        // Wide enough to cover the hub both before and after the slot grows.
+        let band = LayoutRect(x: 380, y: 0, width: 200, height: 1_000)
+        let folded = RouletteLayout.hingeClearanceOffset(hub: hub, wheel: wheel, slot: slot, divisions: [band])
+        XCTAssertNotEqual(folded, .zero)
+        XCTAssertFalse(hub.offsetBy(dx: folded.x, dy: folded.y).intersects(band))
+        let wider = LayoutRect(x: 0, y: 0, width: 1_100, height: 900)
+        let widerHub = RouletteLayout.hubFrame(slotWidth: 1_100, slotHeight: 900, diameter: 500, hintHeight: 18)
+        let widerWheel = RouletteLayout.wheelFrame(slotWidth: 1_100, slotHeight: 900, diameter: 500, hintHeight: 18)
+        XCTAssertTrue(widerHub.intersects(band))
+        let resized = RouletteLayout.hingeClearanceOffset(hub: widerHub, wheel: widerWheel, slot: wider, divisions: [band])
+        XCTAssertNotEqual(resized, folded)
+        XCTAssertFalse(widerHub.offsetBy(dx: resized.x, dy: resized.y).intersects(band))
+        XCTAssertEqual(
+            RouletteLayout.hingeClearanceOffset(hub: hub, wheel: wheel, slot: slot, divisions: []),
+            .zero
+        )
+    }
+
+    func testHubClearsWhenTheWheelCannotStayInTheSlot() {
+        let slot = LayoutRect(x: 0, y: 0, width: 402, height: 700)
+        let diameter = 382.0
+        let hub = RouletteLayout.hubFrame(slotWidth: 402, slotHeight: 700, diameter: diameter, hintHeight: 18)
+        let wheel = RouletteLayout.wheelFrame(slotWidth: 402, slotHeight: 700, diameter: diameter, hintHeight: 18)
+        let band = LayoutRect(x: (402 - 36) / 2, y: 0, width: 36, height: 700)
+        XCTAssertTrue(hub.intersects(band))
+        let shift = RouletteLayout.hingeClearanceOffset(hub: hub, wheel: wheel, slot: slot, divisions: [band])
+        let movedHub = hub.offsetBy(dx: shift.x, dy: shift.y)
+        let movedWheel = wheel.offsetBy(dx: shift.x, dy: shift.y)
+        XCTAssertFalse(movedHub.intersects(band))
+        XCTAssertGreaterThanOrEqual(movedHub.minX, slot.minX - 0.5)
+        XCTAssertLessThanOrEqual(movedHub.maxX, slot.maxX + 0.5)
+        XCTAssertGreaterThan(movedWheel.maxX, slot.maxX)
+    }
+
+    func testBookAndTabletopBandsBothClear() {
+        let slot = LayoutRect(x: 0, y: 0, width: 800, height: 1_000)
+        let hub = RouletteLayout.hubFrame(slotWidth: 800, slotHeight: 1_000, diameter: 400, hintHeight: 18)
+        let wheel = RouletteLayout.wheelFrame(slotWidth: 800, slotHeight: 1_000, diameter: 400, hintHeight: 18)
+        let vertical = LayoutRect(x: 420, y: 0, width: 30, height: 1_000)
+        let horizontal = LayoutRect(x: 0, y: hub.y + hub.height / 2, width: 800, height: 28)
+        XCTAssertTrue(hub.intersects(vertical))
+        XCTAssertTrue(hub.intersects(horizontal))
+        let shift = RouletteLayout.hingeClearanceOffset(hub: hub, wheel: wheel, slot: slot, divisions: [horizontal, vertical])
+        let moved = hub.offsetBy(dx: shift.x, dy: shift.y)
+        XCTAssertEqual(shift.x, vertical.minX - hub.maxX, accuracy: 0.001)
+        XCTAssertEqual(shift.y, horizontal.minY - hub.maxY, accuracy: 0.001)
+        XCTAssertFalse(moved.intersects(vertical))
+        XCTAssertFalse(moved.intersects(horizontal))
+        XCTAssertEqual(
+            RouletteLayout.hingeClearanceOffset(hub: moved, wheel: wheel.offsetBy(dx: shift.x, dy: shift.y), slot: slot, divisions: [vertical, horizontal]),
+            .zero
+        )
+    }
+
+    func testABandThatMissesTheHubDoesNotMoveTheWheel() {
+        let slot = LayoutRect(x: 0, y: 0, width: 800, height: 1_000)
+        let hub = RouletteLayout.hubFrame(slotWidth: 800, slotHeight: 1_000, diameter: 400, hintHeight: 18)
+        let wheel = RouletteLayout.wheelFrame(slotWidth: 800, slotHeight: 1_000, diameter: 400, hintHeight: 18)
+        let band = LayoutRect(x: wheel.minX - 4, y: 0, width: 12, height: 1_000)
+        XCTAssertTrue(wheel.intersects(band))
+        XCTAssertFalse(hub.intersects(band))
+        XCTAssertEqual(
+            RouletteLayout.hingeClearanceOffset(hub: hub, wheel: wheel, slot: slot, divisions: [band]),
+            .zero
+        )
+    }
+
     /// TestFlight bug: the movie page reached from the wheel's reveal sheet had a
     /// dead Episodes row. Every entry point that can push an episode must link it.
     func testMoviePageEpisodeLinksSameOnEveryPath() {

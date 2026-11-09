@@ -54,11 +54,15 @@ struct SpinHistoryView: View {
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Clear", role: .destructive) { confirmingClear = true }
-                        .disabled(history.results.isEmpty)
+                    Button(role: .destructive) { confirmingClear = true } label: {
+                        Label("Clear", systemImage: "trash")
+                    }
+                    .disabled(history.results.isEmpty)
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") { dismiss() }
+                    Button { dismiss() } label: {
+                        Label("Done", systemImage: "checkmark")
+                    }
                 }
             }
             .confirmationDialog(

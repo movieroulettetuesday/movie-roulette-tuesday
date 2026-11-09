@@ -106,10 +106,11 @@ enum DebugScroll {
     }
 }
 
-/// DEBUG-only ratings fixture for the iOS UI test on this branch. `-MRTUITest`
-/// deletes the ratings file. `-MRTSeedRating <movieId> <halfStars>` writes 1...10.
-/// `-MRTSeedWatchlist <movieId>` sets Want to watch afterwards. A later launch
-/// that omits both flags reads the file Clear rating saved.
+/// DEBUG-only ratings fixture for UI tests. `-MRTUITest` deletes the on-device
+/// ratings file. `-MRTSeedRating <movieId> <halfStars>` writes 1...10 (never 0).
+/// `-MRTSeedWatchlist <movieId>` sets Want to watch after that, so a rating on
+/// the same id is kept and the status becomes the watchlist. Leave both flags
+/// off on a later launch to read what Clear rating saved.
 enum UITestRatingSeed {
     static func applyIfRequested() {
         let args = ProcessInfo.processInfo.arguments

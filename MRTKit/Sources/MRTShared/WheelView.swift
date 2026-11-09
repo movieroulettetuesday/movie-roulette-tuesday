@@ -102,7 +102,7 @@ public struct WheelView: View {
     /// Film-badge hub: card-colored disc, hairline peach ring, teal reel with a
     /// peach frame, one layered shadow.
     private func hub(diameter: CGFloat) -> some View {
-        let size = diameter * 0.23
+        let size = diameter * CGFloat(RouletteLayout.hubDiameterFraction)
         return ZStack {
             Circle()
                 .fill(Color(hex: scheme == .dark ? CleanProColors.hubDiscDark : CleanProColors.hubDiscLight))

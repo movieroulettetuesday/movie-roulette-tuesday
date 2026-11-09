@@ -25,7 +25,7 @@ Record name: `rating-<movieId>-<sha256(userRecordName + "rating:" + movieId)>`.
 
 Clear deletes that record. It does not write `stars`, `halfStars`, or 0, and there is no server tombstone field. A missing record (`unknownItem`) is success. Readers skip values outside 1…5 (`stars`) and 1…10 (`halfStars`); a missing record is not a zero in the average or the histogram.
 
-The checked-in grant `WRITE` to `_creator` is the permission CloudKit uses for that user to delete their own record. This repo does not deploy schema and does not change security roles. If Production does not allow the delete, the shared record stays for everyone else until that is changed in CloudKit Console (out of scope). This device still keeps the rating out of its own average with a local UserDefaults tombstone (`community.withdrawnListenerRatings`); that key is not a CloudKit field.
+The checked-in grant `WRITE` to `_creator` is the permission CloudKit uses for that user to delete their own record. This repo does not deploy schema and does not change security roles. If Production does not allow the delete, the shared record stays for other installs until that is changed in CloudKit Console (out of scope). This device still keeps the rating out of its own average with a local UserDefaults tombstone (`community.withdrawnListenerRatings`); that key is not a CloudKit field.
 
 ### `Suggestion` (added Oct 2026)
 | Field        | Type   | Notes |
