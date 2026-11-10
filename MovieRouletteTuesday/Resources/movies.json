@@ -61,7 +61,8 @@
         "palmer-rockeys-scarlet-warning-666-1982",
         "the-ugly-stepsister-2025",
         "piranha-ii-the-spawning-1982",
-        "prince-of-darkness-1987"
+        "prince-of-darkness-1987",
+        "the-devils-rain-1975"
       ]
     },
     {
@@ -105,7 +106,8 @@
         "the-alamo-2004",
         "palmer-rockeys-scarlet-warning-666-1982",
         "piranha-ii-the-spawning-1982",
-        "prince-of-darkness-1987"
+        "prince-of-darkness-1987",
+        "the-devils-rain-1975"
       ]
     },
     {
@@ -19933,6 +19935,23 @@
           }
         ]
       }
+    },
+    {
+      "id": "the-devils-rain-1975",
+      "title": "The Devil's Rain",
+      "year": 1975,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror",
+        "cat-cult"
+      ],
+      "episodeIds": [
+        "Buzzsprout-20099500"
+      ],
+      "episodeTitle": "The Devil's Rain",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
     }
   ]
 }
