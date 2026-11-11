@@ -76,6 +76,9 @@ struct ContentView: View {
             // Viewing the tab clears the badge; leaving it stamps "seen up to now".
             if newTab == .episodes || oldTab == .episodes { episodes.markViewed() }
         }
+        .onChange(of: roulette.catalog) { _, catalog in
+            Task { await CatalogSpotlight.reindex(catalog: catalog, episodes: episodes.episodes) }
+        }
         .onChange(of: episodes.lastFetchedAt) { _, _ in
             // New episodes arriving while the tab is on screen count as seen.
             if selectedTab == .episodes { episodes.markViewed() }
@@ -86,6 +89,7 @@ struct ContentView: View {
             Task { await community.refreshAllListenerRatings(movieIds: roulette.catalog?.movies.map(\.id) ?? []) }
             // Episodes already in the app never trigger a new-episode alert later.
             if NewEpisodeAlerts.isEnabled { NewEpisodeAlerts.markSeen(episodes.episodes) }
+            Task { await CatalogSpotlight.reindex(catalog: roulette.catalog, episodes: episodes.episodes) }
         }
     }
 
@@ -105,6 +109,13 @@ struct ContentView: View {
         case .episode(let guid):
             selectedTab = .episodes
             pendingEpisodeGUID = guid
+        case .spin:
+            selectedTab = .roulette
+            if let pending = AppRouter.shared.takePendingSpin() {
+                roulette.enqueueHandedOffSpin(pending)
+            }
+        case .episodes:
+            selectedTab = .episodes
         }
     }
 }

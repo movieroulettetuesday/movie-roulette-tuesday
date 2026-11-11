@@ -146,6 +146,10 @@ final class AdaptiveLayoutTests: XCTestCase {
         XCTAssertNil(DeepLink(url: try XCTUnwrap(URL(string: "mrt://stats/abc"))))
         XCTAssertNil(DeepLink(url: try XCTUnwrap(URL(string: "mrt://movie/a/b"))))
         XCTAssertNil(DeepLink(url: try XCTUnwrap(URL(string: "https://movie/abc"))))
+        XCTAssertEqual(DeepLink(url: try XCTUnwrap(URL(string: "mrt://spin"))), .spin)
+        XCTAssertEqual(DeepLink(url: DeepLink.spin.url), .spin)
+        XCTAssertEqual(DeepLink(url: DeepLink.episodes.url), .episodes)
+        XCTAssertNil(DeepLink(url: try XCTUnwrap(URL(string: "mrt://spin/extra"))))
         // Round trip, including ids that need escaping.
         for id in ["the-room-2003", "weird id/with?chars"] {
             XCTAssertEqual(DeepLink(url: DeepLink.movie(id: id).url), .movie(id: id))

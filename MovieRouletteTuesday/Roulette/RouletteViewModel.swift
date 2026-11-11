@@ -87,6 +87,10 @@ final class RouletteViewModel {
     @ObservationIgnored private var watchdogTask: Task<Void, Never>?
     /// The single pending automatic re-spin (never more than one).
     @ObservationIgnored private var forcedRespinTask: Task<Void, Never>?
+    /// A Siri spin waiting until the wheel is idle and the catalog is loaded.
+    @ObservationIgnored private var queuedHandoff: PendingSpin?
+    /// The Siri spin currently animating. Finish uses it instead of rolling again.
+    @ObservationIgnored private var activeHandoff: PendingSpin?
     /// DEBUG stress runs: very short spins (unless `stressRealTiming`), no forced-respin pause.
     @ObservationIgnored private var stressMode = false
     /// DEBUG stress runs with the real, full-length clip-timed spins.
@@ -206,23 +210,57 @@ final class RouletteViewModel {
         catalog = clean
         geometry = WheelGeometry(categories: clean.categories)
         loadState = .loaded
+        // Next turn, so a catalog swap in the middle of startSpin can't start a second spin.
+        Task { @MainActor [weak self] in self?.beginQueuedHandoffIfPossible() }
     }
 
-    private func startSpin(isForcedRespin: Bool) {
+    /// Plays a spin Siri already resolved and saved. The wheel lands on that
+    /// category; history is not written again.
+    func enqueueHandedOffSpin(_ spin: PendingSpin) {
+        queuedHandoff = spin
+        beginQueuedHandoffIfPossible()
+    }
+
+    private func beginQueuedHandoffIfPossible() {
+        guard let spin = queuedHandoff, catalog != nil, canSpin else { return }
+        queuedHandoff = nil
+        startSpin(isForcedRespin: false, handoff: spin)
+    }
+
+    private func startSpin(isForcedRespin: Bool, handoff: PendingSpin? = nil) {
         if isForcedRespin {
             isAwaitingForcedRespin = false
         }
         applyPendingCatalogIfIdle()
-        guard canSpin else { return }
+        guard canSpin else {
+            if let handoff { queuedHandoff = handoff }
+            return
+        }
+        if let handoff, !canAnimate(handoff) {
+            installHandedOffReveal(handoff)
+            return
+        }
         spinToken &+= 1
         let token = spinToken
         let start = rotation
         let shortStress = stressMode && !stressRealTiming
-        let target = geometry.randomTargetRotation(
-            from: start,
-            fullTurns: (reduceMotion || shortStress) ? Self.reducedMotionFullTurns : Self.fullTurns,
-            using: &rng
-        )
+        let turns = (reduceMotion || shortStress) ? Self.reducedMotionFullTurns : Self.fullTurns
+        let target: Double
+        if let handoff {
+            let index = catalog?.categories.firstIndex(where: { $0.id == handoff.landedCategoryID })
+            let landed = index.flatMap {
+                geometry.targetRotation(landingOn: $0, from: start, fullTurns: Int.random(in: turns, using: &rng))
+            }
+            guard let landed else {
+                installHandedOffReveal(handoff)
+                return
+            }
+            target = landed
+            activeHandoff = handoff
+        } else {
+            activeHandoff = nil
+            target = geometry.randomTargetRotation(from: start, fullTurns: turns, using: &rng)
+        }
         let duration: Double
         let animation: Animation
         let crossings: [Double]
@@ -254,7 +292,8 @@ final class RouletteViewModel {
         }
         isSpinning = true
         isStopping = false
-        spinIsStoppable = activeSpin != nil
+        // A handed-off spin has to reach the snippet's category, so it can't be stopped early.
+        spinIsStoppable = activeSpin != nil && activeHandoff == nil
         notice = isForcedRespin ? "Re-spin forced! Here we go again…" : nil
         watchdogTask?.cancel()
         watchdogTask = Task { @MainActor [weak self] in
@@ -375,6 +414,11 @@ final class RouletteViewModel {
 
     func revealDismissed() {
         applyPendingCatalogIfIdle()
+        if queuedHandoff != nil {
+            spinAgainRequested = false
+            Task { @MainActor [weak self] in self?.beginQueuedHandoffIfPossible() }
+            return
+        }
         guard spinAgainRequested else { return }
         spinAgainRequested = false
         // Next main-actor turn: outside the sheet-dismissal transaction, so the
@@ -404,6 +448,11 @@ final class RouletteViewModel {
         // short stress spins end early, so fade the clip.
         if stressMode && !stressRealTiming { feedback.stopClip(fade: true) }
         rareBanner = nil
+        if let handoff = activeHandoff {
+            activeHandoff = nil
+            installHandedOffReveal(handoff)
+            return
+        }
         guard let catalog else { return }
 
         // The winner comes purely from the final angle, using the same geometry the wheel is drawn with.
@@ -468,6 +517,34 @@ final class RouletteViewModel {
             isJackpot: isJackpot
         )
         revealCount += 1
+    }
+
+    private func canAnimate(_ handoff: PendingSpin) -> Bool {
+        guard let catalog,
+              catalog.movie(withId: handoff.movieID) != nil,
+              catalog.categories.contains(where: { $0.id == handoff.landedCategoryID }) else { return false }
+        return true
+    }
+
+    /// Shows the already-recorded spin. Does not write history or roll again.
+    @discardableResult
+    func installHandedOffReveal(_ pending: PendingSpin) -> Bool {
+        guard let catalog,
+              let movie = catalog.movie(withId: pending.movieID),
+              let category = catalog.category(withId: pending.creditedCategoryID) else { return false }
+        if let landed = catalog.category(withId: pending.landedCategoryID) {
+            lastCategory = landed
+        }
+        if pending.isJackpot { notice = "Infamous Jackpot!" }
+        reveal = Reveal(
+            id: pending.resultID,
+            movie: movie,
+            category: category,
+            spinCount: history.stats.spinCount(forMovie: movie.id),
+            isJackpot: pending.isJackpot
+        )
+        revealCount += 1
+        return true
     }
 }
 

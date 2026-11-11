@@ -80,6 +80,8 @@ struct MoviePageView: View {
         }
         .navigationTitle(movie.title)
         .navigationBarTitleDisplayMode(.inline)
+        .catalogEntity(.movie, id: movie.id, title: movie.title)
+        .accessibilityIdentifier("movie-page")
     }
 
     /// Blurred artwork wash behind the header. Decoded at 40 pt (about 120 px),
@@ -186,6 +188,7 @@ struct MoviePageView: View {
                     .font(.largeTitle.bold())
                     .multilineTextAlignment(.center)
                     .textSelection(.enabled)
+                    .accessibilityIdentifier("movie-page-title")
                 Text(verbatim: catalog?.subtitle(for: movie) ?? "\(movie.year) · \(movie.genre)")
                     .font(.headline)
                     .foregroundStyle(.secondary)
