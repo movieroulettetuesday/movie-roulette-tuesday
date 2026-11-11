@@ -12,6 +12,7 @@ struct SpinMovieRouletteIntent: AppIntent {
         categoryName: "Roulette"
     )
     static let openAppWhenRun = true
+    @available(iOS 26.0, *)
     static var supportedModes: IntentModes { .foreground(.immediate) }
 
     @MainActor
@@ -26,6 +27,7 @@ struct SpinMovieRouletteIntent: AppIntent {
 struct OpenSpunMovieIntent: AppIntent {
     static let title: LocalizedStringResource = "Open Movie in Movie Roulette"
     static let openAppWhenRun = true
+    @available(iOS 26.0, *)
     static var supportedModes: IntentModes { .foreground(.immediate) }
     static let isDiscoverable = false
 
@@ -107,7 +109,10 @@ struct MovieRouletteShortcuts: AppShortcutsProvider {
         AppShortcut(
             intent: OpenOnProviderIntent(),
             phrases: [
-                "Open \(\.$movie) on \(\.$provider) in \(.applicationName)",
+                // App Shortcut phrases may name only one parameter. The intent
+                // still takes movie and service; Siri asks for the other one.
+                "Open \(\.$movie) on a service in \(.applicationName)",
+                "Open a movie on \(\.$provider) in \(.applicationName)",
             ],
             shortTitle: "Open on Provider",
             systemImageName: "arrow.up.right.square"

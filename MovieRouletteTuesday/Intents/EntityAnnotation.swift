@@ -31,7 +31,7 @@ private struct CatalogEntityAnnotation: ViewModifier {
     #if os(iOS)
     @ViewBuilder
     private func annotated(_ content: Content) -> some View {
-        if #available(iOS 18.0, *) {
+        if #available(iOS 18.4, *) {
             let identifier = entityIdentifier
             content
                 .appEntityIdentifier(identifier)
@@ -55,7 +55,7 @@ private struct CatalogEntityAnnotation: ViewModifier {
         }
     }
 
-    @available(iOS 18.0, *)
+    @available(iOS 18.4, *)
     private var entityIdentifier: EntityIdentifier {
         switch kind {
         case .movie:

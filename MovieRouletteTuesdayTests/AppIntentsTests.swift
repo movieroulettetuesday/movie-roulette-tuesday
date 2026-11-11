@@ -32,6 +32,8 @@ final class AppIntentsTests: XCTestCase {
     // MARK: Entities and queries
 
     func testQueryResolvesByTitleYearAndGenreAndFailsCleanly() async throws {
+        // Don't read the on-disk episode cache; this test stubs episodes later.
+        IntentRuntime.episodes = { [] }
         let query = MovieEntityQuery()
         let rain = try await query.entities(matching: "devils rain")
         XCTAssertEqual(rain.map(\.id), ["the-devils-rain-1975"])
@@ -60,7 +62,8 @@ final class AppIntentsTests: XCTestCase {
         let episodeQuery = EpisodeEntityQuery()
         let found = try await episodeQuery.entities(matching: "devil")
         XCTAssertEqual(found.map(\.id), ["Buzzsprout-1"])
-        XCTAssertTrue(try await episodeQuery.entities(for: ["missing-guid"]).isEmpty)
+        let missingEpisodes = try await episodeQuery.entities(for: ["missing-guid"])
+        XCTAssertTrue(missingEpisodes.isEmpty)
         let withLabel = MovieEntity(movie: devil, catalog: catalog, episodesByGUID: ["Buzzsprout-20099500": episodes[0]])
         XCTAssertEqual(withLabel.subtitle, "1975 · Horror · S4E39")
     }
@@ -114,7 +117,8 @@ final class AppIntentsTests: XCTestCase {
         XCTAssertEqual(ratings.status(for: devil.id), .watched)
         XCTAssertNil(ratings.halfStars(for: devil.id))
         XCTAssertNil(ratings.rating(for: devil.id))
-        XCTAssertTrue(WatchlistReading.wantToWatch(in: ratings, catalog: catalog).isEmpty)
+        // the-thing-2011 was added to the watchlist above and stays there.
+        XCTAssertEqual(WatchlistReading.wantToWatch(in: ratings, catalog: catalog).map(\.id), ["the-thing-2011"])
     }
 
     func testAddAndMarkWatchedPerformWriteTheStore() async throws {

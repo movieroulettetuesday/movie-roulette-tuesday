@@ -10,10 +10,11 @@ struct OpenMovieIntent: AppIntent {
         categoryName: "Movies"
     )
     static let openAppWhenRun = true
+    @available(iOS 26.0, *)
     static var supportedModes: IntentModes { .foreground(.immediate) }
 
     @Parameter(title: "Movie")
-    var movie: MovieEntity = .placeholder
+    var movie: MovieEntity
 
     static var parameterSummary: some ParameterSummary {
         Summary("Open \(\.$movie)")
@@ -39,6 +40,7 @@ struct LatestEpisodeIntent: ForegroundContinuableIntent {
     /// The episode page opens only when the cache has one. An empty cache
     /// stays here and offers an Open button instead.
     static let openAppWhenRun = false
+    @available(iOS 26.0, *)
     static var supportedModes: IntentModes { .foreground(.dynamic) }
 
     @MainActor
@@ -81,6 +83,7 @@ struct LatestEpisodeIntent: ForegroundContinuableIntent {
 struct OpenEpisodesTabIntent: AppIntent {
     static let title: LocalizedStringResource = "Open Movie Roulette"
     static let openAppWhenRun = true
+    @available(iOS 26.0, *)
     static var supportedModes: IntentModes { .foreground(.immediate) }
     static let isDiscoverable = false
 
@@ -97,6 +100,7 @@ struct OpenEpisodesTabIntent: AppIntent {
 struct ListenInApplePodcastsIntent: AppIntent {
     static let title: LocalizedStringResource = "Listen in Apple Podcasts"
     static let openAppWhenRun = true
+    @available(iOS 26.0, *)
     static var supportedModes: IntentModes { .foreground(.immediate) }
     static let isDiscoverable = false
 
@@ -180,6 +184,7 @@ struct ShowWatchlistIntent: AppIntent {
         categoryName: "Watchlist"
     )
     static let openAppWhenRun = false
+    @available(iOS 26.0, *)
     static var supportedModes: IntentModes { .background }
 
     @MainActor
@@ -200,10 +205,11 @@ struct AddToWatchlistIntent: AppIntent {
         categoryName: "Watchlist"
     )
     static let openAppWhenRun = false
+    @available(iOS 26.0, *)
     static var supportedModes: IntentModes { .background }
 
     @Parameter(title: "Movie")
-    var movie: MovieEntity = .placeholder
+    var movie: MovieEntity
 
     static var parameterSummary: some ParameterSummary {
         Summary("Add \(\.$movie) to my watchlist")
@@ -229,10 +235,11 @@ struct MarkWatchedIntent: AppIntent {
         categoryName: "Watchlist"
     )
     static let openAppWhenRun = false
+    @available(iOS 26.0, *)
     static var supportedModes: IntentModes { .background }
 
     @Parameter(title: "Movie")
-    var movie: MovieEntity = .placeholder
+    var movie: MovieEntity
 
     static var parameterSummary: some ParameterSummary {
         Summary("Mark \(\.$movie) as watched")
@@ -281,10 +288,11 @@ struct WhereToWatchIntent: AppIntent {
         categoryName: "Movies"
     )
     static let openAppWhenRun = false
+    @available(iOS 26.0, *)
     static var supportedModes: IntentModes { .background }
 
     @Parameter(title: "Movie")
-    var movie: MovieEntity = .placeholder
+    var movie: MovieEntity
 
     static var parameterSummary: some ParameterSummary {
         Summary("Where to watch \(\.$movie)")
@@ -310,13 +318,14 @@ struct OpenOnProviderIntent: AppIntent {
         categoryName: "Movies"
     )
     static let openAppWhenRun = true
+    @available(iOS 26.0, *)
     static var supportedModes: IntentModes { .foreground(.immediate) }
 
     @Parameter(title: "Movie")
-    var movie: MovieEntity = .placeholder
+    var movie: MovieEntity
 
     @Parameter(title: "Service")
-    var provider: StreamingProviderOption = .netflix
+    var provider: StreamingProviderOption
 
     static var parameterSummary: some ParameterSummary {
         Summary("Open \(\.$movie) on \(\.$provider)")
