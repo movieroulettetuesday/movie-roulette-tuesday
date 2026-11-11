@@ -49,29 +49,31 @@ final class ParamountProviderTests: XCTestCase {
         )
     }
 
-    func testBundledCatalogMoviesShowOneParamountPlus() async throws {
+    func testMovieWithSeveralParamountVariantsShowsOneTile() {
+        // Fixed sample: Marathon Man (1976) as TMDB listed it before the Nov 9 2026 refresh,
+        // with four Paramount+ variants mixed in with other services.
+        let mgm = P(id: 34, name: "MGM Plus", priority: 20)
+        let kanopy = P(id: 191, name: "Kanopy", priority: 30)
+        let raw = [fubo, premium, essential, amazon, mgm, roku, kanopy]
+        XCTAssertGreaterThan(raw.filter(Self.isParamount).count, 1)
+        let collapsed = StreamingCatalog.collapsingParamountPlusDuplicates(raw)
+        XCTAssertEqual(collapsed.filter(Self.isParamount).map(\.id), [premium.id])
+        XCTAssertEqual(collapsed.map(\.id), [fubo.id, premium.id, mgm.id, kanopy.id])
+        XCTAssertEqual(collapsed.first { $0.id == premium.id }?.logo, "/premium.png")
+    }
+
+    func testBundledCatalogShowsAtMostOneParamountPlusPerMovie() async throws {
+        // Invariant over the real catalog only; it does not depend on which movies list Paramount+ today.
         let url = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent()
             .deletingLastPathComponent()
             .appendingPathComponent("MovieRouletteTuesday/Resources/movies.json")
         guard FileManager.default.fileExists(atPath: url.path) else { throw XCTSkip("no movies.json") }
         let catalog = try await FileCatalogSource(fileURL: url).loadCatalog()
-
-        let marathon = try XCTUnwrap(catalog.movie(withId: "marathon-man-1976"))
-        let raw = (marathon.streaming?.stream ?? []) + (marathon.streaming?.free ?? [])
-        XCTAssertGreaterThan(raw.filter(Self.isParamount).count, 1, "fixture still has the duplicate ids")
-        let collapsed = StreamingCatalog.collapsingParamountPlusDuplicates(raw)
-        XCTAssertEqual(collapsed.filter(Self.isParamount).map(\.id), [2303])
-        XCTAssertEqual(
-            collapsed.filter { !Self.isParamount($0) }.map(\.id),
-            raw.filter { !Self.isParamount($0) }.map(\.id)
-        )
-
-        var duplicateMovies = 0
+        XCTAssertFalse(catalog.movies.isEmpty)
         for movie in catalog.movies {
             guard let streaming = movie.streaming else { continue }
             let providers = streaming.stream + streaming.free
-            if providers.filter(Self.isParamount).count > 1 { duplicateMovies += 1 }
             let shown = StreamingCatalog.collapsingParamountPlusDuplicates(providers)
             XCTAssertLessThanOrEqual(shown.filter(Self.isParamount).count, 1, movie.id)
             XCTAssertEqual(
@@ -80,7 +82,6 @@ final class ParamountProviderTests: XCTestCase {
                 movie.id
             )
         }
-        XCTAssertGreaterThan(duplicateMovies, 0)
     }
 
     private static func isParamount(_ provider: StreamingInfo.Provider) -> Bool {
