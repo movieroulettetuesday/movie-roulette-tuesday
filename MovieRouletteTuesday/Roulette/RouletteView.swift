@@ -26,6 +26,7 @@ struct RouletteView: View {
     @State private var showingRules = false
     @State private var showingHistory = false
     @State private var showingSettings = false
+    @State private var suggestions = SuggestionController()
     @AppStorage(AppSettings.haptics) private var hapticsEnabled = true
     @Environment(PersonalRatingsStore.self) private var personal
     @Environment(CommunityService.self) private var community
@@ -140,6 +141,21 @@ struct RouletteView: View {
             .onChange(of: model.revealCount) { _, _ in
                 subtitle = RouletteTaglines.random(excluding: subtitle)
             }
+            .task { suggestions.refresh() }
+            .sheet(isPresented: $suggestions.presented) {
+                SuggestionSheet(
+                    controller: suggestions,
+                    catalog: model.catalog,
+                    onOpenMovie: { id in
+                        suggestions.dismiss()
+                        AppRouter.shared.open(.movie(id: id))
+                    },
+                    onSpinInstead: {
+                        suggestions.dismiss()
+                        spinFromUser()
+                    }
+                )
+            }
         }
     }
 
@@ -205,15 +221,23 @@ struct RouletteView: View {
             // hint (the wheel's soft shadow uses the gap above the hint).
             VStack(spacing: CGFloat(RouletteLayout.hintSpacing)) {
                 wheel(diameter: diameter)
-                statusLine
-                    .padding(.horizontal, 16)
-                    .background {
-                        GeometryReader { g in
-                            Color.clear
-                                .onAppear { hintHeight = g.size.height }
-                                .onChange(of: g.size.height) { _, h in hintHeight = h }
+                VStack(spacing: 10) {
+                    statusLine
+                    if suggestions.showsButton {
+                        WhatShouldIWatchButton {
+                            Task { await suggestions.tap() }
                         }
+                        .disabled(!model.canSpin)
                     }
+                }
+                .padding(.horizontal, 16)
+                .background {
+                    GeometryReader { g in
+                        Color.clear
+                            .onAppear { hintHeight = g.size.height }
+                            .onChange(of: g.size.height) { _, h in hintHeight = h }
+                    }
+                }
             }
                 .offset(x: shift.width, y: shift.height)
                 .frame(width: slot.size.width, height: slot.size.height)

@@ -50,6 +50,56 @@ enum DebugLaunch {
     static var splashReduceMotion: Bool { ProcessInfo.processInfo.arguments.contains("-MRTSplashReduceMotion") }
     static var noSplash: Bool { ProcessInfo.processInfo.arguments.contains("-MRTNoSplash") }
 
+    /// `-MRTSuggestionGate available|unavailable|notReady` forces the step-2
+    /// availability gate so UI tests don't need Apple Intelligence.
+    static var suggestionStatus: SuggestionModelStatus? {
+        switch value(for: "-MRTSuggestionGate") {
+        case "available": return .available
+        case "unavailable": return .unavailable
+        case "notready": return .temporarilyUnavailable
+        default: return nil
+        }
+    }
+
+    /// `-MRTSuggestionMovie <id>` and `-MRTSuggestionWhy <text>` stub a
+    /// successful suggestion. The why is not lowercased (unlike `value(for:)`).
+    /// UI tests may also set `MRT_SUGGESTION_MOVIE` / `MRT_SUGGESTION_WHY` in
+    /// the launch environment, which avoids XCTest eating apostrophes in
+    /// launch arguments.
+    static var suggestionStub: AcceptedSuggestion? {
+        let env = ProcessInfo.processInfo.environment
+        let args = ProcessInfo.processInfo.arguments
+        let id = env["MRT_SUGGESTION_MOVIE"].flatMap { $0.isEmpty ? nil : $0 }
+            ?? argumentValue(for: "-MRTSuggestionMovie", in: args, joiningUntilNextFlag: false)
+        guard let id else { return nil }
+        let why = env["MRT_SUGGESTION_WHY"].flatMap { $0.isEmpty ? nil : $0 }
+            ?? argumentValue(for: "-MRTSuggestionWhy", in: args, joiningUntilNextFlag: true)
+            ?? "It's a catalog movie."
+        return AcceptedSuggestion(movieId: id, why: why)
+    }
+
+    /// Raw (not lowercased) launch-argument value. When `joiningUntilNextFlag`
+    /// is true, consecutive tokens up to the next `-` flag are joined — XCTest
+    /// has been seen to split a why-string on spaces and apostrophes.
+    private static func argumentValue(for flag: String, in args: [String], joiningUntilNextFlag: Bool) -> String? {
+        guard let i = args.firstIndex(of: flag), args.indices.contains(i + 1) else { return nil }
+        if !joiningUntilNextFlag { return args[i + 1] }
+        var parts: [String] = []
+        var index = i + 1
+        while index < args.endIndex {
+            let token = args[index]
+            if token.hasPrefix("-"), !token.hasPrefix("- "), token.count > 1,
+               token.dropFirst().first?.isLetter == true,
+               token != "-" {
+                break
+            }
+            parts.append(token)
+            index += 1
+        }
+        let joined = parts.joined(separator: " ").trimmingCharacters(in: .whitespaces)
+        return joined.isEmpty ? nil : joined
+    }
+
     static func applyRequestedOrientation() {
         let mask: UIInterfaceOrientationMask
         switch value(for: "-MRTOrientation") {

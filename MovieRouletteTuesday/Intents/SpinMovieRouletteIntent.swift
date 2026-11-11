@@ -117,6 +117,14 @@ struct MovieRouletteShortcuts: AppShortcutsProvider {
             shortTitle: "Open on Provider",
             systemImageName: "arrow.up.right.square"
         )
+        AppShortcut(
+            intent: WhatShouldIWatchIntent(),
+            phrases: [
+                "What should I watch in \(.applicationName)",
+            ],
+            shortTitle: "What Should I Watch",
+            systemImageName: "sparkles"
+        )
     }
     static let shortcutTileColor: ShortcutTileColor = .teal
 }
