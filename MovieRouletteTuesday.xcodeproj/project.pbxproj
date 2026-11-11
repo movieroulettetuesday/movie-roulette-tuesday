@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A11TVB01 /* CatalogEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11TVF01 /* CatalogEntities.swift */; };
+		A11TVB02 /* ContentIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11TVF02 /* ContentIntents.swift */; };
+		A11TVB03 /* IntentActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11TVF03 /* IntentActions.swift */; };
+		A11TVB04 /* SpinMovieRouletteIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11TVF04 /* SpinMovieRouletteIntent.swift */; };
+		A11TVB05 /* WhatShouldIWatchIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11TVF05 /* WhatShouldIWatchIntent.swift */; };
 		E10000000000000000000001 /* TVChrome.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20000000000000000000001 /* TVChrome.swift */; };
 		E10000000000000000000002 /* TVEpisodesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20000000000000000000002 /* TVEpisodesView.swift */; };
 		E10000000000000000000003 /* TVEpisodeDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20000000000000000000003 /* TVEpisodeDetailView.swift */; };
@@ -120,6 +125,7 @@
 		F0A11A0011223344556677B1 /* ProviderLaunchingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A11A0011223344556677A1 /* ProviderLaunchingTests.swift */; };
 		B0E100000000000000000017 /* MRTCore in Frameworks */ = {isa = PBXBuildFile; productRef = B0E100000000000000000051 /* MRTCore */; };
 		C1EA11000000000000000002 /* ClearRatingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1EA11000000000000000001 /* ClearRatingUITests.swift */; };
+		A11TVT000000000000000009 /* TVIntentsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11TVT000000000000000001 /* TVIntentsTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -158,6 +164,13 @@
 			remoteGlobalIDString = B0E100000000000000000031;
 			remoteInfo = MovieRouletteTuesdayTopShelf;
 		};
+		A11TVT000000000000000008 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 98F54143AB4E86B28C3AFEE0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BC2FCFF52D648C4AE601445D;
+			remoteInfo = MovieRouletteTuesdayTV;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -186,6 +199,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A11TVF01 /* CatalogEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogEntities.swift; sourceTree = "<group>"; };
+		A11TVF02 /* ContentIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentIntents.swift; sourceTree = "<group>"; };
+		A11TVF03 /* IntentActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentActions.swift; sourceTree = "<group>"; };
+		A11TVF04 /* SpinMovieRouletteIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinMovieRouletteIntent.swift; sourceTree = "<group>"; };
+		A11TVF05 /* WhatShouldIWatchIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatShouldIWatchIntent.swift; sourceTree = "<group>"; };
 		E20000000000000000000001 /* TVChrome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVChrome.swift; sourceTree = "<group>"; };
 		E20000000000000000000002 /* TVEpisodesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVEpisodesView.swift; sourceTree = "<group>"; };
 		E20000000000000000000003 /* TVEpisodeDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVEpisodeDetailView.swift; sourceTree = "<group>"; };
@@ -296,6 +314,8 @@
 		C0A0CE0000000000000000A1 /* ProviderOpenPolicyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProviderOpenPolicyTests.swift; path = MRTKit/Tests/MRTCoreTests/ProviderOpenPolicyTests.swift; sourceTree = SOURCE_ROOT; };
 		F0A11A0011223344556677A1 /* ProviderLaunchingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProviderLaunchingTests.swift; path = MRTKit/Tests/MRTCoreTests/ProviderLaunchingTests.swift; sourceTree = SOURCE_ROOT; };
 		B0E10000000000000000000A /* TOPSHELF.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = TOPSHELF.md; sourceTree = "<group>"; };
+		A11TVT000000000000000001 /* TVIntentsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVIntentsTests.swift; sourceTree = "<group>"; };
+		A11TVT000000000000000002 /* MovieRouletteTuesdayTVTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MovieRouletteTuesdayTVTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -355,9 +375,28 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A11TVT000000000000000005 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A11TVG01 /* Intents */ = {
+			isa = PBXGroup;
+			children = (
+				A11TVF01 /* CatalogEntities.swift */,
+				A11TVF02 /* ContentIntents.swift */,
+				A11TVF03 /* IntentActions.swift */,
+				A11TVF04 /* SpinMovieRouletteIntent.swift */,
+				A11TVF05 /* WhatShouldIWatchIntent.swift */,
+			);
+			path = Intents;
+			sourceTree = "<group>";
+		};
 		2E91A40CD523281E2F5B08BC /* Community */ = {
 			isa = PBXGroup;
 			children = (
@@ -409,6 +448,7 @@
 				C1EA11000000000000000003 /* MovieRouletteTuesdayUITests.xctest */,
 				94FA157C8FAB5D7F7EC78246 /* MovieRouletteTuesdayTV.app */,
 				9AD5B014AF4E6FE808BB0547 /* MovieRouletteTuesdayTVUITests.xctest */,
+				A11TVT000000000000000002 /* MovieRouletteTuesdayTVTests.xctest */,
 				B0E100000000000000000006 /* MovieRouletteTuesdayTopShelf.appex */,
 			);
 			name = Products;
@@ -524,6 +564,7 @@
 		A4A76E22E48E61EC17001DCB /* MovieRouletteTuesdayTV */ = {
 			isa = PBXGroup;
 			children = (
+				A11TVG01 /* Intents */,
 				E20000000000000000000001 /* TVChrome.swift */,
 				E20000000000000000000002 /* TVEpisodesView.swift */,
 				E20000000000000000000003 /* TVEpisodeDetailView.swift */,
@@ -568,6 +609,7 @@
 				5151B46607EBC8890D8DFCC2 /* Products */,
 				A4A76E22E48E61EC17001DCB /* MovieRouletteTuesdayTV */,
 				A9AC0BCB46E8F057E1CAF264 /* MovieRouletteTuesdayTVUITests */,
+				A11TVT00000000000000000A /* MovieRouletteTuesdayTVTests */,
 				B0E100000000000000000009 /* MovieRouletteTuesdayTopShelf */,
 			);
 			sourceTree = "<group>";
@@ -618,6 +660,14 @@
 				065CCF25035FB61DFE034E8C /* SCHEMA.md */,
 			);
 			path = CloudKit;
+			sourceTree = "<group>";
+		};
+		A11TVT00000000000000000A /* MovieRouletteTuesdayTVTests */ = {
+			isa = PBXGroup;
+			children = (
+				A11TVT000000000000000001 /* TVIntentsTests.swift */,
+			);
+			path = MovieRouletteTuesdayTVTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -764,6 +814,24 @@
 			productReference = B0E100000000000000000006 /* MovieRouletteTuesdayTopShelf.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		A11TVT000000000000000003 /* MovieRouletteTuesdayTVTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A11TVT00000000000000000B /* Build configuration list for PBXNativeTarget "MovieRouletteTuesdayTVTests" */;
+			buildPhases = (
+				A11TVT000000000000000004 /* Sources */,
+				A11TVT000000000000000005 /* Frameworks */,
+				A11TVT000000000000000006 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A11TVT000000000000000007 /* PBXTargetDependency */,
+			);
+			name = MovieRouletteTuesdayTVTests;
+			productName = MovieRouletteTuesdayTVTests;
+			productReference = A11TVT000000000000000002 /* MovieRouletteTuesdayTVTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -795,6 +863,10 @@
 						CreatedOnToolsVersion = 16.0;
 						TestTargetID = BC2FCFF52D648C4AE601445D;
 					};
+					A11TVT000000000000000003 = {
+						CreatedOnToolsVersion = 16.0;
+						TestTargetID = BC2FCFF52D648C4AE601445D;
+					};
 					B0E100000000000000000031 = {
 						CreatedOnToolsVersion = 16.0;
 					};
@@ -822,6 +894,7 @@
 				C1EA11000000000000000007 /* MovieRouletteTuesdayUITests */,
 				BC2FCFF52D648C4AE601445D /* MovieRouletteTuesdayTV */,
 				FBD9EEA65DA488214544A713 /* MovieRouletteTuesdayTVUITests */,
+				A11TVT000000000000000003 /* MovieRouletteTuesdayTVTests */,
 				B0E100000000000000000031 /* MovieRouletteTuesdayTopShelf */,
 			);
 		};
@@ -892,6 +965,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A11TVT000000000000000006 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -950,6 +1030,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A11TVB01 /* CatalogEntities.swift in Sources */,
+				A11TVB02 /* ContentIntents.swift in Sources */,
+				A11TVB03 /* IntentActions.swift in Sources */,
+				A11TVB04 /* SpinMovieRouletteIntent.swift in Sources */,
+				A11TVB05 /* WhatShouldIWatchIntent.swift in Sources */,
 				E10000000000000000000001 /* TVChrome.swift in Sources */,
 				E10000000000000000000002 /* TVEpisodesView.swift in Sources */,
 				E10000000000000000000003 /* TVEpisodeDetailView.swift in Sources */,
@@ -1033,6 +1118,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A11TVT000000000000000004 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A11TVT000000000000000009 /* TVIntentsTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1061,6 +1154,12 @@
 			isa = PBXTargetDependency;
 			target = 29C7B681C8D62CBAC94D51C0 /* MovieRouletteTuesday */;
 			targetProxy = 11809352A555BC659DD7F622 /* PBXContainerItemProxy */;
+		};
+		A11TVT000000000000000007 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = MovieRouletteTuesdayTV;
+			target = BC2FCFF52D648C4AE601445D /* MovieRouletteTuesdayTV */;
+			targetProxy = A11TVT000000000000000008 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1527,6 +1626,55 @@
 			};
 			name = Debug;
 		};
+		A11TVT00000000000000000C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 13;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.movieroulettetuesday.app.tvtests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MovieRouletteTuesdayTV.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MovieRouletteTuesdayTV";
+				TVOS_DEPLOYMENT_TARGET = 17.0;
+			};
+			name = Debug;
+		};
+		A11TVT00000000000000000D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 13;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.movieroulettetuesday.app.tvtests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MovieRouletteTuesdayTV.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MovieRouletteTuesdayTV";
+				TVOS_DEPLOYMENT_TARGET = 17.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1598,6 +1746,15 @@
 			buildConfigurations = (
 				B04E339E7043BA787D0AD823 /* Release */,
 				459BE2C95259B9963967BB44 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A11TVT00000000000000000B /* Build configuration list for PBXNativeTarget "MovieRouletteTuesdayTVTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A11TVT00000000000000000C /* Debug */,
+				A11TVT00000000000000000D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

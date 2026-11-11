@@ -183,6 +183,16 @@ struct TVRootView: View {
             pages = [.movie(id, breadcrumb: "Movies")]
         case .episode(let guid):
             pages = [.episode(guid)]
+        case .spin:
+            // Siri already recorded the result. Play that spin on the wheel.
+            tab = .roulette
+            pages = []
+            if let pending = AppRouter.shared.takePendingSpin() {
+                roulette.enqueueHandedOffSpin(pending)
+            }
+        case .episodes:
+            tab = .episodes
+            pages = []
         }
         AppRouter.shared.pendingURL = nil
     }

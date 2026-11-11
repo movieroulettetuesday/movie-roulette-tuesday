@@ -48,6 +48,17 @@
             parallelizable = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "A11TVT000000000000000003"
+               BuildableName = "MovieRouletteTuesdayTVTests.xctest"
+               BlueprintName = "MovieRouletteTuesdayTVTests"
+               ReferencedContainer = "container:MovieRouletteTuesday.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "FBD9EEA65DA488214544A713"
                BuildableName = "MovieRouletteTuesdayTVUITests.xctest"
                BlueprintName = "MovieRouletteTuesdayTVUITests"

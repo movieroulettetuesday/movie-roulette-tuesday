@@ -107,6 +107,13 @@ struct ContentView: View {
         case .episode(let guid):
             selectedTab = .episodes
             pendingEpisodeGUID = guid
+        case .spin:
+            selectedTab = .roulette
+            if let pending = AppRouter.shared.takePendingSpin() {
+                roulette.enqueueHandedOffSpin(pending)
+            }
+        case .episodes:
+            selectedTab = .episodes
         }
     }
 }

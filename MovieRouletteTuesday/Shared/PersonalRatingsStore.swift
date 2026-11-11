@@ -20,6 +20,11 @@ final class PersonalRatingsStore {
     private let defaults: UserDefaults?
     private let defaultsKey: String
 
+    #if os(tvOS)
+    /// The store the TV UI and the App Intents share: UserDefaults, same key.
+    static let shared = PersonalRatingsStore(fileStore: nil, defaults: .standard)
+    #endif
+
     /// Pass `fileStore: nil` for an in-memory store (previews).
     /// Pass `defaults` for Apple TV, where Application Support can be purged.
     init(
@@ -72,6 +77,15 @@ final class PersonalRatingsStore {
 
     func setStatus(_ status: WatchStatus?, for movieId: String) {
         ratings.setStatus(status, for: movieId)
+        persist()
+    }
+
+    /// Applies one edit and saves it. Used by the watchlist intents so the
+    /// value-type change and the on-screen store stay the same object.
+    func edit(_ body: (inout PersonalRatings) -> Void) {
+        var copy = ratings
+        body(&copy)
+        ratings = copy
         persist()
     }
 
