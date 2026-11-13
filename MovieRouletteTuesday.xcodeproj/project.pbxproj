@@ -37,6 +37,15 @@
 		A11E110000000000000000B5 /* EntityAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11E110000000000000000A5 /* EntityAnnotation.swift */; };
 		A11E110000000000000000C2 /* AppIntentsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11E110000000000000000C1 /* AppIntentsTests.swift */; };
 		A11E110000000000000000D2 /* AppIntentsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11E110000000000000000D1 /* AppIntentsUITests.swift */; };
+		A11E110000000000000000F1 /* SuggestionGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11E110000000000000000E1 /* SuggestionGate.swift */; };
+		A11E110000000000000000F2 /* SuggestionPrompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11E110000000000000000E2 /* SuggestionPrompt.swift */; };
+		A11E110000000000000000F3 /* SuggestionValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11E110000000000000000E3 /* SuggestionValidation.swift */; };
+		A11E110000000000000000F4 /* SuggestionGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11E110000000000000000E4 /* SuggestionGenerator.swift */; };
+		A11E110000000000000000F5 /* WatchSuggestionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11E110000000000000000E5 /* WatchSuggestionModel.swift */; };
+		A11E110000000000000000F6 /* SuggestionViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11E110000000000000000E6 /* SuggestionViews.swift */; };
+		A11E110000000000000000F7 /* WhatShouldIWatchIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11E110000000000000000E7 /* WhatShouldIWatchIntent.swift */; };
+		A11E110000000000000000F8 /* SuggestionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11E110000000000000000E8 /* SuggestionTests.swift */; };
+		A11E110000000000000000F9 /* SuggestionUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11E110000000000000000E9 /* SuggestionUITests.swift */; };
 		22CDF4B8E9271283F5869FA2 /* CategoryPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83E6D6CA3EE86082CD17357 /* CategoryPalette.swift */; };
 		27CA95123E4561EFF8A2528E /* CatalogSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205F51E3DBE42E474746DAEC /* CatalogSource.swift */; };
 		3089D780E6CC08D4A5CBADC9 /* SpinMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8197A8EECD0315850B538A /* SpinMotion.swift */; };
@@ -218,6 +227,15 @@
 		A11E110000000000000000A5 /* EntityAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityAnnotation.swift; sourceTree = "<group>"; };
 		A11E110000000000000000C1 /* AppIntentsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntentsTests.swift; sourceTree = "<group>"; };
 		A11E110000000000000000D1 /* AppIntentsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntentsUITests.swift; sourceTree = "<group>"; };
+		A11E110000000000000000E1 /* SuggestionGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionGate.swift; sourceTree = "<group>"; };
+		A11E110000000000000000E2 /* SuggestionPrompt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionPrompt.swift; sourceTree = "<group>"; };
+		A11E110000000000000000E3 /* SuggestionValidation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionValidation.swift; sourceTree = "<group>"; };
+		A11E110000000000000000E4 /* SuggestionGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionGenerator.swift; sourceTree = "<group>"; };
+		A11E110000000000000000E5 /* WatchSuggestionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSuggestionModel.swift; sourceTree = "<group>"; };
+		A11E110000000000000000E6 /* SuggestionViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionViews.swift; sourceTree = "<group>"; };
+		A11E110000000000000000E7 /* WhatShouldIWatchIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatShouldIWatchIntent.swift; sourceTree = "<group>"; };
+		A11E110000000000000000E8 /* SuggestionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionTests.swift; sourceTree = "<group>"; };
+		A11E110000000000000000E9 /* SuggestionUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionUITests.swift; sourceTree = "<group>"; };
 		1321078DE95E06A1D4F7A4ED /* PersonalRatingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalRatingsStore.swift; sourceTree = "<group>"; };
 		139E246F19998423DEF1FE80 /* AppearancePreference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearancePreference.swift; sourceTree = "<group>"; };
 		1A78AC385DA90899EE063668 /* ShareCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCard.swift; sourceTree = "<group>"; };
@@ -476,6 +494,20 @@
 			path = Roulette;
 			sourceTree = "<group>";
 		};
+		A11E110000000000000000G1 /* Suggestions */ = {
+			isa = PBXGroup;
+			children = (
+				A11E110000000000000000E1 /* SuggestionGate.swift */,
+				A11E110000000000000000E2 /* SuggestionPrompt.swift */,
+				A11E110000000000000000E3 /* SuggestionValidation.swift */,
+				A11E110000000000000000E4 /* SuggestionGenerator.swift */,
+				A11E110000000000000000E5 /* WatchSuggestionModel.swift */,
+				A11E110000000000000000E6 /* SuggestionViews.swift */,
+				A11E110000000000000000E7 /* WhatShouldIWatchIntent.swift */,
+			);
+			path = Suggestions;
+			sourceTree = "<group>";
+		};
 		5A5B52B5C65D9E8944F73D3F /* Intents */ = {
 			isa = PBXGroup;
 			children = (
@@ -495,6 +527,7 @@
 				2E91A40CD523281E2F5B08BC /* Community */,
 				4A6275EE0654F2861A899101 /* Episodes */,
 				5A5B52B5C65D9E8944F73D3F /* Intents */,
+				A11E110000000000000000G1 /* Suggestions */,
 				E3F0E02FD54C395A16F238D4 /* Movies */,
 				F70B4DA72058CAAB98B1EAC0 /* Resources */,
 				51B992FC37D13839621A6491 /* Roulette */,
@@ -544,6 +577,7 @@
 				3D2318752EABD3E276CB6116 /* Fixtures */,
 				A1A3A92A79916C6B4B34AE15 /* AdaptiveLayoutTests.swift */,
 				A11E110000000000000000C1 /* AppIntentsTests.swift */,
+				A11E110000000000000000E8 /* SuggestionTests.swift */,
 				42A1D1705C870623937EA427 /* AppearancePreferenceTests.swift */,
 				E1829E1F65466A6B902F7183 /* ArtworkTests.swift */,
 				89981D55DC937AB6C2C9A029 /* CatalogTests.swift */,
@@ -575,6 +609,7 @@
 			isa = PBXGroup;
 			children = (
 				A11E110000000000000000D1 /* AppIntentsUITests.swift */,
+				A11E110000000000000000E9 /* SuggestionUITests.swift */,
 				C1EA11000000000000000001 /* ClearRatingUITests.swift */,
 			);
 			path = MovieRouletteTuesdayUITests;
@@ -837,6 +872,7 @@
 			files = (
 				38010DEB88451E9FEB4A9CCF /* AdaptiveLayoutTests.swift in Sources */,
 				A11E110000000000000000C2 /* AppIntentsTests.swift in Sources */,
+				A11E110000000000000000F8 /* SuggestionTests.swift in Sources */,
 				905262973D07D24863F16C22 /* AppearancePreferenceTests.swift in Sources */,
 				0874193F58BD2D04B1B62B7A /* ArtworkTests.swift in Sources */,
 				76654956F2CC47267149D4F5 /* CatalogTests.swift in Sources */,
@@ -879,6 +915,13 @@
 				5B64184F4370C278BE378B9B /* ListenCard.swift in Sources */,
 				1ED841E441462030261695D2 /* SpinMovieRouletteIntent.swift in Sources */,
 				A11E110000000000000000B1 /* CatalogEntities.swift in Sources */,
+				A11E110000000000000000F1 /* SuggestionGate.swift in Sources */,
+				A11E110000000000000000F2 /* SuggestionPrompt.swift in Sources */,
+				A11E110000000000000000F3 /* SuggestionValidation.swift in Sources */,
+				A11E110000000000000000F4 /* SuggestionGenerator.swift in Sources */,
+				A11E110000000000000000F5 /* WatchSuggestionModel.swift in Sources */,
+				A11E110000000000000000F6 /* SuggestionViews.swift in Sources */,
+				A11E110000000000000000F7 /* WhatShouldIWatchIntent.swift in Sources */,
 				A11E110000000000000000B2 /* IntentActions.swift in Sources */,
 				A11E110000000000000000B3 /* ContentIntents.swift in Sources */,
 				A11E110000000000000000B4 /* CatalogSpotlight.swift in Sources */,
@@ -957,6 +1000,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A11E110000000000000000D2 /* AppIntentsUITests.swift in Sources */,
+				A11E110000000000000000F9 /* SuggestionUITests.swift in Sources */,
 				C1EA11000000000000000002 /* ClearRatingUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1039,6 +1083,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				OTHER_LDFLAGS = (
+					"-weak_framework",
+					FoundationModels,
+				);
 				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.movieroulettetuesday.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1070,6 +1118,10 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"-weak_framework",
+					FoundationModels,
 				);
 				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.movieroulettetuesday.app;
