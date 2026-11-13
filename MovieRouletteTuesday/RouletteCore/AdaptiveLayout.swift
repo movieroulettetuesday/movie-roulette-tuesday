@@ -56,6 +56,22 @@ public struct RouletteLayout: Equatable, Sendable {
     public static let hubDiameterFraction = 0.23
     /// Glow ring drawn `hubSize + 10` around the spin button (`HubSpinButton`).
     public static let hubRingOutset = 10.0
+    /// Minimum hit area for the hub Spin / Stop control (HIG). The drawn disc
+    /// stays `hubVisualDiameter`; only the tappable frame is expanded when the
+    /// wheel is small enough that `diameter × hubDiameterFraction` would drop
+    /// below 44 pt (below about 191 pt, including `minimumDiameter` 120).
+    public static let minimumHubHitSize = 44.0
+
+    /// Drawn hub disc diameter (visuals only).
+    public static func hubVisualDiameter(forWheelDiameter diameter: Double) -> Double {
+        sane(diameter) * hubDiameterFraction
+    }
+
+    /// Tappable width and height of the hub Spin / Stop control, at least
+    /// `minimumHubHitSize`. At `minimumDiameter` this is 44, not 27.6.
+    public static func hubHitSize(forWheelDiameter diameter: Double) -> Double {
+        max(minimumHubHitSize, hubVisualDiameter(forWheelDiameter: diameter))
+    }
 
     /// Pointer (arrow) size for a wheel, scaled with it (28x34 pt at the old ~290 pt iPhone wheel).
     public static func pointerSize(forDiameter diameter: Double) -> (width: Double, height: Double) {

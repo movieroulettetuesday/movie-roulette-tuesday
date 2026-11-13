@@ -15,6 +15,9 @@ struct HubSpinButton: View {
     let action: () -> Void
     @Environment(\.colorScheme) private var scheme
 
+    /// Visual disc stays `hubSize`. The tappable frame is at least 44×44 pt.
+    private var hitSize: CGFloat { max(CGFloat(RouletteLayout.minimumHubHitSize), hubSize) }
+
     var body: some View {
         ZStack {
             Button(action: action) {
@@ -22,6 +25,8 @@ struct HubSpinButton: View {
             }
             .buttonStyle(HubSpinButtonStyle(hubSize: hubSize, dark: scheme == .dark, forcedPressed: Self.forcedPressed))
             .disabled(!enabled)
+            .frame(width: hitSize, height: hitSize)
+            .contentShape(Rectangle())
             .accessibilityLabel("Spin")
             .accessibilityHint("Spins the wheel")
             .accessibilityInputLabels(["Spin", "Spin the wheel", "Spin wheel"])
@@ -30,6 +35,9 @@ struct HubSpinButton: View {
             if canStop {
                 Button(action: onStop) {
                     HubStopFace(hubSize: hubSize, dark: scheme == .dark)
+                        .frame(width: hubSize, height: hubSize)
+                        .frame(width: hitSize, height: hitSize)
+                        .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
                 .transition(.opacity.combined(with: .scale(scale: 0.85)))
@@ -39,6 +47,8 @@ struct HubSpinButton: View {
                 .accessibilityIdentifier("hub-stop-button")
             }
         }
+        .frame(width: hitSize, height: hitSize)
+        .contentShape(Rectangle())
         .animation(.easeInOut(duration: 0.15), value: canStop)
     }
 

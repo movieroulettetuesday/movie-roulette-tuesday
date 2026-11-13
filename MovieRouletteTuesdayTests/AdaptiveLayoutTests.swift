@@ -311,4 +311,35 @@ final class AdaptiveLayoutTests: XCTestCase {
         XCTAssertFalse(MoviePageContext.episodeDetail.linksEpisodes, "film card inside an episode page")
         XCTAssertEqual(MoviePageContext.allCases.filter(\.linksEpisodes).count, 3)
     }
+
+    func testHubHitAreaIsAtLeast44AtMinimumDiameter() {
+        let minD = RouletteLayout.minimumDiameter
+        XCTAssertEqual(minD, 120, "backlog item 4 is based on this constant")
+        let visual = RouletteLayout.hubVisualDiameter(forWheelDiameter: minD)
+        XCTAssertEqual(visual, minD * RouletteLayout.hubDiameterFraction, accuracy: 0.001)
+        XCTAssertEqual(visual, 27.6, accuracy: 0.001)
+        XCTAssertLessThan(visual, 44, "the visual disc is allowed to shrink; the hit area is not")
+        let hit = RouletteLayout.hubHitSize(forWheelDiameter: minD)
+        XCTAssertEqual(hit, 44, accuracy: 0.001)
+        XCTAssertGreaterThanOrEqual(hit, RouletteLayout.minimumHubHitSize)
+
+        // Just under the 44 pt visual threshold (~191.3 pt wheel): still clamped.
+        let under = 44.0 / RouletteLayout.hubDiameterFraction - 1
+        XCTAssertLessThan(RouletteLayout.hubVisualDiameter(forWheelDiameter: under), 44)
+        XCTAssertEqual(RouletteLayout.hubHitSize(forWheelDiameter: under), 44, accuracy: 0.001)
+
+        // At and above the threshold the hit area matches the visual disc.
+        let at = 44.0 / RouletteLayout.hubDiameterFraction
+        XCTAssertEqual(RouletteLayout.hubVisualDiameter(forWheelDiameter: at), 44, accuracy: 0.001)
+        XCTAssertEqual(RouletteLayout.hubHitSize(forWheelDiameter: at), 44, accuracy: 0.001)
+        let comfortable = 382.0 // iPhone 18 Pro portrait
+        XCTAssertEqual(RouletteLayout.hubHitSize(forWheelDiameter: comfortable),
+                       RouletteLayout.hubVisualDiameter(forWheelDiameter: comfortable), accuracy: 0.001)
+        XCTAssertGreaterThan(RouletteLayout.hubHitSize(forWheelDiameter: comfortable), 44)
+
+        // Degenerate diameters don't go below the minimum hit size.
+        for bad in [Double.nan, -40, 0, .infinity] {
+            XCTAssertEqual(RouletteLayout.hubHitSize(forWheelDiameter: bad), 44, accuracy: 0.001)
+        }
+    }
 }
