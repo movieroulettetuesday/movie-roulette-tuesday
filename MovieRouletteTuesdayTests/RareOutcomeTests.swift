@@ -1,4 +1,5 @@
 import XCTest
+import MRTShared
 @testable import MovieRouletteTuesday
 import MRTCore
 
@@ -233,5 +234,31 @@ final class InfamousSelectionTests: XCTestCase {
                 XCTAssertNotNil(InfamousSelection.pickIndex(for: m, averages: averages, unitValue: unit))
             }
         }
+    }
+
+    /// Rare outcomes are always on. A leftover `settings.rareOutcomes` value
+    /// from builds that had the toggle is never read: the spin path hard-codes
+    /// `RareOutcomePolicy(isEnabled: true)`, and the key is no longer in
+    /// `AppSettings`. A stored `false` must not disable the 1% bands.
+    func testLeftoverRareOutcomesKeyIsIgnored() {
+        let suiteName = "mrt-rare-outcomes-leftover-\(UUID().uuidString)"
+        let store = UserDefaults(suiteName: suiteName)!
+        defer { store.removePersistentDomain(forName: suiteName) }
+        store.set(false, forKey: "settings.rareOutcomes")
+
+        XCTAssertNil(AppSettings.defaults["settings.rareOutcomes"],
+                     "the unused key must not stay in AppSettings.defaults")
+        XCTAssertFalse(AppSettings.defaults.keys.contains { $0.contains("rare") })
+        // AppSettings.bool falls through to false for unknown keys, which is why
+        // we must not consult it for this policy.
+        XCTAssertEqual(AppSettings.bool("settings.rareOutcomes", store: store), false)
+
+        let policy = RareOutcomePolicy(isEnabled: true) // same as RouletteViewModel / intents
+        XCTAssertEqual(RareOutcomeRoller.outcome(unitValue: 0, policy: policy, infamousAvailable: true), .forcedRespin)
+        XCTAssertEqual(RareOutcomeRoller.outcome(unitValue: 0.01, policy: policy, infamousAvailable: true), .infamousJackpot)
+        let ifTheKeyWereHonored = RareOutcomePolicy(isEnabled: AppSettings.bool("settings.rareOutcomes", store: store))
+        XCTAssertEqual(RareOutcomeRoller.outcome(unitValue: 0, policy: ifTheKeyWereHonored, infamousAvailable: true), .normal,
+                       "sanity: a false leftover would disable bands if it were still read")
+        XCTAssertNotEqual(policy, ifTheKeyWereHonored)
     }
 }
