@@ -14,11 +14,12 @@ import MRTShared
 /// `mrt://episode/<guid>`. Static shelf art in the asset catalog is the
 /// fallback until that snapshot exists. Deep links are handled in `TVRootView`.
 ///
-/// Siri: App Intents exist on tvOS, but the iOS spin intent records
-/// `SpinHistoryStore.shared` (the iPhone file, with an archive). A TV shortcut
-/// would have to record into this UserDefaults log or Stats would miss it.
-/// Whether the Siri Remote runs third-party shortcuts still needs a check on
-/// a real Apple TV, so the intent is not in the TV target.
+/// Siri App Intents live in this target (not MRTKit: Top Shelf is an
+/// extension and cannot compile ForegroundContinuableIntent). Spin records
+/// into the same UserDefaults history the wheel uses, then opens the app
+/// and plays that result. On-device “What should I watch?” is compiled
+/// out (Foundation Models is tvOS-unavailable in the 27.2 SDK) and the
+/// intent offers Spin. Invocation on a real Apple TV is still unproven.
 @main
 struct MovieRouletteTuesdayTVApp: App {
     @State private var roulette: RouletteViewModel
@@ -42,7 +43,7 @@ struct MovieRouletteTuesdayTVApp: App {
         )
         let community = CommunityService.makeDefault()
         _community = State(initialValue: community)
-        _personal = State(initialValue: PersonalRatingsStore(fileStore: nil, defaults: .standard))
+        _personal = State(initialValue: PersonalRatingsStore.shared)
         _episodes = State(initialValue: EpisodeStore())
         _roulette = State(initialValue: RouletteViewModel(
             catalogSource: AppCatalog.localSource(),
@@ -51,6 +52,9 @@ struct MovieRouletteTuesdayTVApp: App {
             sideEffects: .none,
             listenerAverages: { [weak community] in community?.listenerAverages ?? [:] }
         ))
+        // Intents must write the same UserDefaults history and ratings the UI shows.
+        IntentRuntime.history = { history }
+        IntentRuntime.ratings = { PersonalRatingsStore.shared }
     }
 
     /// `-MRTSeedRating <movieId> <halfStars>` after the UI-test wipe.

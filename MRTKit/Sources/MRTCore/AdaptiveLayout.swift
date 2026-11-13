@@ -320,6 +320,8 @@ public enum ConfettiScale {
 public enum DeepLink: Equatable, Sendable {
     case movie(id: String)
     case episode(guid: String)
+    case spin
+    case episodes
 
     public static let scheme = "mrt"
 
@@ -331,6 +333,14 @@ public enum DeepLink: Equatable, Sendable {
         let parts = components.percentEncodedPath.split(separator: "/").map(String.init)
         // mrt://movie/<id>  (also tolerate mrt:///movie/<id>)
         let segments = host.isEmpty ? parts : [host] + parts
+        if segments.count == 1 {
+            switch segments[0].lowercased() {
+            case "spin": self = .spin
+            case "episodes": self = .episodes
+            default: return nil
+            }
+            return
+        }
         guard segments.count == 2 else { return nil }
         let id = segments[1].removingPercentEncoding ?? segments[1]
         guard !id.isEmpty, id.count <= 200 else { return nil }
@@ -342,13 +352,24 @@ public enum DeepLink: Equatable, Sendable {
     }
 
     public var url: URL {
-        let (host, id): (String, String)
         switch self {
-        case .movie(let movieID): (host, id) = ("movie", movieID)
-        case .episode(let guid): (host, id) = ("episode", guid)
+        case .spin: return Self.bare("spin")
+        case .episodes: return Self.bare("episodes")
+        case .movie(let movieID): return Self.identified("movie", movieID)
+        case .episode(let guid): return Self.identified("episode", guid)
         }
+    }
+
+    private static func bare(_ host: String) -> URL {
         var components = URLComponents()
-        components.scheme = Self.scheme
+        components.scheme = scheme
+        components.host = host
+        return components.url ?? URL(string: "mrt://\(host)")!
+    }
+
+    private static func identified(_ host: String, _ id: String) -> URL {
+        var components = URLComponents()
+        components.scheme = scheme
         components.host = host
         var allowed = CharacterSet.alphanumerics
         allowed.insert(charactersIn: "-._~")
