@@ -40,6 +40,15 @@ enum DebugLaunch {
     /// `-MRTShowRules`: opens the House Rules sheet on launch (screenshots).
     static var showsRules: Bool { ProcessInfo.processInfo.arguments.contains("-MRTShowRules") }
 
+    /// `-MRTRevealMovie <id>`: presents the wheel reveal sheet for that catalog
+    /// movie after the catalog loads (UI tests of long titles at large text).
+    /// Original case kept.
+    static var revealMovieID: String? {
+        let args = ProcessInfo.processInfo.arguments
+        guard let i = args.firstIndex(of: "-MRTRevealMovie"), args.indices.contains(i + 1) else { return nil }
+        return args[i + 1]
+    }
+
     /// `-MRTHubPressed`: draws the hub spin button in its pressed state (screenshots).
     static var hubPressed: Bool { ProcessInfo.processInfo.arguments.contains("-MRTHubPressed") }
 

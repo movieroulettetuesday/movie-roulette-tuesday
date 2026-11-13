@@ -526,6 +526,28 @@ final class RouletteViewModel {
         return true
     }
 
+    /// DEBUG-only: present the reveal sheet for a catalog movie without spinning
+    /// (UI tests). No history is written.
+    #if DEBUG
+    @discardableResult
+    func installDebugReveal(movieId: String, jackpot: Bool = false) -> Bool {
+        guard let catalog, let movie = catalog.movie(withId: movieId) else { return false }
+        let category = movie.categories.compactMap { catalog.category(withId: $0) }.first
+            ?? catalog.categories.first
+        guard let category else { return false }
+        if jackpot { notice = "Infamous Jackpot!" }
+        reveal = Reveal(
+            id: UUID(),
+            movie: movie,
+            category: category,
+            spinCount: max(1, history.stats.spinCount(forMovie: movie.id)),
+            isJackpot: jackpot
+        )
+        revealCount += 1
+        return true
+    }
+    #endif
+
     /// Shows the already-recorded spin. Does not write history or roll again.
     @discardableResult
     func installHandedOffReveal(_ pending: PendingSpin) -> Bool {

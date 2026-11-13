@@ -55,6 +55,12 @@ struct ContentView: View {
             // Load the catalog here, not only in RouletteView: a cold-launch deep link
             // (or a Movies-first launch) may never show the Roulette tab.
             await roulette.load()
+            #if DEBUG
+            if let id = DebugLaunch.revealMovieID {
+                splash?.skip()
+                _ = roulette.installDebugReveal(movieId: id)
+            }
+            #endif
             // All listener ratings in one read, for the infamous jackpot weighting
             // (silent; cached values are used until it lands).
             Task { await community.refreshAllListenerRatings(movieIds: roulette.catalog?.movies.map(\.id) ?? []) }
