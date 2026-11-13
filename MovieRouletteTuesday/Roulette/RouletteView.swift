@@ -415,6 +415,10 @@ struct RouletteView: View {
         .font(.footnote.weight(.medium))
         .foregroundStyle(.secondary)
         .multilineTextAlignment(.center)
+        // Static status, not a control. XCUI hit-area audits should skip this
+        // ("Hit area too small: Tap to spin" was a false positive on the hint).
+        .accessibilityIdentifier("roulette-status")
+        .accessibilityAddTraits(.updatesFrequently)
         // Fixed height per Dynamic Type size (one line, two at accessibility
         // sizes), so a longer status never resizes the wheel mid-spin.
         .lineLimit(dynamicTypeSize.isAccessibilitySize ? 2 : 1, reservesSpace: true)
