@@ -5,7 +5,7 @@ enum AppSettings {
     /// "Spin sound" (the key predates the recorded clip; kept so preferences carry over).
     static let tickSound = "settings.tickSound"
     static let haptics = "settings.haptics"
-    static let rareOutcomes = "settings.rareOutcomes"
+    /// The old `settings.rareOutcomes` toggle was removed: rare outcomes are always on. A leftover stored value is ignored.
     /// "1.0 (8)": marketing version and build, for Credits & About.
     static var versionString: String {
         let info = Bundle.main.infoDictionary
@@ -19,7 +19,6 @@ enum AppSettings {
     static let defaults: [String: Bool] = [
         tickSound: true,
         haptics: true,
-        rareOutcomes: true,
         autoShareRatings: false,
     ]
 
