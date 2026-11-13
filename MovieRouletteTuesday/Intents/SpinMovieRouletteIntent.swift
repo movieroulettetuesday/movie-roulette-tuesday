@@ -1,19 +1,19 @@
 import AppIntents
 import SwiftUI
 
-/// "Hey Siri, spin Movie Roulette": a real spin (same geometry, rare outcomes
-/// and movie selector as the wheel, via `QuickSpin`), recorded to the same
-/// spin history the app shows. App Intents run in the app's own process, and
-/// `SpinHistoryStore.shared` is the instance the UI uses, so a spin from Siri
-/// shows up immediately if the app is open and is persisted to the app's
-/// Application Support file if it isn't.
+/// "Hey Siri, spin Movie Roulette": one `QuickSpin`, recorded once, then the
+/// app opens and the wheel plays that same result. The v4 snippet is the
+/// confirmation. App Intents run in this process, so `SpinHistoryStore.shared`
+/// is the history the wheel already shows.
 struct SpinMovieRouletteIntent: AppIntent {
     static let title: LocalizedStringResource = "Spin Movie Roulette"
     static let description = IntentDescription(
-        "Spins the wheel, picks a movie and saves it to your spin history.",
+        "Opens Movie Roulette Tuesday, spins the wheel, and saves the movie to your spin history.",
         categoryName: "Roulette"
     )
-    static let openAppWhenRun = false
+    static let openAppWhenRun = true
+    @available(iOS 26.0, *)
+    static var supportedModes: IntentModes { .foreground(.immediate) }
 
     @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog & ShowsSnippetView {
@@ -27,6 +27,8 @@ struct SpinMovieRouletteIntent: AppIntent {
 struct OpenSpunMovieIntent: AppIntent {
     static let title: LocalizedStringResource = "Open Movie in Movie Roulette"
     static let openAppWhenRun = true
+    @available(iOS 26.0, *)
+    static var supportedModes: IntentModes { .foreground(.immediate) }
     static let isDiscoverable = false
 
     @Parameter(title: "Movie ID")
@@ -37,7 +39,7 @@ struct OpenSpunMovieIntent: AppIntent {
 
     @MainActor
     func perform() async throws -> some IntentResult {
-        AppRouter.shared.open(.movie(id: movieID))
+        IntentRuntime.router().open(.movie(id: movieID))
         return .result()
     }
 }
@@ -54,13 +56,74 @@ struct MovieRouletteShortcuts: AppShortcutsProvider {
             shortTitle: "Spin the Wheel",
             systemImageName: "dial.medium"
         )
+        AppShortcut(
+            intent: OpenMovieIntent(),
+            phrases: [
+                "Open \(\.$movie) in \(.applicationName)",
+            ],
+            shortTitle: "Open Movie",
+            systemImageName: "film"
+        )
+        AppShortcut(
+            intent: LatestEpisodeIntent(),
+            phrases: [
+                "Latest episode of \(.applicationName)",
+                "What's the latest \(.applicationName) episode",
+            ],
+            shortTitle: "Latest Episode",
+            systemImageName: "mic"
+        )
+        AppShortcut(
+            intent: ShowWatchlistIntent(),
+            phrases: [
+                "What's on my \(.applicationName) watchlist",
+                "Show my \(.applicationName) watchlist",
+            ],
+            shortTitle: "Show Watchlist",
+            systemImageName: "bookmark"
+        )
+        AppShortcut(
+            intent: AddToWatchlistIntent(),
+            phrases: [
+                "Add \(\.$movie) to my \(.applicationName) watchlist",
+            ],
+            shortTitle: "Add to Watchlist",
+            systemImageName: "plus.circle"
+        )
+        AppShortcut(
+            intent: MarkWatchedIntent(),
+            phrases: [
+                "Mark \(\.$movie) as watched in \(.applicationName)",
+            ],
+            shortTitle: "Mark Watched",
+            systemImageName: "checkmark.circle"
+        )
+        AppShortcut(
+            intent: WhereToWatchIntent(),
+            phrases: [
+                "Where can I watch \(\.$movie) in \(.applicationName)",
+            ],
+            shortTitle: "Where to Watch",
+            systemImageName: "tv"
+        )
+        AppShortcut(
+            intent: OpenOnProviderIntent(),
+            phrases: [
+                // App Shortcut phrases may name only one parameter. The intent
+                // still takes movie and service; Siri asks for the other one.
+                "Open \(\.$movie) on a service in \(.applicationName)",
+                "Open a movie on \(\.$provider) in \(.applicationName)",
+            ],
+            shortTitle: "Open on Provider",
+            systemImageName: "arrow.up.right.square"
+        )
     }
     static let shortcutTileColor: ShortcutTileColor = .teal
 }
 
 // MARK: - Spin
 
-struct IntentSpin: Sendable {
+struct IntentSpin: Equatable, Sendable {
     let movie: Movie
     let category: RouletteCategory
     let discussed: String
@@ -81,28 +144,58 @@ enum IntentSpinError: Error, CustomLocalizedStringResourceConvertible {
 
 @MainActor
 enum IntentSpinService {
-    static func spin(settings: UserDefaults = .standard) async throws -> IntentSpin {
-        let catalog = try await AppCatalog.localSource().loadCatalog().deduplicated()
-        let history = SpinHistoryStore.shared
-        let policy = RareOutcomePolicy(isEnabled: true)
+    struct Produced: Sendable {
+        var spin: IntentSpin
+        var pending: PendingSpin
+    }
+
+    static func spin() async throws -> IntentSpin {
+        let catalog = try await IntentCatalog.load()
+        let history = IntentRuntime.history()
+        let averages = ListenerRatingsSnapshot.load(from: IntentRuntime.defaults())?.averages ?? [:]
         var rng = SystemRandomNumberGenerator()
-        // Cached listener averages (saved by the app), so a jackpot is weighted offline.
-        let averages = ListenerRatingsSnapshot.load(from: settings)?.averages ?? [:]
+        let produced = try resolveAndRecord(catalog: catalog, history: history, averages: averages, using: &rng)
+        IntentRuntime.router().handOffSpin(produced.pending)
+        return produced.spin
+    }
+
+    /// One pick, one history row, one pending spin for the wheel. Does not
+    /// animate. `publishWidget` is false in tests.
+    static func resolveAndRecord<G: RandomNumberGenerator>(
+        catalog: MovieCatalog,
+        history: SpinHistoryStore,
+        averages: [String: Double] = [:],
+        episodesByGUID: [String: PodcastEpisode] = [:],
+        using rng: inout G,
+        now: Date = Date(),
+        publishWidget: Bool = true
+    ) throws -> Produced {
+        let policy = RareOutcomePolicy(isEnabled: true)
         guard let out = QuickSpin.resolve(
             catalog: catalog, history: history.results, rareOutcomes: policy,
             listenerAverages: averages, using: &rng
         ) else {
             throw IntentSpinError.noMovies
         }
-        let result = SpinResult(movieId: out.movie.id, categoryId: out.category.id)
+        let result = SpinResult(movieId: out.movie.id, categoryId: out.category.id, timestamp: now)
         history.record(result)
-        WidgetBridge.publishSpin(movie: out.movie, category: out.category, at: result.timestamp)
-        return IntentSpin(
+        if publishWidget {
+            WidgetBridge.publishSpin(movie: out.movie, category: out.category, at: result.timestamp)
+        }
+        let spin = IntentSpin(
             movie: out.movie,
             category: out.category,
-            discussed: EpisodeLabel.discussedText(for: out.movie),
+            discussed: EpisodeLabel.discussedText(for: out.movie, episodesByGUID: episodesByGUID),
             isJackpot: out.isJackpot
         )
+        let pending = PendingSpin(
+            movieID: out.movie.id,
+            landedCategoryID: out.landed.id,
+            creditedCategoryID: out.category.id,
+            isJackpot: out.isJackpot,
+            resultID: result.id
+        )
+        return Produced(spin: spin, pending: pending)
     }
 }
 

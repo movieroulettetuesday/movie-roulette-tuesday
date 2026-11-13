@@ -11,6 +11,10 @@ final class PersonalRatingsStore {
 
     private let fileStore: PersonalRatingsFileStore?
 
+    /// The app's one ratings file. App Intents run in this process, so a Siri
+    /// change is the same store the screen is showing.
+    static let shared = PersonalRatingsStore()
+
     /// Pass `nil` for an in-memory store (previews).
     init(fileStore: PersonalRatingsFileStore? = try? PersonalRatingsFileStore.applicationSupport()) {
         self.fileStore = fileStore
@@ -45,6 +49,15 @@ final class PersonalRatingsStore {
 
     func setStatus(_ status: WatchStatus?, for movieId: String) {
         ratings.setStatus(status, for: movieId)
+        persist()
+    }
+
+    /// Applies one edit and saves it. Used by the watchlist intents so the
+    /// value-type change and the on-screen store stay the same object.
+    func edit(_ body: (inout PersonalRatings) -> Void) {
+        var copy = ratings
+        body(&copy)
+        ratings = copy
         persist()
     }
 

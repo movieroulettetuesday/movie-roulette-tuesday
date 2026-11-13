@@ -16,7 +16,7 @@ struct MovieRouletteTuesdayApp: App {
         #if DEBUG
         UITestRatingSeed.applyIfRequested()
         #endif
-        _personal = State(initialValue: PersonalRatingsStore())
+        _personal = State(initialValue: PersonalRatingsStore.shared)
         let history = SpinHistoryStore.shared
         UNUserNotificationCenter.current().delegate = NotificationRouter.shared
         _episodes = State(initialValue: EpisodeStore())

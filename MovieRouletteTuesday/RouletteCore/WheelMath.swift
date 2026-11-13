@@ -137,4 +137,24 @@ public struct WheelGeometry: Equatable, Sendable {
         target -= clamped - angle
         return target
     }
+
+    /// A clockwise target that puts `segmentIndex` under the pointer, `fullTurns`
+    /// past `current`, kept `edgePadding` degrees off the segment boundary.
+    /// Nil when the index isn't a segment or `current` isn't finite.
+    public func targetRotation(landingOn segmentIndex: Int, from current: Double,
+                               fullTurns: Int, edgePadding: Double = 3) -> Double? {
+        guard current.isFinite, segments.indices.contains(segmentIndex) else { return nil }
+        let segment = segments[segmentIndex]
+        guard segment.sweep > 0 else { return nil }
+        let padding = min(max(edgePadding, 0), segment.sweep / 4)
+        let desiredPointer = min(max(segment.midAngle, segment.startAngle + padding), segment.endAngle - padding)
+        // pointerAngle(R) is normalize(-R). Land on desiredPointer, still moving clockwise.
+        var desiredMod = (-desiredPointer).truncatingRemainder(dividingBy: WheelMath.fullTurn)
+        if desiredMod < 0 { desiredMod += WheelMath.fullTurn }
+        var currentMod = current.truncatingRemainder(dividingBy: WheelMath.fullTurn)
+        if currentMod < 0 { currentMod += WheelMath.fullTurn }
+        var delta = desiredMod - currentMod
+        if delta < 0.000_001 { delta += WheelMath.fullTurn }
+        return current + Double(max(fullTurns, 1)) * WheelMath.fullTurn + delta
+    }
 }

@@ -77,6 +77,7 @@ struct EpisodeDetailView: View {
         }
         .background { CleanProBackground() }
         .accessibilityIdentifier("episode-detail")
+        .catalogEntity(.episode, id: episode.guid, title: episode.title)
         .navigationTitle(episode.seasonEpisodeLabel ?? "Episode")
         .navigationBarTitleDisplayMode(.inline)
     }

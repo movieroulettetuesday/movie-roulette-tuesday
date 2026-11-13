@@ -30,6 +30,13 @@
 		1BD7BEC2B3C9AC0AFACA5527 /* SettingsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 910226E8C518E795A6FDD73C /* SettingsSheet.swift */; };
 		1E5729C04A9491333DB6E5F7 /* AppearancePreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 139E246F19998423DEF1FE80 /* AppearancePreference.swift */; };
 		1ED841E441462030261695D2 /* SpinMovieRouletteIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F758513FC3E5C240C02C1E /* SpinMovieRouletteIntent.swift */; };
+		A11E110000000000000000B1 /* CatalogEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11E110000000000000000A1 /* CatalogEntities.swift */; };
+		A11E110000000000000000B2 /* IntentActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11E110000000000000000A2 /* IntentActions.swift */; };
+		A11E110000000000000000B3 /* ContentIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11E110000000000000000A3 /* ContentIntents.swift */; };
+		A11E110000000000000000B4 /* CatalogSpotlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11E110000000000000000A4 /* CatalogSpotlight.swift */; };
+		A11E110000000000000000B5 /* EntityAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11E110000000000000000A5 /* EntityAnnotation.swift */; };
+		A11E110000000000000000C2 /* AppIntentsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11E110000000000000000C1 /* AppIntentsTests.swift */; };
+		A11E110000000000000000D2 /* AppIntentsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11E110000000000000000D1 /* AppIntentsUITests.swift */; };
 		22CDF4B8E9271283F5869FA2 /* CategoryPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83E6D6CA3EE86082CD17357 /* CategoryPalette.swift */; };
 		27CA95123E4561EFF8A2528E /* CatalogSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205F51E3DBE42E474746DAEC /* CatalogSource.swift */; };
 		3089D780E6CC08D4A5CBADC9 /* SpinMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8197A8EECD0315850B538A /* SpinMotion.swift */; };
@@ -204,6 +211,13 @@
 		0DFB8329CEE9F53C63EAE4F9 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		0EC78ED88091FA572AD20406 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		11F758513FC3E5C240C02C1E /* SpinMovieRouletteIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinMovieRouletteIntent.swift; sourceTree = "<group>"; };
+		A11E110000000000000000A1 /* CatalogEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogEntities.swift; sourceTree = "<group>"; };
+		A11E110000000000000000A2 /* IntentActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentActions.swift; sourceTree = "<group>"; };
+		A11E110000000000000000A3 /* ContentIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentIntents.swift; sourceTree = "<group>"; };
+		A11E110000000000000000A4 /* CatalogSpotlight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogSpotlight.swift; sourceTree = "<group>"; };
+		A11E110000000000000000A5 /* EntityAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityAnnotation.swift; sourceTree = "<group>"; };
+		A11E110000000000000000C1 /* AppIntentsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntentsTests.swift; sourceTree = "<group>"; };
+		A11E110000000000000000D1 /* AppIntentsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntentsUITests.swift; sourceTree = "<group>"; };
 		1321078DE95E06A1D4F7A4ED /* PersonalRatingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalRatingsStore.swift; sourceTree = "<group>"; };
 		139E246F19998423DEF1FE80 /* AppearancePreference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearancePreference.swift; sourceTree = "<group>"; };
 		1A78AC385DA90899EE063668 /* ShareCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCard.swift; sourceTree = "<group>"; };
@@ -465,6 +479,11 @@
 		5A5B52B5C65D9E8944F73D3F /* Intents */ = {
 			isa = PBXGroup;
 			children = (
+				A11E110000000000000000A1 /* CatalogEntities.swift */,
+				A11E110000000000000000A4 /* CatalogSpotlight.swift */,
+				A11E110000000000000000A3 /* ContentIntents.swift */,
+				A11E110000000000000000A5 /* EntityAnnotation.swift */,
+				A11E110000000000000000A2 /* IntentActions.swift */,
 				11F758513FC3E5C240C02C1E /* SpinMovieRouletteIntent.swift */,
 			);
 			path = Intents;
@@ -524,6 +543,7 @@
 			children = (
 				3D2318752EABD3E276CB6116 /* Fixtures */,
 				A1A3A92A79916C6B4B34AE15 /* AdaptiveLayoutTests.swift */,
+				A11E110000000000000000C1 /* AppIntentsTests.swift */,
 				42A1D1705C870623937EA427 /* AppearancePreferenceTests.swift */,
 				E1829E1F65466A6B902F7183 /* ArtworkTests.swift */,
 				89981D55DC937AB6C2C9A029 /* CatalogTests.swift */,
@@ -554,6 +574,7 @@
 		C1EA1100000000000000000D /* MovieRouletteTuesdayUITests */ = {
 			isa = PBXGroup;
 			children = (
+				A11E110000000000000000D1 /* AppIntentsUITests.swift */,
 				C1EA11000000000000000001 /* ClearRatingUITests.swift */,
 			);
 			path = MovieRouletteTuesdayUITests;
@@ -815,6 +836,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				38010DEB88451E9FEB4A9CCF /* AdaptiveLayoutTests.swift in Sources */,
+				A11E110000000000000000C2 /* AppIntentsTests.swift in Sources */,
 				905262973D07D24863F16C22 /* AppearancePreferenceTests.swift in Sources */,
 				0874193F58BD2D04B1B62B7A /* ArtworkTests.swift in Sources */,
 				76654956F2CC47267149D4F5 /* CatalogTests.swift in Sources */,
@@ -856,6 +878,11 @@
 				35AC62C0B225CFE60274723E /* EpisodesView.swift in Sources */,
 				5B64184F4370C278BE378B9B /* ListenCard.swift in Sources */,
 				1ED841E441462030261695D2 /* SpinMovieRouletteIntent.swift in Sources */,
+				A11E110000000000000000B1 /* CatalogEntities.swift in Sources */,
+				A11E110000000000000000B2 /* IntentActions.swift in Sources */,
+				A11E110000000000000000B3 /* ContentIntents.swift in Sources */,
+				A11E110000000000000000B4 /* CatalogSpotlight.swift in Sources */,
+				A11E110000000000000000B5 /* EntityAnnotation.swift in Sources */,
 				7EBFD1165ED88C25906764F8 /* MoviesView.swift in Sources */,
 				B483660AF79AD22C38C923D8 /* ConfettiView.swift in Sources */,
 				48479A50C21555128DD1A03C /* HubSpinButton.swift in Sources */,
@@ -929,6 +956,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A11E110000000000000000D2 /* AppIntentsUITests.swift in Sources */,
 				C1EA11000000000000000002 /* ClearRatingUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
