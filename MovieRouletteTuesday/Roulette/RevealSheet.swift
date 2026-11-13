@@ -27,40 +27,16 @@ struct RevealSheet: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: CleanPro.spacing) {
-                    summaryCard
-                    VStack(spacing: 12) {
-                        // Same bordered family as Share / Movie Page (no SPIN pill anywhere
-                        // now; the hub is the spin button). Teal, full width, it leads.
-                        Button(action: onSpinAgain) {
-                            Label("Spin again", systemImage: "arrow.clockwise")
-                                .font(.headline)
-                                .frame(maxWidth: .infinity)
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .tint(Brand.tealDark)
-                        .controlSize(.large)
-
-                        HStack(spacing: 12) {
-                            shareButton
-                            // Value route (not a view-destination link): the episode links on the
-                            // pushed movie page are value routes too, and only resolve when the
-                            // whole chain is value-based, as in the Movies tab and Spin History.
-                            NavigationLink(value: MoviesRoute.movie(movie.id)) {
-                                Label("Movie page", systemImage: "film")
-                                    .frame(maxWidth: .infinity)
-                            }
-                            .buttonStyle(.bordered)
-                            .controlSize(.large)
-                        }
-                    }
+            // Scroll only when the content doesn't fit the detent (longest
+            // titles at large Dynamic Type). ViewThatFits prefers the
+            // non-scrolling copy, so the sheet looks the same when it fits.
+            ViewThatFits(in: .vertical) {
+                revealMainContent
+                ScrollView {
+                    revealMainContent
                 }
-                .padding(24)
-                .frame(maxWidth: 560)
-                .frame(maxWidth: .infinity)
+                .scrollBounceBehavior(.basedOnSize)
             }
-            .scrollBounceBehavior(.basedOnSize)
             // Episodes rows on the pushed movie page (same page as the Episodes tab / Spin History).
             // Movie Page and its Episodes rows (same pages as the Movies tab / Spin History).
             .navigationDestination(for: MoviesRoute.self) { destination(for: $0) }
@@ -126,6 +102,42 @@ struct RevealSheet: View {
         }
     }
 
+    private var revealMainContent: some View {
+        VStack(spacing: CleanPro.spacing) {
+            summaryCard
+            VStack(spacing: 12) {
+                // Same bordered family as Share / Movie Page (no SPIN pill anywhere
+                // now; the hub is the spin button). Teal, full width, it leads.
+                Button(action: onSpinAgain) {
+                    Label("Spin again", systemImage: "arrow.clockwise")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(Brand.tealDark)
+                .controlSize(.large)
+                .accessibilityIdentifier("reveal-spin-again")
+
+                HStack(spacing: 12) {
+                    shareButton
+                    // Value route (not a view-destination link): the episode links on the
+                    // pushed movie page are value routes too, and only resolve when the
+                    // whole chain is value-based, as in the Movies tab and Spin History.
+                    NavigationLink(value: MoviesRoute.movie(movie.id)) {
+                        Label("Movie page", systemImage: "film")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.large)
+                    .accessibilityIdentifier("reveal-movie-page")
+                }
+            }
+        }
+        .padding(24)
+        .frame(maxWidth: 560)
+        .frame(maxWidth: .infinity)
+    }
+
     private var summaryCard: some View {
         VStack(spacing: 12) {
             categoryChip
@@ -157,6 +169,8 @@ struct RevealSheet: View {
         .cleanProCard(padding: 20)
     }
 
+    /// Always occupies the Share slot so ViewThatFits measures the final
+    /// height. The ShareLink is enabled once the card image is ready.
     @ViewBuilder
     private var shareButton: some View {
         if let shareImage {
@@ -172,6 +186,19 @@ struct RevealSheet: View {
             .buttonStyle(.bordered)
             .tint(Brand.accentTeal)
             .controlSize(.large)
+            .accessibilityIdentifier("reveal-share")
+            .accessibilityLabel("Share")
+        } else {
+            Button(action: {}) {
+                Label("Share", systemImage: "square.and.arrow.up")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+            .tint(Brand.accentTeal)
+            .controlSize(.large)
+            .disabled(true)
+            .accessibilityHidden(true)
+            .accessibilityIdentifier("reveal-share")
         }
     }
 
