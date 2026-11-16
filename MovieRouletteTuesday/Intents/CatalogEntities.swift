@@ -231,9 +231,13 @@ enum MovieEntityLookup {
     /// The shared 1.1 matcher (`CatalogSearch`): title, year, S#E#, episode
     /// title, genre, category, then streaming provider. Best match first. An
     /// unknown or empty string is an empty list. A year in the query
-    /// ("The Thing 1982") is a disambiguator.
+    /// ("The Thing 1982") is a disambiguator. Only hits at the best rank
+    /// present are kept (same as Android Find), so "The Thing" is the
+    /// title matches, not a weaker genre or provider hit.
     static func matching(_ raw: String, in catalog: MovieCatalog, episodesByGUID: [String: PodcastEpisode] = [:]) -> [MovieEntity] {
-        CatalogSearch.movies(catalog.movies, matching: raw, catalog: catalog, episodesByGUID: episodesByGUID)
+        let hits = CatalogSearch.movies(catalog.movies, matching: raw, catalog: catalog, episodesByGUID: episodesByGUID)
+        guard let best = hits.first?.rank else { return [] }
+        return hits.filter { $0.rank == best }
             .map { MovieEntity(movie: $0.movie, catalog: catalog, episodesByGUID: episodesByGUID) }
     }
 }
