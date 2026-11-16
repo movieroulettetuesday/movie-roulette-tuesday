@@ -66,13 +66,12 @@ struct MoviesView: View {
         if onMyServices {
             list = StreamingCatalog.filter(list, services: services)
         }
-        if !query.isEmpty {
-            let q = query.lowercased()
-            list = list.filter {
-                $0.title.lowercased().contains(q)
-                || $0.genre.lowercased().contains(q)
-                || ($0.episodeTitle?.lowercased().contains(q) ?? false)
-            }
+        // Shared 1.1 matcher (same as Siri and the Episodes list).
+        var ranks: [String: CatalogSearch.Rank] = [:]
+        if isSearching {
+            let hits = CatalogSearch.movies(list, matching: query, catalog: catalog, episodesByGUID: episodesByGUID)
+            ranks = Dictionary(hits.map { ($0.movie.id, $0.rank) }, uniquingKeysWith: { first, _ in first })
+            list = hits.map(\.movie)
         }
         switch sort {
         case .title: list.sort { $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending }
@@ -89,8 +88,20 @@ struct MoviesView: View {
             list.sort { $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending }
             list = StreamingCatalog.availableFirst(list, services: services)
         }
+        if !ranks.isEmpty {
+            // Best match first (title, then episode, year, genre or category,
+            // then provider); the chosen sort orders movies within a rank.
+            list = list.enumerated().sorted { lhs, rhs in
+                let left = ranks[lhs.element.id] ?? .provider
+                let right = ranks[rhs.element.id] ?? .provider
+                if left != right { return left < right }
+                return lhs.offset < rhs.offset
+            }.map(\.element)
+        }
         return list
     }
+
+    private var isSearching: Bool { !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
 
     private var isRegular: Bool { horizontalSizeClass == .regular }
 
@@ -157,7 +168,7 @@ struct MoviesView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .cleanProListScreen()
         .navigationTitle("Movies")
-        .searchable(text: $query, prompt: "Title, genre, episode")
+        .searchable(text: $query, prompt: Text("Title, year, S4E39, service"))
         .toolbar { toolbar }
         .sheet(isPresented: $showsSuggest) {
             SuggestMovieSheet(categories: catalog?.categories ?? [])
@@ -281,7 +292,7 @@ struct MoviesView: View {
     /// filtering so results stay on top.
     @ViewBuilder
     private var suggestSection: some View {
-        if query.isEmpty && categoryFilter == nil && listFilter == .all && !onMyServices {
+        if !isSearching && categoryFilter == nil && listFilter == .all && !onMyServices {
             Section {
                 SuggestMovieRow { showsSuggest = true }
             }
@@ -305,24 +316,29 @@ struct MoviesView: View {
                 )
                 // Value-based: selects in the split view (String selection),
                 // pushes a route in the stack.
-                if isRegular {
-                    NavigationLink(value: movie.id) { row }
-                } else {
-                    NavigationLink(value: MoviesRoute.movie(movie.id)) { row }
+                Group {
+                    if isRegular {
+                        NavigationLink(value: movie.id) { row }
+                    } else {
+                        NavigationLink(value: MoviesRoute.movie(movie.id)) { row }
+                    }
                 }
+                .accessibilityIdentifier("movie-row-\(movie.id)")
             }
         } footer: {
                 let total = catalog?.movies.count ?? 0
                 Text(listFilter == .all
                      ? "\(rows.count) of \(total) movies"
                      : "\(rows.count) of \(total) movies · \(listFilter.label)")
+                .accessibilityIdentifier("movies-count")
         }
     }
 
     @ViewBuilder
     private var emptyOverlay: some View {
-            if catalog != nil, filtered.isEmpty, !query.isEmpty {
+            if catalog != nil, filtered.isEmpty, isSearching {
                 ContentUnavailableView.search(text: query)
+                    .accessibilityIdentifier("movies-search-empty")
             } else if catalog != nil, filtered.isEmpty, listFilter == .all {
                 ContentUnavailableView(
                     "No Matches",

@@ -370,3 +370,162 @@ private struct WhereToWatchSnippetView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
+
+// MARK: - Find movie / episode (1.1 search)
+
+/// "Find The Devil's Rain in Movie Roulette Tuesday". Siri resolves the name
+/// through `MovieEntityQuery`, so it uses the same matcher as the lists
+/// (title, year, S#E#, genre, category, then provider). Shows the movie and
+/// stays in Siri; the snippet can open the movie or its episode.
+struct FindMovieIntent: AppIntent {
+    static let title: LocalizedStringResource = "Find Movie"
+    static let description = IntentDescription(
+        "Finds a movie by title, year, episode (like S4E39), genre, or streaming service.",
+        categoryName: "Movies"
+    )
+    static let openAppWhenRun = false
+    @available(iOS 26.0, *)
+    static var supportedModes: IntentModes { .background }
+
+    @Parameter(title: "Movie")
+    var movie: MovieEntity
+
+    static var parameterSummary: some ParameterSummary {
+        Summary("Find \(\.$movie)")
+    }
+
+    @MainActor
+    func perform() async throws -> some IntentResult & ProvidesDialog & ShowsSnippetView {
+        let catalog = try await IntentCatalog.load()
+        let movie = try IntentCatalog.movie(self.movie.id, in: catalog)
+        let episodes = IntentRuntime.episodes()
+        let found = FindResult.movie(movie, catalog: catalog, episodes: episodes)
+        return .result(dialog: IntentDialog(stringLiteral: found.speech), view: FoundSnippetView(found: found))
+    }
+}
+
+/// Finds an episode by title, S#E#, episode number, or the movie it covers.
+/// A Shortcuts action (no App Shortcut phrase: the app is at the 10-phrase cap).
+struct FindEpisodeIntent: AppIntent {
+    static let title: LocalizedStringResource = "Find Episode"
+    static let description = IntentDescription(
+        "Finds an episode by title, season and episode (like S4E39), or the movie it covers.",
+        categoryName: "Episodes"
+    )
+    static let openAppWhenRun = false
+    @available(iOS 26.0, *)
+    static var supportedModes: IntentModes { .background }
+
+    @Parameter(title: "Episode")
+    var episode: EpisodeEntity
+
+    static var parameterSummary: some ParameterSummary {
+        Summary("Find \(\.$episode)")
+    }
+
+    @MainActor
+    func perform() async throws -> some IntentResult & ProvidesDialog & ShowsSnippetView {
+        let episodes = IntentRuntime.episodes()
+        guard let cached = episodes.first(where: { $0.guid == episode.id }) else { throw IntentError.noEpisodes }
+        let catalog = try? await IntentCatalog.load()
+        let found = FindResult.episode(cached, catalog: catalog)
+        return .result(dialog: IntentDialog(stringLiteral: found.speech), view: FoundSnippetView(found: found))
+    }
+}
+
+/// Hidden. The Find snippet's "Open Episode" button.
+struct OpenFoundEpisodeIntent: AppIntent {
+    static let title: LocalizedStringResource = "Open Episode in Movie Roulette"
+    static let openAppWhenRun = true
+    @available(iOS 26.0, *)
+    static var supportedModes: IntentModes { .foreground(.immediate) }
+    static let isDiscoverable = false
+
+    @Parameter(title: "Episode ID")
+    var episodeGUID: String
+
+    init() { episodeGUID = "" }
+    init(episodeGUID: String) { self.episodeGUID = episodeGUID }
+
+    @MainActor
+    func perform() async throws -> some IntentResult {
+        IntentRuntime.router().open(.episode(guid: episodeGUID))
+        return .result()
+    }
+}
+
+/// What a Find intent says and shows. Public catalog and RSS fields only.
+struct FindResult: Equatable, Sendable {
+    var title: String
+    var subtitle: String
+    var speech: String
+    var movieID: String?
+    var episodeGUID: String?
+
+    static func movie(_ movie: Movie, catalog: MovieCatalog, episodes: [PodcastEpisode]) -> FindResult {
+        let byGUID = EpisodeCacheReader.byGUID(episodes)
+        let entity = MovieEntity(movie: movie, catalog: catalog, episodesByGUID: byGUID)
+        let linked = movie.episodeIds.first { byGUID[$0] != nil }
+        var speech = "Found \(movie.title), from \(String(movie.year)), \(movie.genre)"
+        if let label = entity.episodeLabel { speech += ". Discussed in \(label)" }
+        return FindResult(
+            title: movie.title, subtitle: entity.subtitle, speech: speech + ".",
+            movieID: movie.id, episodeGUID: linked
+        )
+    }
+
+    static func episode(_ episode: PodcastEpisode, catalog: MovieCatalog?) -> FindResult {
+        let entity = EpisodeEntity(episode: episode)
+        let movie = catalog?.movie(forEpisodeGuid: episode.guid)
+        var speech = "Found \(episode.title)"
+        if let label = episode.seasonEpisodeLabel { speech += ", \(label)" }
+        if !entity.dateDescription.isEmpty { speech += ", from \(entity.dateDescription)" }
+        if let movie, CatalogSearch.fold(movie.title) != CatalogSearch.fold(episode.title) {
+            speech += ". It covers \(movie.title)"
+        }
+        return FindResult(
+            title: episode.title, subtitle: entity.subtitle, speech: speech + ".",
+            movieID: movie?.id, episodeGUID: episode.guid
+        )
+    }
+}
+
+private struct FoundSnippetView: View {
+    let found: FindResult
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("FOUND IN MOVIE ROULETTE").font(.caption.weight(.semibold)).foregroundStyle(.secondary)
+            Text(found.title).font(.headline)
+            if !found.subtitle.isEmpty {
+                Text(found.subtitle).font(.subheadline).foregroundStyle(.secondary)
+            }
+            HStack(spacing: 10) {
+                if let id = found.movieID {
+                    Button(intent: OpenSpunMovieIntent(movieID: id)) {
+                        Text("Open Movie")
+                            .font(.subheadline.weight(.semibold))
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 9)
+                            .background(Brand.teal.opacity(0.18), in: Capsule())
+                            .foregroundStyle(Brand.teal)
+                    }
+                    .buttonStyle(.plain)
+                }
+                if let guid = found.episodeGUID {
+                    Button(intent: OpenFoundEpisodeIntent(episodeGUID: guid)) {
+                        Text("Open Episode")
+                            .font(.subheadline.weight(.semibold))
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 9)
+                            .background(Color.primary.opacity(0.08), in: Capsule())
+                            .foregroundStyle(.primary)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}

@@ -14,6 +14,9 @@ struct EpisodesView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @AppStorage("episodes.grouping") private var groupingRaw = EpisodeGrouping.season.rawValue
     @AppStorage("episodes.expandedGroups") private var expansionRaw = ""
+    /// Search text. Lives here, not in a branch, so it survives the
+    /// compact/regular switch (iPad Split View, iPhone Duo fold).
+    @State private var query = ""
 
     private var grouping: EpisodeGrouping { EpisodeGrouping(rawValue: groupingRaw) ?? .season }
 
@@ -100,6 +103,7 @@ struct EpisodesView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .cleanProListScreen()
         .navigationTitle("Episodes")
+        .searchable(text: $query, prompt: Text("Title, S4E39, or movie"))
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 if case .loaded(fromCache: true) = store.loadState {
@@ -121,6 +125,38 @@ struct EpisodesView: View {
             } else {
                 List { listContent }
                     .refreshable { await store.load(forceNetwork: true) }
+            }
+        }
+        .overlay {
+            if isSearching, searchResults.isEmpty {
+                ContentUnavailableView.search(text: query)
+                    .accessibilityIdentifier("episodes-search-empty")
+            }
+        }
+    }
+
+    private var isSearching: Bool { !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+
+    /// Shared 1.1 matcher: title, S#E# / episode number, year, and the linked
+    /// movie (title, genre, category, provider). Best match first.
+    private var searchResults: [PodcastEpisode] {
+        CatalogSearch.episodes(store.episodes, matching: query, catalog: catalog).map(\.episode)
+    }
+
+    /// Search results replace the grouped sections, so a hit is never hidden
+    /// inside a collapsed season.
+    @ViewBuilder
+    private var searchContent: some View {
+        let hits = searchResults
+        if !hits.isEmpty {
+            Section {
+                ForEach(hits) { row($0) }
+            } header: {
+                Text(hits.count == 1 ? "1 result" : "\(hits.count) results")
+                    .accessibilityIdentifier("episodes-search-count")
+                    .accessibilityAddTraits(.isHeader)
+            } footer: {
+                footer
             }
         }
     }
@@ -202,6 +238,15 @@ struct EpisodesView: View {
 
     @ViewBuilder
     private var listContent: some View {
+        if isSearching {
+            searchContent
+        } else {
+            groupedContent
+        }
+    }
+
+    @ViewBuilder
+    private var groupedContent: some View {
         groupingPicker
         if let err = store.lastError {
             Section {

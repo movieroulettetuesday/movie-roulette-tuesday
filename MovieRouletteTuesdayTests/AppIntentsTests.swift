@@ -258,6 +258,118 @@ final class AppIntentsTests: XCTestCase {
         XCTAssertEqual(opened, [try XCTUnwrap(exact.listenURL)])
     }
 
+    // MARK: Find (1.1 search)
+
+    func testFindQueriesUseTheSharedMatcher() async throws {
+        let episode = PodcastEpisode(
+            guid: "Buzzsprout-20099500", title: "Satan in the Desert",
+            pubDate: Date(timeIntervalSince1970: 1_700_000_000), season: 4, episode: 39
+        )
+        IntentRuntime.episodes = { [episode] }
+        let movies = MovieEntityQuery()
+        let bySE = try await movies.entities(matching: "S4E39")
+        XCTAssertEqual(bySE.map(\.id), [devil.id])
+        let spoken = try await movies.entities(matching: "season 4 episode 39")
+        XCTAssertEqual(spoken.map(\.id), [devil.id])
+        let curly = try await movies.entities(matching: "DEVIL’S RAIN 1975")
+        XCTAssertEqual(curly.map(\.id), [devil.id])
+        let things = try await movies.entities(matching: "thing")
+        XCTAssertEqual(things.map(\.id), ["the-thing-1982", "the-thing-2011"])
+        let provider = try await movies.entities(matching: "shudder")
+        XCTAssertEqual(provider.map(\.id), [devil.id], "provider names are a secondary match")
+        let blank = try await movies.entities(matching: "   ")
+        XCTAssertTrue(blank.isEmpty)
+
+        let episodes = EpisodeEntityQuery()
+        let episodeBySE = try await episodes.entities(matching: "s4e39")
+        XCTAssertEqual(episodeBySE.map(\.id), [episode.guid])
+        let byMovie = try await episodes.entities(matching: "devils rain")
+        XCTAssertEqual(byMovie.map(\.id), [episode.guid], "the linked movie title finds the episode")
+        let none = try await episodes.entities(matching: "S1E1")
+        XCTAssertTrue(none.isEmpty)
+    }
+
+
+    func testFindMovieKeepsOnlyBestRankedHits() {
+        let horror = RouletteCategory(
+            id: "cat-horror", name: "Horror", colorHex: "#C25B5E",
+            movieIds: ["the-thing-1982", "the-thing-2011", "the-fly-1958"]
+        )
+        let thingflix = StreamingInfo.Provider(id: 1, name: "Thingflix")
+        let catalog = MovieCatalog(categories: [horror], movies: [
+            Movie(id: "the-thing-1982", title: "The Thing", year: 1982, genre: "Horror", categories: ["cat-horror"]),
+            Movie(id: "the-thing-2011", title: "The Thing", year: 2011, genre: "Horror", categories: ["cat-horror"]),
+            Movie(id: "the-fly-1958", title: "The Fly", year: 1958, genre: "Horror", categories: ["cat-horror"]),
+            Movie(id: "a-curious-thing-1990", title: "A Curious Thing", year: 1990, genre: "Drama", categories: []),
+            Movie(id: "other-1999", title: "Other Film", year: 1999, genre: "Drama", categories: [],
+                  streaming: StreamingInfo(stream: [thingflix])),
+        ])
+        let ids = MovieEntityLookup.matching("the thing", in: catalog).map(\.id)
+        XCTAssertEqual(ids, ["the-thing-1982", "the-thing-2011"],
+                       "Find keeps only the best rank; weaker title-word and provider hits stay out")
+        XCTAssertEqual(
+            CatalogSearch.movies(catalog.movies, matching: "the thing", catalog: catalog).map(\.movie.id),
+            ["the-thing-1982", "the-thing-2011", "a-curious-thing-1990", "other-1999"],
+            "the list matcher still returns weaker ranks"
+        )
+    }
+
+    func testFindMovieShowsTheResultWithoutNavigating() async throws {
+        let episode = PodcastEpisode(
+            guid: "Buzzsprout-20099500", title: "The Devil's Rain",
+            pubDate: Date(timeIntervalSince1970: 1_700_000_000), season: 4, episode: 39
+        )
+        IntentRuntime.episodes = { [episode] }
+        let intent = FindMovieIntent()
+        intent.movie = MovieEntity(movie: devil, catalog: catalog)
+        _ = try await intent.perform()
+        XCTAssertNil(AppRouter.shared.pendingURL, "Find shows the result in Siri; it does not open the app")
+        XCTAssertFalse(FindMovieIntent.openAppWhenRun)
+
+        let found = FindResult.movie(devil, catalog: catalog, episodes: [episode])
+        XCTAssertEqual(found.speech, "Found The Devil's Rain, from 1975, Horror. Discussed in S4E39.")
+        XCTAssertEqual(found.movieID, devil.id)
+        XCTAssertEqual(found.episodeGUID, episode.guid)
+        let uncached = FindResult.movie(plain, catalog: catalog, episodes: [])
+        XCTAssertEqual(uncached.speech, "Found Quiet Title, from 1999, Drama.")
+        XCTAssertNil(uncached.episodeGUID)
+
+        let missing = FindMovieIntent()
+        missing.movie = MovieEntity(id: "nope", title: "Nope", year: 1999, genre: "G", categoryNames: [], episodeLabel: nil)
+        do {
+            _ = try await missing.perform()
+            XCTFail("unknown id should fail")
+        } catch let error as IntentError {
+            XCTAssertEqual(error, .unknownMovie)
+        }
+    }
+
+    func testFindEpisodeSpeaksAndItsOpenButtonRoutes() async throws {
+        let episode = PodcastEpisode(guid: "Buzzsprout-20099500", title: "Satan in the Desert", season: 4, episode: 39)
+        IntentRuntime.episodes = { [episode] }
+        let intent = FindEpisodeIntent()
+        intent.episode = EpisodeEntity(episode: episode)
+        _ = try await intent.perform()
+        XCTAssertNil(AppRouter.shared.pendingURL)
+        XCTAssertFalse(FindEpisodeIntent.openAppWhenRun)
+
+        let found = FindResult.episode(episode, catalog: catalog)
+        XCTAssertEqual(found.speech, "Found Satan in the Desert, S4E39. It covers The Devil's Rain.")
+        XCTAssertEqual(found.movieID, devil.id)
+        XCTAssertEqual(found.episodeGUID, episode.guid)
+
+        _ = try await OpenFoundEpisodeIntent(episodeGUID: episode.guid).perform()
+        XCTAssertEqual(AppRouter.shared.pendingURL, DeepLink.episode(guid: episode.guid).url)
+
+        IntentRuntime.episodes = { [] }
+        do {
+            _ = try await intent.perform()
+            XCTFail("an episode that left the cache is a typed error")
+        } catch let error as IntentError {
+            XCTAssertEqual(error, .noEpisodes)
+        }
+    }
+
     // MARK: Spin handoff
 
     func testSpinRecordsHistoryOnceAndHandsOffTheSameResult() async throws {
