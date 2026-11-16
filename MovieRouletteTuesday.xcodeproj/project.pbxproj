@@ -31,11 +31,13 @@
 		1E5729C04A9491333DB6E5F7 /* AppearancePreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 139E246F19998423DEF1FE80 /* AppearancePreference.swift */; };
 		1ED841E441462030261695D2 /* SpinMovieRouletteIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11F758513FC3E5C240C02C1E /* SpinMovieRouletteIntent.swift */; };
 		A11E110000000000000000B1 /* CatalogEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11E110000000000000000A1 /* CatalogEntities.swift */; };
+		72160DC0CC6B91296620670B /* CatalogSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100BF6A74114BB9620ADD532 /* CatalogSearch.swift */; };
 		A11E110000000000000000B2 /* IntentActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11E110000000000000000A2 /* IntentActions.swift */; };
 		A11E110000000000000000B3 /* ContentIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11E110000000000000000A3 /* ContentIntents.swift */; };
 		A11E110000000000000000B4 /* CatalogSpotlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11E110000000000000000A4 /* CatalogSpotlight.swift */; };
 		A11E110000000000000000B5 /* EntityAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11E110000000000000000A5 /* EntityAnnotation.swift */; };
 		A11E110000000000000000C2 /* AppIntentsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11E110000000000000000C1 /* AppIntentsTests.swift */; };
+		D0E6526BEC2584AF806EA6EC /* CatalogSearchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4939E7D97EB39D108F85E3 /* CatalogSearchTests.swift */; };
 		A11E110000000000000000D2 /* AppIntentsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11E110000000000000000D1 /* AppIntentsUITests.swift */; };
 		A11E110000000000000000F1 /* SuggestionGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11E110000000000000000E1 /* SuggestionGate.swift */; };
 		A11E110000000000000000F2 /* SuggestionPrompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11E110000000000000000E2 /* SuggestionPrompt.swift */; };
@@ -47,6 +49,7 @@
 		A11E110000000000000000F8 /* SuggestionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11E110000000000000000E8 /* SuggestionTests.swift */; };
 		A11E110000000000000000F9 /* SuggestionUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11E110000000000000000E9 /* SuggestionUITests.swift */; };
 		A11E11000000000000000102 /* RevealScrollUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11E11000000000000000101 /* RevealScrollUITests.swift */; };
+		2340DB379BA2AA5BA6ADDCD9 /* SearchUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6973225CEBB21316B0E32CB1 /* SearchUITests.swift */; };
 		22CDF4B8E9271283F5869FA2 /* CategoryPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83E6D6CA3EE86082CD17357 /* CategoryPalette.swift */; };
 		27CA95123E4561EFF8A2528E /* CatalogSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205F51E3DBE42E474746DAEC /* CatalogSource.swift */; };
 		3089D780E6CC08D4A5CBADC9 /* SpinMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8197A8EECD0315850B538A /* SpinMotion.swift */; };
@@ -228,6 +231,7 @@
 		A11E110000000000000000A4 /* CatalogSpotlight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogSpotlight.swift; sourceTree = "<group>"; };
 		A11E110000000000000000A5 /* EntityAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityAnnotation.swift; sourceTree = "<group>"; };
 		A11E110000000000000000C1 /* AppIntentsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntentsTests.swift; sourceTree = "<group>"; };
+		1A4939E7D97EB39D108F85E3 /* CatalogSearchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogSearchTests.swift; sourceTree = "<group>"; };
 		A11E110000000000000000D1 /* AppIntentsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntentsUITests.swift; sourceTree = "<group>"; };
 		A11E110000000000000000E1 /* SuggestionGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionGate.swift; sourceTree = "<group>"; };
 		A11E110000000000000000E2 /* SuggestionPrompt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionPrompt.swift; sourceTree = "<group>"; };
@@ -239,6 +243,7 @@
 		A11E110000000000000000E8 /* SuggestionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionTests.swift; sourceTree = "<group>"; };
 		A11E110000000000000000E9 /* SuggestionUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionUITests.swift; sourceTree = "<group>"; };
 		A11E11000000000000000101 /* RevealScrollUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RevealScrollUITests.swift; sourceTree = "<group>"; };
+		6973225CEBB21316B0E32CB1 /* SearchUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchUITests.swift; sourceTree = "<group>"; };
 		1321078DE95E06A1D4F7A4ED /* PersonalRatingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalRatingsStore.swift; sourceTree = "<group>"; };
 		139E246F19998423DEF1FE80 /* AppearancePreference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearancePreference.swift; sourceTree = "<group>"; };
 		1A78AC385DA90899EE063668 /* ShareCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCard.swift; sourceTree = "<group>"; };
@@ -303,6 +308,7 @@
 		910226E8C518E795A6FDD73C /* SettingsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSheet.swift; sourceTree = "<group>"; };
 		91AD012D985338EE14AD80C6 /* HexColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexColor.swift; sourceTree = "<group>"; };
 		91E7375277A2F9348A5E32BD /* EpisodeLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeLabel.swift; sourceTree = "<group>"; };
+		100BF6A74114BB9620ADD532 /* CatalogSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogSearch.swift; sourceTree = "<group>"; };
 		9260DAC1F69FCBC65DE8899D /* ArtworkLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtworkLoader.swift; sourceTree = "<group>"; };
 		92E4CFC63F379359666F25D5 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		967CD961E57CAD6F61F9B1F4 /* SpinHistoryRoutingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinHistoryRoutingTests.swift; sourceTree = "<group>"; };
@@ -396,6 +402,7 @@
 				A83E6D6CA3EE86082CD17357 /* CategoryPalette.swift */,
 				7DC9B6C617D30A367A528980 /* Community.swift */,
 				91E7375277A2F9348A5E32BD /* EpisodeLabel.swift */,
+				100BF6A74114BB9620ADD532 /* CatalogSearch.swift */,
 				B96EA418C703FA2806543A94 /* EpisodeStoreCore.swift */,
 				91AD012D985338EE14AD80C6 /* HexColor.swift */,
 				2ACE12112A571BDB510AF3FD /* LaunchSplash.swift */,
@@ -581,6 +588,7 @@
 				3D2318752EABD3E276CB6116 /* Fixtures */,
 				A1A3A92A79916C6B4B34AE15 /* AdaptiveLayoutTests.swift */,
 				A11E110000000000000000C1 /* AppIntentsTests.swift */,
+				1A4939E7D97EB39D108F85E3 /* CatalogSearchTests.swift */,
 				A11E110000000000000000E8 /* SuggestionTests.swift */,
 				42A1D1705C870623937EA427 /* AppearancePreferenceTests.swift */,
 				E1829E1F65466A6B902F7183 /* ArtworkTests.swift */,
@@ -616,6 +624,7 @@
 				A11E110000000000000000D1 /* AppIntentsUITests.swift */,
 				A11E110000000000000000E9 /* SuggestionUITests.swift */,
 				A11E11000000000000000101 /* RevealScrollUITests.swift */,
+				6973225CEBB21316B0E32CB1 /* SearchUITests.swift */,
 				C1EA11000000000000000001 /* ClearRatingUITests.swift */,
 			);
 			path = MovieRouletteTuesdayUITests;
@@ -878,6 +887,7 @@
 			files = (
 				38010DEB88451E9FEB4A9CCF /* AdaptiveLayoutTests.swift in Sources */,
 				A11E110000000000000000C2 /* AppIntentsTests.swift in Sources */,
+				D0E6526BEC2584AF806EA6EC /* CatalogSearchTests.swift in Sources */,
 				A11E110000000000000000F8 /* SuggestionTests.swift in Sources */,
 				905262973D07D24863F16C22 /* AppearancePreferenceTests.swift in Sources */,
 				0874193F58BD2D04B1B62B7A /* ArtworkTests.swift in Sources */,
@@ -922,6 +932,7 @@
 				5B64184F4370C278BE378B9B /* ListenCard.swift in Sources */,
 				1ED841E441462030261695D2 /* SpinMovieRouletteIntent.swift in Sources */,
 				A11E110000000000000000B1 /* CatalogEntities.swift in Sources */,
+				72160DC0CC6B91296620670B /* CatalogSearch.swift in Sources */,
 				A11E110000000000000000F1 /* SuggestionGate.swift in Sources */,
 				A11E110000000000000000F2 /* SuggestionPrompt.swift in Sources */,
 				A11E110000000000000000F3 /* SuggestionValidation.swift in Sources */,
@@ -1009,6 +1020,7 @@
 				A11E110000000000000000D2 /* AppIntentsUITests.swift in Sources */,
 				A11E110000000000000000F9 /* SuggestionUITests.swift in Sources */,
 				A11E11000000000000000102 /* RevealScrollUITests.swift in Sources */,
+				2340DB379BA2AA5BA6ADDCD9 /* SearchUITests.swift in Sources */,
 				C1EA11000000000000000002 /* ClearRatingUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
