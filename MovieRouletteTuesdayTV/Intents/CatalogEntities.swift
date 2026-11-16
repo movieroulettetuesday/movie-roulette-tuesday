@@ -208,7 +208,10 @@ struct EpisodeEntityQuery: EntityQuery, EntityStringQuery {
 
     func entities(matching string: String) async throws -> [EpisodeEntity] {
         let episodes = await MainActor.run { IntentRuntime.episodes() }
-        return EpisodeEntityLookup.matching(string, in: episodes)
+        // The linked movie helps ("the Devil's Rain episode"); a missing
+        // catalog only loses that, not the episode-title match.
+        let catalog = try? await IntentCatalog.load()
+        return EpisodeEntityLookup.matching(string, in: episodes, catalog: catalog)
     }
 }
 
@@ -229,50 +232,13 @@ enum MovieEntityLookup {
             .map { MovieEntity(movie: $0, catalog: catalog, episodesByGUID: episodesByGUID) }
     }
 
-    /// Title, year, genre, or category. An unknown string is an empty list.
-    /// A year in the query ("The Thing 1982") is a disambiguator.
+    /// The shared 1.1 matcher (`CatalogSearch`): title, year, S#E#, episode
+    /// title, genre, category, then streaming provider. Best match first. An
+    /// unknown or empty string is an empty list. A year in the query
+    /// ("The Thing 1982") is a disambiguator.
     static func matching(_ raw: String, in catalog: MovieCatalog, episodesByGUID: [String: PodcastEpisode] = [:]) -> [MovieEntity] {
-        let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else { return [] }
-        let tokens = trimmed.split(whereSeparator: \.isWhitespace).map(String.init)
-        let year = tokens.compactMap(Int.init).first { (1880...2100).contains($0) }
-        let needle = fold(tokens.filter { token in
-            guard let value = Int(token) else { return true }
-            return !(1880...2100).contains(value)
-        }.joined(separator: " "))
-
-        let hits = catalog.movies.filter { movie in
-            let yearOK = year == nil || movie.year == year
-            guard yearOK else { return false }
-            guard !needle.isEmpty else { return true }
-            let title = fold(movie.title)
-            if title.contains(needle) { return true }
-            if fold(movie.genre).contains(needle) { return true }
-            let categories = movie.categories.compactMap { catalog.category(withId: $0)?.displayName }
-            return categories.contains { fold($0).contains(needle) }
-        }
-        return hits.sorted { lhs, rhs in
-            let left = rank(lhs, needle: needle)
-            let right = rank(rhs, needle: needle)
-            if left.0 != right.0 { return left.0 < right.0 }
-            return left.1.localizedCaseInsensitiveCompare(right.1) == .orderedAscending
-        }.map { MovieEntity(movie: $0, catalog: catalog, episodesByGUID: episodesByGUID) }
-    }
-
-    private static func rank(_ movie: Movie, needle: String) -> (Int, String) {
-        let title = fold(movie.title)
-        let score: Int
-        if needle.isEmpty || title == needle { score = 0 }
-        else if title.hasPrefix(needle) { score = 1 }
-        else { score = 2 }
-        return (score, movie.title)
-    }
-
-    static func fold(_ text: String) -> String {
-        text.folding(options: [.diacriticInsensitive, .caseInsensitive], locale: Locale(identifier: "en_US_POSIX"))
-            .replacingOccurrences(of: "'", with: "")
-            .replacingOccurrences(of: "’", with: "")
-            .replacingOccurrences(of: "‘", with: "")
+        CatalogSearch.movies(catalog.movies, matching: raw, catalog: catalog, episodesByGUID: episodesByGUID)
+            .map { MovieEntity(movie: $0.movie, catalog: catalog, episodesByGUID: episodesByGUID) }
     }
 }
 
@@ -287,11 +253,11 @@ enum EpisodeEntityLookup {
         return newest.prefix(max(0, limit)).map(EpisodeEntity.init(episode:))
     }
 
-    static func matching(_ raw: String, in episodes: [PodcastEpisode]) -> [EpisodeEntity] {
-        let needle = MovieEntityLookup.fold(raw.trimmingCharacters(in: .whitespacesAndNewlines))
-        guard !needle.isEmpty else { return [] }
-        return episodes.filter { MovieEntityLookup.fold($0.title).contains(needle) }
-            .map(EpisodeEntity.init(episode:))
+    /// The shared 1.1 matcher: episode title, S#E# / episode number, year,
+    /// and the linked movie's title, genre, category, and providers.
+    static func matching(_ raw: String, in episodes: [PodcastEpisode], catalog: MovieCatalog? = nil) -> [EpisodeEntity] {
+        CatalogSearch.episodes(episodes, matching: raw, catalog: catalog)
+            .map { EpisodeEntity(episode: $0.episode) }
     }
 }
 

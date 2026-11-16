@@ -14,6 +14,7 @@
 		A11TVB05 /* WhatShouldIWatchIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11TVF05 /* WhatShouldIWatchIntent.swift */; };
 		E10000000000000000000001 /* TVChrome.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20000000000000000000001 /* TVChrome.swift */; };
 		E10000000000000000000002 /* TVEpisodesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20000000000000000000002 /* TVEpisodesView.swift */; };
+		7122B8141E9ED8EAB20019E9 /* TVSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5BE13E59B0F02ED46CAE17 /* TVSearchView.swift */; };
 		E10000000000000000000003 /* TVEpisodeDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20000000000000000000003 /* TVEpisodeDetailView.swift */; };
 		E10000000000000000000004 /* TVMoviesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20000000000000000000004 /* TVMoviesView.swift */; };
 		E10000000000000000000005 /* TVMoviePageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20000000000000000000005 /* TVMoviePageView.swift */; };
@@ -206,6 +207,7 @@
 		A11TVF05 /* WhatShouldIWatchIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatShouldIWatchIntent.swift; sourceTree = "<group>"; };
 		E20000000000000000000001 /* TVChrome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVChrome.swift; sourceTree = "<group>"; };
 		E20000000000000000000002 /* TVEpisodesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVEpisodesView.swift; sourceTree = "<group>"; };
+		5C5BE13E59B0F02ED46CAE17 /* TVSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVSearchView.swift; sourceTree = "<group>"; };
 		E20000000000000000000003 /* TVEpisodeDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVEpisodeDetailView.swift; sourceTree = "<group>"; };
 		E20000000000000000000004 /* TVMoviesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVMoviesView.swift; sourceTree = "<group>"; };
 		E20000000000000000000005 /* TVMoviePageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVMoviePageView.swift; sourceTree = "<group>"; };
@@ -567,6 +569,7 @@
 				A11TVG01 /* Intents */,
 				E20000000000000000000001 /* TVChrome.swift */,
 				E20000000000000000000002 /* TVEpisodesView.swift */,
+				5C5BE13E59B0F02ED46CAE17 /* TVSearchView.swift */,
 				E20000000000000000000003 /* TVEpisodeDetailView.swift */,
 				E20000000000000000000004 /* TVMoviesView.swift */,
 				E20000000000000000000005 /* TVMoviePageView.swift */,
@@ -1037,6 +1040,7 @@
 				A11TVB05 /* WhatShouldIWatchIntent.swift in Sources */,
 				E10000000000000000000001 /* TVChrome.swift in Sources */,
 				E10000000000000000000002 /* TVEpisodesView.swift in Sources */,
+				7122B8141E9ED8EAB20019E9 /* TVSearchView.swift in Sources */,
 				E10000000000000000000003 /* TVEpisodeDetailView.swift in Sources */,
 				E10000000000000000000004 /* TVMoviesView.swift in Sources */,
 				E10000000000000000000005 /* TVMoviePageView.swift in Sources */,

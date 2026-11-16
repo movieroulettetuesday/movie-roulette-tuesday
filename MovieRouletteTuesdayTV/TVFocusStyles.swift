@@ -132,6 +132,7 @@ struct TVCategoryChip: View {
 struct TVEpisodesTabDot: View {
     var body: some View {
         HStack(spacing: 52) {
+            Image(systemName: "magnifyingglass").hidden() // the Search tab
             Text("Roulette").hidden()
             Text("Episodes")
                 .hidden()

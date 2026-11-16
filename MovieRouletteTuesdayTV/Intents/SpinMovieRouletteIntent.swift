@@ -119,6 +119,18 @@ struct MovieRouletteShortcuts: AppShortcutsProvider {
             shortTitle: "Open on Provider",
             systemImageName: "arrow.up.right.square"
         )
+        // The tenth and last App Shortcut (the system cap). Find Episode is a
+        // Shortcuts action only; S#E# here finds the movie that episode covered.
+        AppShortcut(
+            intent: FindMovieIntent(),
+            phrases: [
+                "Find \(\.$movie) in \(.applicationName)",
+                "Search \(.applicationName) for \(\.$movie)",
+                "Find a movie in \(.applicationName)",
+            ],
+            shortTitle: "Find Movie",
+            systemImageName: "magnifyingglass"
+        )
         AppShortcut(
             intent: WhatShouldIWatchIntent(),
             phrases: [

@@ -38,15 +38,63 @@ final class TVScreensUITests: XCTestCase {
         attach("tv-episodes")
     }
 
-    func testMoviesSearchFiltersAndSort() {
+    func testMoviesFiltersAndSort() {
         launch(["-MRTStartTab", "movies"])
-        let search = app.descendants(matching: .any)["tv.movies.search"]
-        XCTAssertTrue(search.waitForExistence(timeout: 20), "search field on the Movies tab")
-        XCTAssertTrue(app.descendants(matching: .any)["tv.movies.filter.all"].exists)
+        XCTAssertTrue(app.descendants(matching: .any)["tv.movies.filter.all"].waitForExistence(timeout: 20))
+        XCTAssertFalse(app.descendants(matching: .any)["tv.movies.search"].exists,
+                       "typing moved to the Search tab; Movies has no second keyboard field")
         XCTAssertTrue(app.descendants(matching: .any)["tv.movies.filter.cat-horror"].exists)
         XCTAssertTrue(app.descendants(matching: .any)["tv.movies.sort"].exists)
         XCTAssertTrue(app.descendants(matching: .any)["tv.movies.summary"].exists)
         attach("tv-movies")
+    }
+
+    // MARK: Search tab (1.1)
+
+    private func waitForFocusToLeave(_ element: XCUIElement, timeout: TimeInterval) -> Bool {
+        let gone = expectation(for: NSPredicate(format: "hasFocus == false"), evaluatedWith: element)
+        return XCTWaiter.wait(for: [gone], timeout: timeout) == .completed
+    }
+
+    private func searchAndFocus(_ text: String, resultID: String) -> XCUIElement {
+        launch(["-MRTStartTab", "search"])
+        XCTAssertTrue(app.descendants(matching: .any)["tv.screen.search"].waitForExistence(timeout: 20), "Search tab")
+        let field = app.searchFields.firstMatch
+        XCTAssertTrue(field.waitForExistence(timeout: 10), "system search field")
+        XCTAssertTrue(app.descendants(matching: .any)["tv.search.prompt"].exists, "empty-query prompt")
+        // Focus starts on the Search tab button; one press down enters the keyboard.
+        let tabButton = app.tabBars.buttons["Search"]
+        for _ in 0..<3 where tabButton.hasFocus {
+            remote.press(.down)
+            _ = waitForFocusToLeave(tabButton, timeout: 1.5)
+        }
+        app.typeText(text)
+        let result = app.buttons[resultID]
+        XCTAssertTrue(result.waitForExistence(timeout: 30), "\(text) finds \(resultID)")
+        attach("tv-search-\(resultID)")
+        for _ in 0..<8 where !result.hasFocus {
+            remote.press(.down)
+            _ = waitForFocus(result, timeout: 1.5)
+        }
+        XCTAssertTrue(result.hasFocus, "focus reaches \(resultID) from the keyboard")
+        return result
+    }
+
+    func testSearchTabFindsAndOpensAMovie() {
+        _ = searchAndFocus("devils rain", resultID: "tv.search.movie.the-devils-rain-1975")
+        remote.press(.select)
+        let title = app.descendants(matching: .any)["tv.movie.title"]
+        XCTAssertTrue(title.waitForExistence(timeout: 10))
+        XCTAssertTrue(title.label.contains("Devil"), title.label)
+        attach("tv-search-open-movie")
+    }
+
+    func testSearchTabFindsAndOpensAnEpisode() {
+        // S4E39 comes from the show's RSS feed (cache or network).
+        _ = searchAndFocus("S4E39", resultID: "tv.search.episode.Buzzsprout-20099500")
+        remote.press(.select)
+        XCTAssertTrue(app.descendants(matching: .any)["tv.screen.episode"].waitForExistence(timeout: 10))
+        attach("tv-search-open-episode")
     }
 
     func testMoviePageWhereToWatchPollAndSuggest() {
