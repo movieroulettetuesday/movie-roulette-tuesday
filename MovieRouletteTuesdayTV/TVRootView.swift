@@ -2,10 +2,12 @@ import SwiftUI
 import MRTCore
 import MRTShared
 
-/// Top tab bar: Roulette · Episodes · Movies · Stats.
+/// Top tab bar: Roulette · Episodes · Movies · Stats · Search.
 /// Detail screens replace the tab bar (mockups 06, 08, 10). Suggest is a card on top.
+/// Search is the system search tab (`TabRole.search`, tvOS 18+; a plain
+/// magnifying-glass tab on tvOS 17).
 struct TVRootView: View {
-    enum Tab: Hashable { case roulette, episodes, movies, stats }
+    enum Tab: Hashable { case search, roulette, episodes, movies, stats }
 
     enum Page: Hashable {
         case episode(String)
@@ -20,6 +22,8 @@ struct TVRootView: View {
     @State private var tab: Tab
     @State private var pages: [Page]
     @State private var showsSuggest: Bool
+    /// Search text, kept here so it survives opening a result and coming back.
+    @State private var searchQuery = ""
 
     init(roulette: RouletteViewModel, episodes: EpisodeStore) {
         self.roulette = roulette
@@ -71,40 +75,90 @@ struct TVRootView: View {
     }
 
     private var tabs: some View {
-        TabView(selection: $tab) {
-            TVRouletteView(model: roulette) { openMovie($0, breadcrumb: "Tonight's Movie") }
-                .tabItem { Text("Roulette") }
-                .tag(Tab.roulette)
-            TVEpisodesView(store: episodes, catalog: roulette.catalog) { episode in
-                pages.append(.episode(episode.guid))
+        Group {
+            if #available(tvOS 18.0, *) {
+                roleTabs
+            } else {
+                legacyTabs
             }
-            .tabItem { Text("Episodes") }
-            .tag(Tab.episodes)
-            TVMoviesView(
-                catalog: roulette.catalog,
-                loadState: roulette.loadState,
-                history: roulette.history,
-                episodesByGUID: episodes.episodesByGUID,
-                showArtworkURL: episodes.showArtworkURL,
-                onOpen: { openMovie($0, breadcrumb: "Movies") },
-                onRetry: { Task { await roulette.load() } }
-            )
-            .tabItem { Text("Movies") }
-            .tag(Tab.movies)
-            TVStatsView(
-                history: roulette.history,
-                catalog: roulette.catalog,
-                onOpenMovie: { openMovie($0, breadcrumb: "Stats") },
-                onSettings: { pages.append(.settings) }
-            )
-            .tabItem { Text("Stats") }
-            .tag(Tab.stats)
         }
         .overlay(alignment: .top) {
             if episodeBadgeCount > 0 {
                 TVEpisodesTabDot()
             }
         }
+    }
+
+    @available(tvOS 18.0, *)
+    private var roleTabs: some View {
+        TabView(selection: $tab) {
+            SwiftUI.Tab(value: Tab.roulette) { rouletteTab } label: { Text("Roulette") }
+            SwiftUI.Tab(value: Tab.episodes) { episodesTab } label: { Text("Episodes") }
+            SwiftUI.Tab(value: Tab.movies) { moviesTab } label: { Text("Movies") }
+            SwiftUI.Tab(value: Tab.stats) { statsTab } label: { Text("Stats") }
+            SwiftUI.Tab(value: Tab.search, role: .search) { searchTab }
+        }
+    }
+
+    private var legacyTabs: some View {
+        TabView(selection: $tab) {
+            rouletteTab
+                .tabItem { Text("Roulette") }
+                .tag(Tab.roulette)
+            episodesTab
+                .tabItem { Text("Episodes") }
+                .tag(Tab.episodes)
+            moviesTab
+                .tabItem { Text("Movies") }
+                .tag(Tab.movies)
+            statsTab
+                .tabItem { Text("Stats") }
+                .tag(Tab.stats)
+            searchTab
+                .tabItem { Label("Search", systemImage: "magnifyingglass") }
+                .tag(Tab.search)
+        }
+    }
+
+    private var searchTab: some View {
+        TVSearchView(
+            catalog: roulette.catalog,
+            episodes: episodes,
+            query: $searchQuery,
+            onOpenMovie: { openMovie($0, breadcrumb: "Search") },
+            onOpenEpisode: { pages.append(.episode($0.guid)) }
+        )
+    }
+
+    private var rouletteTab: some View {
+        TVRouletteView(model: roulette) { openMovie($0, breadcrumb: "Tonight's Movie") }
+    }
+
+    private var episodesTab: some View {
+        TVEpisodesView(store: episodes, catalog: roulette.catalog) { episode in
+            pages.append(.episode(episode.guid))
+        }
+    }
+
+    private var moviesTab: some View {
+        TVMoviesView(
+            catalog: roulette.catalog,
+            loadState: roulette.loadState,
+            history: roulette.history,
+            episodesByGUID: episodes.episodesByGUID,
+            showArtworkURL: episodes.showArtworkURL,
+            onOpen: { openMovie($0, breadcrumb: "Movies") },
+            onRetry: { Task { await roulette.load() } }
+        )
+    }
+
+    private var statsTab: some View {
+        TVStatsView(
+            history: roulette.history,
+            catalog: roulette.catalog,
+            onOpenMovie: { openMovie($0, breadcrumb: "Stats") },
+            onSettings: { pages.append(.settings) }
+        )
     }
 
     /// Unseen episodes, or 1 while this week's episode is still recent (the tab dot).
@@ -208,6 +262,7 @@ struct TVRootView: View {
     private static func tab(from args: [String]) -> Tab {
         guard let index = args.firstIndex(of: "-MRTStartTab"), args.indices.contains(index + 1) else { return .roulette }
         switch args[index + 1].lowercased() {
+        case "search": return .search
         case "episodes": return .episodes
         case "movies": return .movies
         case "stats": return .stats

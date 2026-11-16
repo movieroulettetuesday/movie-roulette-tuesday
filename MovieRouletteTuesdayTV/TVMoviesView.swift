@@ -2,7 +2,8 @@ import SwiftUI
 import MRTCore
 import MRTShared
 
-/// Movies tab (mockup 07): search, scrolling filter chips, sort, 4-column grid.
+/// Movies tab (mockup 07): scrolling filter chips, sort, 4-column grid.
+/// Typing moved to the Search tab in 1.1 (one system keyboard for the app).
 struct TVMoviesView: View {
     let catalog: MovieCatalog?
     let loadState: RouletteViewModel.LoadState
@@ -32,8 +33,6 @@ struct TVMoviesView: View {
 
     @Environment(\.colorScheme) private var scheme
     @Environment(PersonalRatingsStore.self) private var personal
-    @FocusState private var searchFocused: Bool
-    @State private var query = ""
     @State private var sort: Sort = .az
     @State private var filter: Filter = .all
 
@@ -46,7 +45,7 @@ struct TVMoviesView: View {
             if catalog == nil {
                 unavailable
             } else {
-                searchRow
+                sortRow
                 chips
                 Text(summaryLine)
                     .font(.system(size: 28, weight: .medium))
@@ -80,23 +79,9 @@ struct TVMoviesView: View {
         }
     }
 
-    private var searchRow: some View {
+    private var sortRow: some View {
         HStack(spacing: 24) {
-            HStack(spacing: 16) {
-                Image(systemName: "magnifyingglass")
-                    .font(.system(size: 32, weight: .semibold))
-                TextField("Search \(catalog?.movies.count ?? 0) movies", text: $query)
-                    .font(.system(size: 34, weight: .medium))
-                    .focused($searchFocused)
-                    .accessibilityIdentifier("tv.movies.search")
-            }
-            .foregroundStyle(searchFocused ? theme.ink : theme.text)
-            .padding(.horizontal, 28)
-            .frame(height: 84)
-            .background(Capsule().fill(searchFocused ? Color.white : theme.field))
-            .overlay(Capsule().strokeBorder(theme.teal.opacity(searchFocused ? 0.95 : 0), lineWidth: 4))
-            .shadow(color: theme.teal.opacity(searchFocused ? 0.65 : 0), radius: searchFocused ? 20 : 0)
-
+            Spacer(minLength: 0)
             Menu {
                 ForEach(Sort.allCases) { option in
                     Button(option.label) { sort = option }
@@ -118,7 +103,6 @@ struct TVMoviesView: View {
             }
             .accessibilityIdentifier("tv.movies.sort")
         }
-        .onAppear { TVFocus.soon { searchFocused = true } }
     }
 
     private var chips: some View {
@@ -192,7 +176,7 @@ struct TVMoviesView: View {
                     .padding(.top, 8)
                     .padding(.bottom, 36)
                 }
-                Text("SELECT  Search with keyboard or Siri dictation")
+                Text("Search movies and episodes in the Search tab")
                     .font(.system(size: 24))
                     .foregroundStyle(theme.secondary)
                     .frame(maxWidth: .infinity)
@@ -210,15 +194,6 @@ struct TVMoviesView: View {
         case .watchlist: list = MovieListFilter.watchlist.apply(to: catalog.movies, ratings: personal.ratings, spinStats: stats)
         case .rated: list = MovieListFilter.rated.apply(to: catalog.movies, ratings: personal.ratings, spinStats: stats)
         case .category(let id): list = catalog.movies.filter { $0.categories.contains(id) }
-        }
-        if !query.isEmpty {
-            let q = query.lowercased()
-            list = list.filter {
-                $0.title.lowercased().contains(q)
-                    || $0.genre.lowercased().contains(q)
-                    || ($0.episodeTitle?.lowercased().contains(q) ?? false)
-                    || $0.categories.contains { catalog.category(withId: $0)?.name.lowercased().contains(q) == true }
-            }
         }
         switch sort {
         case .az:
@@ -256,7 +231,6 @@ struct TVMoviesView: View {
     }
 
     private var emptyTitle: String {
-        if !query.isEmpty { return "No Matches" }
         switch filter {
         case .watchlist: return "Watchlist Is Empty"
         case .rated: return "No Ratings Yet"
@@ -268,12 +242,11 @@ struct TVMoviesView: View {
         switch filter {
         case .watchlist: return "bookmark"
         case .rated: return "star"
-        default: return query.isEmpty ? "film" : "magnifyingglass"
+        default: return "film"
         }
     }
 
     private var emptyMessage: String {
-        if !query.isEmpty { return "Nothing matches “\(query)”." }
         switch filter {
         case .watchlist: return "Open a movie and add it to your watchlist."
         case .rated: return "Open a movie and rate it with the remote."

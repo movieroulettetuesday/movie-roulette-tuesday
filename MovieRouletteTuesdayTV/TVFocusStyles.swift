@@ -127,8 +127,8 @@ struct TVCategoryChip: View {
 }
 
 /// Teal dot on the Episodes tab (mockup). tvOS has no `.badge(_:)`, so this is
-/// drawn over the system tab bar. The four titles mirror the tab order and stay
-/// invisible; only the dot shows.
+/// drawn over the system tab bar. The titles and Search icon mirror the tab
+/// order (Search last) and stay invisible; only the dot shows.
 struct TVEpisodesTabDot: View {
     var body: some View {
         HStack(spacing: 52) {
@@ -143,6 +143,7 @@ struct TVEpisodesTabDot: View {
                 }
             Text("Movies").hidden()
             Text("Stats").hidden()
+            Image(systemName: "magnifyingglass").hidden() // the Search tab
         }
         .font(.system(size: 38, weight: .semibold))
         .padding(.top, 38)
