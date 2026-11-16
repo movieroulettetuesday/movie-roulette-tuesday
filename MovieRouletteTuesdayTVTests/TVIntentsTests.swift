@@ -274,6 +274,31 @@ final class TVIntentsTests: XCTestCase {
         XCTAssertTrue(none.isEmpty)
     }
 
+
+    func testFindMovieKeepsOnlyBestRankedHits() {
+        let horror = RouletteCategory(
+            id: "cat-horror", name: "Horror", colorHex: "#C25B5E",
+            movieIds: ["the-thing-1982", "the-thing-2011", "the-fly-1958"]
+        )
+        let thingflix = StreamingInfo.Provider(id: 1, name: "Thingflix")
+        let catalog = MovieCatalog(categories: [horror], movies: [
+            Movie(id: "the-thing-1982", title: "The Thing", year: 1982, genre: "Horror", categories: ["cat-horror"]),
+            Movie(id: "the-thing-2011", title: "The Thing", year: 2011, genre: "Horror", categories: ["cat-horror"]),
+            Movie(id: "the-fly-1958", title: "The Fly", year: 1958, genre: "Horror", categories: ["cat-horror"]),
+            Movie(id: "a-curious-thing-1990", title: "A Curious Thing", year: 1990, genre: "Drama", categories: []),
+            Movie(id: "other-1999", title: "Other Film", year: 1999, genre: "Drama", categories: [],
+                  streaming: StreamingInfo(stream: [thingflix])),
+        ])
+        let ids = MovieEntityLookup.matching("the thing", in: catalog).map(\.id)
+        XCTAssertEqual(ids, ["the-thing-1982", "the-thing-2011"],
+                       "Find keeps only the best rank; weaker title-word and provider hits stay out")
+        XCTAssertEqual(
+            CatalogSearch.movies(catalog.movies, matching: "the thing", catalog: catalog).map(\.movie.id),
+            ["the-thing-1982", "the-thing-2011", "a-curious-thing-1990", "other-1999"],
+            "the list matcher still returns weaker ranks"
+        )
+    }
+
     func testFindMovieShowsTheResultWithoutNavigating() async throws {
         let episode = PodcastEpisode(
             guid: "Buzzsprout-20099500", title: "The Devil's Rain",
