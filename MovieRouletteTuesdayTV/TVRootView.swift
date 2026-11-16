@@ -2,7 +2,7 @@ import SwiftUI
 import MRTCore
 import MRTShared
 
-/// Top tab bar: Search · Roulette · Episodes · Movies · Stats.
+/// Top tab bar: Roulette · Episodes · Movies · Stats · Search.
 /// Detail screens replace the tab bar (mockups 06, 08, 10). Suggest is a card on top.
 /// Search is the system search tab (`TabRole.search`, tvOS 18+; a plain
 /// magnifying-glass tab on tvOS 17).
@@ -92,19 +92,16 @@ struct TVRootView: View {
     @available(tvOS 18.0, *)
     private var roleTabs: some View {
         TabView(selection: $tab) {
-            SwiftUI.Tab(value: Tab.search, role: .search) { searchTab }
             SwiftUI.Tab(value: Tab.roulette) { rouletteTab } label: { Text("Roulette") }
             SwiftUI.Tab(value: Tab.episodes) { episodesTab } label: { Text("Episodes") }
             SwiftUI.Tab(value: Tab.movies) { moviesTab } label: { Text("Movies") }
             SwiftUI.Tab(value: Tab.stats) { statsTab } label: { Text("Stats") }
+            SwiftUI.Tab(value: Tab.search, role: .search) { searchTab }
         }
     }
 
     private var legacyTabs: some View {
         TabView(selection: $tab) {
-            searchTab
-                .tabItem { Label("Search", systemImage: "magnifyingglass") }
-                .tag(Tab.search)
             rouletteTab
                 .tabItem { Text("Roulette") }
                 .tag(Tab.roulette)
@@ -117,6 +114,9 @@ struct TVRootView: View {
             statsTab
                 .tabItem { Text("Stats") }
                 .tag(Tab.stats)
+            searchTab
+                .tabItem { Label("Search", systemImage: "magnifyingglass") }
+                .tag(Tab.search)
         }
     }
 
