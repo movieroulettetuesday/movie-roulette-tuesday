@@ -63,18 +63,20 @@ final class SuggestionUITests: XCTestCase {
     }
 
     /// Matthew's pick (d): no answer in 2.5 s shows the app's own pick with
-    /// the factual reason, not the Spin fallback.
+    /// the factual reason, not the Spin fallback. The loading card only lives
+    /// until the 2.5 s cap, and on an iPad sim one XCUITest query can take about
+    /// a second, so this test doesn't try to catch it (see the next test).
     func testTimeoutShowsTheAppsOwnPickNotSpin() throws {
         launch(gate: "available", style: "Light", force: "timeout")
         let button = app.buttons["what-should-i-watch-button"]
         XCTAssertTrue(button.waitForExistence(timeout: 10))
         button.tap()
-        XCTAssertTrue(app.staticTexts["Picking from your watchlist and services…"].waitForExistence(timeout: 2))
-        XCTAssertTrue(app.buttons["suggestion-loading-spin-instead"].exists)
-        XCTAssertTrue(app.buttons["suggestion-loading-cancel"].exists)
         let card = app.descendants(matching: .any)["suggestion-card"]
-        XCTAssertTrue(card.waitForExistence(timeout: 8))
-        XCTAssertEqual(app.descendants(matching: .any)["suggestion-title"].firstMatch.label, "The Devil's Rain")
+        XCTAssertTrue(card.waitForExistence(timeout: 12), "the app's own pick should show after the forced timeout")
+        XCTAssertTrue(app.navigationBars["Picked for You"].exists)
+        let title = app.descendants(matching: .any)["suggestion-title"].firstMatch
+        XCTAssertTrue(title.waitForExistence(timeout: 3))
+        XCTAssertEqual(title.label, "The Devil's Rain")
         // No vibe line on a fresh sim (not on the watchlist or a service); if an
         // earlier test chose Shudder in My Services, the true fallback line.
         let lead = app.descendants(matching: .any)["suggestion-why"].firstMatch
@@ -83,7 +85,29 @@ final class SuggestionUITests: XCTestCase {
         XCTAssertTrue(facts.exists)
         XCTAssertTrue(facts.label.contains("Not watched yet"), facts.label)
         XCTAssertFalse(app.descendants(matching: .any)["suggestion-fallback-message"].exists, "no Spin fallback on timeout")
+        XCTAssertFalse(app.buttons["suggestion-spin-the-wheel"].exists, "no Spin fallback on timeout")
+        XCTAssertFalse(app.descendants(matching: .any)["suggestion-loading"].exists, "the loading card is gone once the pick shows")
         saveShot("pick-timeout-own-pick-light")
+    }
+
+    /// The loading card, held open with a long debug cap so the check can't
+    /// race the 2.5 s timeout: loading line, Cancel and Spin instead; Cancel closes it.
+    func testLoadingCardOffersCancelAndSpin() throws {
+        launch(gate: "available", style: "Light", force: "timeout", timeoutMs: 20_000)
+        let button = app.buttons["what-should-i-watch-button"]
+        XCTAssertTrue(button.waitForExistence(timeout: 10))
+        button.tap()
+        let loading = app.descendants(matching: .any)["suggestion-loading"].firstMatch
+        XCTAssertTrue(loading.waitForExistence(timeout: 8))
+        XCTAssertTrue(app.staticTexts["Picking from your watchlist and services…"].exists)
+        XCTAssertTrue(app.buttons["suggestion-loading-spin-instead"].exists)
+        let cancel = app.buttons["suggestion-loading-cancel"]
+        XCTAssertTrue(cancel.exists)
+        XCTAssertFalse(app.descendants(matching: .any)["suggestion-card"].exists, "still loading")
+        saveShot("pick-loading-light")
+        cancel.tap()
+        XCTAssertTrue(loading.waitForNonExistence(timeout: 5), "Cancel closes the loading card")
+        XCTAssertFalse(app.descendants(matching: .any)["suggestion-card"].exists, "Cancel drops the pick")
     }
 
     func testHouseRulesExplainPickForMeSearchListsWidgetSiriAndSpotlight() throws {
@@ -155,7 +179,7 @@ final class SuggestionUITests: XCTestCase {
         saveShot(name)
     }
 
-    private func launch(gate: String, style: String, force: String? = nil, extra: [String] = []) {
+    private func launch(gate: String, style: String, force: String? = nil, timeoutMs: Int? = nil, extra: [String] = []) {
         app = XCUIApplication()
         // -AppleInterfaceStyle is not enough on the iOS 27 simulator; the device
         // appearance is what actually switches Light/Dark for screenshots.
@@ -176,6 +200,7 @@ final class SuggestionUITests: XCTestCase {
         app.launchEnvironment["MRT_SUGGESTION_MOVIE"] = "the-devils-rain-1975"
         app.launchEnvironment["MRT_SUGGESTION_VIBE"] = "scares"
         if let force { app.launchEnvironment["MRT_SUGGESTION_FORCE"] = force }
+        if let timeoutMs { app.launchEnvironment["MRT_SUGGESTION_TIMEOUT_MS"] = String(timeoutMs) }
         app.launch()
     }
 
