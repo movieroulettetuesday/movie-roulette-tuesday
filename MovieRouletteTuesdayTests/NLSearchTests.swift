@@ -120,20 +120,20 @@ final class NLSearchTests: XCTestCase {
         XCTAssertEqual(episodeIDs(.init(title: "devils rain", season: 4, episode: 39)), ["ep-s4e39"])
     }
 
-    func testValidationClampsSwapsRoundsAndNullsUnknowns() {
+    func testValidationDropsOutOfRangeSwapsRoundsAndNullsUnknowns() {
         let f = NLSearch.validated(.init(
             title: "  The Thing ", kind: .any, yearMin: 2300, yearMax: 1700, genre: "horror", category: "Listener Picks",
             provider: "Blockbuster", ratingMin: 7, ratingMax: 0.2, watched: .any, season: 0, episode: -3
         ), catalog: catalog)
         XCTAssertEqual(f.title, "The Thing")
         XCTAssertNil(f.kind)
-        XCTAssertEqual(f.yearMin, 1880)
-        XCTAssertEqual(f.yearMax, 2100)
+        XCTAssertNil(f.yearMin, "2300 is dropped, not clamped")
+        XCTAssertNil(f.yearMax, "1700 is dropped, not clamped")
         XCTAssertEqual(f.genre, "Horror")
         XCTAssertEqual(f.category, "Listeners")
         XCTAssertNil(f.provider)
-        XCTAssertEqual(f.ratingMin, 0.5)
-        XCTAssertEqual(f.ratingMax, 5)
+        XCTAssertNil(f.ratingMin, "7 is dropped, not clamped")
+        XCTAssertNil(f.ratingMax, "0.2 is dropped, not clamped")
         XCTAssertNil(f.watched)
         XCTAssertNil(f.season)
         XCTAssertNil(f.episode)
@@ -143,6 +143,37 @@ final class NLSearchTests: XCTestCase {
         XCTAssertEqual(NLSearch.validated(.init(category: "Criterion & Classics"), catalog: catalog).category, "Criterion")
         XCTAssertEqual(NLSearch.validated(.init(provider: "Disney+"), catalog: catalog).provider, "Disney+")
         XCTAssertEqual(NLSearch.validated(.init(provider: "Max"), catalog: catalog).provider, "Max")
+    }
+
+    func testOutOfRangeBoundsDropOnTheirOwnAndRoundTiesAway() {
+        func v(_ f: NLSearchFilter) -> NLSearchFilter { NLSearch.validated(f, catalog: catalog) }
+        XCTAssertEqual(v(.init(yearMin: 1880, yearMax: 2100)).yearMin, 1880)
+        XCTAssertEqual(v(.init(yearMin: 1880, yearMax: 2100)).yearMax, 2100)
+        XCTAssertNil(v(.init(yearMin: 1879)).yearMin)
+        XCTAssertNil(v(.init(yearMax: 2101)).yearMax)
+        XCTAssertEqual(v(.init(yearMin: 1700, yearMax: 1985)).yearMax, 1985)
+        XCTAssertNil(v(.init(ratingMin: .nan)).ratingMin)
+        XCTAssertNil(v(.init(ratingMax: .infinity)).ratingMax)
+        XCTAssertNil(v(.init(ratingMin: 0.4)).ratingMin, "checked before rounding")
+        XCTAssertNil(v(.init(ratingMax: 5.2)).ratingMax, "checked before rounding")
+        XCTAssertEqual(v(.init(ratingMin: 0.5)).ratingMin, 0.5)
+        XCTAssertEqual(v(.init(ratingMin: 3.25)).ratingMin, 3.5, "ties away from zero")
+        XCTAssertEqual(v(.init(ratingMin: 4.75)).ratingMin, 5)
+        XCTAssertEqual(v(.init(ratingMin: 4.2)).ratingMin, 4)
+        let swapped = v(.init(ratingMin: 4.5, ratingMax: 2))
+        XCTAssertEqual(swapped.ratingMin, 2)
+        XCTAssertEqual(swapped.ratingMax, 4.5)
+        XCTAssertEqual(v(.init(ratingMin: 4, unrated: false)).unrated, false, "rated flag kept with a bound")
+        XCTAssertNil(v(.init(ratingMin: 4, unrated: true)).ratingMin)
+    }
+
+    func testProviderMinimumLength() {
+        XCTAssertFalse(NLSearch.providerNameMatches("HBO Max", "a"))
+        XCTAssertFalse(NLSearch.providerNameMatches("HBO Max", ""))
+        XCTAssertTrue(NLSearch.providerNameMatches("Tubi TV", "tv"), "2-character whole string")
+        XCTAssertTrue(NLSearch.providerNameMatches("HBO Max", "max hbo"), "every word, all 2+")
+        XCTAssertFalse(NLSearch.providerNameMatches("HBO Max", "max a"), "a word under 2 blocks the fallback")
+        XCTAssertTrue(NLSearch.providerNameMatches("Criterion Channel", "criterion channel"))
     }
 
     func testChipsOnePerFieldAndRemovalChangesResults() {

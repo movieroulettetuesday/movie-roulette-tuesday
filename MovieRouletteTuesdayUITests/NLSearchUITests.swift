@@ -66,7 +66,9 @@ final class NLSearchUITests: XCTestCase {
         if bar.exists { bar.tap() } else { app.buttons.matching(NSPredicate(format: "label == %@", name)).firstMatch.tap() }
     }
 
-    /// The visible list, told apart by its search prompt.
+    /// The visible list, told apart by its search prompt. On iPhone a list
+    /// whose search is not active can collapse the field under the large
+    /// title, so if it is missing, pull the list down once and look again.
     private func waitForList(prompt: String, value: String? = nil, timeout: TimeInterval = 10) -> Bool {
         let predicate = NSPredicate { [weak self] _, _ in
             guard let field = self?.app.searchFields.firstMatch, field.exists else { return false }
@@ -74,7 +76,13 @@ final class NLSearchUITests: XCTestCase {
             if let value { return (field.value as? String) == value }
             return true
         }
-        return XCTWaiter().wait(for: [XCTNSPredicateExpectation(predicate: predicate, object: nil)], timeout: timeout) == .completed
+        func wait(_ t: TimeInterval) -> Bool {
+            XCTWaiter().wait(for: [XCTNSPredicateExpectation(predicate: predicate, object: nil)], timeout: t) == .completed
+        }
+        if wait(timeout) { return true }
+        guard !app.searchFields.firstMatch.exists else { return false }
+        app.swipeDown()
+        return wait(5)
     }
 
     private func attach(_ name: String) {

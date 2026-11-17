@@ -3,7 +3,7 @@ import XCTest
 
 /// The search model with a STUBBED parser (no Foundation Model): gating,
 /// debounce outcome, timeouts, the list switch with handoff and bounce
-/// prevention, chip removal, and all 32 shared cases end to end.
+/// prevention, chip removal, and all 43 shared cases end to end.
 @MainActor
 final class NLSearchModelTests: XCTestCase {
     final class CountingParser: NLSearchParsing, @unchecked Sendable {
@@ -195,10 +195,10 @@ final class NLSearchModelTests: XCTestCase {
         XCTAssertEqual(again, .skipped)
     }
 
-    /// The 32 shared cases through the model with a stub parse, from both lists.
+    /// The 43 shared cases through the model with a stub parse, from both lists.
     func testSharedCasesEndToEndFromBothLists() async throws {
         let cases = try NLSearchSharedCasesTests.loadCases()
-        XCTAssertEqual(cases.count, 32)
+        XCTAssertEqual(cases.count, 43)
         for c in cases {
             let stub = try NLSearchSharedCasesTests.stubParse(c)
             for start in NLSearch.List.allCases {

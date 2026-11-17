@@ -202,20 +202,27 @@ public enum NLSearch {
         }
     }
 
-    /// Same rule as CatalogSearch's provider match: folded name contains the
-    /// folded query, or every query word.
+    /// The shared provider rule (schema "Validation details"; agreed with
+    /// Android, Nov 17 2026), used by both `validated` and `apply`. A query
+    /// that folds to fewer than 2 characters never matches. Otherwise the
+    /// folded name must contain the whole folded query, or, only when every
+    /// query word folds to at least 2 characters, contain every word.
     static func providerNameMatches(_ name: String, _ foldedQuery: String) -> Bool {
-        guard !foldedQuery.isEmpty else { return false }
+        guard foldedQuery.count >= 2 else { return false }
         let folded = CatalogSearch.fold(name)
         if folded.contains(foldedQuery) { return true }
-        return foldedQuery.split(separator: " ").allSatisfy { folded.contains($0) }
+        let words = foldedQuery.split(separator: " ")
+        guard !words.isEmpty, words.allSatisfy({ $0.count >= 2 }) else { return false }
+        return words.allSatisfy { folded.contains($0) }
     }
 
     /// Cleans a parse so only catalog vocabulary can reach `apply`: unknown
     /// genres, categories, and providers (including rent/buy-only names) are
-    /// nulled; years clamp to 1880–2100 and swap if reversed; ratings round to
-    /// half stars in 0.5–5 and swap; `unrated: true` drops min/max; `any`
-    /// becomes nil; blank strings and non-positive numbers become nil.
+    /// nulled. Out-of-range values are dropped, never clamped (Matthew, Nov 17
+    /// 2026): a year outside 1880–2100 and a rating that is not finite or is
+    /// outside 0.5–5 become nil, each bound on its own; ratings in range round
+    /// to the nearest half star (ties away from zero); reversed pairs swap.
+    /// `unrated: true` drops min/max; `any` becomes nil.
     public static func validated(_ raw: NLSearchFilter, catalog: MovieCatalog?) -> NLSearchFilter {
         var f = raw
         if let t = f.title?.trimmingCharacters(in: .whitespacesAndNewlines), !CatalogSearch.fold(t).isEmpty {
@@ -229,8 +236,8 @@ public enum NLSearch {
         if f.freeOnly == false { f.freeOnly = nil }
         if f.onMyServices == false { f.onMyServices = nil }
 
-        f.yearMin = f.yearMin.map { min(max($0, yearRange.lowerBound), yearRange.upperBound) }
-        f.yearMax = f.yearMax.map { min(max($0, yearRange.lowerBound), yearRange.upperBound) }
+        if let y = f.yearMin, !yearRange.contains(y) { f.yearMin = nil }
+        if let y = f.yearMax, !yearRange.contains(y) { f.yearMax = nil }
         if let a = f.yearMin, let b = f.yearMax, a > b { f.yearMin = b; f.yearMax = a }
 
         if let g = f.genre {
@@ -246,9 +253,10 @@ public enum NLSearch {
         }
 
         func stars(_ value: Double?) -> Double? {
-            guard let value, value.isFinite else { return nil }
-            let rounded = (value * 2).rounded(.toNearestOrAwayFromZero) / 2
-            return min(max(rounded, 0.5), 5)
+            // Range check on the raw value, then round to the nearest half
+            // star with ties away from zero (3.25 → 3.5, 4.75 → 5).
+            guard let value, value.isFinite, (0.5...5).contains(value) else { return nil }
+            return (value * 2).rounded(.toNearestOrAwayFromZero) / 2
         }
         f.ratingMin = stars(f.ratingMin)
         f.ratingMax = stars(f.ratingMax)

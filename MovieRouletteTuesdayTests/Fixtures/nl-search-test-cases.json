@@ -1,7 +1,7 @@
 {
   "schema": "nl-search-filter-schema.md",
   "catalogCommit": "bedf0a63f27299dd9210b8ccb6f027bca310c08f",
-  "note": "These cases test parse output: a natural-language question mapped to an NLSearchFilter. Because a model is non-deterministic, compare loosely: every key in `required` must be present and equal; keys in `optional` may appear with that value but are not required; a non-null field that is not in `required` or `optional` fails; every name in `mustBeNull` must be null or absent (the model must not invent it). If `providerAcceptable` is set, `required.provider` may be any of those strings. If `titleFolded` is set, compare the folded title rather than the raw string. `outcome` is `apply` (run apply() on the validated filter), `empty-filter` (all-null; use keyword CatalogSearch and do not call apply), or `validate` (an unknown genre, category, kind, watched value, or provider must be nulled or the parse rejected so it cannot reach apply). `switchesTo` is `movies`, `episodes`, or `stay`, derived from `kind`: movie or episode selects that list (switch if the other list is showing; stay if already there); any or a missing kind stays on the current list. The deterministic filter-to-results step is not covered here and must be unit-tested exactly against apply().",
+  "note": "These cases test parse output: a natural-language question mapped to an NLSearchFilter. Because a model is non-deterministic, compare loosely: every key in `required` must be present and equal; keys in `optional` may appear with that value but are not required; a non-null field that is not in `required` or `optional` fails; every name in `mustBeNull` must be null or absent (the model must not invent it). If `providerAcceptable` is set, `required.provider` may be any of those strings. If `titleFolded` is set, compare the folded title rather than the raw string. `outcome` is `apply` (run apply() on the validated filter), `empty-filter` (all-null; use keyword CatalogSearch and do not call apply), or `validate` (an unknown genre, category, kind, watched value, or provider must be nulled or the parse rejected so it cannot reach apply). `switchesTo` is `movies`, `episodes`, or `stay`, derived from `kind`: movie or episode selects that list (switch if the other list is showing; stay if already there); any or a missing kind stays on the current list. The deterministic filter-to-results step is not covered here and must be unit-tested exactly against apply(). Cases with a `parse` object (source `validation-rules`, added 17 Nov 2026) test validation, not the model: feed `parse` to the validator as the model output, then compare the validated filter to `required` / `mustBeNull` with the same loose rule (so a field that should be dropped must be null).",
   "genres": [
     "Drama",
     "Horror",
@@ -629,6 +629,227 @@
         "kind"
       ],
       "note": "No list word, so kind is any/null and the current list does not switch, whether that is Movies or Episodes.",
+      "switchesTo": "stay"
+    },
+    {
+      "id": "rating-max-6-dropped",
+      "source": "validation-rules",
+      "question": "movies rated up to 6 stars",
+      "outcome": "validate",
+      "parse": {
+        "kind": "movie",
+        "ratingMax": 6
+      },
+      "required": {
+        "kind": "movie"
+      },
+      "mustBeNull": [
+        "ratingMin",
+        "ratingMax",
+        "unrated",
+        "title"
+      ],
+      "note": "ratingMax 6 is outside 0.5–5, so it is dropped (not clamped to 5). No rating filter remains, so unrated movies are included.",
+      "switchesTo": "movies"
+    },
+    {
+      "id": "rating-min-0-dropped",
+      "source": "validation-rules",
+      "question": "horror rated 0 stars or more",
+      "outcome": "validate",
+      "parse": {
+        "genre": "Horror",
+        "ratingMin": 0
+      },
+      "required": {
+        "genre": "Horror"
+      },
+      "mustBeNull": [
+        "ratingMin",
+        "ratingMax",
+        "unrated",
+        "title"
+      ],
+      "note": "ratingMin 0 is outside 0.5–5, so it is dropped (not clamped to 0.5); unrated horror stays in the results.",
+      "switchesTo": "stay"
+    },
+    {
+      "id": "rating-max-5-2-dropped-before-rounding",
+      "source": "validation-rules",
+      "question": "horror rated up to 5.2",
+      "outcome": "validate",
+      "parse": {
+        "genre": "Horror",
+        "ratingMax": 5.2
+      },
+      "required": {
+        "genre": "Horror"
+      },
+      "mustBeNull": [
+        "ratingMin",
+        "ratingMax",
+        "unrated",
+        "title"
+      ],
+      "note": "The range check runs on the raw value before rounding: 5.2 is outside 0.5–5 and is dropped, even though it would round to 5.",
+      "switchesTo": "stay"
+    },
+    {
+      "id": "rating-min-3-25-rounds-half-up",
+      "source": "validation-rules",
+      "question": "movies rated 3.25 or higher",
+      "outcome": "validate",
+      "parse": {
+        "kind": "movie",
+        "ratingMin": 3.25
+      },
+      "required": {
+        "kind": "movie",
+        "ratingMin": 3.5
+      },
+      "mustBeNull": [
+        "ratingMax",
+        "unrated",
+        "title"
+      ],
+      "note": "In range, so it rounds to the nearest half star with ties away from zero: 3.25 → 3.5.",
+      "switchesTo": "movies"
+    },
+    {
+      "id": "year-min-1700-dropped",
+      "source": "validation-rules",
+      "question": "movies from 1700 to 1985",
+      "outcome": "validate",
+      "parse": {
+        "kind": "movie",
+        "yearMin": 1700,
+        "yearMax": 1985
+      },
+      "required": {
+        "kind": "movie",
+        "yearMax": 1985
+      },
+      "mustBeNull": [
+        "yearMin",
+        "title"
+      ],
+      "note": "yearMin 1700 is outside 1880–2100 and is dropped on its own (not clamped to 1880); yearMax 1985 stays.",
+      "switchesTo": "movies"
+    },
+    {
+      "id": "year-max-99-dropped",
+      "source": "validation-rules",
+      "question": "horror from 1980 to 99",
+      "outcome": "validate",
+      "parse": {
+        "genre": "Horror",
+        "yearMin": 1980,
+        "yearMax": 99
+      },
+      "required": {
+        "genre": "Horror",
+        "yearMin": 1980
+      },
+      "mustBeNull": [
+        "yearMax",
+        "title"
+      ],
+      "note": "yearMax 99 is outside 1880–2100 and is dropped on its own; yearMin 1980 stays (1980 or later).",
+      "switchesTo": "stay"
+    },
+    {
+      "id": "year-range-reversed-swapped",
+      "source": "validation-rules",
+      "question": "movies from 1985 to 1975",
+      "outcome": "validate",
+      "parse": {
+        "kind": "movie",
+        "yearMin": 1985,
+        "yearMax": 1975
+      },
+      "required": {
+        "kind": "movie",
+        "yearMin": 1975,
+        "yearMax": 1985
+      },
+      "mustBeNull": [
+        "title"
+      ],
+      "note": "Both years are in range and reversed, so they swap to 1975–1985.",
+      "switchesTo": "movies"
+    },
+    {
+      "id": "provider-single-letter-dropped",
+      "source": "validation-rules",
+      "question": "horror on a",
+      "outcome": "validate",
+      "parse": {
+        "genre": "Horror",
+        "provider": "a"
+      },
+      "required": {
+        "genre": "Horror"
+      },
+      "mustBeNull": [
+        "provider",
+        "title"
+      ],
+      "note": "Provider 'a' folds to fewer than 2 characters, so it never matches and is dropped, even though many provider names contain the letter a.",
+      "switchesTo": "stay"
+    },
+    {
+      "id": "provider-whole-string-criterion-channel",
+      "source": "validation-rules",
+      "question": "films on Criterion Channel",
+      "outcome": "validate",
+      "parse": {
+        "kind": "movie",
+        "provider": "Criterion Channel"
+      },
+      "required": {
+        "kind": "movie",
+        "provider": "Criterion Channel"
+      },
+      "mustBeNull": [
+        "title"
+      ],
+      "note": "Whole-string contains match on the catalog stream name Criterion Channel (there is no Channel 4 in the catalog).",
+      "switchesTo": "movies"
+    },
+    {
+      "id": "provider-every-word-short-word-dropped",
+      "source": "validation-rules",
+      "question": "horror on Max a",
+      "outcome": "validate",
+      "parse": {
+        "genre": "Horror",
+        "provider": "Max a"
+      },
+      "required": {
+        "genre": "Horror"
+      },
+      "mustBeNull": [
+        "provider",
+        "title"
+      ],
+      "note": "'max a' is not a whole-string match for any name, and the every-word fallback does not apply because the word 'a' folds to fewer than 2 characters, so provider is dropped.",
+      "switchesTo": "stay"
+    },
+    {
+      "id": "provider-every-word-fallback-match",
+      "source": "validation-rules",
+      "question": "something on Max HBO",
+      "outcome": "validate",
+      "parse": {
+        "provider": "Max HBO"
+      },
+      "required": {
+        "provider": "Max HBO"
+      },
+      "mustBeNull": [
+        "title"
+      ],
+      "note": "'max hbo' is not a whole-string match, but every word has at least 2 characters and each is contained in HBO Max, so the every-word fallback keeps the provider as typed.",
       "switchesTo": "stay"
     }
   ]

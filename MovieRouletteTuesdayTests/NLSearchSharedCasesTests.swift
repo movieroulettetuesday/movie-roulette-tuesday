@@ -1,8 +1,9 @@
 import XCTest
 @testable import MovieRouletteTuesday
 
-/// The 32 shared cases in `mrt-shared/nl-search-test-cases.json` (a byte copy
+/// The 43 shared cases in `mrt-shared/nl-search-test-cases.json` (a byte copy
 /// in Fixtures/). The model's parse is STUBBED: each case's stub parse is its
+/// `parse` object when it has one (the 11 `validation-rules` cases), else its
 /// `required` filter (plus a disallowed value for `validate` cases), because
 /// the on-device model can't run reliably in the simulator. What is exact and
 /// real: question detection, validation, the loose-compare rule, the list
@@ -12,6 +13,7 @@ final class NLSearchSharedCasesTests: XCTestCase {
         let id: String
         let question: String
         let outcome: String
+        let parse: [String: Any]?
         let required: [String: Any]
         let optional: [String: Any]
         let mustBeNull: [String]
@@ -38,6 +40,7 @@ final class NLSearchSharedCasesTests: XCTestCase {
                 id: c["id"] as? String ?? "",
                 question: c["question"] as? String ?? "",
                 outcome: c["outcome"] as? String ?? "",
+                parse: c["parse"] as? [String: Any],
                 required: c["required"] as? [String: Any] ?? [:],
                 optional: c["optional"] as? [String: Any] ?? [:],
                 mustBeNull: c["mustBeNull"] as? [String] ?? [],
@@ -70,6 +73,7 @@ final class NLSearchSharedCasesTests: XCTestCase {
     /// The stub parse for a case: `required`, plus the first disallowed value
     /// of each field for `validate` cases, so validation has to remove it.
     static func stubParse(_ c: Case, includeOptional: Bool = false) throws -> NLSearchFilter {
+        if let parse = c.parse { return try Self.filter(from: parse) }
         var d = c.required
         if includeOptional { d.merge(c.optional) { a, _ in a } }
         for (field, values) in c.disallowed { if let first = values.first { d[field] = first } }
@@ -107,9 +111,10 @@ final class NLSearchSharedCasesTests: XCTestCase {
         return problems
     }
 
-    func testThirtyTwoSharedCasesLoaded() {
-        XCTAssertEqual(cases.count, 32)
-        XCTAssertEqual(Set(cases.map(\.id)).count, 32, "unique ids")
+    func testFortyThreeSharedCasesLoaded() {
+        XCTAssertEqual(cases.count, 43)
+        XCTAssertEqual(Set(cases.map(\.id)).count, 43, "unique ids")
+        XCTAssertEqual(cases.filter { $0.parse != nil }.count, 11, "validation-rules cases")
     }
 
     /// Questions reach the model; short title-like text and punctuation stay on CatalogSearch.
@@ -213,6 +218,31 @@ final class NLSearchSharedCasesTests: XCTestCase {
                                        ["ep-s4e40", "ep-s4e39"]),
         "stay-put-horror-unwatched": (["hellraiser-1987", "the-devils-rain-1975", "the-shining-1980", "the-thing-2011"],
                                       ["ep-s4e40", "ep-s4e39"]),
+        // validation-rules cases (drop, not clamp; provider minimum).
+        "rating-max-6-dropped": (["alien-1979", "blade-runner-1982", "die-hard-1988", "eternal-sunshine-2004",
+                                  "heathers-1989", "hellraiser-1987", "pulp-fiction-1994", "seven-samurai-1954",
+                                  "the-devils-rain-1975", "the-evil-dead-1981", "the-godfather-1972", "the-room-2003",
+                                  "the-shining-1980", "the-thing-1982", "the-thing-2011", "titanic-1997"],
+                                 ["ep-s4e40", "ep-s4e39", "ep-bonus", "ep-thing", "ep-alien"]),
+        "rating-min-0-dropped": (["hellraiser-1987", "the-devils-rain-1975", "the-evil-dead-1981", "the-shining-1980", "the-thing-1982", "the-thing-2011"],
+                                 ["ep-s4e40", "ep-s4e39", "ep-thing"]),
+        "rating-max-5-2-dropped-before-rounding": (["hellraiser-1987", "the-devils-rain-1975", "the-evil-dead-1981", "the-shining-1980", "the-thing-1982", "the-thing-2011"],
+                                                   ["ep-s4e40", "ep-s4e39", "ep-thing"]),
+        "rating-min-3-25-rounds-half-up": (["alien-1979", "blade-runner-1982", "the-devils-rain-1975", "the-godfather-1972",
+                                            "the-thing-1982"], ["ep-s4e39", "ep-thing", "ep-alien"]),
+        "year-min-1700-dropped": (["alien-1979", "blade-runner-1982", "seven-samurai-1954", "the-devils-rain-1975",
+                                   "the-evil-dead-1981", "the-godfather-1972", "the-shining-1980", "the-thing-1982"],
+                                  ["ep-s4e39", "ep-thing", "ep-alien"]),
+        "year-max-99-dropped": (["hellraiser-1987", "the-evil-dead-1981", "the-shining-1980", "the-thing-1982", "the-thing-2011"],
+                                ["ep-s4e40", "ep-thing"]),
+        "year-range-reversed-swapped": (["alien-1979", "blade-runner-1982", "the-devils-rain-1975", "the-evil-dead-1981",
+                                         "the-shining-1980", "the-thing-1982"], ["ep-s4e39", "ep-thing", "ep-alien"]),
+        "provider-single-letter-dropped": (["hellraiser-1987", "the-devils-rain-1975", "the-evil-dead-1981", "the-shining-1980", "the-thing-1982", "the-thing-2011"],
+                                           ["ep-s4e40", "ep-s4e39", "ep-thing"]),
+        "provider-whole-string-criterion-channel": (["seven-samurai-1954"], []),
+        "provider-every-word-short-word-dropped": (["hellraiser-1987", "the-devils-rain-1975", "the-evil-dead-1981", "the-shining-1980", "the-thing-1982", "the-thing-2011"],
+                                                   ["ep-s4e40", "ep-s4e39", "ep-thing"]),
+        "provider-every-word-fallback-match": (["alien-1979", "pulp-fiction-1994"], ["ep-alien"]),
     ]
 
     func testApplyMatchesExactlyForEveryCase() throws {
@@ -240,6 +270,6 @@ final class NLSearchSharedCasesTests: XCTestCase {
                 XCTAssertNil(filter.searchText, c.id)
             }
         }
-        XCTAssertEqual(covered, 29)
+        XCTAssertEqual(covered, 40)
     }
 }
