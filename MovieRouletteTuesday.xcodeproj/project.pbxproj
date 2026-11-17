@@ -7,6 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3D9801E14AAD1629D2343051 /* NLSearchUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B001D98B2461A325BE3AC4A3 /* NLSearchUITests.swift */; };
+		1370637059B09C1DF466845B /* nl-search-test-cases.json in Resources */ = {isa = PBXBuildFile; fileRef = C78D9D5BADE772026C11018B /* nl-search-test-cases.json */; };
+		9CB2B61D610934FF4C6E83E2 /* NLSearchModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8679CC628ED56762C49DE49 /* NLSearchModelTests.swift */; };
+		46840873E8BBA56348CF10B0 /* NLSearchSharedCasesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7AC33A684356D9E380A8304 /* NLSearchSharedCasesTests.swift */; };
+		DB3C6DF9A40B36AE753F136E /* NLSearchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878815AA897FB5C15E1C6F30 /* NLSearchTests.swift */; };
+		007C45365FF2D4E5732A37FC /* NLSearchFixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE8E99CA1B9AD3D848B40A9 /* NLSearchFixture.swift */; };
+		85EA680C62A49EF3A555A2BC /* NLSearchChips.swift in Sources */ = {isa = PBXBuildFile; fileRef = 007576AE0D8D798E5AE8DEC6 /* NLSearchChips.swift */; };
+		1806D28C90D75215CBDA3E33 /* NLSearchParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E85E607BB402FA5E4E88DEA /* NLSearchParser.swift */; };
+		23E3384DE304A45AEE53F96A /* NLSearchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2980209F35FA1552A97380 /* NLSearchModel.swift */; };
+		981EF4B167E3FFD65A77EBB4 /* NLSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0EE4575B8AB943EB6EC549E /* NLSearch.swift */; };
 		03B4BF8F249810CFEA669B88 /* EpisodeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91E7375277A2F9348A5E32BD /* EpisodeLabel.swift */; };
 		04F35CDEFB553502EB9E0EF9 /* SpinHistoryFileStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45048279A25BC8C82EF8386 /* SpinHistoryFileStore.swift */; };
 		0567F8326D225CE9B49A4FF1 /* SpinMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8197A8EECD0315850B538A /* SpinMotion.swift */; };
@@ -215,6 +225,16 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		B001D98B2461A325BE3AC4A3 /* NLSearchUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NLSearchUITests.swift; sourceTree = "<group>"; };
+		C78D9D5BADE772026C11018B /* nl-search-test-cases.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "nl-search-test-cases.json"; sourceTree = "<group>"; };
+		D8679CC628ED56762C49DE49 /* NLSearchModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NLSearchModelTests.swift; sourceTree = "<group>"; };
+		E7AC33A684356D9E380A8304 /* NLSearchSharedCasesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NLSearchSharedCasesTests.swift; sourceTree = "<group>"; };
+		878815AA897FB5C15E1C6F30 /* NLSearchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NLSearchTests.swift; sourceTree = "<group>"; };
+		8EE8E99CA1B9AD3D848B40A9 /* NLSearchFixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NLSearchFixture.swift; sourceTree = "<group>"; };
+		007576AE0D8D798E5AE8DEC6 /* NLSearchChips.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NLSearchChips.swift; sourceTree = "<group>"; };
+		6E85E607BB402FA5E4E88DEA /* NLSearchParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NLSearchParser.swift; sourceTree = "<group>"; };
+		0B2980209F35FA1552A97380 /* NLSearchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NLSearchModel.swift; sourceTree = "<group>"; };
+		F0EE4575B8AB943EB6EC549E /* NLSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NLSearch.swift; sourceTree = "<group>"; };
 		0573A1DA6C9FAF0B433CD15E /* CommunityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityTests.swift; sourceTree = "<group>"; };
 		065CCF25035FB61DFE034E8C /* SCHEMA.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = SCHEMA.md; sourceTree = "<group>"; };
 		0783D57C066532E8F7B8B45C /* NewEpisodeBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewEpisodeBadge.swift; sourceTree = "<group>"; };
@@ -403,6 +423,7 @@
 				7DC9B6C617D30A367A528980 /* Community.swift */,
 				91E7375277A2F9348A5E32BD /* EpisodeLabel.swift */,
 				100BF6A74114BB9620ADD532 /* CatalogSearch.swift */,
+				F0EE4575B8AB943EB6EC549E /* NLSearch.swift */,
 				B96EA418C703FA2806543A94 /* EpisodeStoreCore.swift */,
 				91AD012D985338EE14AD80C6 /* HexColor.swift */,
 				2ACE12112A571BDB510AF3FD /* LaunchSplash.swift */,
@@ -446,6 +467,7 @@
 			isa = PBXGroup;
 			children = (
 				4A39E1E7BAB101678D6AEACF /* feed-snippet.xml */,
+				C78D9D5BADE772026C11018B /* nl-search-test-cases.json */,
 			);
 			path = Fixtures;
 			sourceTree = "<group>";
@@ -570,6 +592,9 @@
 				BB96EAF36E1683B551858A92 /* CleanPro.swift */,
 				A150C7D509637343B85ECD76 /* Color+Hex.swift */,
 				DE80DAF59B7205B4463F132E /* DebugLaunch.swift */,
+				007576AE0D8D798E5AE8DEC6 /* NLSearchChips.swift */,
+				6E85E607BB402FA5E4E88DEA /* NLSearchParser.swift */,
+				0B2980209F35FA1552A97380 /* NLSearchModel.swift */,
 				7CE15704D05827C746AD662F /* LaunchSplashView.swift */,
 				2A42CD0BB872834C6AEFBE57 /* NewEpisodeAlerts.swift */,
 				1321078DE95E06A1D4F7A4ED /* PersonalRatingsStore.swift */,
@@ -589,6 +614,10 @@
 				A1A3A92A79916C6B4B34AE15 /* AdaptiveLayoutTests.swift */,
 				A11E110000000000000000C1 /* AppIntentsTests.swift */,
 				1A4939E7D97EB39D108F85E3 /* CatalogSearchTests.swift */,
+				D8679CC628ED56762C49DE49 /* NLSearchModelTests.swift */,
+				E7AC33A684356D9E380A8304 /* NLSearchSharedCasesTests.swift */,
+				878815AA897FB5C15E1C6F30 /* NLSearchTests.swift */,
+				8EE8E99CA1B9AD3D848B40A9 /* NLSearchFixture.swift */,
 				A11E110000000000000000E8 /* SuggestionTests.swift */,
 				42A1D1705C870623937EA427 /* AppearancePreferenceTests.swift */,
 				E1829E1F65466A6B902F7183 /* ArtworkTests.swift */,
@@ -625,6 +654,7 @@
 				A11E110000000000000000E9 /* SuggestionUITests.swift */,
 				A11E11000000000000000101 /* RevealScrollUITests.swift */,
 				6973225CEBB21316B0E32CB1 /* SearchUITests.swift */,
+				B001D98B2461A325BE3AC4A3 /* NLSearchUITests.swift */,
 				C1EA11000000000000000001 /* ClearRatingUITests.swift */,
 			);
 			path = MovieRouletteTuesdayUITests;
@@ -826,6 +856,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1370637059B09C1DF466845B /* nl-search-test-cases.json in Resources */,
 				4052E03879AABA4D453C76A9 /* feed-snippet.xml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -885,6 +916,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9CB2B61D610934FF4C6E83E2 /* NLSearchModelTests.swift in Sources */,
+				46840873E8BBA56348CF10B0 /* NLSearchSharedCasesTests.swift in Sources */,
+				DB3C6DF9A40B36AE753F136E /* NLSearchTests.swift in Sources */,
+				007C45365FF2D4E5732A37FC /* NLSearchFixture.swift in Sources */,
 				38010DEB88451E9FEB4A9CCF /* AdaptiveLayoutTests.swift in Sources */,
 				A11E110000000000000000C2 /* AppIntentsTests.swift in Sources */,
 				D0E6526BEC2584AF806EA6EC /* CatalogSearchTests.swift in Sources */,
@@ -920,6 +955,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				85EA680C62A49EF3A555A2BC /* NLSearchChips.swift in Sources */,
+				1806D28C90D75215CBDA3E33 /* NLSearchParser.swift in Sources */,
+				23E3384DE304A45AEE53F96A /* NLSearchModel.swift in Sources */,
+				981EF4B167E3FFD65A77EBB4 /* NLSearch.swift in Sources */,
 				88164BE60BF86F34E711E084 /* ContentView.swift in Sources */,
 				672473312590654CC24BE71F /* MovieRouletteTuesdayApp.swift in Sources */,
 				E9ADE1118D85F5A6E88D8372 /* CloudKitCommunityStore.swift in Sources */,
@@ -1017,6 +1056,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3D9801E14AAD1629D2343051 /* NLSearchUITests.swift in Sources */,
 				A11E110000000000000000D2 /* AppIntentsUITests.swift in Sources */,
 				A11E110000000000000000F9 /* SuggestionUITests.swift in Sources */,
 				A11E11000000000000000102 /* RevealScrollUITests.swift in Sources */,

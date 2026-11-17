@@ -70,6 +70,27 @@ enum DebugLaunch {
         }
     }
 
+    /// `-MRTNLSearchGate available|unavailable|notready` forces the NL search
+    /// availability gate so UI tests don't need Apple Intelligence.
+    static var nlSearchStatus: SuggestionModelStatus? {
+        switch value(for: "-MRTNLSearchGate") {
+        case "available": return .available
+        case "unavailable": return .unavailable
+        case "notready": return .temporarilyUnavailable
+        default: return nil
+        }
+    }
+
+    /// `MRT_NL_STUBS` in the launch environment: a JSON object mapping a
+    /// question to its parsed filter (shared-schema keys). Stands in for the
+    /// on-device model in UI tests; an unknown question parses to nothing.
+    static var nlSearchStub: StubNLSearchParser? {
+        guard let json = ProcessInfo.processInfo.environment["MRT_NL_STUBS"], !json.isEmpty,
+              let table = try? JSONDecoder().decode([String: NLSearchFilter].self, from: Data(json.utf8))
+        else { return nil }
+        return StubNLSearchParser(table)
+    }
+
     /// `-MRTSuggestionMovie <id>` and `-MRTSuggestionWhy <text>` stub a
     /// successful suggestion. The why is not lowercased (unlike `value(for:)`).
     /// UI tests may also set `MRT_SUGGESTION_MOVIE` / `MRT_SUGGESTION_WHY` in

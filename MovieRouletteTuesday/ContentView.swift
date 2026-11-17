@@ -9,6 +9,9 @@ struct ContentView: View {
     /// Movie id from an `mrt://movie/<id>` link, handed to the Movies tab.
     @State private var pendingMovieID: String?
     @State private var pendingEpisodeGUID: String?
+    /// Movies and Episodes search text and NL chips, shared so a question can
+    /// hand off from one list to the other.
+    @State private var nlSearch = NLSearchModel()
     /// Cold-launch opening; a deep link or widget tap finishes it at once.
     @Environment(SplashState.self) private var splash: SplashState?
     @Environment(CommunityService.self) private var community
@@ -19,7 +22,13 @@ struct ContentView: View {
                 .tabItem { Label("Roulette", image: "roulette.wheel") }
                 .tag(Tab.roulette)
 
-            EpisodesView(store: episodes, catalog: roulette.catalog, pendingEpisodeGUID: $pendingEpisodeGUID)
+            EpisodesView(
+                store: episodes,
+                catalog: roulette.catalog,
+                nlSearch: nlSearch,
+                pendingEpisodeGUID: $pendingEpisodeGUID,
+                switchTab: switchSearchTab
+            )
                 .tabItem { Label("Episodes", systemImage: "mic") }
                 .tag(Tab.episodes)
                 // 0 hides the badge.
@@ -30,7 +39,9 @@ struct ContentView: View {
                 history: roulette.history,
                 episodesByGUID: episodes.episodesByGUID,
                 episodeStore: episodes,
-                pendingMovieID: $pendingMovieID
+                nlSearch: nlSearch,
+                pendingMovieID: $pendingMovieID,
+                switchTab: switchSearchTab
             )
             .tabItem { Label("Movies", systemImage: "film.stack") }
             .tag(Tab.movies)
@@ -97,6 +108,11 @@ struct ContentView: View {
             if NewEpisodeAlerts.isEnabled { NewEpisodeAlerts.markSeen(episodes.episodes) }
             Task { await CatalogSpotlight.reindex(catalog: roulette.catalog, episodes: episodes.episodes) }
         }
+    }
+
+    /// A question that names the other list (NL search) moves there.
+    private func switchSearchTab(_ list: NLSearch.List) {
+        selectedTab = list == .movies ? .movies : .episodes
     }
 
     private func handle(_ url: URL) {

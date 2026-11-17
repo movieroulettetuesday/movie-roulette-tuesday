@@ -13,6 +13,7 @@ iPhone and iPad work is on `main` (merged 2026-11-13). It has not been version-b
 
 - App Intents, Spotlight, and Siri Spin handoff: Spin, Open Movie, Latest Episode, Show/Add Watchlist, Mark Watched, Where to Watch, and Open on a Provider. Alternate names “Movie Roulette Tuesday” and “Movie Roulette” are registered. Spotlight records are public catalog fields only (no ratings or watchlist).
 - On-device “What should I watch?” using Apple’s Foundation Models when they are available, with a short why; a graceful no-op on devices where the model is unavailable. Siri’s What Should I Watch intent offers Spin and never auto-spins. There is no cloud or network language-model path.
+- Natural-language search on iPhone and iPad (iOS 26+ with Apple Intelligence): a question typed in the Movies or Episodes search field (“free 80s horror I haven’t watched”) becomes removable filter chips that combine with the toolbar filters. A question that names the other list (“episodes about The Thing”, “show me movies I haven’t watched”) moves the query and chips there. On-device model only; elsewhere, or when the model is unavailable, search is keyword search as before. Not on Apple TV.
 - Apple TV (on `feature/tvos`): App Intents, Spin handoff, and “What should I watch?” offers Spin. Intents live in the TV app (not the Top Shelf extension). No Spotlight or IndexedEntity on tvOS. Foundation Models APIs are unavailable on tvOS 27.2, so the in-app suggestion button is omitted on TV.
 
 ## [1.0.2] - 2026-11-12
