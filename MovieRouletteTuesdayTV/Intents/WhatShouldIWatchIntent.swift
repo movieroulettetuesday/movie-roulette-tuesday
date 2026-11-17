@@ -12,12 +12,13 @@ enum SuggestionSpeech {
     static let failed = "I couldn’t pick a movie right now. I can spin the wheel instead."
 }
 
-/// “What should I watch in Movie Roulette” on Apple TV: always offers Spin.
+/// “Pick a movie for me in Movie Roulette” on Apple TV: always offers Spin.
 /// There is no in-app button (a Spin-only button would duplicate the wheel).
+/// Same title and phrases as iOS; the type name stays for existing Shortcuts.
 struct WhatShouldIWatchIntent: AppIntent {
-    static let title: LocalizedStringResource = "What Should I Watch"
+    static let title: LocalizedStringResource = "Pick for Me"
     static let description = IntentDescription(
-        "Offers to spin the wheel. On-device suggestions aren’t available on Apple TV.",
+        "Offers to spin the wheel. Picks aren’t available on this TV.",
         categoryName: "Roulette"
     )
     static let openAppWhenRun = false

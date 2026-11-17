@@ -51,7 +51,6 @@ struct MovieRouletteShortcuts: AppShortcutsProvider {
             phrases: [
                 "Spin \(.applicationName)",
                 "Spin the wheel in \(.applicationName)",
-                "What should we watch with \(.applicationName)",
             ],
             shortTitle: "Spin the Wheel",
             systemImageName: "dial.medium"

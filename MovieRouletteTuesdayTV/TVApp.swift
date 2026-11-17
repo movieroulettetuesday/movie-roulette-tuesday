@@ -17,7 +17,7 @@ import MRTShared
 /// Siri App Intents live in this target (not MRTKit: Top Shelf is an
 /// extension and cannot compile ForegroundContinuableIntent). Spin records
 /// into the same UserDefaults history the wheel uses, then opens the app
-/// and plays that result. On-device “What should I watch?” is compiled
+/// and plays that result. On-device “Pick for Me” is compiled
 /// out (Foundation Models is tvOS-unavailable in the 27.2 SDK) and the
 /// intent offers Spin. Invocation on a real Apple TV is still unproven.
 @main

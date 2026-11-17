@@ -53,7 +53,6 @@ struct MovieRouletteShortcuts: AppShortcutsProvider {
             phrases: [
                 "Spin \(.applicationName)",
                 "Spin the wheel in \(.applicationName)",
-                "What should we watch with \(.applicationName)",
             ],
             shortTitle: "Spin the Wheel",
             systemImageName: "dial.medium"
@@ -134,9 +133,10 @@ struct MovieRouletteShortcuts: AppShortcutsProvider {
         AppShortcut(
             intent: WhatShouldIWatchIntent(),
             phrases: [
+                "Pick a movie for me in \(.applicationName)",
                 "What should I watch in \(.applicationName)",
             ],
-            shortTitle: "What Should I Watch",
+            shortTitle: "Pick for Me",
             systemImageName: "sparkles"
         )
     }

@@ -36,7 +36,7 @@ struct OpenMovieIntent: AppIntent {
 struct LatestEpisodeIntent: ForegroundContinuableIntent {
     static let title: LocalizedStringResource = "Latest Episode"
     static let description = IntentDescription(
-        "Opens the newest episode and offers to listen in Apple Podcasts.",
+        "Opens the newest episode and offers to listen in Podcasts.",
         categoryName: "Episodes"
     )
     /// The episode page opens only when the cache has one. An empty cache
@@ -96,11 +96,11 @@ struct OpenEpisodesTabIntent: AppIntent {
     }
 }
 
-/// Hidden. The latest-episode snippet's "Listen in Apple Podcasts" button.
+/// Hidden. The latest-episode snippet's "Listen in Apple Podcasts" button. Intent metadata must not contain "Apple" (ASC 90626).
 /// Uses the cached iTunes lookup: the exact episode when the GUID is known,
 /// otherwise the show page.
-struct ListenInApplePodcastsIntent: AppIntent {
-    static let title: LocalizedStringResource = "Listen in Apple Podcasts"
+struct ListenInPodcastsIntent: AppIntent {
+    static let title: LocalizedStringResource = "Listen in Podcasts"
     static let openAppWhenRun = true
     @available(iOS 26.0, tvOS 26.0, *)
     static var supportedModes: IntentModes { .foreground(.immediate) }
@@ -139,7 +139,7 @@ private struct LatestEpisodeSnippet: View {
                     .foregroundStyle(.secondary)
             }
             if pick.listenURL != nil {
-                Button(intent: ListenInApplePodcastsIntent(episodeGUID: pick.episode.guid)) {
+                Button(intent: ListenInPodcastsIntent(episodeGUID: pick.episode.guid)) {
                     Text("Listen in Apple Podcasts")
                         .font(.subheadline.weight(.semibold))
                         .frame(maxWidth: .infinity)
