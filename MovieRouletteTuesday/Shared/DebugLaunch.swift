@@ -97,6 +97,8 @@ enum DebugLaunch {
     /// vibe it answers (default "cult"). `MRT_SUGGESTION_FORCE timeout|invalid`
     /// makes it never answer in time, or answer a number outside the list, so
     /// the app's own pick shows. The facts always come from the app's real lists.
+    /// `MRT_SUGGESTION_TIMEOUT_MS <ms>` replaces the 2.5 s cap for that launch, so
+    /// a UI test can hold the loading card (with `timeout`) long enough to check it.
     static var suggestionStubbed: Bool {
         let env = ProcessInfo.processInfo.environment
         return env["MRT_SUGGESTION_MOVIE"].map { !$0.isEmpty } == true
@@ -113,6 +115,9 @@ enum DebugLaunch {
             ?? argumentValue(for: "-MRTSuggestionMovie", in: args, joiningUntilNextFlag: false)
         let vibe = env["MRT_SUGGESTION_VIBE"].flatMap { $0.isEmpty ? nil : $0 } ?? PickVibe.cult.rawValue
         let force = env["MRT_SUGGESTION_FORCE"].flatMap { $0.isEmpty ? nil : $0.lowercased() }
+        if let ms = env["MRT_SUGGESTION_TIMEOUT_MS"].flatMap(Int.init), ms > 0 {
+            SuggestionGenerator.timeout = .milliseconds(ms)
+        }
         return DebugSuggestionStub(movie: id.flatMap { id in rows.first { $0.id == id } }, vibe: vibe, force: force)
     }
 
