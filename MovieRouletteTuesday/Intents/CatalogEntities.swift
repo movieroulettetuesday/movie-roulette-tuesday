@@ -278,7 +278,7 @@ enum StreamingProviderOption: String, AppEnum, Sendable {
     case netflix
     case prime
     case max
-    case appleTV
+    case tvApp // Apple TV; App Intents metadata must not contain "Apple" (ASC 90626)
     case disney
     case hulu
     case paramount
@@ -300,7 +300,7 @@ enum StreamingProviderOption: String, AppEnum, Sendable {
             .netflix: "Netflix",
             .prime: "Prime Video",
             .max: "Max",
-            .appleTV: "Apple TV",
+            .tvApp: "TV app",
             .disney: "Disney+",
             .hulu: "Hulu",
             .paramount: "Paramount+",
@@ -320,7 +320,7 @@ enum StreamingProviderOption: String, AppEnum, Sendable {
         case .netflix: return StreamingInfo.Provider(id: 8, name: "Netflix")
         case .prime: return StreamingInfo.Provider(id: 9, name: "Prime Video")
         case .max: return StreamingInfo.Provider(id: 1899, name: "Max")
-        case .appleTV: return StreamingInfo.Provider(id: 2, name: "Apple TV")
+        case .tvApp: return StreamingInfo.Provider(id: 2, name: "Apple TV")
         case .disney: return StreamingInfo.Provider(id: 337, name: "Disney+")
         case .hulu: return StreamingInfo.Provider(id: 15, name: "Hulu")
         case .paramount: return StreamingInfo.Provider(id: 531, name: "Paramount+")
@@ -342,7 +342,7 @@ enum StreamingProviderOption: String, AppEnum, Sendable {
         case .prime:
             return provider.id == 9 || provider.id == 10 || name.contains("prime") || name.contains("amazon video")
         case .max: return provider.id == 1899 || provider.id == 384 || name == "max" || name.contains("hbo")
-        case .appleTV: return provider.id == 2 || provider.id == 350 || name.hasPrefix("apple")
+        case .tvApp: return provider.id == 2 || provider.id == 350 || name.hasPrefix("apple")
         case .disney: return provider.id == 337 || name.contains("disney")
         case .hulu: return provider.id == 15 || name.contains("hulu")
         case .paramount: return provider.id == 531 || name.contains("paramount")
