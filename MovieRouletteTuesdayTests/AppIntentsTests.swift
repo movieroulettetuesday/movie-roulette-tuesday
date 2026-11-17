@@ -254,7 +254,7 @@ final class AppIntentsTests: XCTestCase {
             opened.append(url)
             return true
         }
-        _ = try await ListenInApplePodcastsIntent(episodeGUID: episode.guid).perform()
+        _ = try await ListenInPodcastsIntent(episodeGUID: episode.guid).perform()
         XCTAssertEqual(opened, [try XCTUnwrap(exact.listenURL)])
     }
 
