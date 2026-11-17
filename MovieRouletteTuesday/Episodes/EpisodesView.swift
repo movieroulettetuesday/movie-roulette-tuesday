@@ -19,6 +19,8 @@ struct EpisodesView: View {
     @State private var path: [String] = []
     /// Last natural-language handoff this list has reset for.
     @State private var handledNLReset = 0
+    /// iPhone only: activate the search after a handoff so the moved query shows.
+    @State private var revealMovedQuery = false
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @AppStorage("episodes.grouping") private var groupingRaw = EpisodeGrouping.season.rawValue
     @AppStorage("episodes.expandedGroups") private var expansionRaw = ""
@@ -37,6 +39,7 @@ struct EpisodesView: View {
         let token = nlSearch.episodes.resetToken
         guard token != handledNLReset else { return }
         handledNLReset = token
+        revealMovedQuery = !isRegular
         selectedGUID = nil
         path = []
     }
@@ -129,6 +132,15 @@ struct EpisodesView: View {
         .cleanProListScreen()
         .navigationTitle("Episodes")
         .searchable(text: $nlSearch.episodes.query, isPresented: $nlSearch.episodes.searchPresented, prompt: Text("Title, S4E39, or movie"))
+        // iPhone: after a handoff the field would sit collapsed under the large
+        // title, hiding the moved query. Activate the search once the rebuilt
+        // stack is on screen. iPad's sidebar field is always visible; unchanged.
+        .task(id: handledNLReset) {
+            guard revealMovedQuery else { return }
+            revealMovedQuery = false
+            try? await Task.sleep(for: .milliseconds(300))
+            nlSearch.episodes.searchPresented = true
+        }
         .task(id: nlSearch.episodes.query) {
             nlSearch.queryChanged(.episodes, titles: catalog?.movies.map(\.title) ?? [])
             guard nlSearch.isEnabled, isSearching else { return }

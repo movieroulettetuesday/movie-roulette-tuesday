@@ -173,6 +173,9 @@ final class NLSearchTests: XCTestCase {
         XCTAssertTrue(NLSearch.providerNameMatches("Tubi TV", "tv"), "2-character whole string")
         XCTAssertTrue(NLSearch.providerNameMatches("HBO Max", "max hbo"), "every word, all 2+")
         XCTAssertFalse(NLSearch.providerNameMatches("HBO Max", "max a"), "a word under 2 blocks the fallback")
+        XCTAssertFalse(NLSearch.providerNameMatches("HBO Max", "hbo x"), "shared case: 'x' blocks the fallback")
+        // The real catalog has HBO Max Amazon Channel, where 'max a' is a whole-string hit.
+        XCTAssertTrue(NLSearch.providerNameMatches("HBO Max Amazon Channel", "max a"))
         XCTAssertTrue(NLSearch.providerNameMatches("Criterion Channel", "criterion channel"))
     }
 
