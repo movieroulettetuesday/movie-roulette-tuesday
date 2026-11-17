@@ -62,7 +62,8 @@
         "the-ugly-stepsister-2025",
         "piranha-ii-the-spawning-1982",
         "prince-of-darkness-1987",
-        "the-devils-rain-1975"
+        "the-devils-rain-1975",
+        "the-day-of-the-beast-1995"
       ]
     },
     {
@@ -107,7 +108,8 @@
         "palmer-rockeys-scarlet-warning-666-1982",
         "piranha-ii-the-spawning-1982",
         "prince-of-darkness-1987",
-        "the-devils-rain-1975"
+        "the-devils-rain-1975",
+        "the-day-of-the-beast-1995"
       ]
     },
     {
@@ -20108,6 +20110,23 @@
           }
         ]
       }
+    },
+    {
+      "id": "the-day-of-the-beast-1995",
+      "title": "The Day of the Beast",
+      "year": 1995,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror",
+        "cat-cult"
+      ],
+      "episodeIds": [
+        "Buzzsprout-20135133"
+      ],
+      "episodeTitle": "The Day of the Beast",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null
     }
   ]
 }
