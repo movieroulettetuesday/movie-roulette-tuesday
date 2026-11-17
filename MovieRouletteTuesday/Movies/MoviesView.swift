@@ -7,8 +7,12 @@ struct MoviesView: View {
     /// Feed store, for show artwork and for loading an episode opened from a
     /// movie page before the feed has arrived.
     var episodeStore: EpisodeStore? = nil
+    /// Search text and NL chips (shared with Episodes for the list switch).
+    @Bindable var nlSearch: NLSearchModel
     /// Set by a deep link (`mrt://movie/<id>`); consumed once the catalog is loaded.
     var pendingMovieID: Binding<String?> = .constant(nil)
+    /// Selects the other tab when a question names it.
+    var switchTab: (NLSearch.List) -> Void = { _ in }
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -21,6 +25,8 @@ struct MoviesView: View {
     /// Episodes pushed in the split view's detail column, tagged with the movie
     /// they belong to: selecting another movie starts a fresh detail stack.
     @State private var detailStack = DetailStack()
+    /// Last natural-language handoff this list has reset for.
+    @State private var handledNLReset = 0
 
     private struct DetailStack: Equatable {
         var movieID: String?
@@ -28,7 +34,9 @@ struct MoviesView: View {
     }
 
     private var showArtworkURL: URL? { episodeStore?.showArtworkURL }
-    @State private var query = ""
+    private var query: String { nlSearch.movies.query }
+    /// Active NL parse for the current text; nil means keyword search.
+    private var nlFilter: NLSearchFilter? { isSearching ? nlSearch.movies.filter : nil }
     @State private var showsSuggest = false
     @State private var categoryFilter: String? = nil  // category id
     @State private var sort: MovieSort = .title
@@ -68,7 +76,16 @@ struct MoviesView: View {
         }
         // Shared 1.1 matcher (same as Siri and the Episodes list).
         var ranks: [String: CatalogSearch.Rank] = [:]
-        if isSearching {
+        if let nlFilter {
+            // A parsed question: hard filters AND the toolbar above, CatalogSearch
+            // only for title / S#E# (never with an empty query).
+            let result = NLSearch.apply(
+                nlFilter, toMovies: list, catalog: catalog, ratings: personal.ratings,
+                services: services, episodesByGUID: episodesByGUID
+            )
+            list = result.movies
+            ranks = result.ranks
+        } else if isSearching {
             let hits = CatalogSearch.movies(list, matching: query, catalog: catalog, episodesByGUID: episodesByGUID)
             ranks = Dictionary(hits.map { ($0.movie.id, $0.rank) }, uniquingKeysWith: { first, _ in first })
             list = hits.map(\.movie)
@@ -105,6 +122,15 @@ struct MoviesView: View {
 
     private var isRegular: Bool { horizontalSizeClass == .regular }
 
+    private func consumeNLReset() {
+        let token = nlSearch.movies.resetToken
+        guard token != handledNLReset else { return }
+        handledNLReset = token
+        selectedMovieID = nil
+        detailStack = DetailStack()
+        path = []
+    }
+
     var body: some View {
         Group {
             if isRegular {
@@ -136,6 +162,9 @@ struct MoviesView: View {
                     sidebarContent
                         .navigationDestination(for: MoviesRoute.self) { destination(for: $0) }
                 }
+                // A handoff rebuilds the stack so it opens at its root, even when
+                // the pop happened while this tab was off screen.
+                .id(handledNLReset)
             }
         }
         .onChange(of: isRegular) { _, regular in
@@ -155,6 +184,9 @@ struct MoviesView: View {
         .onChange(of: pendingMovieID.wrappedValue) { _, _ in consumePendingLink() }
         .onChange(of: catalog?.movies.count) { _, _ in consumePendingLink() }
         .onAppear { consumePendingLink() }
+        // A question handed off from Episodes: open the list at its root.
+        .onAppear { consumeNLReset() }
+        .onChange(of: nlSearch.movies.resetToken) { _, _ in consumeNLReset() }
     }
 
     private var sidebarContent: some View {
@@ -168,7 +200,15 @@ struct MoviesView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .cleanProListScreen()
         .navigationTitle("Movies")
-        .searchable(text: $query, prompt: Text("Title, year, S4E39, service"))
+        .searchable(text: $nlSearch.movies.query, isPresented: $nlSearch.movies.searchPresented, prompt: Text("Title, year, S4E39, service"))
+        .task(id: nlSearch.movies.query) {
+            nlSearch.queryChanged(.movies, titles: catalog?.movies.map(\.title) ?? [])
+            guard nlSearch.isEnabled, isSearching else { return }
+            try? await Task.sleep(for: NLSearchModel.debounce)
+            guard !Task.isCancelled else { return }
+            await nlSearch.parse(.movies, catalog: catalog, switchTab: switchTab)
+        }
+        .onAppear { nlSearch.prewarm() }
         .toolbar { toolbar }
         .sheet(isPresented: $showsSuggest) {
             SuggestMovieSheet(categories: catalog?.categories ?? [])
@@ -227,15 +267,25 @@ struct MoviesView: View {
         ScrollViewReader { proxy in
             Group {
                 if isRegular {
-                    List(selection: $selectedMovieID) { streamingChips; suggestSection; listSection }
+                    List(selection: $selectedMovieID) { nlChips; streamingChips; suggestSection; listSection }
                 } else {
-                    List { streamingChips; suggestSection; listSection }
+                    List { nlChips; streamingChips; suggestSection; listSection }
                 }
             }
             .overlay { emptyOverlay }
             #if DEBUG
             .task { await DebugScroll.runIfRequested(proxy: proxy, ids: { filtered.map(\.id) }) }
             #endif
+        }
+    }
+
+    /// Removable chips from a parsed question (NL search), above the service chips.
+    @ViewBuilder
+    private var nlChips: some View {
+        if nlFilter != nil {
+            NLSearchChipsSection(chips: nlSearch.chips(.movies, catalog: catalog)) { field in
+                nlSearch.removeChip(field, from: .movies, catalog: catalog)
+            }
         }
     }
 
@@ -568,7 +618,11 @@ struct LinkedEpisodeView: View {
 }
 
 #Preview {
-    MoviesView(catalog: nil, history: SpinHistoryStore(fileStore: nil))
+    MoviesView(
+        catalog: nil,
+        history: SpinHistoryStore(fileStore: nil),
+        nlSearch: NLSearchModel(availability: { .unavailable }, makeParser: { nil })
+    )
         .environment(PersonalRatingsStore(fileStore: nil))
         .environment(SpinHistoryStore(fileStore: nil))
         .environment(CommunityService.preview())

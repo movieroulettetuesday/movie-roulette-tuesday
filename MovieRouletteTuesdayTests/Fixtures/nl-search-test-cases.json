@@ -1,0 +1,635 @@
+{
+  "schema": "nl-search-filter-schema.md",
+  "catalogCommit": "bedf0a63f27299dd9210b8ccb6f027bca310c08f",
+  "note": "These cases test parse output: a natural-language question mapped to an NLSearchFilter. Because a model is non-deterministic, compare loosely: every key in `required` must be present and equal; keys in `optional` may appear with that value but are not required; a non-null field that is not in `required` or `optional` fails; every name in `mustBeNull` must be null or absent (the model must not invent it). If `providerAcceptable` is set, `required.provider` may be any of those strings. If `titleFolded` is set, compare the folded title rather than the raw string. `outcome` is `apply` (run apply() on the validated filter), `empty-filter` (all-null; use keyword CatalogSearch and do not call apply), or `validate` (an unknown genre, category, kind, watched value, or provider must be nulled or the parse rejected so it cannot reach apply). `switchesTo` is `movies`, `episodes`, or `stay`, derived from `kind`: movie or episode selects that list (switch if the other list is showing; stay if already there); any or a missing kind stays on the current list. The deterministic filter-to-results step is not covered here and must be unit-tested exactly against apply().",
+  "genres": [
+    "Drama",
+    "Horror",
+    "Sci-Fi",
+    "Comedy",
+    "Thriller",
+    "Fantasy",
+    "Action",
+    "Romance",
+    "Musical",
+    "Western"
+  ],
+  "categories": [
+    {
+      "name": "Horror",
+      "fullName": "Horror & Terror",
+      "id": "cat-horror"
+    },
+    {
+      "name": "Cult",
+      "fullName": "Cult & Bizarre",
+      "id": "cat-cult"
+    },
+    {
+      "name": "Sci-Fi",
+      "fullName": "Sci-Fi & Fantasy",
+      "id": "cat-scifi"
+    },
+    {
+      "name": "Prestige",
+      "fullName": "Prestige Drama",
+      "id": "cat-prestige"
+    },
+    {
+      "name": "Action",
+      "fullName": "Action & Thrillers",
+      "id": "cat-action"
+    },
+    {
+      "name": "Dark Comedy",
+      "fullName": "Dark Comedy",
+      "id": "cat-dark-comedy"
+    },
+    {
+      "name": "Criterion",
+      "fullName": "Criterion & Classics",
+      "id": "cat-criterion"
+    },
+    {
+      "name": "Escape",
+      "fullName": "War, Escape & Survival",
+      "id": "cat-escape"
+    },
+    {
+      "name": "Love Hurts",
+      "fullName": "Love Hurts",
+      "id": "cat-love"
+    },
+    {
+      "name": "Listeners",
+      "fullName": "Listener Picks",
+      "id": "cat-listener"
+    }
+  ],
+  "cases": [
+    {
+      "id": "free-80s-horror-unwatched",
+      "source": "android-suggested",
+      "question": "free 80s horror I haven't watched",
+      "outcome": "apply",
+      "required": {
+        "genre": "Horror",
+        "yearMin": 1980,
+        "yearMax": 1989,
+        "freeOnly": true,
+        "watched": "unwatched"
+      },
+      "mustBeNull": [
+        "title"
+      ],
+      "note": "Filters only, no title. Decade shorthand 80s → 1980–1989. apply must not call CatalogSearch with an empty query.",
+      "switchesTo": "stay"
+    },
+    {
+      "id": "unrated-criterion",
+      "source": "android-suggested",
+      "question": "unrated Criterion",
+      "outcome": "apply",
+      "required": {
+        "unrated": true,
+        "category": "Criterion"
+      },
+      "mustBeNull": [
+        "title"
+      ],
+      "note": "Criterion is the wheel category (id cat-criterion), not Criterion Channel.",
+      "switchesTo": "stay"
+    },
+    {
+      "id": "watchlist-scifi",
+      "source": "android-suggested",
+      "question": "watchlist sci-fi",
+      "outcome": "apply",
+      "required": {
+        "watched": "watchlist",
+        "genre": "Sci-Fi"
+      },
+      "optional": {
+        "category": "Sci-Fi"
+      },
+      "mustBeNull": [
+        "title"
+      ],
+      "note": "Prefer genre Sci-Fi. category Sci-Fi (cat-scifi) is acceptable in addition, not instead of genre.",
+      "switchesTo": "stay"
+    },
+    {
+      "id": "rated-4-or-higher-on-my-services",
+      "source": "android-suggested",
+      "question": "movies rated 4 or higher on my services",
+      "outcome": "apply",
+      "required": {
+        "kind": "movie",
+        "ratingMin": 4,
+        "onMyServices": true
+      },
+      "mustBeNull": [
+        "title",
+        "unrated"
+      ],
+      "switchesTo": "movies"
+    },
+    {
+      "id": "s4e39",
+      "source": "android-suggested",
+      "question": "S4E39",
+      "outcome": "apply",
+      "required": {
+        "season": 4,
+        "episode": 39,
+        "kind": "episode"
+      },
+      "mustBeNull": [
+        "title"
+      ],
+      "note": "Season/episode set, so apply does call CatalogSearch with S#E# tokens even though title is empty. kind is episode, so this switches if the person is on Movies.",
+      "switchesTo": "episodes"
+    },
+    {
+      "id": "season-4-episode-39-words",
+      "source": "android-suggested",
+      "question": "season 4 episode 39",
+      "outcome": "apply",
+      "required": {
+        "season": 4,
+        "episode": 39,
+        "kind": "episode"
+      },
+      "mustBeNull": [
+        "title"
+      ],
+      "note": "Written-out S#E#. kind is episode, so this switches if the person is on Movies.",
+      "switchesTo": "episodes"
+    },
+    {
+      "id": "short-title-the-thing",
+      "source": "android-suggested",
+      "question": "the thing",
+      "outcome": "empty-filter",
+      "required": {},
+      "mustBeNull": [
+        "title",
+        "kind",
+        "yearMin",
+        "yearMax",
+        "genre",
+        "category",
+        "provider",
+        "freeOnly",
+        "ratingMin",
+        "ratingMax",
+        "unrated",
+        "watched",
+        "season",
+        "episode",
+        "onMyServices"
+      ],
+      "note": "Short title-like query stays on keyword CatalogSearch. Do not invent genre Horror or a year.",
+      "switchesTo": "stay"
+    },
+    {
+      "id": "short-shudder-keyword",
+      "source": "android-suggested",
+      "question": "Shudder",
+      "outcome": "empty-filter",
+      "required": {},
+      "mustBeNull": [
+        "title",
+        "kind",
+        "yearMin",
+        "yearMax",
+        "genre",
+        "category",
+        "provider",
+        "freeOnly",
+        "ratingMin",
+        "ratingMax",
+        "unrated",
+        "watched",
+        "season",
+        "episode",
+        "onMyServices"
+      ],
+      "note": "Bare provider/title token stays on CatalogSearch, which already ranks The Shudder first, then Shudder as a provider. Contrast movies-on-shudder.",
+      "switchesTo": "stay"
+    },
+    {
+      "id": "all-null-punctuation",
+      "source": "android-suggested",
+      "question": "???",
+      "outcome": "empty-filter",
+      "required": {},
+      "mustBeNull": [
+        "title",
+        "kind",
+        "yearMin",
+        "yearMax",
+        "genre",
+        "category",
+        "provider",
+        "freeOnly",
+        "ratingMin",
+        "ratingMax",
+        "unrated",
+        "watched",
+        "season",
+        "episode",
+        "onMyServices"
+      ],
+      "note": "Failed or empty parse. Keyword CatalogSearch; do not call apply.",
+      "switchesTo": "stay"
+    },
+    {
+      "id": "filters-only-free-horror",
+      "source": "edge",
+      "question": "free horror",
+      "outcome": "apply",
+      "required": {
+        "genre": "Horror",
+        "freeOnly": true
+      },
+      "mustBeNull": [
+        "title"
+      ],
+      "note": "Filters only, no title.",
+      "switchesTo": "stay"
+    },
+    {
+      "id": "year-range-1975-1985",
+      "source": "edge",
+      "question": "movies from 1975 to 1985",
+      "outcome": "apply",
+      "required": {
+        "kind": "movie",
+        "yearMin": 1975,
+        "yearMax": 1985
+      },
+      "mustBeNull": [
+        "title"
+      ],
+      "switchesTo": "movies"
+    },
+    {
+      "id": "free-only-tonight",
+      "source": "edge",
+      "question": "what's free tonight",
+      "outcome": "apply",
+      "required": {
+        "freeOnly": true
+      },
+      "mustBeNull": [
+        "title"
+      ],
+      "switchesTo": "stay"
+    },
+    {
+      "id": "unwatched-movies",
+      "source": "edge",
+      "question": "movies I haven't watched",
+      "outcome": "apply",
+      "required": {
+        "kind": "movie",
+        "watched": "unwatched"
+      },
+      "mustBeNull": [
+        "title"
+      ],
+      "switchesTo": "movies"
+    },
+    {
+      "id": "unrated-movies",
+      "source": "edge",
+      "question": "unrated movies",
+      "outcome": "apply",
+      "required": {
+        "kind": "movie",
+        "unrated": true
+      },
+      "mustBeNull": [
+        "title",
+        "ratingMin",
+        "ratingMax"
+      ],
+      "switchesTo": "movies"
+    },
+    {
+      "id": "rating-range-3-to-4-5",
+      "source": "edge",
+      "question": "movies I rated between 3 and 4.5",
+      "outcome": "apply",
+      "required": {
+        "kind": "movie",
+        "ratingMin": 3,
+        "ratingMax": 4.5
+      },
+      "mustBeNull": [
+        "title",
+        "unrated"
+      ],
+      "switchesTo": "movies"
+    },
+    {
+      "id": "unknown-genre-animation",
+      "source": "edge",
+      "question": "animation movies",
+      "outcome": "validate",
+      "required": {
+        "kind": "movie"
+      },
+      "mustBeNull": [
+        "genre",
+        "title"
+      ],
+      "disallowedValues": {
+        "genre": [
+          "Animation",
+          "Science Fiction",
+          "Documentary",
+          "Rom-com"
+        ]
+      },
+      "note": "Animation is not a catalog genre. Null the genre field or reject the parse (empty-filter). An unknown genre must not reach apply.",
+      "switchesTo": "movies"
+    },
+    {
+      "id": "unknown-provider-blockbuster",
+      "source": "edge",
+      "question": "horror on Blockbuster",
+      "outcome": "validate",
+      "required": {
+        "genre": "Horror"
+      },
+      "mustBeNull": [
+        "provider",
+        "title"
+      ],
+      "disallowedValues": {
+        "provider": [
+          "Blockbuster",
+          "HBO Go",
+          "Vudu"
+        ]
+      },
+      "note": "Blockbuster is not a stream or free provider in the catalog. Null provider; keep genre Horror. Rent-only names such as Vudu are also not valid providers.",
+      "switchesTo": "stay"
+    },
+    {
+      "id": "provider-movies-on-shudder",
+      "source": "provider-alias",
+      "question": "movies on Shudder",
+      "outcome": "apply",
+      "required": {
+        "kind": "movie",
+        "provider": "Shudder"
+      },
+      "mustBeNull": [
+        "title"
+      ],
+      "note": "Short official name. apply fold-contains matches Shudder and Shudder Amazon Channel.",
+      "switchesTo": "movies"
+    },
+    {
+      "id": "provider-free-on-tubi",
+      "source": "provider-alias",
+      "question": "what's free on Tubi",
+      "outcome": "apply",
+      "required": {
+        "freeOnly": true,
+        "provider": "Tubi"
+      },
+      "providerAcceptable": [
+        "Tubi",
+        "Tubi TV"
+      ],
+      "mustBeNull": [
+        "title"
+      ],
+      "note": "Tubi is an alias for official Tubi TV. With freeOnly, the name must appear in the free list.",
+      "switchesTo": "stay"
+    },
+    {
+      "id": "provider-pluto",
+      "source": "provider-alias",
+      "question": "movies on Pluto",
+      "outcome": "apply",
+      "required": {
+        "kind": "movie",
+        "provider": "Pluto"
+      },
+      "providerAcceptable": [
+        "Pluto",
+        "Pluto TV"
+      ],
+      "mustBeNull": [
+        "title"
+      ],
+      "switchesTo": "movies"
+    },
+    {
+      "id": "provider-disney-plus",
+      "source": "provider-alias",
+      "question": "films on Disney+",
+      "outcome": "apply",
+      "required": {
+        "kind": "movie",
+        "provider": "Disney Plus"
+      },
+      "providerAcceptable": [
+        "Disney Plus",
+        "Disney+"
+      ],
+      "mustBeNull": [
+        "title"
+      ],
+      "note": "Official catalog name is Disney Plus.",
+      "switchesTo": "movies"
+    },
+    {
+      "id": "provider-hbo-max",
+      "source": "provider-alias",
+      "question": "something on Max",
+      "outcome": "apply",
+      "required": {
+        "provider": "HBO Max"
+      },
+      "providerAcceptable": [
+        "HBO Max",
+        "Max"
+      ],
+      "mustBeNull": [
+        "title"
+      ],
+      "note": "Max is an alias for HBO Max.",
+      "switchesTo": "stay"
+    },
+    {
+      "id": "provider-netflix-unwatched",
+      "source": "provider-alias",
+      "question": "Netflix movies I haven't watched",
+      "outcome": "apply",
+      "required": {
+        "kind": "movie",
+        "provider": "Netflix",
+        "watched": "unwatched"
+      },
+      "mustBeNull": [
+        "title"
+      ],
+      "note": "Netflix also contains-matches Netflix Standard with Ads.",
+      "switchesTo": "movies"
+    },
+    {
+      "id": "find-the-thing",
+      "source": "title",
+      "question": "find me The Thing",
+      "outcome": "apply",
+      "required": {
+        "title": "The Thing"
+      },
+      "mustBeNull": [
+        "genre",
+        "yearMin",
+        "yearMax",
+        "category",
+        "kind"
+      ],
+      "note": "Title only. Do not invent Horror, a year, or kind movie — a title search on Episodes must stay there.",
+      "switchesTo": "stay"
+    },
+    {
+      "id": "s4e39-with-title",
+      "source": "episode",
+      "question": "S4E39 The Devil's Rain",
+      "outcome": "apply",
+      "required": {
+        "season": 4,
+        "episode": 39,
+        "title": "The Devil's Rain",
+        "kind": "episode"
+      },
+      "note": "S#E# plus a title is kind episode, so this switches if the person is on Movies. Title may omit the article or apostrophe; loose compare should fold before checking title.",
+      "titleFolded": "devils rain",
+      "switchesTo": "episodes"
+    },
+    {
+      "id": "dark-comedy-on-my-services",
+      "source": "category",
+      "question": "Dark Comedy on my services",
+      "outcome": "apply",
+      "required": {
+        "category": "Dark Comedy",
+        "onMyServices": true
+      },
+      "mustBeNull": [
+        "title"
+      ],
+      "note": "Category name Dark Comedy (id cat-dark-comedy).",
+      "switchesTo": "stay"
+    },
+    {
+      "id": "listener-picks-unwatched",
+      "source": "category",
+      "question": "Listener Picks I haven't seen",
+      "outcome": "apply",
+      "required": {
+        "category": "Listeners",
+        "watched": "unwatched"
+      },
+      "mustBeNull": [
+        "title"
+      ],
+      "note": "fullName Listener Picks maps to category name Listeners (id cat-listener).",
+      "switchesTo": "stay"
+    },
+    {
+      "id": "love-hurts-90s",
+      "source": "category",
+      "question": "Love Hurts films from the 90s",
+      "outcome": "apply",
+      "required": {
+        "category": "Love Hurts",
+        "yearMin": 1990,
+        "yearMax": 1999,
+        "kind": "movie"
+      },
+      "mustBeNull": [
+        "title"
+      ],
+      "note": "Category Love Hurts (id cat-love). Decade 90s → 1990–1999. “films” sets kind movie.",
+      "switchesTo": "movies"
+    },
+    {
+      "id": "prestige-rated-5",
+      "source": "category",
+      "question": "Prestige drama rated 5",
+      "outcome": "apply",
+      "required": {
+        "category": "Prestige",
+        "ratingMin": 5
+      },
+      "optional": {
+        "genre": "Drama",
+        "ratingMax": 5
+      },
+      "mustBeNull": [
+        "title",
+        "kind"
+      ],
+      "note": "Prestige is the wheel category (fullName Prestige Drama, id cat-prestige). genre Drama is optional.",
+      "switchesTo": "stay"
+    },
+    {
+      "id": "switch-to-episodes-about-the-thing",
+      "source": "list-switch",
+      "question": "episodes about The Thing",
+      "outcome": "apply",
+      "required": {
+        "kind": "episode",
+        "title": "The Thing"
+      },
+      "mustBeNull": [
+        "genre",
+        "yearMin",
+        "yearMax"
+      ],
+      "note": "Explicit “episodes” sets kind episode. From Movies, switch to Episodes; query and chips move; Movies query and chips clear. Already on Episodes: stay, do not reset.",
+      "switchesTo": "episodes"
+    },
+    {
+      "id": "switch-to-movies-unwatched",
+      "source": "list-switch",
+      "question": "show me movies I haven't watched",
+      "outcome": "apply",
+      "required": {
+        "kind": "movie",
+        "watched": "unwatched"
+      },
+      "mustBeNull": [
+        "title"
+      ],
+      "note": "Explicit “movies” sets kind movie. From Episodes, switch to Movies; query and chips move; Episodes query and chips clear. Already on Movies: stay.",
+      "switchesTo": "movies"
+    },
+    {
+      "id": "stay-put-horror-unwatched",
+      "source": "list-switch",
+      "question": "horror I haven't watched",
+      "outcome": "apply",
+      "required": {
+        "genre": "Horror",
+        "watched": "unwatched"
+      },
+      "mustBeNull": [
+        "title",
+        "kind"
+      ],
+      "note": "No list word, so kind is any/null and the current list does not switch, whether that is Movies or Episodes.",
+      "switchesTo": "stay"
+    }
+  ]
+}

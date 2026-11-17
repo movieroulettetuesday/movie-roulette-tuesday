@@ -3,24 +3,43 @@ import SwiftUI
 struct EpisodesView: View {
     @Bindable var store: EpisodeStore
     var catalog: MovieCatalog?
+    /// Search text and NL chips (shared with Movies for the list switch).
+    @Bindable var nlSearch: NLSearchModel
     /// Set by a new-episode notification tap (`mrt://episode/<guid>`).
     var pendingEpisodeGUID: Binding<String?> = .constant(nil)
+    /// Selects the other tab when a question names it.
+    var switchTab: (NLSearch.List) -> Void = { _ in }
+    @Environment(PersonalRatingsStore.self) private var personal
+    @AppStorage(MyServices.storageKey) private var myServicesRaw = ""
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     /// Split-view selection (regular width).
     @State private var selectedGUID: String?
     /// Stack path (compact width). Synced with `selectedGUID` on size-class changes.
     @State private var path: [String] = []
+    /// Last natural-language handoff this list has reset for.
+    @State private var handledNLReset = 0
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @AppStorage("episodes.grouping") private var groupingRaw = EpisodeGrouping.season.rawValue
     @AppStorage("episodes.expandedGroups") private var expansionRaw = ""
-    /// Search text. Lives here, not in a branch, so it survives the
-    /// compact/regular switch (iPad Split View, iPhone Duo fold).
-    @State private var query = ""
+    /// Search text. Lives in the shared model, not in a branch, so it survives
+    /// the compact/regular switch (iPad Split View, iPhone Duo fold) and a
+    /// question can hand it to Movies.
+    private var query: String { nlSearch.episodes.query }
+    /// Active NL parse for the current text; nil means keyword search.
+    private var nlFilter: NLSearchFilter? { isSearching ? nlSearch.episodes.filter : nil }
 
     private var grouping: EpisodeGrouping { EpisodeGrouping(rawValue: groupingRaw) ?? .season }
 
     private var isRegular: Bool { horizontalSizeClass == .regular }
+
+    private func consumeNLReset() {
+        let token = nlSearch.episodes.resetToken
+        guard token != handledNLReset else { return }
+        handledNLReset = token
+        selectedGUID = nil
+        path = []
+    }
 
     var body: some View {
         Group {
@@ -55,6 +74,9 @@ struct EpisodesView: View {
                             }
                         }
                 }
+                // A handoff rebuilds the stack so it opens at its root, even when
+                // the pop happened while this tab was off screen.
+                .id(handledNLReset)
             }
         }
         .onChange(of: pendingEpisodeGUID.wrappedValue, initial: true) { _, guid in
@@ -63,6 +85,9 @@ struct EpisodesView: View {
             selectedGUID = guid
             path = [guid]
         }
+        // A question handed off from Movies: open the list at its root.
+        .onAppear { consumeNLReset() }
+        .onChange(of: nlSearch.episodes.resetToken) { _, _ in consumeNLReset() }
         .onChange(of: isRegular) { _, regular in
             if regular {
                 selectedGUID = path.last ?? selectedGUID
@@ -103,7 +128,15 @@ struct EpisodesView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .cleanProListScreen()
         .navigationTitle("Episodes")
-        .searchable(text: $query, prompt: Text("Title, S4E39, or movie"))
+        .searchable(text: $nlSearch.episodes.query, isPresented: $nlSearch.episodes.searchPresented, prompt: Text("Title, S4E39, or movie"))
+        .task(id: nlSearch.episodes.query) {
+            nlSearch.queryChanged(.episodes, titles: catalog?.movies.map(\.title) ?? [])
+            guard nlSearch.isEnabled, isSearching else { return }
+            try? await Task.sleep(for: NLSearchModel.debounce)
+            guard !Task.isCancelled else { return }
+            await nlSearch.parse(.episodes, catalog: catalog, switchTab: switchTab)
+        }
+        .onAppear { nlSearch.prewarm() }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 if case .loaded(fromCache: true) = store.loadState {
@@ -140,7 +173,15 @@ struct EpisodesView: View {
     /// Shared 1.1 matcher: title, S#E# / episode number, year, and the linked
     /// movie (title, genre, category, provider). Best match first.
     private var searchResults: [PodcastEpisode] {
-        CatalogSearch.episodes(store.episodes, matching: query, catalog: catalog).map(\.episode)
+        if let nlFilter {
+            // A parsed question: movie-level fields test the linked movie;
+            // CatalogSearch only for title / S#E# (never with an empty query).
+            return NLSearch.apply(
+                nlFilter, toEpisodes: store.episodes, catalog: catalog,
+                ratings: personal.ratings, services: MyServices(serialized: myServicesRaw)
+            )
+        }
+        return CatalogSearch.episodes(store.episodes, matching: query, catalog: catalog).map(\.episode)
     }
 
     /// Search results replace the grouped sections, so a hit is never hidden
@@ -239,6 +280,11 @@ struct EpisodesView: View {
     @ViewBuilder
     private var listContent: some View {
         if isSearching {
+            if nlFilter != nil {
+                NLSearchChipsSection(chips: nlSearch.chips(.episodes, catalog: catalog)) { field in
+                    nlSearch.removeChip(field, from: .episodes, catalog: catalog)
+                }
+            }
             searchContent
         } else {
             groupedContent
@@ -366,7 +412,11 @@ private struct EpisodeRow: View {
 }
 
 #Preview {
-    EpisodesView(store: EpisodeStore(cacheURL: nil), catalog: nil)
+    EpisodesView(
+        store: EpisodeStore(cacheURL: nil),
+        catalog: nil,
+        nlSearch: NLSearchModel(availability: { .unavailable }, makeParser: { nil })
+    )
         .environment(PersonalRatingsStore(fileStore: nil))
         .environment(SpinHistoryStore(fileStore: nil))
         .environment(CommunityService.preview())
