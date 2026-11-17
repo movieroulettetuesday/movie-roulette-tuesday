@@ -27,6 +27,8 @@ struct MoviesView: View {
     @State private var detailStack = DetailStack()
     /// Last natural-language handoff this list has reset for.
     @State private var handledNLReset = 0
+    /// iPhone only: activate the search after a handoff so the moved query shows.
+    @State private var revealMovedQuery = false
 
     private struct DetailStack: Equatable {
         var movieID: String?
@@ -126,6 +128,7 @@ struct MoviesView: View {
         let token = nlSearch.movies.resetToken
         guard token != handledNLReset else { return }
         handledNLReset = token
+        revealMovedQuery = !isRegular
         selectedMovieID = nil
         detailStack = DetailStack()
         path = []
@@ -201,6 +204,15 @@ struct MoviesView: View {
         .cleanProListScreen()
         .navigationTitle("Movies")
         .searchable(text: $nlSearch.movies.query, isPresented: $nlSearch.movies.searchPresented, prompt: Text("Title, year, S4E39, service"))
+        // iPhone: after a handoff the field would sit collapsed under the large
+        // title, hiding the moved query. Activate the search once the rebuilt
+        // stack is on screen. iPad's sidebar field is always visible; unchanged.
+        .task(id: handledNLReset) {
+            guard revealMovedQuery else { return }
+            revealMovedQuery = false
+            try? await Task.sleep(for: .milliseconds(300))
+            nlSearch.movies.searchPresented = true
+        }
         .task(id: nlSearch.movies.query) {
             nlSearch.queryChanged(.movies, titles: catalog?.movies.map(\.title) ?? [])
             guard nlSearch.isEnabled, isSearching else { return }
