@@ -59,6 +59,17 @@ final class NLSearchUITests: XCTestCase {
         field.typeText(text)
     }
 
+    /// After a switch the destination's search is active (as while typing),
+    /// so on iPhone the keyboard covers the tab bar. Tap the keyboard's Search
+    /// key, as a person would, to leave the query and chips in place.
+    private func dismissKeyboard() {
+        let keyboard = app.keyboards.firstMatch
+        guard keyboard.exists else { return }
+        let search = keyboard.buttons.matching(NSPredicate(format: "label ==[c] 'search'")).firstMatch
+        if search.exists { search.tap() }
+        XCTAssertTrue(keyboard.waitForNonExistence(timeout: 5), "keyboard dismissed")
+    }
+
     private func element(_ id: String) -> XCUIElement { app.descendants(matching: .any)[id] }
 
     private func tapTab(_ name: String) {
@@ -134,6 +145,7 @@ final class NLSearchUITests: XCTestCase {
         XCTAssertTrue(element("episode-row").firstMatch.waitForExistence(timeout: 45), "episode results")
         attach("nl-switch-to-episodes")
 
+        dismissKeyboard()
         tapTab("Movies")
         // The handoff dismissed this list's search, so on iPhone the field
         // is collapsed under the title until the list is pulled down.
@@ -157,6 +169,7 @@ final class NLSearchUITests: XCTestCase {
         // Ratings were reset (-MRTUITest), so every movie is unwatched; first by title.
         XCTAssertTrue(element("movie-row-a-face-in-the-crowd-1957").waitForExistence(timeout: 8), "unwatched movies listed")
         attach("nl-switch-to-movies")
+        dismissKeyboard()
         tapTab("Episodes")
         // The handoff dismissed this list's search, so on iPhone the field
         // is collapsed under the title until the list is pulled down.
