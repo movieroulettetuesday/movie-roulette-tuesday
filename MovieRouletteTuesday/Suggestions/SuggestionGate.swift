@@ -11,7 +11,7 @@ enum SuggestionModelStatus: Equatable, Sendable {
     case unavailable
 }
 
-/// What the Roulette tab shows for “What should I watch?”
+/// What the Roulette tab shows for “Pick for Me”.
 enum SuggestionEntry: Equatable, Sendable {
     /// Hide the button. The tab looks like it does today. Siri offers Spin.
     case hidden
@@ -43,8 +43,8 @@ enum SuggestionSpeech {
     static let failed = "I couldn’t pick a movie right now. I can spin the wheel instead."
     static let inAppNotReady = "Suggestions aren’t ready yet. Try again in a moment."
 
-    static func success(title: String, why: String) -> String {
-        "Try \(title). \(why)"
+    static func success(_ accepted: AcceptedSuggestion) -> String {
+        accepted.spoken
     }
 }
 

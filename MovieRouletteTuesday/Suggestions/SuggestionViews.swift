@@ -1,21 +1,38 @@
 import AppIntents
 import SwiftUI
 
-struct WhatShouldIWatchButton: View {
+enum PickForMeCopy {
+    static let buttonTitle = "Pick for Me"
+    static let buttonSubtitle = "Not random: one movie chosen for you, and why it fits."
+    static let accessibilityHint = "Picks one movie for you on purpose and explains why. Not random."
+    static let sheetTitle = "Picked for You"
+    static let loading = "Picking from your watchlist and services…"
+}
+
+struct PickForMeButton: View {
     var action: () -> Void
 
     var body: some View {
-        Button(action: action) {
-            Text("What should I watch?")
-                .font(.headline.weight(.semibold))
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 12)
-                .background(Brand.teal, in: Capsule())
-                .foregroundStyle(.white)
+        VStack(spacing: 6) {
+            Button(action: action) {
+                Text(PickForMeCopy.buttonTitle)
+                    .font(.headline.weight(.semibold))
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                    .background(Brand.teal, in: Capsule())
+                    .foregroundStyle(.white)
+            }
+            .buttonStyle(.plain)
+            // Identifier kept from 1.0 so existing UI tests and scripts still find it.
+            .accessibilityIdentifier("what-should-i-watch-button")
+            .accessibilityHint(PickForMeCopy.accessibilityHint)
+            Text(PickForMeCopy.buttonSubtitle)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilityIdentifier("pick-for-me-subtitle")
         }
-        .buttonStyle(.plain)
-        .accessibilityIdentifier("what-should-i-watch-button")
-        .accessibilityHint("Picks a movie for tonight from the catalog")
     }
 }
 
@@ -29,20 +46,13 @@ struct SuggestionSheet: View {
         NavigationStack {
             Group {
                 if controller.isLoading {
-                    VStack(spacing: 16) {
-                        ProgressView()
-                        Text("Picking a movie…")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .accessibilityIdentifier("suggestion-loading")
+                    loadingView
                 } else {
                     content
                 }
             }
             .background { CleanProBackground() }
-            .navigationTitle("What should I watch?")
+            .navigationTitle(PickForMeCopy.sheetTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -62,7 +72,7 @@ struct SuggestionSheet: View {
             SuggestionCard(
                 movie: movie,
                 catalog: catalog,
-                why: accepted.why,
+                accepted: accepted,
                 onOpenMovie: { onOpenMovie(accepted.movieId) },
                 onWhereToWatch: { onOpenMovie(accepted.movieId) },
                 onSpinInstead: onSpinInstead
@@ -73,22 +83,37 @@ struct SuggestionSheet: View {
             let message = reason == .unavailable ? SuggestionSpeech.unavailable : SuggestionSpeech.failed
             SuggestionFallbackCard(message: message, onSpinInstead: onSpinInstead)
         case nil:
-            VStack(spacing: 16) {
-                ProgressView()
-                Text("Picking a movie…")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .accessibilityIdentifier("suggestion-loading")
+            loadingView
         }
+    }
+
+    private var loadingView: some View {
+        VStack(spacing: 16) {
+            ProgressView()
+            Text(PickForMeCopy.loading)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .accessibilityIdentifier("suggestion-loading-text")
+            HStack(spacing: 20) {
+                Button("Cancel") { controller.dismiss() }
+                    .accessibilityIdentifier("suggestion-loading-cancel")
+                Button("Spin instead", action: onSpinInstead)
+                    .accessibilityIdentifier("suggestion-loading-spin-instead")
+            }
+            .font(.subheadline.weight(.semibold))
+        }
+        .padding(20)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("suggestion-loading")
     }
 }
 
 struct SuggestionCard: View {
     var movie: Movie?
     var catalog: MovieCatalog?
-    var why: String
+    var accepted: AcceptedSuggestion
     var onOpenMovie: () -> Void
     var onWhereToWatch: () -> Void
     var onSpinInstead: () -> Void
@@ -96,11 +121,6 @@ struct SuggestionCard: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                Text("TONIGHT YOU MIGHT LIKE")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.secondary)
-                    .accessibilityAddTraits(.isHeader)
-
                 HStack(alignment: .center, spacing: 14) {
                     Image("roulette.wheel")
                         .resizable()
@@ -136,9 +156,18 @@ struct SuggestionCard: View {
                     Text("WHY")
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.secondary)
-                    Text(why)
-                        .font(.body)
-                        .accessibilityIdentifier("suggestion-why")
+                    if let lead = accepted.lead {
+                        Text(lead)
+                            .font(.body)
+                            .accessibilityIdentifier("suggestion-why")
+                    }
+                    if !accepted.facts.isEmpty {
+                        Text(accepted.factsLine)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .accessibilityLabel(accepted.facts.map(\.text).joined(separator: ", "))
+                            .accessibilityIdentifier("suggestion-facts")
+                    }
                 }
                 .padding(14)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -209,7 +238,7 @@ struct SuggestionFallbackCard: View {
 struct SuggestionSnippetView: View {
     var movie: Movie?
     var catalog: MovieCatalog?
-    var why: String
+    var accepted: AcceptedSuggestion
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -234,8 +263,13 @@ struct SuggestionSnippetView: View {
                             .font(.caption).foregroundStyle(.secondary).lineLimit(2)
                     }
                 }
-                Text("Try \(movie.title). \(why)")
+                Text(["Try \(movie.title).", accepted.lead].compactMap { $0 }.joined(separator: " "))
                     .font(.subheadline)
+                if !accepted.facts.isEmpty {
+                    Text(accepted.factsLine)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
             HStack(spacing: 10) {
                 if let movie, let catalog {

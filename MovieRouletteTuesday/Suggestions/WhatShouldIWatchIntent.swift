@@ -1,12 +1,14 @@
 import AppIntents
 import SwiftUI
 
-/// “What should I watch in Movie Roulette”: an on-device suggestion with a
-/// short why, or an offer to Spin (never an automatic spin).
+/// "Pick a movie for me in Movie Roulette": one movie chosen on purpose, with
+/// facts from your own lists, or an offer to Spin when the on-device model
+/// can't run here (never an automatic spin). The type name stays so existing
+/// Shortcuts that use this action keep working.
 struct WhatShouldIWatchIntent: AppIntent {
-    static let title: LocalizedStringResource = "What Should I Watch"
+    static let title: LocalizedStringResource = "Pick for Me"
     static let description = IntentDescription(
-        "Picks a catalog movie for tonight, with a short reason, using the on-device model.",
+        "Picks one movie for tonight from the catalog and says why, on this device.",
         categoryName: "Roulette"
     )
     static let openAppWhenRun = false
@@ -20,10 +22,9 @@ struct WhatShouldIWatchIntent: AppIntent {
         case .suggestion(let accepted):
             let catalog = try? await IntentCatalog.load()
             let movie = catalog.flatMap { $0.movie(withId: accepted.movieId) }
-            let title = movie?.title ?? accepted.movieId
             return .result(
-                dialog: IntentDialog(stringLiteral: SuggestionSpeech.success(title: title, why: accepted.why)),
-                view: SuggestionSnippetView(movie: movie, catalog: catalog, why: accepted.why)
+                dialog: IntentDialog(stringLiteral: SuggestionSpeech.success(accepted)),
+                view: SuggestionSnippetView(movie: movie, catalog: catalog, accepted: accepted)
             )
         case .notReady:
             return .result(

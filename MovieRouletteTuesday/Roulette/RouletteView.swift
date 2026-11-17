@@ -141,7 +141,7 @@ struct RouletteView: View {
             .onChange(of: model.revealCount) { _, _ in
                 subtitle = RouletteTaglines.random(excluding: subtitle)
             }
-            .task { suggestions.refresh() }
+            .task { suggestions.prewarm() }
             .sheet(isPresented: $suggestions.presented) {
                 SuggestionSheet(
                     controller: suggestions,
@@ -224,7 +224,7 @@ struct RouletteView: View {
                 VStack(spacing: 10) {
                     statusLine
                     if suggestions.showsButton {
-                        WhatShouldIWatchButton {
+                        PickForMeButton {
                             Task { await suggestions.tap() }
                         }
                         .disabled(!model.canSpin)
@@ -409,7 +409,7 @@ struct RouletteView: View {
             } else if let category = model.lastCategory {
                 Text("Last landed on \(category.name)")
             } else {
-                Text("Tap to spin")
+                Text("Tap to spin: the wheel picks at random.")
             }
         }
         .font(.footnote.weight(.medium))
