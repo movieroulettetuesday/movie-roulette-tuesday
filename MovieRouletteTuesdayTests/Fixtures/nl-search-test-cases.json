@@ -819,11 +819,11 @@
     {
       "id": "provider-every-word-short-word-dropped",
       "source": "validation-rules",
-      "question": "horror on Max a",
+      "question": "horror on HBO x",
       "outcome": "validate",
       "parse": {
         "genre": "Horror",
-        "provider": "Max a"
+        "provider": "HBO x"
       },
       "required": {
         "genre": "Horror"
@@ -832,7 +832,7 @@
         "provider",
         "title"
       ],
-      "note": "'max a' is not a whole-string match for any name, and the every-word fallback does not apply because the word 'a' folds to fewer than 2 characters, so provider is dropped.",
+      "note": "'hbo x' is not a whole-string match for any name, and the every-word fallback does not apply because the word 'x' folds to fewer than 2 characters, so provider is dropped.",
       "switchesTo": "stay"
     },
     {
