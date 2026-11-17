@@ -66,9 +66,9 @@ final class NLSearchUITests: XCTestCase {
         if bar.exists { bar.tap() } else { app.buttons.matching(NSPredicate(format: "label == %@", name)).firstMatch.tap() }
     }
 
-    /// The visible list, told apart by its search prompt. On iPhone a list
-    /// whose search is not active can collapse the field under the large
-    /// title, so if it is missing, pull the list down once and look again.
+    /// The visible list, told apart by its search prompt. Never pulls the
+    /// list down: after a switch the destination's field must already show
+    /// the moved query.
     private func waitForList(prompt: String, value: String? = nil, timeout: TimeInterval = 10) -> Bool {
         let predicate = NSPredicate { [weak self] _, _ in
             guard let field = self?.app.searchFields.firstMatch, field.exists else { return false }
@@ -76,13 +76,18 @@ final class NLSearchUITests: XCTestCase {
             if let value { return (field.value as? String) == value }
             return true
         }
-        func wait(_ t: TimeInterval) -> Bool {
-            XCTWaiter().wait(for: [XCTNSPredicateExpectation(predicate: predicate, object: nil)], timeout: t) == .completed
-        }
-        if wait(timeout) { return true }
-        guard !app.searchFields.firstMatch.exists else { return false }
-        app.swipeDown()
-        return wait(5)
+        return XCTWaiter().wait(for: [XCTNSPredicateExpectation(predicate: predicate, object: nil)], timeout: timeout) == .completed
+    }
+
+    /// Right after a switch, with no pull-down: the destination's search
+    /// field is on screen (not collapsed under the large title) and shows
+    /// the moved query.
+    private func assertMovedQueryVisible(_ prompt: String, _ query: String, file: StaticString = #filePath, line: UInt = #line) {
+        XCTAssertTrue(waitForList(prompt: prompt, value: query), "destination field has the moved query", file: file, line: line)
+        let field = app.searchFields.firstMatch
+        XCTAssertTrue(field.exists && field.isHittable && !field.frame.isEmpty,
+                      "moved query visible without pulling down", file: file, line: line)
+        XCTAssertTrue(app.windows.firstMatch.frame.contains(field.frame), "field on screen", file: file, line: line)
     }
 
     private func attach(_ name: String) {
@@ -124,7 +129,7 @@ final class NLSearchUITests: XCTestCase {
     func testEpisodeQuestionOnMoviesSwitchesToEpisodesAndClearsMovies() throws {
         try launch(tab: "movies")
         type("episodes about The Thing", into: searchField())
-        XCTAssertTrue(waitForList(prompt: episodesPrompt, value: "episodes about The Thing"), "switched to Episodes with the query")
+        assertMovedQueryVisible(episodesPrompt, "episodes about The Thing")
         XCTAssertTrue(element("nl-chip-title").waitForExistence(timeout: 8), "chips moved")
         XCTAssertTrue(element("episode-row").firstMatch.waitForExistence(timeout: 45), "episode results")
         attach("nl-switch-to-episodes")
@@ -147,7 +152,7 @@ final class NLSearchUITests: XCTestCase {
     func testMovieQuestionOnEpisodesSwitchesToMovies() throws {
         try launch(tab: "episodes")
         type("show me movies I haven't watched", into: searchField())
-        XCTAssertTrue(waitForList(prompt: moviesPrompt, value: "show me movies I haven't watched"), "switched to Movies")
+        assertMovedQueryVisible(moviesPrompt, "show me movies I haven't watched")
         XCTAssertTrue(element("nl-chip-watched").waitForExistence(timeout: 8))
         // Ratings were reset (-MRTUITest), so every movie is unwatched; first by title.
         XCTAssertTrue(element("movie-row-a-face-in-the-crowd-1957").waitForExistence(timeout: 8), "unwatched movies listed")
@@ -173,7 +178,7 @@ final class NLSearchUITests: XCTestCase {
         }
         tapTab("Movies")
         type("episodes about The Thing", into: searchField())
-        XCTAssertTrue(waitForList(prompt: episodesPrompt, value: "episodes about The Thing", timeout: 12))
+        assertMovedQueryVisible(episodesPrompt, "episodes about The Thing")
         XCTAssertTrue(element("nl-chip-title").waitForExistence(timeout: 8), "chips in the sidebar")
         if isPad {
             XCTAssertTrue(app.staticTexts["Pick an Episode"].waitForExistence(timeout: 8), "detail column reset")
