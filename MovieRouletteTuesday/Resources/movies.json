@@ -62,7 +62,8 @@
         "the-ugly-stepsister-2025",
         "piranha-ii-the-spawning-1982",
         "prince-of-darkness-1987",
-        "the-devils-rain-1975"
+        "the-devils-rain-1975",
+        "the-day-of-the-beast-1995"
       ]
     },
     {
@@ -107,7 +108,8 @@
         "palmer-rockeys-scarlet-warning-666-1982",
         "piranha-ii-the-spawning-1982",
         "prince-of-darkness-1987",
-        "the-devils-rain-1975"
+        "the-devils-rain-1975",
+        "the-day-of-the-beast-1995"
       ]
     },
     {
@@ -374,9 +376,15 @@
       "tmdbId": 648579,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/648579-the-unbearable-weight-of-massive-talent/watch?locale=US",
         "stream": [
+          {
+            "id": 257,
+            "name": "fuboTV",
+            "logo": "/3wF8xISfVlcrc8X3jaa3uMUFGAr.png",
+            "priority": 12
+          },
           {
             "id": 2445,
             "name": "MovieSphere+ Amazon Channel",
@@ -427,13 +435,13 @@
             "id": 486,
             "name": "Spectrum On Demand",
             "logo": "/6qPtM96UZkt3Bu4ZFPsDeHFWUZ2.png",
-            "priority": 122
+            "priority": 123
           },
           {
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           }
         ],
         "buy": [
@@ -488,7 +496,7 @@
       "tmdbId": 555604,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/555604-guillermo-del-toro-s-pinocchio/watch?locale=US",
         "stream": [
           {
@@ -501,7 +509,7 @@
             "id": 1796,
             "name": "Netflix Standard with Ads",
             "logo": "/eGUwOOIxcazwEBxqJpSN5sWEu6V.png",
-            "priority": 152
+            "priority": 153
           }
         ],
         "free": [],
@@ -527,7 +535,7 @@
       "tmdbId": 46959,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/46959-36-15-code-pere-noel/watch?locale=US",
         "stream": [
           {
@@ -542,7 +550,7 @@
             "id": 2409,
             "name": "Fawesome",
             "logo": "/dNF4vWhF3TduWvOyfVxEyTqSNRl.png",
-            "priority": 145
+            "priority": 146
           }
         ],
         "rent": [],
@@ -567,7 +575,7 @@
       "tmdbId": 457962,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/457962-shimmer-lake/watch?locale=US",
         "stream": [
           {
@@ -580,7 +588,7 @@
             "id": 1796,
             "name": "Netflix Standard with Ads",
             "logo": "/eGUwOOIxcazwEBxqJpSN5sWEu6V.png",
-            "priority": 152
+            "priority": 153
           }
         ],
         "free": [],
@@ -606,7 +614,7 @@
       "tmdbId": 24750,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-02",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/24750-time-after-time/watch?locale=US",
         "stream": [],
         "free": [
@@ -614,7 +622,7 @@
             "id": 212,
             "name": "Hoopla",
             "logo": "/gtjNBzAoGgUtYzt0UKXmwG34WWL.png",
-            "priority": 39
+            "priority": 40
           }
         ],
         "rent": [
@@ -622,31 +630,31 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ],
         "buy": [
@@ -654,31 +662,31 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ]
       }
@@ -1114,7 +1122,7 @@
       "tmdbId": 10242,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/10242-what-ever-happened-to-baby-jane/watch?locale=US",
         "stream": [],
         "free": [
@@ -1172,7 +1180,7 @@
             "id": 486,
             "name": "Spectrum On Demand",
             "logo": "/6qPtM96UZkt3Bu4ZFPsDeHFWUZ2.png",
-            "priority": 122
+            "priority": 123
           }
         ],
         "buy": [
@@ -1227,7 +1235,7 @@
       "tmdbId": 36299,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/36299-the-grave/watch?locale=US",
         "stream": [
           {
@@ -1254,7 +1262,7 @@
             "id": 2409,
             "name": "Fawesome",
             "logo": "/dNF4vWhF3TduWvOyfVxEyTqSNRl.png",
-            "priority": 145
+            "priority": 146
           },
           {
             "id": 2383,
@@ -1278,13 +1286,13 @@
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           },
           {
             "id": 613,
             "name": "Amazon Prime Video Free with Ads",
             "logo": "/fuVBtr57kxnYzOILZ38xqSmBeyR.png",
-            "priority": 142
+            "priority": 143
           },
           {
             "id": 1963,
@@ -1492,7 +1500,7 @@
       "tmdbId": 698948,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/698948-thirteen-lives/watch?locale=US",
         "stream": [
           {
@@ -1513,7 +1521,7 @@
             "id": 613,
             "name": "Amazon Prime Video Free with Ads",
             "logo": "/fuVBtr57kxnYzOILZ38xqSmBeyR.png",
-            "priority": 142
+            "priority": 143
           },
           {
             "id": 1898,
@@ -1663,7 +1671,7 @@
       "tmdbId": 785084,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/785084-the-whale/watch?locale=US",
         "stream": [],
         "free": [
@@ -1709,13 +1717,13 @@
             "id": 486,
             "name": "Spectrum On Demand",
             "logo": "/6qPtM96UZkt3Bu4ZFPsDeHFWUZ2.png",
-            "priority": 122
+            "priority": 123
           },
           {
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           }
         ],
         "buy": [
@@ -1771,7 +1779,7 @@
       "tmdbId": 9768,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-02",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/9768-cry-baby/watch?locale=US",
         "stream": [],
         "free": [],
@@ -1780,31 +1788,31 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ],
         "buy": [
@@ -1812,31 +1820,31 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ]
       }
@@ -1859,14 +1867,14 @@
       "tmdbId": 52808,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/52808-roma-a-mano-armata/watch?locale=US",
         "stream": [
           {
             "id": 455,
             "name": "Night Flight Plus",
             "logo": "/acUxuVlP96MVPbUdxdGu0pUHTht.png",
-            "priority": 79
+            "priority": 80
           },
           {
             "id": 2407,
@@ -1880,7 +1888,7 @@
             "id": 2409,
             "name": "Fawesome",
             "logo": "/dNF4vWhF3TduWvOyfVxEyTqSNRl.png",
-            "priority": 145
+            "priority": 146
           },
           {
             "id": 73,
@@ -1894,19 +1902,19 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           }
         ],
         "buy": [
@@ -1914,19 +1922,19 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           }
         ]
       }
@@ -1949,7 +1957,7 @@
       "tmdbId": 643532,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/643532-the-card-counter/watch?locale=US",
         "stream": [
           {
@@ -1970,7 +1978,7 @@
             "id": 613,
             "name": "Amazon Prime Video Free with Ads",
             "logo": "/fuVBtr57kxnYzOILZ38xqSmBeyR.png",
-            "priority": 142
+            "priority": 143
           }
         ],
         "rent": [
@@ -2057,7 +2065,7 @@
       "tmdbId": 13562,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/13562-my-man-godfrey/watch?locale=US",
         "stream": [
           {
@@ -2156,19 +2164,19 @@
             "id": 2308,
             "name": "Darkroom",
             "logo": "/naf5wQA91UCj0OetKOEYZgWZLqe.png",
-            "priority": 139
+            "priority": 140
           },
           {
             "id": 638,
             "name": "Public Domain Movies",
             "logo": "/pDodO7jgdP0eYO1vP2Dwu9YjeVJ.png",
-            "priority": 143
+            "priority": 144
           },
           {
             "id": 2409,
             "name": "Fawesome",
             "logo": "/dNF4vWhF3TduWvOyfVxEyTqSNRl.png",
-            "priority": 145
+            "priority": 146
           },
           {
             "id": 300,
@@ -2186,19 +2194,19 @@
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           },
           {
             "id": 613,
             "name": "Amazon Prime Video Free with Ads",
             "logo": "/fuVBtr57kxnYzOILZ38xqSmBeyR.png",
-            "priority": 142
+            "priority": 143
           },
           {
             "id": 1957,
             "name": "Cineverse",
             "logo": "/rqCIpmrCBpnL6oliak6E1mrq5DD.png",
-            "priority": 162
+            "priority": 163
           },
           {
             "id": 1963,
@@ -2321,7 +2329,7 @@
       "tmdbId": 15142,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/15142-dream-a-little-dream/watch?locale=US",
         "stream": [
           {
@@ -2354,7 +2362,7 @@
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           },
           {
             "id": 73,
@@ -2447,7 +2455,7 @@
       "tmdbId": 13763,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-02",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/13763-purple-rain/watch?locale=US",
         "stream": [],
         "free": [],
@@ -2456,31 +2464,31 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ],
         "buy": [
@@ -2488,31 +2496,31 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ]
       }
@@ -2535,7 +2543,7 @@
       "tmdbId": 12615,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-02",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/12615-death-of-a-salesman/watch?locale=US",
         "stream": [],
         "free": [],
@@ -2544,13 +2552,13 @@
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           }
         ],
         "buy": [
@@ -2558,13 +2566,13 @@
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           }
         ]
       }
@@ -2613,7 +2621,7 @@
       "tmdbId": 7345,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/7345-there-will-be-blood/watch?locale=US",
         "stream": [
           {
@@ -2720,7 +2728,7 @@
             "id": 486,
             "name": "Spectrum On Demand",
             "logo": "/6qPtM96UZkt3Bu4ZFPsDeHFWUZ2.png",
-            "priority": 122
+            "priority": 123
           }
         ],
         "buy": [
@@ -2900,7 +2908,7 @@
       "tmdbId": 493529,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/493529-dungeons-dragons-honor-among-thieves/watch?locale=US",
         "stream": [
           {
@@ -2937,7 +2945,7 @@
             "id": 1796,
             "name": "Netflix Standard with Ads",
             "logo": "/eGUwOOIxcazwEBxqJpSN5sWEu6V.png",
-            "priority": 152
+            "priority": 153
           }
         ],
         "free": [],
@@ -2982,7 +2990,7 @@
             "id": 486,
             "name": "Spectrum On Demand",
             "logo": "/6qPtM96UZkt3Bu4ZFPsDeHFWUZ2.png",
-            "priority": 122
+            "priority": 123
           }
         ],
         "buy": [
@@ -3038,32 +3046,32 @@
       "tmdbId": 6977,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/6977-no-country-for-old-men/watch?locale=US",
         "stream": [
           {
             "id": 257,
             "name": "fuboTV",
             "logo": "/3wF8xISfVlcrc8X3jaa3uMUFGAr.png",
-            "priority": 11
+            "priority": 12
           },
           {
             "id": 2303,
             "name": "Paramount Plus Premium",
             "logo": "/4N4BMd0Mm0kHAmF7RZgL5lW3cwc.png",
-            "priority": 17
+            "priority": 18
           },
           {
             "id": 2616,
             "name": "Paramount Plus Essential",
             "logo": "/uPWQPyF4nqwtfPNmGcFcenU57HG.png",
-            "priority": 18
+            "priority": 19
           },
           {
             "id": 582,
             "name": "Paramount+ Amazon Channel",
             "logo": "/bxX0YVOCY7bI85BKRlJAAQ2EjUR.png",
-            "priority": 29
+            "priority": 30
           }
         ],
         "free": [
@@ -3071,19 +3079,19 @@
             "id": 191,
             "name": "Kanopy",
             "logo": "/cltb8XKan9ierp23ItPmCOcVLRa.png",
-            "priority": 38
+            "priority": 39
           },
           {
             "id": 212,
             "name": "Hoopla",
             "logo": "/gtjNBzAoGgUtYzt0UKXmwG34WWL.png",
-            "priority": 39
+            "priority": 40
           },
           {
             "id": 235,
             "name": "YouTube Free",
             "logo": "/gqaJWT5oFiJyVDojVLYRSFPbhQ1.png",
-            "priority": 98
+            "priority": 99
           }
         ],
         "rent": [
@@ -3091,43 +3099,43 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 2784,
             "name": "JustWatch TV Store",
             "logo": "/aaFIYn2NGPCo0rpLiWokbvNqNJd.png",
-            "priority": 12
+            "priority": 13
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           },
           {
             "id": 331,
             "name": "FlixFling",
             "logo": "/hkw2s2Su8EyifB9EbbQP64Fj1xA.png",
-            "priority": 97
+            "priority": 98
           }
         ],
         "buy": [
@@ -3135,31 +3143,31 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ]
       }
@@ -3386,7 +3394,7 @@
       "tmdbId": 840326,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/840326-sisu/watch?locale=US",
         "stream": [
           {
@@ -3401,7 +3409,7 @@
             "id": 2409,
             "name": "Fawesome",
             "logo": "/dNF4vWhF3TduWvOyfVxEyTqSNRl.png",
-            "priority": 145
+            "priority": 146
           }
         ],
         "rent": [
@@ -3436,16 +3444,10 @@
             "priority": 41
           },
           {
-            "id": 331,
-            "name": "FlixFling",
-            "logo": "/hkw2s2Su8EyifB9EbbQP64Fj1xA.png",
-            "priority": 98
-          },
-          {
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           }
         ],
         "buy": [
@@ -3500,7 +3502,7 @@
       "tmdbId": 371645,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/371645-hunt-for-the-wilderpeople/watch?locale=US",
         "stream": [
           {
@@ -3551,13 +3553,19 @@
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           },
           {
             "id": 613,
             "name": "Amazon Prime Video Free with Ads",
             "logo": "/fuVBtr57kxnYzOILZ38xqSmBeyR.png",
-            "priority": 142
+            "priority": 143
+          },
+          {
+            "id": 1963,
+            "name": "Xumo Play",
+            "logo": "/n6E9OeoQicCDd43PnLsMpVIVYFK.png",
+            "priority": 168
           },
           {
             "id": 73,
@@ -3744,7 +3752,7 @@
       "tmdbId": 744594,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/744594-white-noise/watch?locale=US",
         "stream": [
           {
@@ -3757,7 +3765,7 @@
             "id": 1796,
             "name": "Netflix Standard with Ads",
             "logo": "/eGUwOOIxcazwEBxqJpSN5sWEu6V.png",
-            "priority": 152
+            "priority": 153
           }
         ],
         "free": [],
@@ -3884,7 +3892,7 @@
       "tmdbId": 804150,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/804150-cocaine-bear/watch?locale=US",
         "stream": [
           {
@@ -3903,7 +3911,7 @@
             "id": 1796,
             "name": "Netflix Standard with Ads",
             "logo": "/eGUwOOIxcazwEBxqJpSN5sWEu6V.png",
-            "priority": 152
+            "priority": 153
           }
         ],
         "free": [],
@@ -3991,7 +3999,7 @@
       "tmdbId": 593643,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/593643-the-menu/watch?locale=US",
         "stream": [
           {
@@ -4022,7 +4030,7 @@
             "id": 1796,
             "name": "Netflix Standard with Ads",
             "logo": "/eGUwOOIxcazwEBxqJpSN5sWEu6V.png",
-            "priority": 152
+            "priority": 153
           }
         ],
         "free": [],
@@ -4230,7 +4238,7 @@
       "tmdbId": 756999,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/756999-the-black-phone/watch?locale=US",
         "stream": [
           {
@@ -4243,7 +4251,7 @@
             "id": 1796,
             "name": "Netflix Standard with Ads",
             "logo": "/eGUwOOIxcazwEBxqJpSN5sWEu6V.png",
-            "priority": 152
+            "priority": 153
           }
         ],
         "free": [],
@@ -4338,32 +4346,32 @@
       "tmdbId": 21484,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/21484-possession/watch?locale=US",
         "stream": [
           {
             "id": 2383,
             "name": "Philo",
             "logo": "/mfbhzQwmQKjm7bLZPF5CTeu3Ilc.png",
-            "priority": 20
+            "priority": 21
           },
           {
             "id": 528,
             "name": "AMC+ Amazon Channel",
             "logo": "/tg5ufQ1GkYDCMxSSxemfeKWcvRe.png",
-            "priority": 31
+            "priority": 32
           },
           {
             "id": 99,
             "name": "Shudder",
             "logo": "/58O6yqUFM6qoOiBNAddJs7xNKc.png",
-            "priority": 56
+            "priority": 57
           },
           {
             "id": 204,
             "name": "Shudder Amazon Channel",
             "logo": "/yb4PbHPVpvJ2JizOuZoJSLXsjcG.png",
-            "priority": 86
+            "priority": 87
           },
           {
             "id": 2049,
@@ -4383,13 +4391,13 @@
             "id": 191,
             "name": "Kanopy",
             "logo": "/cltb8XKan9ierp23ItPmCOcVLRa.png",
-            "priority": 38
+            "priority": 39
           },
           {
             "id": 212,
             "name": "Hoopla",
             "logo": "/gtjNBzAoGgUtYzt0UKXmwG34WWL.png",
-            "priority": 39
+            "priority": 40
           }
         ],
         "rent": [
@@ -4397,31 +4405,31 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ],
         "buy": [
@@ -4429,31 +4437,31 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ]
       }
@@ -4477,9 +4485,16 @@
       "tmdbId": 26517,
       "streaming": {
         "region": "US",
-        "updated": "2026-10-14",
-        "link": "https://www.themoviedb.org/movie/26517/watch?locale=US",
-        "stream": [],
+        "updated": "2026-11-16",
+        "link": "https://www.themoviedb.org/movie/26517-martin/watch?locale=US",
+        "stream": [
+          {
+            "id": 532,
+            "name": "aha",
+            "logo": "/i8cMQ9Hw8oDcOO4rV6GYlO7VBDH.png",
+            "priority": 149
+          }
+        ],
         "free": [],
         "rent": [],
         "buy": []
@@ -4503,8 +4518,8 @@
       "tmdbId": 1035088,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
-        "link": "https://www.themoviedb.org/movie/1035088/watch?locale=US",
+        "updated": "2026-11-16",
+        "link": "https://www.themoviedb.org/movie/1035088-pogovori-so-mnoy/watch?locale=US",
         "stream": [
           {
             "id": 2036,
@@ -4712,7 +4727,7 @@
       "tmdbId": 667216,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/667216-infinity-pool/watch?locale=US",
         "stream": [],
         "free": [
@@ -4764,7 +4779,7 @@
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           }
         ],
         "buy": [
@@ -4819,7 +4834,7 @@
       "tmdbId": 482,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/482-shaft/watch?locale=US",
         "stream": [
           {
@@ -4872,7 +4887,7 @@
             "id": 486,
             "name": "Spectrum On Demand",
             "logo": "/6qPtM96UZkt3Bu4ZFPsDeHFWUZ2.png",
-            "priority": 122
+            "priority": 123
           }
         ],
         "buy": [
@@ -5048,7 +5063,7 @@
       "tmdbId": 899112,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/899112-violent-night/watch?locale=US",
         "stream": [
           {
@@ -5061,7 +5076,7 @@
             "id": 1796,
             "name": "Netflix Standard with Ads",
             "logo": "/eGUwOOIxcazwEBxqJpSN5sWEu6V.png",
-            "priority": 152
+            "priority": 153
           }
         ],
         "free": [],
@@ -5149,7 +5164,7 @@
       "tmdbId": 27230,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/27230-christmas-evil/watch?locale=US",
         "stream": [
           {
@@ -5204,7 +5219,7 @@
             "id": 2411,
             "name": "Eternal Family",
             "logo": "/2IHcGZUPqxy4HhWWN57AGEIKcCW.png",
-            "priority": 144
+            "priority": 145
           },
           {
             "id": 2100,
@@ -5242,7 +5257,7 @@
             "id": 2409,
             "name": "Fawesome",
             "logo": "/dNF4vWhF3TduWvOyfVxEyTqSNRl.png",
-            "priority": 145
+            "priority": 146
           },
           {
             "id": 2383,
@@ -5266,19 +5281,19 @@
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           },
           {
             "id": 613,
             "name": "Amazon Prime Video Free with Ads",
             "logo": "/fuVBtr57kxnYzOILZ38xqSmBeyR.png",
-            "priority": 142
+            "priority": 143
           },
           {
             "id": 1957,
             "name": "Cineverse",
             "logo": "/rqCIpmrCBpnL6oliak6E1mrq5DD.png",
-            "priority": 162
+            "priority": 163
           },
           {
             "id": 2533,
@@ -5348,8 +5363,8 @@
       "tmdbId": 25237,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
-        "link": "https://www.themoviedb.org/movie/25237/watch?locale=US",
+        "updated": "2026-11-16",
+        "link": "https://www.themoviedb.org/movie/25237-idi-i-smotri/watch?locale=US",
         "stream": [],
         "free": [],
         "rent": [
@@ -5526,7 +5541,7 @@
       "tmdbId": 17835,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/17835-threads/watch?locale=US",
         "stream": [
           {
@@ -5554,6 +5569,12 @@
             "priority": 35
           },
           {
+            "id": 25,
+            "name": "Fandor",
+            "logo": "/vR0RxwoqbM0ZP10LR3uT6rpuamc.png",
+            "priority": 51
+          },
+          {
             "id": 99,
             "name": "Shudder",
             "logo": "/58O6yqUFM6qoOiBNAddJs7xNKc.png",
@@ -5575,13 +5596,13 @@
             "id": 2308,
             "name": "Darkroom",
             "logo": "/naf5wQA91UCj0OetKOEYZgWZLqe.png",
-            "priority": 139
+            "priority": 140
           },
           {
             "id": 2411,
             "name": "Eternal Family",
             "logo": "/2IHcGZUPqxy4HhWWN57AGEIKcCW.png",
-            "priority": 144
+            "priority": 145
           },
           {
             "id": 1960,
@@ -5637,13 +5658,13 @@
             "id": 2308,
             "name": "Darkroom",
             "logo": "/naf5wQA91UCj0OetKOEYZgWZLqe.png",
-            "priority": 139
+            "priority": 140
           },
           {
             "id": 2409,
             "name": "Fawesome",
             "logo": "/dNF4vWhF3TduWvOyfVxEyTqSNRl.png",
-            "priority": 145
+            "priority": 146
           },
           {
             "id": 2555,
@@ -5655,13 +5676,13 @@
             "id": 559,
             "name": "Filmzie",
             "logo": "/6tVbNdx7Yzvi6LThNW5Wo1yov6A.png",
-            "priority": 132
+            "priority": 133
           },
           {
             "id": 1957,
             "name": "Cineverse",
             "logo": "/rqCIpmrCBpnL6oliak6E1mrq5DD.png",
-            "priority": 162
+            "priority": 163
           },
           {
             "id": 73,
@@ -5761,7 +5782,7 @@
       "tmdbId": 152601,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/152601-her/watch?locale=US",
         "stream": [],
         "free": [],
@@ -5800,7 +5821,7 @@
             "id": 486,
             "name": "Spectrum On Demand",
             "logo": "/6qPtM96UZkt3Bu4ZFPsDeHFWUZ2.png",
-            "priority": 122
+            "priority": 123
           }
         ],
         "buy": [
@@ -6038,7 +6059,7 @@
       "tmdbId": 244786,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/244786-whiplash/watch?locale=US",
         "stream": [
           {
@@ -6090,13 +6111,13 @@
             "id": 486,
             "name": "Spectrum On Demand",
             "logo": "/6qPtM96UZkt3Bu4ZFPsDeHFWUZ2.png",
-            "priority": 122
+            "priority": 123
           },
           {
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           }
         ],
         "buy": [
@@ -6152,7 +6173,7 @@
       "tmdbId": 76341,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/76341-mad-max-fury-road/watch?locale=US",
         "stream": [],
         "free": [],
@@ -6191,13 +6212,13 @@
             "id": 486,
             "name": "Spectrum On Demand",
             "logo": "/6qPtM96UZkt3Bu4ZFPsDeHFWUZ2.png",
-            "priority": 122
+            "priority": 123
           },
           {
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           }
         ],
         "buy": [
@@ -6379,7 +6400,7 @@
       "tmdbId": 454,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/454-romeo-juliet/watch?locale=US",
         "stream": [
           {
@@ -6398,7 +6419,7 @@
             "id": 1899,
             "name": "HBO Max",
             "logo": "/skypuy7SXuugIQeYg0IglmzoKaS.png",
-            "priority": 153
+            "priority": 154
           },
           {
             "id": 2061,
@@ -6492,7 +6513,7 @@
       "tmdbId": 9495,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/9495-the-crow/watch?locale=US",
         "stream": [
           {
@@ -6569,7 +6590,7 @@
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           }
         ],
         "buy": [
@@ -6625,7 +6646,7 @@
       "tmdbId": 473,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/473-pi/watch?locale=US",
         "stream": [
           {
@@ -6696,7 +6717,7 @@
             "id": 486,
             "name": "Spectrum On Demand",
             "logo": "/6qPtM96UZkt3Bu4ZFPsDeHFWUZ2.png",
-            "priority": 122
+            "priority": 123
           }
         ],
         "buy": [
@@ -6840,7 +6861,7 @@
       "tmdbId": 19425,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/19425-the-peanut-butter-solution/watch?locale=US",
         "stream": [
           {
@@ -6859,7 +6880,7 @@
             "id": 2411,
             "name": "Eternal Family",
             "logo": "/2IHcGZUPqxy4HhWWN57AGEIKcCW.png",
-            "priority": 144
+            "priority": 145
           },
           {
             "id": 2555,
@@ -6879,7 +6900,7 @@
             "id": 2409,
             "name": "Fawesome",
             "logo": "/dNF4vWhF3TduWvOyfVxEyTqSNRl.png",
-            "priority": 145
+            "priority": 146
           },
           {
             "id": 2555,
@@ -6915,13 +6936,13 @@
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           },
           {
             "id": 1957,
             "name": "Cineverse",
             "logo": "/rqCIpmrCBpnL6oliak6E1mrq5DD.png",
-            "priority": 162
+            "priority": 163
           },
           {
             "id": 1963,
@@ -7032,14 +7053,14 @@
       "tmdbId": 104,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/104-lola-rennt/watch?locale=US",
         "stream": [
           {
             "id": 143,
             "name": "Sundance Now",
             "logo": "/uSoP5JLrUjHWDFikg9EJKcm7IvQ.png",
-            "priority": 58
+            "priority": 59
           },
           {
             "id": 2745,
@@ -7053,7 +7074,7 @@
             "id": 235,
             "name": "YouTube Free",
             "logo": "/gqaJWT5oFiJyVDojVLYRSFPbhQ1.png",
-            "priority": 98
+            "priority": 99
           }
         ],
         "rent": [
@@ -7061,31 +7082,31 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ],
         "buy": [
@@ -7093,31 +7114,31 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ]
       }
@@ -7141,7 +7162,7 @@
       "tmdbId": 827,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/827-les-diaboliques/watch?locale=US",
         "stream": [
           {
@@ -7151,16 +7172,10 @@
             "priority": 14
           },
           {
-            "id": 361,
-            "name": "TCM",
-            "logo": "/7LA3wg2A01nyV3PCLN01WNOVhcT.png",
-            "priority": 101
-          },
-          {
             "id": 1899,
             "name": "HBO Max",
             "logo": "/skypuy7SXuugIQeYg0IglmzoKaS.png",
-            "priority": 153
+            "priority": 154
           },
           {
             "id": 2685,
@@ -7174,13 +7189,13 @@
             "id": 2308,
             "name": "Darkroom",
             "logo": "/naf5wQA91UCj0OetKOEYZgWZLqe.png",
-            "priority": 139
+            "priority": 140
           },
           {
             "id": 2409,
             "name": "Fawesome",
             "logo": "/dNF4vWhF3TduWvOyfVxEyTqSNRl.png",
-            "priority": 145
+            "priority": 146
           },
           {
             "id": 207,
@@ -7192,7 +7207,7 @@
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           },
           {
             "id": 2533,
@@ -7267,8 +7282,8 @@
       "tmdbId": 3040,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
-        "link": "https://www.themoviedb.org/movie/3040/watch?locale=US",
+        "updated": "2026-11-16",
+        "link": "https://www.themoviedb.org/movie/3040-nochnoy-dozor/watch?locale=US",
         "stream": [],
         "free": [],
         "rent": [
@@ -7355,7 +7370,7 @@
       "tmdbId": 14534,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/14534-rudy/watch?locale=US",
         "stream": [
           {
@@ -7380,13 +7395,13 @@
             "id": 506,
             "name": "TBS",
             "logo": "/8MX4rbkjJUf2NMb2ZVwHq0IATJf.png",
-            "priority": 118
+            "priority": 119
           },
           {
             "id": 507,
             "name": "tru TV",
             "logo": "/sksAwn7y5P55CNGZ2znVuwLNM8S.png",
-            "priority": 124
+            "priority": 125
           }
         ],
         "free": [
@@ -7487,7 +7502,7 @@
       "tmdbId": 921,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/921-cinderella-man/watch?locale=US",
         "stream": [
           {
@@ -7500,13 +7515,13 @@
             "id": 506,
             "name": "TBS",
             "logo": "/8MX4rbkjJUf2NMb2ZVwHq0IATJf.png",
-            "priority": 118
+            "priority": 119
           },
           {
             "id": 507,
             "name": "tru TV",
             "logo": "/sksAwn7y5P55CNGZ2znVuwLNM8S.png",
-            "priority": 124
+            "priority": 125
           }
         ],
         "free": [],
@@ -7594,7 +7609,7 @@
       "tmdbId": 850165,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/850165-the-iron-claw/watch?locale=US",
         "stream": [],
         "free": [
@@ -7602,13 +7617,13 @@
             "id": 207,
             "name": "The Roku Channel",
             "logo": "/b7uhrYJtAe7b1ieJGg705vTbwrX.png",
-            "priority": 32
+            "priority": 33
           },
           {
             "id": 235,
             "name": "YouTube Free",
             "logo": "/gqaJWT5oFiJyVDojVLYRSFPbhQ1.png",
-            "priority": 98
+            "priority": 99
           }
         ],
         "rent": [
@@ -7616,43 +7631,43 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           },
           {
             "id": 486,
             "name": "Spectrum On Demand",
             "logo": "/6qPtM96UZkt3Bu4ZFPsDeHFWUZ2.png",
-            "priority": 122
+            "priority": 123
           },
           {
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           }
         ],
         "buy": [
@@ -7660,31 +7675,31 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ]
       }
@@ -7939,7 +7954,7 @@
       "tmdbId": 982,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/982-the-manchurian-candidate/watch?locale=US",
         "stream": [
           {
@@ -7984,7 +7999,7 @@
             "id": 613,
             "name": "Amazon Prime Video Free with Ads",
             "logo": "/fuVBtr57kxnYzOILZ38xqSmBeyR.png",
-            "priority": 142
+            "priority": 143
           },
           {
             "id": 73,
@@ -8022,7 +8037,7 @@
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           }
         ],
         "buy": [
@@ -8160,7 +8175,7 @@
       "tmdbId": 24229,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-02",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/24229-the-killers/watch?locale=US",
         "stream": [],
         "free": [],
@@ -8169,25 +8184,25 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           }
         ],
         "buy": [
@@ -8195,25 +8210,25 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           }
         ]
       }
@@ -8237,15 +8252,9 @@
       "tmdbId": 14022,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/14022-slacker/watch?locale=US",
         "stream": [
-          {
-            "id": 257,
-            "name": "fuboTV",
-            "logo": "/3wF8xISfVlcrc8X3jaa3uMUFGAr.png",
-            "priority": 12
-          },
           {
             "id": 1825,
             "name": "HBO Max Amazon Channel",
@@ -8256,7 +8265,7 @@
             "id": 1899,
             "name": "HBO Max",
             "logo": "/skypuy7SXuugIQeYg0IglmzoKaS.png",
-            "priority": 153
+            "priority": 154
           }
         ],
         "free": [],
@@ -8618,14 +8627,14 @@
       "tmdbId": 8619,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/8619-master-and-commander-the-far-side-of-the-world/watch?locale=US",
         "stream": [
           {
             "id": 350,
             "name": "Apple TV",
             "logo": "/9icYBfYFcwgCbky5VdGUIKJ4C5i.png",
-            "priority": 5
+            "priority": 6
           },
           {
             "id": 2243,
@@ -8640,25 +8649,25 @@
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ],
         "buy": [
@@ -8666,25 +8675,25 @@
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ]
       }
@@ -8707,7 +8716,7 @@
       "tmdbId": 44363,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/44363-frozen/watch?locale=US",
         "stream": [
           {
@@ -8734,7 +8743,7 @@
             "id": 2409,
             "name": "Fawesome",
             "logo": "/dNF4vWhF3TduWvOyfVxEyTqSNRl.png",
-            "priority": 145
+            "priority": 146
           },
           {
             "id": 207,
@@ -8758,7 +8767,7 @@
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           },
           {
             "id": 1963,
@@ -8857,7 +8866,7 @@
       "tmdbId": 489,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/489-good-will-hunting/watch?locale=US",
         "stream": [
           {
@@ -8964,7 +8973,7 @@
             "id": 486,
             "name": "Spectrum On Demand",
             "logo": "/6qPtM96UZkt3Bu4ZFPsDeHFWUZ2.png",
-            "priority": 122
+            "priority": 123
           }
         ],
         "buy": [
@@ -9020,16 +9029,9 @@
       "tmdbId": 21849,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/21849-a-face-in-the-crowd/watch?locale=US",
-        "stream": [
-          {
-            "id": 361,
-            "name": "TCM",
-            "logo": "/7LA3wg2A01nyV3PCLN01WNOVhcT.png",
-            "priority": 101
-          }
-        ],
+        "stream": [],
         "free": [
           {
             "id": 212,
@@ -9079,7 +9081,7 @@
             "id": 486,
             "name": "Spectrum On Demand",
             "logo": "/6qPtM96UZkt3Bu4ZFPsDeHFWUZ2.png",
-            "priority": 122
+            "priority": 123
           }
         ],
         "buy": [
@@ -9134,7 +9136,7 @@
       "tmdbId": 514999,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/514999-murder-mystery/watch?locale=US",
         "stream": [
           {
@@ -9147,7 +9149,7 @@
             "id": 1796,
             "name": "Netflix Standard with Ads",
             "logo": "/eGUwOOIxcazwEBxqJpSN5sWEu6V.png",
-            "priority": 152
+            "priority": 153
           }
         ],
         "free": [],
@@ -9261,9 +9263,15 @@
       "tmdbId": 110415,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
-        "link": "https://www.themoviedb.org/movie/110415/watch?locale=US",
+        "updated": "2026-11-16",
+        "link": "https://www.themoviedb.org/movie/110415-seolgugyeolcha/watch?locale=US",
         "stream": [
+          {
+            "id": 257,
+            "name": "fuboTV",
+            "logo": "/3wF8xISfVlcrc8X3jaa3uMUFGAr.png",
+            "priority": 12
+          },
           {
             "id": 2358,
             "name": "Lionsgate+ Amazon Channel",
@@ -9376,7 +9384,7 @@
       "tmdbId": 10744,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/10744-the-cooler/watch?locale=US",
         "stream": [
           {
@@ -9391,7 +9399,7 @@
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           },
           {
             "id": 73,
@@ -9484,7 +9492,7 @@
       "tmdbId": 2493,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/2493-the-princess-bride/watch?locale=US",
         "stream": [
           {
@@ -9492,12 +9500,6 @@
             "name": "Hulu",
             "logo": "/44uAnmSqvA4yBOdbPWN8YgQHjWm.png",
             "priority": 8
-          },
-          {
-            "id": 257,
-            "name": "fuboTV",
-            "logo": "/3wF8xISfVlcrc8X3jaa3uMUFGAr.png",
-            "priority": 12
           },
           {
             "id": 386,
@@ -9585,16 +9587,9 @@
       "tmdbId": 619,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/619-the-bodyguard/watch?locale=US",
-        "stream": [
-          {
-            "id": 2616,
-            "name": "Paramount Plus Essential",
-            "logo": "/uPWQPyF4nqwtfPNmGcFcenU57HG.png",
-            "priority": 19
-          }
-        ],
+        "stream": [],
         "free": [],
         "rent": [
           {
@@ -9681,7 +9676,7 @@
       "tmdbId": 21588,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/21588-dellamorte-dellamore/watch?locale=US",
         "stream": [
           {
@@ -9713,6 +9708,12 @@
             "name": "Criterion Channel",
             "logo": "/32XVilXkVbrwV96O3N5i0rtuyd6.png",
             "priority": 44
+          },
+          {
+            "id": 25,
+            "name": "Fandor",
+            "logo": "/vR0RxwoqbM0ZP10LR3uT6rpuamc.png",
+            "priority": 51
           },
           {
             "id": 99,
@@ -9754,13 +9755,13 @@
             "id": 2308,
             "name": "Darkroom",
             "logo": "/naf5wQA91UCj0OetKOEYZgWZLqe.png",
-            "priority": 139
+            "priority": 140
           },
           {
             "id": 2411,
             "name": "Eternal Family",
             "logo": "/2IHcGZUPqxy4HhWWN57AGEIKcCW.png",
-            "priority": 144
+            "priority": 145
           },
           {
             "id": 2049,
@@ -9798,7 +9799,7 @@
             "id": 2409,
             "name": "Fawesome",
             "logo": "/dNF4vWhF3TduWvOyfVxEyTqSNRl.png",
-            "priority": 145
+            "priority": 146
           },
           {
             "id": 2555,
@@ -9828,7 +9829,7 @@
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           },
           {
             "id": 73,
@@ -9915,7 +9916,7 @@
       "tmdbId": 8851,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/8851-the-blob/watch?locale=US",
         "stream": [
           {
@@ -9946,7 +9947,7 @@
             "id": 1899,
             "name": "HBO Max",
             "logo": "/skypuy7SXuugIQeYg0IglmzoKaS.png",
-            "priority": 153
+            "priority": 154
           }
         ],
         "free": [
@@ -9954,7 +9955,7 @@
             "id": 2409,
             "name": "Fawesome",
             "logo": "/dNF4vWhF3TduWvOyfVxEyTqSNRl.png",
-            "priority": 145
+            "priority": 146
           },
           {
             "id": 439,
@@ -9972,7 +9973,7 @@
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           }
         ],
         "rent": [
@@ -10112,7 +10113,7 @@
       "tmdbId": 30833,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/30833-drive-in-massacre/watch?locale=US",
         "stream": [
           {
@@ -10173,7 +10174,7 @@
             "id": 692,
             "name": "Cultpix",
             "logo": "/hBR1NB5z52BHMqowq0TgZqMcDBv.png",
-            "priority": 146
+            "priority": 147
           },
           {
             "id": 1960,
@@ -10229,25 +10230,25 @@
             "id": 2409,
             "name": "Fawesome",
             "logo": "/dNF4vWhF3TduWvOyfVxEyTqSNRl.png",
-            "priority": 145
+            "priority": 146
           },
           {
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           },
           {
             "id": 559,
             "name": "Filmzie",
             "logo": "/6tVbNdx7Yzvi6LThNW5Wo1yov6A.png",
-            "priority": 132
+            "priority": 133
           },
           {
             "id": 1957,
             "name": "Cineverse",
             "logo": "/rqCIpmrCBpnL6oliak6E1mrq5DD.png",
-            "priority": 162
+            "priority": 163
           },
           {
             "id": 2533,
@@ -10346,8 +10347,8 @@
       "tmdbId": 940721,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
-        "link": "https://www.themoviedb.org/movie/940721-1-0/watch?locale=US",
+        "updated": "2026-11-16",
+        "link": "https://www.themoviedb.org/movie/940721-gojira-1-0/watch?locale=US",
         "stream": [
           {
             "id": 8,
@@ -10359,7 +10360,7 @@
             "id": 1796,
             "name": "Netflix Standard with Ads",
             "logo": "/eGUwOOIxcazwEBxqJpSN5sWEu6V.png",
-            "priority": 152
+            "priority": 153
           }
         ],
         "free": [],
@@ -10398,7 +10399,7 @@
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           }
         ],
         "buy": [
@@ -10453,14 +10454,14 @@
       "tmdbId": 792307,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-02",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/792307-poor-things/watch?locale=US",
         "stream": [
           {
             "id": 15,
             "name": "Hulu",
             "logo": "/44uAnmSqvA4yBOdbPWN8YgQHjWm.png",
-            "priority": 7
+            "priority": 8
           }
         ],
         "free": [],
@@ -10469,37 +10470,37 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           },
           {
             "id": 486,
             "name": "Spectrum On Demand",
             "logo": "/6qPtM96UZkt3Bu4ZFPsDeHFWUZ2.png",
-            "priority": 122
+            "priority": 123
           }
         ],
         "buy": [
@@ -10507,31 +10508,31 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ]
       }
@@ -10554,7 +10555,7 @@
       "tmdbId": 1226578,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/1226578-longlegs/watch?locale=US",
         "stream": [
           {
@@ -10607,7 +10608,7 @@
             "id": 486,
             "name": "Spectrum On Demand",
             "logo": "/6qPtM96UZkt3Bu4ZFPsDeHFWUZ2.png",
-            "priority": 122
+            "priority": 123
           }
         ],
         "buy": [
@@ -10663,14 +10664,14 @@
       "tmdbId": 9542,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/9542-the-hitcher/watch?locale=US",
         "stream": [
           {
             "id": 289,
             "name": "Cinemax Amazon Channel",
             "logo": "/vJBXVX2REOqNrWlwgnBuQX4pQK6.png",
-            "priority": 71
+            "priority": 72
           },
           {
             "id": 2061,
@@ -10684,7 +10685,7 @@
             "id": 235,
             "name": "YouTube Free",
             "logo": "/gqaJWT5oFiJyVDojVLYRSFPbhQ1.png",
-            "priority": 98
+            "priority": 99
           }
         ],
         "rent": [],
@@ -10709,7 +10710,7 @@
       "tmdbId": 220289,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/220289-coherence/watch?locale=US",
         "stream": [
           {
@@ -10758,7 +10759,7 @@
             "id": 1957,
             "name": "Cineverse",
             "logo": "/rqCIpmrCBpnL6oliak6E1mrq5DD.png",
-            "priority": 162
+            "priority": 163
           },
           {
             "id": 2100,
@@ -10802,13 +10803,19 @@
             "id": 2409,
             "name": "Fawesome",
             "logo": "/dNF4vWhF3TduWvOyfVxEyTqSNRl.png",
-            "priority": 145
+            "priority": 146
           },
           {
             "id": 2667,
             "name": "YOW.tv",
             "logo": "/oMEvAYpfx85D9HHQzXqFbHC0S6F.png",
             "priority": 353
+          },
+          {
+            "id": 25,
+            "name": "Fandor",
+            "logo": "/vR0RxwoqbM0ZP10LR3uT6rpuamc.png",
+            "priority": 51
           },
           {
             "id": 300,
@@ -10820,7 +10827,7 @@
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           },
           {
             "id": 1963,
@@ -10919,7 +10926,7 @@
       "tmdbId": 58129,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/58129-korkarlen/watch?locale=US",
         "stream": [
           {
@@ -10946,7 +10953,7 @@
             "id": 2409,
             "name": "Fawesome",
             "logo": "/dNF4vWhF3TduWvOyfVxEyTqSNRl.png",
-            "priority": 145
+            "priority": 146
           },
           {
             "id": 2782,
@@ -11055,7 +11062,7 @@
       "tmdbId": 505379,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/505379-rebecca/watch?locale=US",
         "stream": [
           {
@@ -11068,7 +11075,7 @@
             "id": 1796,
             "name": "Netflix Standard with Ads",
             "logo": "/eGUwOOIxcazwEBxqJpSN5sWEu6V.png",
-            "priority": 152
+            "priority": 153
           }
         ],
         "free": [],
@@ -11182,14 +11189,14 @@
       "tmdbId": 1402,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/1402-the-pursuit-of-happyness/watch?locale=US",
         "stream": [
           {
             "id": 1956,
             "name": "Angel Studios",
             "logo": "/pusUxS9dP5VK7HkN8SLf2wnP9gm.png",
-            "priority": 161
+            "priority": 162
           }
         ],
         "free": [
@@ -11241,13 +11248,13 @@
             "id": 486,
             "name": "Spectrum On Demand",
             "logo": "/6qPtM96UZkt3Bu4ZFPsDeHFWUZ2.png",
-            "priority": 122
+            "priority": 123
           },
           {
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           }
         ],
         "buy": [
@@ -11390,7 +11397,7 @@
       "tmdbId": 7863,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/7863-shine/watch?locale=US",
         "stream": [],
         "free": [
@@ -11410,7 +11417,7 @@
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           },
           {
             "id": 1963,
@@ -11503,7 +11510,7 @@
       "tmdbId": 629,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/629-the-usual-suspects/watch?locale=US",
         "stream": [
           {
@@ -11522,7 +11529,7 @@
             "id": 1899,
             "name": "HBO Max",
             "logo": "/skypuy7SXuugIQeYg0IglmzoKaS.png",
-            "priority": 153
+            "priority": 154
           },
           {
             "id": 2061,
@@ -11567,7 +11574,7 @@
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           }
         ],
         "buy": [
@@ -11622,8 +11629,8 @@
       "tmdbId": 670,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
-        "link": "https://www.themoviedb.org/movie/670/watch?locale=US",
+        "updated": "2026-11-16",
+        "link": "https://www.themoviedb.org/movie/670-oldeuboi/watch?locale=US",
         "stream": [],
         "free": [
           {
@@ -11717,7 +11724,7 @@
       "tmdbId": 11064,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/11064-brewster-s-millions/watch?locale=US",
         "stream": [
           {
@@ -11736,7 +11743,7 @@
             "id": 1796,
             "name": "Netflix Standard with Ads",
             "logo": "/eGUwOOIxcazwEBxqJpSN5sWEu6V.png",
-            "priority": 152
+            "priority": 153
           }
         ],
         "free": [],
@@ -11824,7 +11831,7 @@
       "tmdbId": 25983,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/25983-the-house-of-the-devil/watch?locale=US",
         "stream": [
           {
@@ -11905,13 +11912,13 @@
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           },
           {
             "id": 613,
             "name": "Amazon Prime Video Free with Ads",
             "logo": "/fuVBtr57kxnYzOILZ38xqSmBeyR.png",
-            "priority": 142
+            "priority": 143
           },
           {
             "id": 73,
@@ -12105,7 +12112,7 @@
       "tmdbId": 4232,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/4232-scream/watch?locale=US",
         "stream": [
           {
@@ -12154,7 +12161,7 @@
             "id": 1899,
             "name": "HBO Max",
             "logo": "/skypuy7SXuugIQeYg0IglmzoKaS.png",
-            "priority": 153
+            "priority": 154
           },
           {
             "id": 2061,
@@ -12230,13 +12237,13 @@
             "id": 486,
             "name": "Spectrum On Demand",
             "logo": "/6qPtM96UZkt3Bu4ZFPsDeHFWUZ2.png",
-            "priority": 122
+            "priority": 123
           },
           {
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           }
         ],
         "buy": [
@@ -12292,7 +12299,7 @@
       "tmdbId": 1880,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/1880-red-dawn/watch?locale=US",
         "stream": [
           {
@@ -12325,7 +12332,7 @@
             "id": 2409,
             "name": "Fawesome",
             "logo": "/dNF4vWhF3TduWvOyfVxEyTqSNRl.png",
-            "priority": 145
+            "priority": 146
           },
           {
             "id": 207,
@@ -12343,7 +12350,7 @@
             "id": 613,
             "name": "Amazon Prime Video Free with Ads",
             "logo": "/fuVBtr57kxnYzOILZ38xqSmBeyR.png",
-            "priority": 142
+            "priority": 143
           },
           {
             "id": 73,
@@ -12387,7 +12394,7 @@
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           }
         ],
         "buy": [
@@ -12442,7 +12449,7 @@
       "tmdbId": 11697,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/11697-the-man-who-shot-liberty-valance/watch?locale=US",
         "stream": [
           {
@@ -12470,14 +12477,7 @@
             "priority": 53
           }
         ],
-        "free": [
-          {
-            "id": 235,
-            "name": "YouTube Free",
-            "logo": "/gqaJWT5oFiJyVDojVLYRSFPbhQ1.png",
-            "priority": 99
-          }
-        ],
+        "free": [],
         "rent": [
           {
             "id": 10,
@@ -12562,7 +12562,7 @@
       "tmdbId": 19542,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/19542-the-red-shoes/watch?locale=US",
         "stream": [
           {
@@ -12575,7 +12575,7 @@
             "id": 1899,
             "name": "HBO Max",
             "logo": "/skypuy7SXuugIQeYg0IglmzoKaS.png",
-            "priority": 153
+            "priority": 154
           }
         ],
         "free": [
@@ -12607,7 +12607,7 @@
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           },
           {
             "id": 73,
@@ -12700,20 +12700,20 @@
       "tmdbId": 762504,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/762504-nope/watch?locale=US",
         "stream": [
           {
             "id": 8,
             "name": "Netflix",
             "logo": "/rK1KljqmbvO9HQa1PBFLILWah72.png",
-            "priority": 0
+            "priority": 4
           },
           {
             "id": 1796,
             "name": "Netflix Standard with Ads",
             "logo": "/eGUwOOIxcazwEBxqJpSN5sWEu6V.png",
-            "priority": 152
+            "priority": 153
           }
         ],
         "free": [],
@@ -12722,31 +12722,31 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ],
         "buy": [
@@ -12754,31 +12754,31 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ]
       }
@@ -12801,7 +12801,7 @@
       "tmdbId": 798286,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/798286-beau-is-afraid/watch?locale=US",
         "stream": [],
         "free": [],
@@ -12840,13 +12840,13 @@
             "id": 486,
             "name": "Spectrum On Demand",
             "logo": "/6qPtM96UZkt3Bu4ZFPsDeHFWUZ2.png",
-            "priority": 122
+            "priority": 123
           },
           {
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           }
         ],
         "buy": [
@@ -13185,26 +13185,26 @@
       "tmdbId": 9532,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/9532-final-destination/watch?locale=US",
         "stream": [
           {
             "id": 1825,
             "name": "HBO Max Amazon Channel",
             "logo": "/64fLWeSyZ1KQZhIdvTdy4QHeWty.png",
-            "priority": 13
+            "priority": 14
           },
           {
             "id": 80,
             "name": "AMC",
             "logo": "/4lMb5R5cpg7o2GZOxI7CgxoU9Jr.png",
-            "priority": 47
+            "priority": 48
           },
           {
             "id": 1899,
             "name": "HBO Max",
             "logo": "/skypuy7SXuugIQeYg0IglmzoKaS.png",
-            "priority": 153
+            "priority": 154
           }
         ],
         "free": [],
@@ -13213,43 +13213,43 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           },
           {
             "id": 486,
             "name": "Spectrum On Demand",
             "logo": "/6qPtM96UZkt3Bu4ZFPsDeHFWUZ2.png",
-            "priority": 122
+            "priority": 123
           },
           {
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           }
         ],
         "buy": [
@@ -13257,31 +13257,31 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ]
       }
@@ -13399,7 +13399,7 @@
       "tmdbId": 359940,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/359940-three-billboards-outside-ebbing-missouri/watch?locale=US",
         "stream": [
           {
@@ -13418,7 +13418,7 @@
             "id": 1899,
             "name": "HBO Max",
             "logo": "/skypuy7SXuugIQeYg0IglmzoKaS.png",
-            "priority": 153
+            "priority": 154
           },
           {
             "id": 2061,
@@ -13463,7 +13463,7 @@
             "id": 486,
             "name": "Spectrum On Demand",
             "logo": "/6qPtM96UZkt3Bu4ZFPsDeHFWUZ2.png",
-            "priority": 122
+            "priority": 123
           }
         ],
         "buy": [
@@ -13602,7 +13602,7 @@
       "tmdbId": 5503,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/5503-the-fugitive/watch?locale=US",
         "stream": [],
         "free": [],
@@ -13641,7 +13641,7 @@
             "id": 486,
             "name": "Spectrum On Demand",
             "logo": "/6qPtM96UZkt3Bu4ZFPsDeHFWUZ2.png",
-            "priority": 122
+            "priority": 123
           }
         ],
         "buy": [
@@ -13812,96 +13812,89 @@
       "tmdbId": 137113,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-02",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/137113-edge-of-tomorrow/watch?locale=US",
         "stream": [
           {
             "id": 257,
             "name": "fuboTV",
             "logo": "/3wF8xISfVlcrc8X3jaa3uMUFGAr.png",
-            "priority": 11
+            "priority": 12
           },
           {
             "id": 2303,
             "name": "Paramount Plus Premium",
             "logo": "/4N4BMd0Mm0kHAmF7RZgL5lW3cwc.png",
-            "priority": 17
+            "priority": 18
           },
           {
             "id": 2616,
             "name": "Paramount Plus Essential",
             "logo": "/uPWQPyF4nqwtfPNmGcFcenU57HG.png",
-            "priority": 18
+            "priority": 19
           },
           {
             "id": 582,
             "name": "Paramount+ Amazon Channel",
             "logo": "/bxX0YVOCY7bI85BKRlJAAQ2EjUR.png",
-            "priority": 29
+            "priority": 30
           },
           {
             "id": 2528,
             "name": "YouTube TV",
             "logo": "/48bVXEIyCLSL9pZUQ7gB9ToyWto.png",
-            "priority": 41
+            "priority": 42
           },
           {
             "id": 633,
             "name": "Paramount+ Roku Premium Channel",
             "logo": "/tnZCMxbcKdxuVmjxefyXCaip7q3.png",
-            "priority": 65
+            "priority": 66
           }
         ],
-        "free": [
-          {
-            "id": 235,
-            "name": "YouTube Free",
-            "logo": "/gqaJWT5oFiJyVDojVLYRSFPbhQ1.png",
-            "priority": 98
-          }
-        ],
+        "free": [],
         "rent": [
           {
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           },
           {
             "id": 486,
             "name": "Spectrum On Demand",
             "logo": "/6qPtM96UZkt3Bu4ZFPsDeHFWUZ2.png",
-            "priority": 122
+            "priority": 123
           },
           {
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           }
         ],
         "buy": [
@@ -13909,31 +13902,31 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ]
       }
@@ -14064,7 +14057,7 @@
       "tmdbId": 45612,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/45612-source-code/watch?locale=US",
         "stream": [
           {
@@ -14085,7 +14078,7 @@
             "id": 2409,
             "name": "Fawesome",
             "logo": "/dNF4vWhF3TduWvOyfVxEyTqSNRl.png",
-            "priority": 145
+            "priority": 146
           },
           {
             "id": 207,
@@ -14141,7 +14134,7 @@
             "id": 486,
             "name": "Spectrum On Demand",
             "logo": "/6qPtM96UZkt3Bu4ZFPsDeHFWUZ2.png",
-            "priority": 122
+            "priority": 123
           }
         ],
         "buy": [
@@ -14196,7 +14189,7 @@
       "tmdbId": 1078605,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/1078605-weapons/watch?locale=US",
         "stream": [
           {
@@ -14209,7 +14202,7 @@
             "id": 1899,
             "name": "HBO Max",
             "logo": "/skypuy7SXuugIQeYg0IglmzoKaS.png",
-            "priority": 153
+            "priority": 154
           },
           {
             "id": 2754,
@@ -14254,7 +14247,7 @@
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           }
         ],
         "buy": [
@@ -14336,7 +14329,7 @@
       "tmdbId": 996,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-02",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/996-double-indemnity/watch?locale=US",
         "stream": [],
         "free": [],
@@ -14345,31 +14338,31 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ],
         "buy": [
@@ -14377,31 +14370,31 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ]
       }
@@ -14558,26 +14551,26 @@
       "tmdbId": 278,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/278-the-shawshank-redemption/watch?locale=US",
         "stream": [
           {
             "id": 2383,
             "name": "Philo",
             "logo": "/mfbhzQwmQKjm7bLZPF5CTeu3Ilc.png",
-            "priority": 20
+            "priority": 21
           },
           {
             "id": 636,
             "name": "MGM Plus Roku Premium Channel",
             "logo": "/surh9i8VYeeq9186fKHnUg5Q5dg.png",
-            "priority": 35
+            "priority": 36
           },
           {
             "id": 80,
             "name": "AMC",
             "logo": "/4lMb5R5cpg7o2GZOxI7CgxoU9Jr.png",
-            "priority": 47
+            "priority": 48
           }
         ],
         "free": [],
@@ -14586,43 +14579,43 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           },
           {
             "id": 486,
             "name": "Spectrum On Demand",
             "logo": "/6qPtM96UZkt3Bu4ZFPsDeHFWUZ2.png",
-            "priority": 122
+            "priority": 123
           },
           {
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           }
         ],
         "buy": [
@@ -14630,31 +14623,31 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ]
       }
@@ -14710,7 +14703,7 @@
       "tmdbId": 19185,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/19185-night-of-the-living-dead/watch?locale=US",
         "stream": [
           {
@@ -14726,25 +14719,25 @@
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ],
         "buy": [
@@ -14752,25 +14745,25 @@
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ]
       }
@@ -15090,7 +15083,7 @@
       "tmdbId": 5925,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/5925-the-great-escape/watch?locale=US",
         "stream": [
           {
@@ -15167,7 +15160,7 @@
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           }
         ],
         "buy": [
@@ -15599,7 +15592,7 @@
       "tmdbId": 968,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/968-dog-day-afternoon/watch?locale=US",
         "stream": [],
         "free": [
@@ -15645,7 +15638,7 @@
             "id": 486,
             "name": "Spectrum On Demand",
             "logo": "/6qPtM96UZkt3Bu4ZFPsDeHFWUZ2.png",
-            "priority": 122
+            "priority": 123
           }
         ],
         "buy": [
@@ -15906,7 +15899,7 @@
       "tmdbId": 16869,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/16869-inglourious-basterds/watch?locale=US",
         "stream": [
           {
@@ -15964,7 +15957,7 @@
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           }
         ],
         "buy": [
@@ -16019,7 +16012,7 @@
       "tmdbId": 70667,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/70667-kon-tiki/watch?locale=US",
         "stream": [
           {
@@ -16033,6 +16026,12 @@
             "name": "Outside TV Features Amzon Channel",
             "logo": "/y3b3UctYaH11sKkxPN4juIQhaHp.png",
             "priority": 273
+          },
+          {
+            "id": 2754,
+            "name": "Howdy Amazon Channel",
+            "logo": "/dI7GHS1st3jWH8eW21x5YnJdUFN.png",
+            "priority": 370
           }
         ],
         "free": [
@@ -16064,7 +16063,7 @@
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           },
           {
             "id": 73,
@@ -16443,7 +16442,7 @@
       "tmdbId": 77,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/77-memento/watch?locale=US",
         "stream": [
           {
@@ -16480,7 +16479,7 @@
             "id": 1796,
             "name": "Netflix Standard with Ads",
             "logo": "/eGUwOOIxcazwEBxqJpSN5sWEu6V.png",
-            "priority": 152
+            "priority": 153
           },
           {
             "id": 2100,
@@ -16518,7 +16517,7 @@
             "id": 2409,
             "name": "Fawesome",
             "logo": "/dNF4vWhF3TduWvOyfVxEyTqSNRl.png",
-            "priority": 145
+            "priority": 146
           },
           {
             "id": 207,
@@ -16536,7 +16535,7 @@
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           },
           {
             "id": 73,
@@ -16574,7 +16573,7 @@
             "id": 486,
             "name": "Spectrum On Demand",
             "logo": "/6qPtM96UZkt3Bu4ZFPsDeHFWUZ2.png",
-            "priority": 122
+            "priority": 123
           }
         ],
         "buy": [
@@ -16724,44 +16723,44 @@
       "tmdbId": 687163,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/687163-project-hail-mary/watch?locale=US",
         "stream": [
           {
             "id": 9,
             "name": "Amazon Prime Video",
             "logo": "/gMZdpavHmxFNnLpMHwVxfqeux2g.png",
-            "priority": 4
+            "priority": 5
           },
           {
             "id": 257,
             "name": "fuboTV",
             "logo": "/3wF8xISfVlcrc8X3jaa3uMUFGAr.png",
-            "priority": 11
+            "priority": 12
           },
           {
             "id": 583,
             "name": "MGM+ Amazon Channel",
             "logo": "/gk7O3l9qHttE9F3hgDNnhbhlOs7.png",
-            "priority": 16
+            "priority": 17
           },
           {
             "id": 2383,
             "name": "Philo",
             "logo": "/mfbhzQwmQKjm7bLZPF5CTeu3Ilc.png",
-            "priority": 20
+            "priority": 21
           },
           {
             "id": 636,
             "name": "MGM Plus Roku Premium Channel",
             "logo": "/surh9i8VYeeq9186fKHnUg5Q5dg.png",
-            "priority": 35
+            "priority": 36
           },
           {
             "id": 34,
             "name": "MGM Plus",
             "logo": "/q63Uzpu7JAs566vA2G23Lk7LcID.png",
-            "priority": 52
+            "priority": 53
           },
           {
             "id": 2100,
@@ -16776,37 +16775,37 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           },
           {
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           }
         ],
         "buy": [
@@ -16814,25 +16813,25 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           }
         ]
       }
@@ -16857,7 +16856,7 @@
       "tmdbId": 776561,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/776561-strawberry-mansion/watch?locale=US",
         "stream": [
           {
@@ -16871,6 +16870,12 @@
             "name": "Philo",
             "logo": "/mfbhzQwmQKjm7bLZPF5CTeu3Ilc.png",
             "priority": 21
+          },
+          {
+            "id": 25,
+            "name": "Fandor",
+            "logo": "/vR0RxwoqbM0ZP10LR3uT6rpuamc.png",
+            "priority": 51
           },
           {
             "id": 199,
@@ -16914,13 +16919,13 @@
             "id": 2308,
             "name": "Darkroom",
             "logo": "/naf5wQA91UCj0OetKOEYZgWZLqe.png",
-            "priority": 139
+            "priority": 140
           },
           {
             "id": 2409,
             "name": "Fawesome",
             "logo": "/dNF4vWhF3TduWvOyfVxEyTqSNRl.png",
-            "priority": 145
+            "priority": 146
           },
           {
             "id": 2667,
@@ -16950,13 +16955,13 @@
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           },
           {
             "id": 559,
             "name": "Filmzie",
             "logo": "/6tVbNdx7Yzvi6LThNW5Wo1yov6A.png",
-            "priority": 132
+            "priority": 133
           },
           {
             "id": 1963,
@@ -17055,50 +17060,50 @@
       "tmdbId": 98,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/98-gladiator/watch?locale=US",
         "stream": [
           {
             "id": 8,
             "name": "Netflix",
             "logo": "/rK1KljqmbvO9HQa1PBFLILWah72.png",
-            "priority": 0
+            "priority": 4
           },
           {
             "id": 2303,
             "name": "Paramount Plus Premium",
             "logo": "/4N4BMd0Mm0kHAmF7RZgL5lW3cwc.png",
-            "priority": 17
+            "priority": 18
           },
           {
             "id": 2616,
             "name": "Paramount Plus Essential",
             "logo": "/uPWQPyF4nqwtfPNmGcFcenU57HG.png",
-            "priority": 18
+            "priority": 19
           },
           {
             "id": 582,
             "name": "Paramount+ Amazon Channel",
             "logo": "/bxX0YVOCY7bI85BKRlJAAQ2EjUR.png",
-            "priority": 29
+            "priority": 30
           },
           {
             "id": 191,
             "name": "Kanopy",
             "logo": "/cltb8XKan9ierp23ItPmCOcVLRa.png",
-            "priority": 38
+            "priority": 39
           },
           {
             "id": 2528,
             "name": "YouTube TV",
             "logo": "/48bVXEIyCLSL9pZUQ7gB9ToyWto.png",
-            "priority": 41
+            "priority": 42
           },
           {
             "id": 1796,
             "name": "Netflix Standard with Ads",
             "logo": "/eGUwOOIxcazwEBxqJpSN5sWEu6V.png",
-            "priority": 152
+            "priority": 153
           }
         ],
         "free": [
@@ -17106,19 +17111,19 @@
             "id": 191,
             "name": "Kanopy",
             "logo": "/cltb8XKan9ierp23ItPmCOcVLRa.png",
-            "priority": 38
+            "priority": 39
           },
           {
             "id": 212,
             "name": "Hoopla",
             "logo": "/gtjNBzAoGgUtYzt0UKXmwG34WWL.png",
-            "priority": 39
+            "priority": 40
           },
           {
             "id": 332,
             "name": "Fandango at Home Free",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 42
+            "priority": 43
           }
         ],
         "rent": [
@@ -17126,49 +17131,49 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 2784,
             "name": "JustWatch TV Store",
             "logo": "/aaFIYn2NGPCo0rpLiWokbvNqNJd.png",
-            "priority": 12
+            "priority": 13
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           },
           {
             "id": 486,
             "name": "Spectrum On Demand",
             "logo": "/6qPtM96UZkt3Bu4ZFPsDeHFWUZ2.png",
-            "priority": 122
+            "priority": 123
           },
           {
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           }
         ],
         "buy": [
@@ -17176,31 +17181,31 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ]
       }
@@ -17223,20 +17228,20 @@
       "tmdbId": 137,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/137-groundhog-day/watch?locale=US",
         "stream": [
           {
             "id": 2383,
             "name": "Philo",
             "logo": "/mfbhzQwmQKjm7bLZPF5CTeu3Ilc.png",
-            "priority": 20
+            "priority": 21
           },
           {
             "id": 80,
             "name": "AMC",
             "logo": "/4lMb5R5cpg7o2GZOxI7CgxoU9Jr.png",
-            "priority": 47
+            "priority": 48
           },
           {
             "id": 2745,
@@ -17250,7 +17255,7 @@
             "id": 235,
             "name": "YouTube Free",
             "logo": "/gqaJWT5oFiJyVDojVLYRSFPbhQ1.png",
-            "priority": 98
+            "priority": 99
           },
           {
             "id": 73,
@@ -17264,43 +17269,43 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           },
           {
             "id": 486,
             "name": "Spectrum On Demand",
             "logo": "/6qPtM96UZkt3Bu4ZFPsDeHFWUZ2.png",
-            "priority": 122
+            "priority": 123
           },
           {
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           }
         ],
         "buy": [
@@ -17308,31 +17313,31 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ]
       }
@@ -17355,50 +17360,56 @@
       "tmdbId": 20345,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/20345-l-uccello-dalle-piume-di-cristallo/watch?locale=US",
         "stream": [
           {
             "id": 9,
             "name": "Amazon Prime Video",
             "logo": "/gMZdpavHmxFNnLpMHwVxfqeux2g.png",
-            "priority": 4
+            "priority": 5
           },
           {
             "id": 2383,
             "name": "Philo",
             "logo": "/mfbhzQwmQKjm7bLZPF5CTeu3Ilc.png",
-            "priority": 20
+            "priority": 21
+          },
+          {
+            "id": 25,
+            "name": "Fandor",
+            "logo": "/vR0RxwoqbM0ZP10LR3uT6rpuamc.png",
+            "priority": 51
           },
           {
             "id": 199,
             "name": "Fandor Amazon Channel",
             "logo": "/pqV8nzIxmOKVDsDrQ5wCPYuSM5P.png",
-            "priority": 92
+            "priority": 93
           },
           {
             "id": 202,
             "name": "Screambox Amazon Channel",
             "logo": "/zRn4rBGPYDeZvTeZEBySDdqHzS8.png",
-            "priority": 93
+            "priority": 94
           },
           {
             "id": 331,
             "name": "FlixFling",
             "logo": "/hkw2s2Su8EyifB9EbbQP64Fj1xA.png",
-            "priority": 97
+            "priority": 98
           },
           {
             "id": 368,
             "name": "IndieFlix",
             "logo": "/gawu8fJwrJKNvzgTjklQBdVqPCF.png",
-            "priority": 105
+            "priority": 106
           },
           {
             "id": 2411,
             "name": "Eternal Family",
             "logo": "/2IHcGZUPqxy4HhWWN57AGEIKcCW.png",
-            "priority": 144
+            "priority": 145
           },
           {
             "id": 2100,
@@ -17448,31 +17459,31 @@
             "id": 191,
             "name": "Kanopy",
             "logo": "/cltb8XKan9ierp23ItPmCOcVLRa.png",
-            "priority": 38
+            "priority": 39
           },
           {
             "id": 212,
             "name": "Hoopla",
             "logo": "/gtjNBzAoGgUtYzt0UKXmwG34WWL.png",
-            "priority": 39
+            "priority": 40
           },
           {
             "id": 2239,
             "name": "FlixHouse",
             "logo": "/ezTsuy3T7Byi7XRbAozgJrsnbQC.png",
-            "priority": 46
+            "priority": 47
           },
           {
             "id": 2308,
             "name": "Darkroom",
             "logo": "/naf5wQA91UCj0OetKOEYZgWZLqe.png",
-            "priority": 139
+            "priority": 140
           },
           {
             "id": 2409,
             "name": "Fawesome",
             "logo": "/dNF4vWhF3TduWvOyfVxEyTqSNRl.png",
-            "priority": 145
+            "priority": 146
           },
           {
             "id": 2555,
@@ -17481,34 +17492,34 @@
             "priority": 340
           },
           {
-            "id": 2383,
-            "name": "Philo",
-            "logo": "/mfbhzQwmQKjm7bLZPF5CTeu3Ilc.png",
-            "priority": 20
+            "id": 2667,
+            "name": "YOW.tv",
+            "logo": "/oMEvAYpfx85D9HHQzXqFbHC0S6F.png",
+            "priority": 353
           },
           {
             "id": 235,
             "name": "YouTube Free",
             "logo": "/gqaJWT5oFiJyVDojVLYRSFPbhQ1.png",
-            "priority": 98
+            "priority": 99
           },
           {
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           },
           {
             "id": 613,
             "name": "Amazon Prime Video Free with Ads",
             "logo": "/fuVBtr57kxnYzOILZ38xqSmBeyR.png",
-            "priority": 142
+            "priority": 143
           },
           {
             "id": 1957,
             "name": "Cineverse",
             "logo": "/rqCIpmrCBpnL6oliak6E1mrq5DD.png",
-            "priority": 162
+            "priority": 163
           },
           {
             "id": 1960,
@@ -17534,19 +17545,19 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           },
           {
             "id": 331,
             "name": "FlixFling",
             "logo": "/hkw2s2Su8EyifB9EbbQP64Fj1xA.png",
-            "priority": 97
+            "priority": 98
           },
           {
             "id": 2555,
@@ -17560,19 +17571,19 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           },
           {
             "id": 331,
             "name": "FlixFling",
             "logo": "/hkw2s2Su8EyifB9EbbQP64Fj1xA.png",
-            "priority": 97
+            "priority": 98
           }
         ]
       }
@@ -17597,7 +17608,7 @@
       "tmdbId": 103,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/103-taxi-driver/watch?locale=US",
         "stream": [
           {
@@ -17607,7 +17618,14 @@
             "priority": 369
           }
         ],
-        "free": [],
+        "free": [
+          {
+            "id": 300,
+            "name": "Pluto TV",
+            "logo": "/fN4czqaMQNLeF6sSSIjGbAWzvwK.png",
+            "priority": 76
+          }
+        ],
         "rent": [
           {
             "id": 10,
@@ -17649,7 +17667,7 @@
             "id": 486,
             "name": "Spectrum On Demand",
             "logo": "/6qPtM96UZkt3Bu4ZFPsDeHFWUZ2.png",
-            "priority": 122
+            "priority": 123
           }
         ],
         "buy": [
@@ -17799,7 +17817,7 @@
       "tmdbId": 16391,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/16391-black-narcissus/watch?locale=US",
         "stream": [
           {
@@ -17818,7 +17836,7 @@
             "id": 1899,
             "name": "HBO Max",
             "logo": "/skypuy7SXuugIQeYg0IglmzoKaS.png",
-            "priority": 153
+            "priority": 154
           },
           {
             "id": 2623,
@@ -17832,7 +17850,7 @@
             "id": 2308,
             "name": "Darkroom",
             "logo": "/naf5wQA91UCj0OetKOEYZgWZLqe.png",
-            "priority": 139
+            "priority": 140
           },
           {
             "id": 207,
@@ -17862,7 +17880,7 @@
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           },
           {
             "id": 73,
@@ -18243,20 +18261,20 @@
       "tmdbId": 847,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/847-willow/watch?locale=US",
         "stream": [
           {
             "id": 9,
             "name": "Amazon Prime Video",
             "logo": "/gMZdpavHmxFNnLpMHwVxfqeux2g.png",
-            "priority": 4
+            "priority": 5
           },
           {
             "id": 337,
             "name": "Disney Plus",
             "logo": "/5eZ872CghnHFLB1j8grszbrx0dx.png",
-            "priority": 6
+            "priority": 7
           },
           {
             "id": 2100,
@@ -18271,31 +18289,31 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ],
         "buy": [
@@ -18303,31 +18321,31 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ]
       }
@@ -18351,7 +18369,7 @@
       "tmdbId": 79785,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/79785-harlequin/watch?locale=US",
         "stream": [],
         "free": [
@@ -18365,7 +18383,7 @@
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           }
         ],
         "rent": [
@@ -18484,7 +18502,7 @@
       "tmdbId": 30497,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/30497-the-texas-chain-saw-massacre/watch?locale=US",
         "stream": [
           {
@@ -18527,7 +18545,7 @@
             "id": 1796,
             "name": "Netflix Standard with Ads",
             "logo": "/eGUwOOIxcazwEBxqJpSN5sWEu6V.png",
-            "priority": 152
+            "priority": 153
           },
           {
             "id": 2049,
@@ -18559,13 +18577,13 @@
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           },
           {
             "id": 613,
             "name": "Amazon Prime Video Free with Ads",
             "logo": "/fuVBtr57kxnYzOILZ38xqSmBeyR.png",
-            "priority": 142
+            "priority": 143
           },
           {
             "id": 1963,
@@ -18670,7 +18688,7 @@
       "tmdbId": 10733,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-02",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/10733-the-alamo/watch?locale=US",
         "stream": [],
         "free": [
@@ -18678,7 +18696,7 @@
             "id": 212,
             "name": "Hoopla",
             "logo": "/gtjNBzAoGgUtYzt0UKXmwG34WWL.png",
-            "priority": 39
+            "priority": 40
           }
         ],
         "rent": [
@@ -18686,31 +18704,31 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ],
         "buy": [
@@ -18718,31 +18736,31 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ]
       }
@@ -18765,14 +18783,14 @@
       "tmdbId": 32051,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/32051-race-with-the-devil/watch?locale=US",
         "stream": [
           {
             "id": 9,
             "name": "Amazon Prime Video",
             "logo": "/gMZdpavHmxFNnLpMHwVxfqeux2g.png",
-            "priority": 4
+            "priority": 5
           },
           {
             "id": 2100,
@@ -18787,31 +18805,31 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ],
         "buy": [
@@ -18819,31 +18837,31 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ]
       }
@@ -18866,7 +18884,7 @@
       "tmdbId": 15716,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-02",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/15716-the-pirates-of-penzance/watch?locale=US",
         "stream": [],
         "free": [],
@@ -18875,31 +18893,31 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ],
         "buy": [
@@ -18907,31 +18925,31 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ]
       }
@@ -18980,7 +18998,7 @@
       "tmdbId": 11036,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/11036-the-notebook/watch?locale=US",
         "stream": [],
         "free": [
@@ -19026,7 +19044,7 @@
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           }
         ],
         "buy": [
@@ -19082,7 +19100,7 @@
       "tmdbId": 28260,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/28260-return-of-the-living-dead-iii/watch?locale=US",
         "stream": [
           {
@@ -19109,7 +19127,7 @@
             "id": 2409,
             "name": "Fawesome",
             "logo": "/dNF4vWhF3TduWvOyfVxEyTqSNRl.png",
-            "priority": 145
+            "priority": 146
           },
           {
             "id": 207,
@@ -19121,13 +19139,13 @@
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           },
           {
             "id": 613,
             "name": "Amazon Prime Video Free with Ads",
             "logo": "/fuVBtr57kxnYzOILZ38xqSmBeyR.png",
-            "priority": 142
+            "priority": 143
           },
           {
             "id": 73,
@@ -19395,7 +19413,7 @@
       "tmdbId": 227,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/227-the-outsiders/watch?locale=US",
         "stream": [
           {
@@ -19415,12 +19433,6 @@
             "name": "Paramount Plus Essential",
             "logo": "/uPWQPyF4nqwtfPNmGcFcenU57HG.png",
             "priority": 19
-          },
-          {
-            "id": 2383,
-            "name": "Philo",
-            "logo": "/mfbhzQwmQKjm7bLZPF5CTeu3Ilc.png",
-            "priority": 21
           },
           {
             "id": 582,
@@ -19472,13 +19484,13 @@
             "id": 486,
             "name": "Spectrum On Demand",
             "logo": "/6qPtM96UZkt3Bu4ZFPsDeHFWUZ2.png",
-            "priority": 122
+            "priority": 123
           },
           {
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           }
         ],
         "buy": [
@@ -19534,20 +19546,26 @@
       "tmdbId": 1939,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/1939-laura/watch?locale=US",
         "stream": [
           {
             "id": 9,
             "name": "Amazon Prime Video",
             "logo": "/gMZdpavHmxFNnLpMHwVxfqeux2g.png",
-            "priority": 4
+            "priority": 5
+          },
+          {
+            "id": 257,
+            "name": "fuboTV",
+            "logo": "/3wF8xISfVlcrc8X3jaa3uMUFGAr.png",
+            "priority": 12
           },
           {
             "id": 2528,
             "name": "YouTube TV",
             "logo": "/48bVXEIyCLSL9pZUQ7gB9ToyWto.png",
-            "priority": 41
+            "priority": 42
           },
           {
             "id": 2100,
@@ -19562,31 +19580,31 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ],
         "buy": [
@@ -19594,31 +19612,31 @@
             "id": 10,
             "name": "Amazon Video",
             "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
-            "priority": 9
+            "priority": 10
           },
           {
             "id": 2,
             "name": "Apple TV Store",
             "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
-            "priority": 10
+            "priority": 11
           },
           {
             "id": 3,
             "name": "Google Play Movies",
             "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
-            "priority": 23
+            "priority": 24
           },
           {
             "id": 192,
             "name": "YouTube",
             "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
-            "priority": 24
+            "priority": 25
           },
           {
             "id": 7,
             "name": "Fandango At Home",
             "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
-            "priority": 40
+            "priority": 41
           }
         ]
       }
@@ -19758,7 +19776,7 @@
       "tmdbId": 274870,
       "streaming": {
         "region": "US",
-        "updated": "2026-11-09",
+        "updated": "2026-11-16",
         "link": "https://www.themoviedb.org/movie/274870-passengers/watch?locale=US",
         "stream": [],
         "free": [],
@@ -19797,7 +19815,7 @@
             "id": 538,
             "name": "Plex",
             "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
-            "priority": 127
+            "priority": 128
           }
         ],
         "buy": [
@@ -19949,6 +19967,163 @@
         "Buzzsprout-20099500"
       ],
       "episodeTitle": "The Devil's Rain",
+      "posterURL": null,
+      "isInfamous": false,
+      "hostRating": null,
+      "tmdbId": 38701,
+      "streaming": {
+        "region": "US",
+        "updated": "2026-11-16",
+        "link": "https://www.themoviedb.org/movie/38701-the-devil-s-rain/watch?locale=US",
+        "stream": [
+          {
+            "id": 2383,
+            "name": "Philo",
+            "logo": "/mfbhzQwmQKjm7bLZPF5CTeu3Ilc.png",
+            "priority": 21
+          },
+          {
+            "id": 528,
+            "name": "AMC+ Amazon Channel",
+            "logo": "/tg5ufQ1GkYDCMxSSxemfeKWcvRe.png",
+            "priority": 32
+          },
+          {
+            "id": 2411,
+            "name": "Eternal Family",
+            "logo": "/2IHcGZUPqxy4HhWWN57AGEIKcCW.png",
+            "priority": 145
+          },
+          {
+            "id": 600,
+            "name": "Shout! Factory Amazon Channel",
+            "logo": "/ydhPmamP2uIMipgq8qIEfmcw2hT.png",
+            "priority": 318
+          },
+          {
+            "id": 2623,
+            "name": "Artiflix",
+            "logo": "/hO4tZhtSJ7VrVnJusimkY3MltSx.png",
+            "priority": 355
+          }
+        ],
+        "free": [
+          {
+            "id": 2409,
+            "name": "Fawesome",
+            "logo": "/dNF4vWhF3TduWvOyfVxEyTqSNRl.png",
+            "priority": 146
+          },
+          {
+            "id": 207,
+            "name": "The Roku Channel",
+            "logo": "/b7uhrYJtAe7b1ieJGg705vTbwrX.png",
+            "priority": 33
+          },
+          {
+            "id": 300,
+            "name": "Pluto TV",
+            "logo": "/fN4czqaMQNLeF6sSSIjGbAWzvwK.png",
+            "priority": 76
+          },
+          {
+            "id": 538,
+            "name": "Plex",
+            "logo": "/blAEhvx3XX8sV0fFVFk88FFjubs.png",
+            "priority": 128
+          },
+          {
+            "id": 2533,
+            "name": "Mometu",
+            "logo": "/zrzvU8SGxItb3xFCX7WpyHzo4k7.png",
+            "priority": 334
+          },
+          {
+            "id": 73,
+            "name": "Tubi TV",
+            "logo": "/9dEuvA8wg5TSeFBZlPxSVxFdimJ.png",
+            "priority": 346
+          }
+        ],
+        "rent": [
+          {
+            "id": 10,
+            "name": "Amazon Video",
+            "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
+            "priority": 10
+          },
+          {
+            "id": 2,
+            "name": "Apple TV Store",
+            "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
+            "priority": 11
+          },
+          {
+            "id": 3,
+            "name": "Google Play Movies",
+            "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
+            "priority": 24
+          },
+          {
+            "id": 192,
+            "name": "YouTube",
+            "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
+            "priority": 25
+          },
+          {
+            "id": 7,
+            "name": "Fandango At Home",
+            "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
+            "priority": 41
+          }
+        ],
+        "buy": [
+          {
+            "id": 10,
+            "name": "Amazon Video",
+            "logo": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
+            "priority": 10
+          },
+          {
+            "id": 2,
+            "name": "Apple TV Store",
+            "logo": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
+            "priority": 11
+          },
+          {
+            "id": 3,
+            "name": "Google Play Movies",
+            "logo": "/aZRENwYILujqs0RVOZutTh0BVGV.png",
+            "priority": 24
+          },
+          {
+            "id": 192,
+            "name": "YouTube",
+            "logo": "/5Maob4o5w8oZnNeYpCDyVFD3M7X.png",
+            "priority": 25
+          },
+          {
+            "id": 7,
+            "name": "Fandango At Home",
+            "logo": "/wpOt6x0dRxTrIzuBosto4LGd7E9.png",
+            "priority": 41
+          }
+        ]
+      }
+    },
+    {
+      "id": "the-day-of-the-beast-1995",
+      "title": "The Day of the Beast",
+      "year": 1995,
+      "genre": "Horror",
+      "categories": [
+        "cat-horror",
+        "cat-cult"
+      ],
+      "episodeIds": [
+        "Buzzsprout-20135133"
+      ],
+      "episodeTitle": "The Day of the Beast",
       "posterURL": null,
       "isInfamous": false,
       "hostRating": null
