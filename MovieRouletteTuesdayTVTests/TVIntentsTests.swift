@@ -31,7 +31,7 @@ final class TVIntentsTests: XCTestCase {
         super.tearDown()
     }
 
-    // MARK: What should I watch (always offers Spin, never auto-spins)
+    // MARK: Pick for Me (always offers Spin, never auto-spins)
 
     func testWhatShouldIWatchOffersSpinAndDoesNotSpin() async throws {
         let history = SpinHistoryStore(fileStore: nil)
@@ -239,7 +239,7 @@ final class TVIntentsTests: XCTestCase {
             opened.append(url)
             return true
         }
-        _ = try await ListenInApplePodcastsIntent(episodeGUID: episode.guid).perform()
+        _ = try await ListenInPodcastsIntent(episodeGUID: episode.guid).perform()
         XCTAssertEqual(opened, [try XCTUnwrap(exact.listenURL)])
     }
 
@@ -433,5 +433,56 @@ final class TVIntentsTests: XCTestCase {
         let thing11 = Movie(id: "the-thing-2011", title: "The Thing", year: 2011, genre: "Horror", categories: ["cat-horror"])
         let plain = Movie(id: "no-stream", title: "Quiet Title", year: 1999, genre: "Drama", categories: ["cat-cult"])
         return MovieCatalog(categories: [horror, cult], movies: [devil, thing82, thing11, plain])
+    }
+}
+
+/// The compiled App Intents metadata in the TV app bundle: what Siri and
+/// App Store Connect actually see.
+@MainActor
+final class TVIntentMetadataTests: XCTestCase {
+    private func metadata() throws -> [String: Any] {
+        let url = try XCTUnwrap(
+            Bundle.main.url(forResource: "extract", withExtension: "actionsdata", subdirectory: "Metadata.appintents"),
+            "the TV app's compiled App Intents metadata"
+        )
+        return try XCTUnwrap(try JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
+    }
+
+    /// ASC 90626: App Intents metadata can't contain "apple" (build 14).
+    func testNoAppleInAnyUserVisibleIntentString() throws {
+        var hits: [String] = []
+        func scan(_ value: Any) {
+            if let dict = value as? [String: Any] {
+                if dict["alternatives"] != nil, let key = dict["key"] as? String, key.lowercased().contains("apple") {
+                    hits.append(key)
+                }
+                if let format = dict["formatString"] as? String, format.lowercased().contains("apple") {
+                    hits.append(format)
+                }
+                dict.values.forEach(scan)
+            } else if let array = value as? [Any] {
+                array.forEach(scan)
+            }
+        }
+        scan(try metadata())
+        XCTAssertEqual(hits, [])
+    }
+
+    /// Same Pick for Me title and phrases as iOS; Spin no longer answers "we watch".
+    func testPickForMeAndSpinPhrasesMatchIOS() throws {
+        let shortcuts = try XCTUnwrap(try metadata()["autoShortcuts"] as? [[String: Any]])
+        var phrases: [String: [String]] = [:]
+        var titles: [String: String] = [:]
+        for s in shortcuts {
+            let id = try XCTUnwrap(s["actionIdentifier"] as? String)
+            phrases[id] = (s["phraseTemplates"] as? [[String: Any]] ?? []).compactMap { $0["key"] as? String }
+            titles[id] = (s["shortTitle"] as? [String: Any])?["key"] as? String
+        }
+        XCTAssertEqual(phrases["WhatShouldIWatchIntent"], ["Pick a movie for me in ${applicationName}", "What should I watch in ${applicationName}"])
+        XCTAssertEqual(titles["WhatShouldIWatchIntent"], "Pick for Me")
+        XCTAssertEqual(phrases["SpinMovieRouletteIntent"], ["Spin ${applicationName}", "Spin the wheel in ${applicationName}"])
+        XCTAssertEqual(WhatShouldIWatchIntent.title, "Pick for Me")
+        let all = phrases.values.flatMap { $0 }.joined(separator: "\n")
+        XCTAssertFalse(all.contains("What should we watch"))
     }
 }
