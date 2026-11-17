@@ -1,0 +1,32 @@
+{
+  "_note": "PROPOSED draft. Shared WSIW cases for iOS and Android unit tests.",
+  "version": 1,
+  "composer": [
+    {"name": "unrated, not on watchlist, on Netflix", "status": null, "halfStars": null, "myServices": ["Netflix"], "stream": ["Netflix"], "free": [], "category": "Horror",
+     "expectFacts": ["Not watched yet", "Streaming on Netflix", "From the Horror category"], "forbid": ["On your watchlist", "You rated it"]},
+    {"name": "watchlist, free only", "status": "wantToWatch", "halfStars": null, "myServices": [], "stream": [], "free": ["Tubi"], "category": null,
+     "expectFacts": ["On your watchlist", "Not watched yet", "Free on Tubi"]},
+    {"name": "rated rewatch (relaxed)", "status": "watched", "halfStars": 9, "myServices": ["Max"], "stream": ["Max"], "free": [], "category": null,
+     "expectFacts": ["You rated it 4.5 stars", "Streaming on Max"], "forbid": ["Not watched yet", "On your watchlist"]},
+    {"name": "no provider info", "status": null, "halfStars": null, "myServices": ["Netflix"], "stream": [], "free": [], "category": null,
+     "expectFacts": ["Not watched yet"], "forbid": ["Streaming", "Free on"]}
+  ],
+  "validator": [
+    {"text": "It's on your watchlist and you gave it 4 stars.", "expect": "reject"},
+    {"text": "A Netflix favorite.", "expect": "reject"},
+    {"text": "Gloriously weird.", "expect": "accept"}
+  ],
+  "candidates": [
+    {"name": "watched and recent excluded, watchlist+service first", "movies": [
+      {"id": "a", "status": "watched"}, {"id": "b", "recent": true}, {"id": "c", "status": "wantToWatch", "onService": true},
+      {"id": "d", "onService": true}, {"id": "e", "free": true}, {"id": "f"}],
+     "expectExcluded": ["a", "b"], "expectFirst": "c", "cap": 12},
+    {"name": "everything watched -> rated >= 4 rewatches only", "movies": [{"id": "a", "status": "watched", "halfStars": 8}, {"id": "b", "status": "watched", "halfStars": 5}],
+     "expectCandidates": ["a"]}
+  ],
+  "picks": [
+    {"model": {"pick": 0, "vibe": "laughs"}, "n": 12, "expect": "templateFallback"},
+    {"model": {"pick": 3, "vibe": "scares"}, "genre": "Comedy", "expect": {"pick": 3, "vibe": "fromGenre"}},
+    {"model": "timeout", "expect": "templateFallback"}
+  ]
+}

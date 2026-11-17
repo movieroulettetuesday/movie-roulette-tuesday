@@ -91,21 +91,29 @@ enum DebugLaunch {
         return StubNLSearchParser(table)
     }
 
-    /// `-MRTSuggestionMovie <id>` and `-MRTSuggestionWhy <text>` stub a
-    /// successful suggestion. The why is not lowercased (unlike `value(for:)`).
-    /// UI tests may also set `MRT_SUGGESTION_MOVIE` / `MRT_SUGGESTION_WHY` in
-    /// the launch environment, which avoids XCTest eating apostrophes in
-    /// launch arguments.
-    static var suggestionStub: AcceptedSuggestion? {
+    /// UI-test stand-in for the on-device model (no Apple Intelligence needed).
+    /// `MRT_SUGGESTION_MOVIE <id>` (or `-MRTSuggestionMovie <id>`) puts that
+    /// movie first in the list and answers pick 1; `MRT_SUGGESTION_VIBE` is the
+    /// vibe it answers (default "cult"). `MRT_SUGGESTION_FORCE timeout|invalid`
+    /// makes it never answer in time, or answer a number outside the list, so
+    /// the app's own pick shows. The facts always come from the app's real lists.
+    static var suggestionStubbed: Bool {
+        let env = ProcessInfo.processInfo.environment
+        return env["MRT_SUGGESTION_MOVIE"].map { !$0.isEmpty } == true
+            || env["MRT_SUGGESTION_FORCE"].map { !$0.isEmpty } == true
+            || ProcessInfo.processInfo.arguments.contains("-MRTSuggestionMovie")
+    }
+
+    @MainActor
+    static func suggestionStub(rows: [PickMovie]) -> DebugSuggestionStub? {
+        guard suggestionStubbed else { return nil }
         let env = ProcessInfo.processInfo.environment
         let args = ProcessInfo.processInfo.arguments
         let id = env["MRT_SUGGESTION_MOVIE"].flatMap { $0.isEmpty ? nil : $0 }
             ?? argumentValue(for: "-MRTSuggestionMovie", in: args, joiningUntilNextFlag: false)
-        guard let id else { return nil }
-        let why = env["MRT_SUGGESTION_WHY"].flatMap { $0.isEmpty ? nil : $0 }
-            ?? argumentValue(for: "-MRTSuggestionWhy", in: args, joiningUntilNextFlag: true)
-            ?? "It's a catalog movie."
-        return AcceptedSuggestion(movieId: id, why: why)
+        let vibe = env["MRT_SUGGESTION_VIBE"].flatMap { $0.isEmpty ? nil : $0 } ?? PickVibe.cult.rawValue
+        let force = env["MRT_SUGGESTION_FORCE"].flatMap { $0.isEmpty ? nil : $0.lowercased() }
+        return DebugSuggestionStub(movie: id.flatMap { id in rows.first { $0.id == id } }, vibe: vibe, force: force)
     }
 
     /// Raw (not lowercased) launch-argument value. When `joiningUntilNextFlag`
@@ -225,6 +233,31 @@ enum UITestRatingSeed {
             index = args.index(after: index)
         }
         return out
+    }
+}
+#endif
+
+#if DEBUG
+struct DebugSuggestionStub: SuggestionResponding {
+    var movie: PickMovie?
+    var vibe: String
+    var force: String?
+
+    func candidates(from list: [PickMovie]) -> [PickMovie] {
+        guard let movie else { return list }
+        return Array(([movie] + list.filter { $0.id != movie.id }).prefix(PickCandidates.cap))
+    }
+
+    func pick(prompt: String) async throws -> RawPick {
+        switch force {
+        case "timeout":
+            try await Task.sleep(for: .seconds(30))
+            return RawPick(pick: 1, vibe: vibe)
+        case "invalid":
+            return RawPick(pick: 99, vibe: vibe)
+        default:
+            return RawPick(pick: 1, vibe: vibe)
+        }
     }
 }
 #endif

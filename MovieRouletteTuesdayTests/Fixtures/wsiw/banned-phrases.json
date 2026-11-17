@@ -1,0 +1,11 @@
+{
+  "_note": "PROPOSED draft (not promoted to mrt-shared). Case-insensitive regexes; any match in model-authored text => reject and use the template reason. Provider names from the catalog are added at runtime.",
+  "version": 1,
+  "patterns": [
+    "\\bwatch ?list\\b", "\\bwant to watch\\b", "\\bsaved\\b", "\\brat(ed|ing|ings)\\b", "\\bstars?\\b", "★",
+    "\\bout of (5|five|10|ten)\\b", "\\b\\d(\\.5)?\\s*/\\s*(5|10)\\b", "\\bwatched\\b", "\\bseen\\b", "\\bhaven'?t (seen|watched)\\b",
+    "\\byou (loved|liked|enjoyed)\\b", "\\bfavou?rite\\b", "\\bstream(ing|s)?\\b", "\\bfree\\b", "\\bavailable on\\b",
+    "\\bawards?\\b", "\\boscars?\\b", "\\bcritics?\\b", "\\bacclaimed\\b", "\\bbox office\\b"
+  ],
+  "runtimeAdditions": ["every provider name in movies.json stream[] and free[]"]
+}

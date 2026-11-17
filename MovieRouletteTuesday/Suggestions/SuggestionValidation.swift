@@ -1,13 +1,40 @@
 import Foundation
 
-struct WatchSuggestionDraft: Equatable, Sendable {
-    var movieId: String
-    var why: String
-}
-
+/// What "Pick for Me" shows: a movie, an app-owned lead line (the vibe, or the
+/// fallback line), and facts the app wrote from your own lists.
 struct AcceptedSuggestion: Equatable, Sendable {
     var movieId: String
-    var why: String
+    var title: String
+    var year: Int
+    /// The vibe line, or the fallback line when true; nil shows facts only.
+    var lead: String?
+    var facts: [PickFact]
+    /// True when the model didn't answer in time (or answered outside the list)
+    /// and the app showed its own top candidate.
+    var isFallback: Bool
+
+    init(movieId: String, title: String, year: Int, lead: String?, facts: [PickFact], isFallback: Bool) {
+        self.movieId = movieId
+        self.title = title
+        self.year = year
+        self.lead = lead
+        self.facts = facts
+        self.isFallback = isFallback
+    }
+
+    init(movie: PickMovie, lead: String?, isFallback: Bool) {
+        self.init(
+            movieId: movie.id,
+            title: movie.title,
+            year: movie.year,
+            lead: lead,
+            facts: ReasonComposer.facts(for: movie),
+            isFallback: isFallback
+        )
+    }
+
+    var factsLine: String { facts.map(\.text).joined(separator: " · ") }
+    var spoken: String { ReasonComposer.spoken(title: title, year: year, lead: lead, facts: facts) }
 }
 
 enum SuggestionOutcome: Equatable, Sendable {
@@ -17,37 +44,8 @@ enum SuggestionOutcome: Equatable, Sendable {
 }
 
 enum SuggestionSpinReason: Equatable, Sendable {
+    /// The on-device model can't run here.
     case unavailable
+    /// Nothing to pick from (every movie watched and none rated 4 stars), or the catalog didn't load.
     case failed
-}
-
-enum SuggestionValidation {
-    /// A suggestion is shown only when `movieId` is in the catalog and `why` is not empty.
-    static func accept(_ draft: WatchSuggestionDraft, catalogIDs: Set<String>) -> AcceptedSuggestion? {
-        let id = draft.movieId.trimmingCharacters(in: .whitespacesAndNewlines)
-        let why = draft.why.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard catalogIDs.contains(id), !why.isEmpty else { return nil }
-        return AcceptedSuggestion(movieId: id, why: why)
-    }
-}
-
-enum SuggestionResolver {
-    /// At most two attempts. The first valid catalog id with a non-empty why wins.
-    /// A second failure (invalid id, empty why, or a thrown error) falls back to offering Spin.
-    static func resolve(
-        attempts: [Result<WatchSuggestionDraft, Error>],
-        catalogIDs: Set<String>
-    ) -> SuggestionOutcome {
-        for attempt in attempts.prefix(2) {
-            switch attempt {
-            case .success(let draft):
-                if let accepted = SuggestionValidation.accept(draft, catalogIDs: catalogIDs) {
-                    return .suggestion(accepted)
-                }
-            case .failure:
-                continue
-            }
-        }
-        return .offerSpin(.failed)
-    }
 }
