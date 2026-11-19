@@ -3,18 +3,59 @@
 All notable changes to Movie Roulette Tuesday are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
-iPhone and iPad ship from `main`. Apple TV ships from `feature/tvos` and is tagged separately (`v1.0-tvos`, `v1.0.2-tvos`).
+iPhone and iPad ship from `main`. Apple TV ships from `feature/tvos` and is tagged separately (`v1.0-tvos`, `v1.0.2-tvos`, `v1.1-tvos`).
 
-## [Unreleased] — 1.1
+## [Unreleased]
 
-iPhone and iPad work is on `main` (merged 2026-11-13). It has not been version-bumped or tagged; Release holds tags. Matching Apple TV work is on `feature/tvos` and is also unreleased.
+## [1.1] - 2026-11-19
 
-### Added
+App Store release. iPhone and iPad, marketing version 1.1, build 17, live 2026-11-19, tip `3221c86d` on `release/1.1-b17` (version bump on top of `main` `8da770ff`), tag [`v1.1`](https://github.com/movieroulettetuesday/movie-roulette-tuesday/releases/tag/v1.1). Apple TV, marketing version 1.1, build 14, live 2026-11-19, tip `b89c4deb` on `release/tvos-1.1-b14` (version bump on top of `feature/tvos` `3d317819`), tag [`v1.1-tvos`](https://github.com/movieroulettetuesday/movie-roulette-tuesday/releases/tag/v1.1-tvos).
 
-- App Intents, Spotlight, and Siri Spin handoff: Spin, Open Movie, Latest Episode, Show/Add Watchlist, Mark Watched, Where to Watch, and Open on a Provider. Alternate names “Movie Roulette Tuesday” and “Movie Roulette” are registered. Spotlight records are public catalog fields only (no ratings or watchlist).
-- On-device “What should I watch?” using Apple’s Foundation Models when they are available, with a short why; a graceful no-op on devices where the model is unavailable. Siri’s What Should I Watch intent offers Spin and never auto-spins. There is no cloud or network language-model path.
-- Natural-language search on iPhone and iPad (iOS 26+ with Apple Intelligence): a question typed in the Movies or Episodes search field (“free 80s horror I haven’t watched”) becomes removable filter chips that combine with the toolbar filters. A question that names the other list (“episodes about The Thing”, “show me movies I haven’t watched”) moves the query and chips there. On-device model only; elsewhere, or when the model is unavailable, search is keyword search as before. Not on Apple TV.
-- Apple TV (on `feature/tvos`): App Intents, Spin handoff, and “What should I watch?” offers Spin. Intents live in the TV app (not the Top Shelf extension). No Spotlight or IndexedEntity on tvOS. Foundation Models APIs are unavailable on tvOS 27.2, so the in-app suggestion button is omitted on TV.
+### iPhone and iPad (build 17)
+
+#### Added
+
+- Pick for Me on the Roulette tab (PR #37, replacing the “What should I watch?” button from PR #23). It chooses one movie you haven’t watched, favoring your watchlist and your services, and tells you why. It’s on purpose, not random. The short reason is made from fixed vibe lines plus facts the app writes (watchlist, ratings, where it’s streaming). It needs Apple Intelligence; the button is hidden when Apple Intelligence isn’t available or is turned off. If the model is only temporarily not ready, the button stays visible and says so. On timeout or invalid model output, the app shows its own top-ranked pick with those factual reasons, and does not spin. Siri phrases: “Pick a movie for me in …” and “What should I watch in …”. When a pick can’t be made, Siri offers Spin and never auto-spins.
+- Search on Movies and Episodes by title, year, episode number (like S4E39), genre, or streaming service (PR #32). Episodes now has a search field; results are ranked. Find Movie is a Siri App Shortcut; Find Episode is a Shortcuts action only (no Siri phrase).
+- Natural-language search on iOS 26+ with Apple Intelligence (PR #34): a question typed in the Movies or Episodes search field (“free 80s horror I haven’t watched”) becomes removable filter chips that combine with the toolbar filters. A question that names the other list moves the query and chips there. On-device model only; elsewhere, or when the model is unavailable, search is keyword search as before. After a list switch on iPhone, the moved query is shown in the destination search field (PR #35). Not on Apple TV.
+- App Intents, Spotlight, and Siri Spin handoff (PR #22): Spin opens the app and plays that result; also Open Movie, Latest Episode, Show/Add Watchlist, Mark Watched, Where to Watch, and Open on a Provider. Alternate names “Movie Roulette Tuesday” and “Movie Roulette” are registered. Spotlight records are public catalog fields only (no ratings or watchlist).
+- House Rules rewritten to explain Spin and Pick for Me, search, Siri and Shortcuts (every phrase), and the Home Screen widget (PR #37).
+
+#### Changed
+
+- Spin and Stop hit area is at least 44 pt on a small wheel; the visual hub size is unchanged (PR #29).
+- After a spin, the result sheet scrolls only when the content does not fit, so Share and Movie page stay reachable (PR #30).
+- The built-in catalog is 184 movies, including The Day of the Beast (1995, S4E40), plus a 16 November 2026 streaming refresh (`99f6d40`, `a0433b78`).
+
+#### Fixed
+
+- App Intents metadata no longer includes the word “Apple”, so App Store Connect accepts the build (ASC 90626, PR #36). In Siri and Shortcuts, the streaming option “Apple TV” now shows as “TV app” and the hidden intent is “Listen in Podcasts”. In-app and spoken “Apple Podcasts” text is unchanged.
+
+#### Removed
+
+- The unused `settings.rareOutcomes` key (PR #27). Rare outcomes were already always on; a leftover stored value is ignored. No visible change.
+
+#### Tests
+
+- Unit tests for offline, timeout, slow, and recovery paths for RSS, catalog, and CloudKit ratings (PR #31).
+
+### Apple TV (build 14)
+
+#### Added
+
+- A Search tab for movies and episodes by title, year, episode number (like S4E39), genre, or streaming service, using the same matcher as iOS (PR #33). The Movies tab keeps its filters and sort; its custom text field is retired. Find Movie is a Siri App Shortcut; Find Episode is a Shortcuts action only.
+- App Intents and Siri Spin handoff (PR #24): Spin opens the app and plays that result; also Open Movie, Latest Episode, watchlist, Where to Watch, and Open on a Provider. Intents live in the TV app, not the Top Shelf extension. No Spotlight on tvOS. Registered Spin phrases are “Spin …” and “Spin the wheel in …”.
+- Siri “Pick for Me” (PR #38, behavior from PR #24): phrases “Pick a movie for me in …” and “What should I watch in …”. The intent always offers Spin and never auto-spins or calls the on-device model (“Picks aren’t available on this TV.”). There is no in-app Pick for Me button. The “What should we watch with …” Spin phrase was dropped.
+
+#### Changed
+
+- The built-in catalog is 184 movies, matching iPhone and iPad, including The Day of the Beast (1995, S4E40) and the 16 November 2026 streaming refresh (PR #40).
+- App Intents metadata no longer includes the word “Apple” (PR #38, port of PR #36). In Siri and Shortcuts, “Apple TV” shows as “TV app” and the hidden intent is “Listen in Podcasts”. In-app and spoken “Apple Podcasts” text is unchanged.
+
+#### Removed
+
+- The unused `settings.rareOutcomes` key (PR #28). Rare outcomes stay always on. No visible change.
+
 
 ## [1.0.2] - 2026-11-12
 
@@ -118,7 +159,8 @@ Apple TV 1.0, build 12, live 2026-11-03, tip `033a33d` on `feature/tvos`, tag `v
 - Times Spun no longer shows 0 on the Movie Page after a spin.
 - The About screen correctly identifies the official companion app from the hosts.
 
-[Unreleased]: https://github.com/movieroulettetuesday/movie-roulette-tuesday/compare/v1.0.2...HEAD
+[Unreleased]: https://github.com/movieroulettetuesday/movie-roulette-tuesday/compare/v1.1...HEAD
+[1.1]: https://github.com/movieroulettetuesday/movie-roulette-tuesday/compare/v1.0.2...v1.1
 [1.0.2]: https://github.com/movieroulettetuesday/movie-roulette-tuesday/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/movieroulettetuesday/movie-roulette-tuesday/compare/v1.0-rc1...v1.0.1
 [1.0]: https://github.com/movieroulettetuesday/movie-roulette-tuesday/releases/tag/v1.0-tvos
