@@ -13,7 +13,7 @@ assignees: ""
 - [ ] Android
 
 **App version**
-(Settings → Credits & About, for example 1.0.2 (12))
+(Settings → Credits & About, for example 1.1 (17) on iPhone and iPad, or 1.1 (14) on Apple TV)
 
 **What happened**
 
