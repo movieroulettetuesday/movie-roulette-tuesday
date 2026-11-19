@@ -1,8 +1,10 @@
 # Movie Roulette Tuesday
 
-iOS companion for [Movie Roulette Tuesday: The Podcast](https://podcasts.apple.com/us/podcast/movie-roulette-tuesday-the-podcast/id1666123849) — spin the wheel, browse every episode and film, track your spins and ratings on device, and vote in anonymous listener polls.
+iOS companion for [Movie Roulette Tuesday: The Podcast](https://podcasts.apple.com/us/podcast/movie-roulette-tuesday-the-podcast/id1666123849) — spin the wheel, browse every episode and film, track your spins and ratings on device, and vote in anonymous listener polls. This branch also has the Apple TV app.
 
-Unzip, open `MovieRouletteTuesday.xcodeproj`, select an iPhone simulator, Run.
+**Current release:** [Apple TV 1.1 (14)](https://github.com/movieroulettetuesday/movie-roulette-tuesday/releases/tag/v1.1-tvos), on the App Store, from this `feature/tvos` line. [iPhone and iPad 1.1 (17)](https://github.com/movieroulettetuesday/movie-roulette-tuesday/releases/tag/v1.1) ships from [`main`](https://github.com/movieroulettetuesday/movie-roulette-tuesday/blob/main/README.md). iPhone and iPad 1.1 features that are not on this branch (Pick for Me on the Roulette tab, natural-language search, and the House Rules rewrite) are documented there. See [CHANGELOG.md on main](https://github.com/movieroulettetuesday/movie-roulette-tuesday/blob/main/CHANGELOG.md) for the 1.1 notes.
+
+Unzip, open `MovieRouletteTuesday.xcodeproj`, select an iPhone simulator, Run. For Apple TV, choose the `MovieRouletteTuesdayTV` scheme.
 
 ## One-time Xcode / CloudKit setup
 
@@ -22,24 +24,26 @@ This app collects no personal data. No accounts, no analytics, no third-party se
 - **New-episode alert (off by default):** a `BGAppRefreshTask` re-reads the public RSS feed and posts a *local* notification. No push server, no device token. Notification permission is requested only when you turn it on; the "last seen" marker stays in UserDefaults.
 - **Apple TV Top Shelf:** the extension re-reads that same public RSS feed when its cached episode is older than six hours, so the shelf can show the latest episode before the app is opened. No user data is sent.
 - **Suggest a movie:** one sheet. **Send** saves an anonymous `Suggestion` record to the CloudKit public database (create-only; needs iCloud). **Send by email instead** builds an email in Mail (or your mail app via `mailto:`) to theMrtPodcast@gmail.com; the app never sends it, you do. No mail app? It copies the address.
-- **Siri / Shortcuts:** "Spin Movie Roulette" runs in the app process and writes only to the on-device spin history.
+- **Siri / Shortcuts:** Siri phrases and Shortcuts actions run in the app process. A Siri spin writes only to the on-device spin history. There is no Spotlight index on Apple TV.
 
 ## Features
 
 - **v4:** episode **Listen** card (Apple Podcasts exact episode via GUID lookup with show fallback, Spotify episode search, Overcast show, Buzzsprout episode); **Suggest a movie** (Movies tab row + Settings); **Spin Movie Roulette** App Intent with App Shortcuts phrases and a result snippet (Spin Again / Open in App); **New-episode alert** (Settings, opt-in; tap opens `mrt://episode/<guid>`); **Follow the Show** (8 official links in Settings).
 
-- **Roulette** — tap the glowing hub (or anywhere on the wheel) to spin; VoiceOver Magic Tap spins too. A short opening animation plays on cold launch only (tap to skip; Reduce Motion crossfades; deep links/widget taps skip it). 10 categories and the real episode-by-episode movie list (`movies.json` with Buzzsprout guids; the copy on GitHub `main` is fetched at launch and on pull-to-refresh, validated, and cached, with the bundled copy as fallback; see [CATALOG.md](CATALOG.md)). Spin sound is a real recorded wheel spin (`wheel-spin.m4a`, played once per spin off the main thread); the wheel's motion is timed to the clip so each click lands as a slice passes the pointer and the wheel stops on the final thunk; haptics on each crossing. Outcomes stay uniformly random. Rare outcomes (always on, ~1% Re-spin forced!, ~1% Infamous jackpot: a random catalog movie weighted toward low listener ratings, see `InfamousSelection`). Shareable branded result card. Settings gear for Appearance / Spin sound / Haptics / New-episode alert / My services / Auto-share ratings + the privacy note. Only the hub's ■ stops a spin early.
+- **Roulette** — tap the glowing hub (or anywhere on the wheel) to spin; VoiceOver Magic Tap spins too. A short opening animation plays on cold launch only (tap to skip; Reduce Motion crossfades; deep links/widget taps skip it). 10 categories and the real episode-by-episode movie list (`movies.json` with Buzzsprout guids; the copy on GitHub `main` is fetched at launch and on pull-to-refresh, validated, and cached, with the bundled copy as fallback; see [CATALOG.md](CATALOG.md)). The 1.1 release ships 184 movies. Spin sound is a real recorded wheel spin (`wheel-spin.m4a`, played once per spin off the main thread); the wheel's motion is timed to the clip so each click lands as a slice passes the pointer and the wheel stops on the final thunk; haptics on each crossing. Outcomes stay uniformly random. Rare outcomes (always on, ~1% Re-spin forced!, ~1% Infamous jackpot: a random catalog movie weighted toward low listener ratings, see `InfamousSelection`). Shareable branded result card. Settings gear for Appearance / Spin sound / Haptics / New-episode alert / My services / Auto-share ratings + the privacy note. Only the hub's ■ stops a spin early.
 - **Episodes** — live Buzzsprout RSS (`https://rss.buzzsprout.com/2117292.rss`). Tab badge for episodes published since you last viewed the tab (never badges the whole back catalog on first launch). Per-episode anonymous listener poll (Good/Bad, Recommend, or Who won the argument? with Rachael / Karl / Matt). Optional overrides in bundled `polls.json`.
 - **Movies** — search/sort/filter (category, watchlist, watched, rated by me, haven't spun yet). Per-movie Your Take (1–5 stars + Want to Watch / Watched) and anonymous Listener Rating.
 - **Stats** — this-device spin overview + Your Ratings (count, average, top-rated by you; you-vs-hosts only where `hostRating` exists).
-- **Widget** — Spin of the Day (+ latest episode / last spin once the App Group is signed).
+- **Widget** — Spin of the Day (+ latest episode / last spin once the App Group is signed). iPhone and iPad only; Apple TV has no widget.
+- **Apple TV Search** — a Search tab finds movies and episodes by title, year, episode (like S4E39), genre or streaming service. The Movies tab keeps its filters and sort.
+- **Apple TV Siri** — ask Siri to spin the wheel, and the app opens on the result. You can also ask Siri to open or find a movie, open the latest episode, check your watchlist, or see where a movie is streaming. Ask Siri "Pick a movie for me in Movie Roulette Tuesday" or "What should I watch in Movie Roulette Tuesday?" and it offers to spin the wheel instead, since picks aren't available on Apple TV. It never spins on its own. There is no in-app Pick for Me button, and no natural-language search, on Apple TV.
 - **Apple TV Top Shelf** — latest episode. Select opens `mrt://episode/<guid>` in the TV app. The static shelf and layered app icon are the final brand art from approved mockup 14 (teal gradient, peach film reel, pointer highlight). See [MovieRouletteTuesdayTopShelf/TOPSHELF.md](MovieRouletteTuesdayTopShelf/TOPSHELF.md).
 
 ## Project layout
 
 - `MovieRouletteTuesday/` — app (SwiftUI, iOS 17+, no third-party deps). Shared code lives in the local package `MRTKit/`: `MRTCore` (pure logic, Foundation only, also compiles on Linux for unit tests) and `MRTShared` (stores, wheel drawing, spin audio and the Roulette view model, shared with the tvOS app).
 - `MovieRouletteTuesdayWidget/` — WidgetKit extension (App Group).
-- `MovieRouletteTuesdayTV/` — Apple TV app (tvOS 17+, scheme `MovieRouletteTuesdayTV`): Roulette, Episodes, Movies, Stats, Settings. Writes the latest episode into the App Group for Top Shelf.
+- `MovieRouletteTuesdayTV/` — Apple TV app (tvOS 17+, scheme `MovieRouletteTuesdayTV`): Roulette, Episodes, Movies, Search, Stats, Settings. Writes the latest episode into the App Group for Top Shelf.
 - `MovieRouletteTuesdayTopShelf/` — tvOS Top Shelf extension (`com.movieroulettetuesday.app.topshelf`). Dynamic latest-episode banner; static shelf images in the TV asset catalog are the brand-art fallback.
 - `MovieRouletteTuesdayTests/` — XCTest (imports `MRTCore` / `MRTShared`).
 - `CloudKit/` — `.ckdb` schema + `SCHEMA.md`.
